@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1590860142750
+Build-Jdk: 1.8.0_251
+Built-By: Admin
+Bundle-ManifestVersion: 2
+Bundle-Name: laptop-store-dao
+Bundle-SymbolicName: org.example.laptop-store-dao
+Bundle-Version: 1.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Export-Package: org.example.dao.api;uses:="org.example.model,org.example
+ .type";version="1.0.0",org.example.dao.impl;uses:="javax.persistence,ja
+ vax.transaction,org.example.dao.api,org.example.model,org.example.type"
+ ;version="1.0.0"
+Import-Package: javax.persistence;version="[2.2,3)",javax.transaction;ve
+ rsion="[1.2,2)",javax.ws.rs;version="[2.0,3)",org.example.dao.api,org.e
+ xample.model;version="[1.0,2)",org.example.type;version="[1.0,2)",org.m
+ indrot.jbcrypt
+Meta-Persistence: META-INF/persistence.xml
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-3.0.0.201509101326

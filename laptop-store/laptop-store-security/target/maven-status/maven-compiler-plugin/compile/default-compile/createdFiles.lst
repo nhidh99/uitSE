@@ -1,0 +1,4 @@
+org\example\security\Secured.class
+org\example\security\AuthorizationFilter$1.class
+org\example\security\AuthorizationFilter.class
+org\example\security\AuthenticationFilter.class

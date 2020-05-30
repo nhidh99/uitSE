@@ -1,0 +1,66 @@
+.header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 0 !important;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.pageHeader {
+    padding-bottom: 9px;
+    margin: 40px 0 20px;
+}
+.orderTable {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.orderRow:hover {
+    cursor: pointer;
+}
+
+.idCol {
+    width: 15%;
+    text-align: center;
+}
+
+.dateCol {
+    width: 15%;
+    text-align: center;
+}
+
+.productsCol {
+    width: 35%;
+}
+
+.priceCol {
+    width: 18%;
+    text-align: center;
+}
+
+.statusCol {
+    width: 17%;
+    text-align: center;
+}
+
+.table {
+    border: 1px solid lightgrey;
+
+    th {
+        font-size: 14px;
+        background-color: #eee;
+    }
+
+    td {
+        padding-top: 25px !important;
+        padding-bottom: 25px !important;
+        vertical-align: middle !important;
+    }
+}
+
+.pagination {
+    float: right !important;
+    font-size: 14px;
+    font-weight: 600;
+}

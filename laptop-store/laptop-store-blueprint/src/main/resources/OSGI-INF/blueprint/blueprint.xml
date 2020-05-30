@@ -1,0 +1,133 @@
+<blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/blueprint/core"
+        xmlns:tx="http://aries.apache.org/xmlns/transactions/v2.0.0"
+        xmlns:jpa="http://aries.apache.org/xmlns/jpa/v2.0.0"
+        xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd"
+>
+    <cxf:bus id="bus">
+        <cxf:features>
+            <cxf:logging/>
+        </cxf:features>
+    </cxf:bus>
+
+    <jpa:enable/>
+    <tx:enable/>
+
+    <!-- Util Beans -->
+    <bean id="imageUtils" class="org.example.util.impl.ImageUtilsImpl"/>
+    <bean id="jwtUtils" class="org.example.util.impl.JwtUtilsImpl"/>
+
+    <!-- DAO Beans -->
+    <bean id="addressDAO" class="org.example.dao.impl.AddressDAOImpl"/>
+
+    <bean id="laptopDAO" class="org.example.dao.impl.LaptopDAOImpl"/>
+
+    <bean id="orderDetailDAO" class="org.example.dao.impl.OrderDetailDAOImpl"/>
+
+    <bean id="promotionDAO" class="org.example.dao.impl.PromotionDAOImpl"/>
+
+    <bean id="ratingDAO" class="org.example.dao.impl.RatingDAOImpl"/>
+
+    <bean id="ratingReplyDAO" class="org.example.dao.impl.RatingReplyDAOImpl"/>
+
+    <bean id="tagDAO" class="org.example.dao.impl.TagDAOImpl"/>
+
+    <bean id="userDAO" class="org.example.dao.impl.UserDAOImpl"/>
+
+    <bean id="orderDAO" class="org.example.dao.impl.OrderDAOImpl">
+        <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="promotionDAO" ref="promotionDAO"/>
+    </bean>
+
+    <!-- Address Service -->
+    <bean id="addressService" class="org.example.service.impl.AddressServiceImpl">
+        <property name="addressDAO" ref="addressDAO"/>
+        <property name="userDAO" ref="userDAO"/>
+    </bean>
+
+    <!-- Auth Service -->
+    <bean id="authService" class="org.example.service.impl.AuthServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+        <property name="jwtUtils" ref="jwtUtils"/>
+    </bean>
+
+    <!-- Image Service -->
+    <bean id="imageService" class="org.example.service.impl.ImageServiceImpl">
+        <property name="promotionDAO" ref="promotionDAO"/>
+        <property name="laptopDAO" ref="laptopDAO"/>
+    </bean>
+
+    <!-- Laptop Service -->
+    <bean id="laptopService" class="org.example.service.impl.LaptopServiceImpl">
+        <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="promotionDAO" ref="promotionDAO"/>
+        <property name="tagDAO" ref="tagDAO"/>
+        <property name="imageUtils" ref="imageUtils"/>
+    </bean>
+
+    <!-- Order Service -->
+    <bean id="orderService" class="org.example.service.impl.OrderServiceImpl">
+        <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="promotionDAO" ref="promotionDAO"/>
+        <property name="userDAO" ref="userDAO"/>
+        <property name="addressDAO" ref="addressDAO"/>
+        <property name="orderDAO" ref="orderDAO"/>
+        <property name="orderDetailDAO" ref="orderDetailDAO"/>
+    </bean>
+
+    <!-- Promotion Service -->
+    <bean id="promotionService" class="org.example.service.impl.PromotionServiceImpl">
+        <property name="promotionDAO" ref="promotionDAO"/>
+        <property name="imageUtils" ref="imageUtils"/>
+    </bean>
+
+    <!-- Rating Reply Service -->
+    <bean id="ratingReplyService" class="org.example.service.impl.RatingReplyServiceImpl">
+        <property name="ratingReplyDAO" ref="ratingReplyDAO"/>
+        <property name="userDAO" ref="userDAO"/>
+        <property name="ratingDAO" ref="ratingDAO"/>
+    </bean>
+
+    <!-- Rating Service -->
+    <bean id="ratingService" class="org.example.service.impl.RatingServiceImpl">
+        <property name="ratingDAO" ref="ratingDAO"/>
+        <property name="userDAO" ref="userDAO"/>
+        <property name="laptopDAO" ref="laptopDAO"/>
+    </bean>
+
+    <!-- Tag Service -->
+    <bean id="tagService" class="org.example.service.impl.TagServiceImpl">
+        <property name="tagDAO" ref="tagDAO"/>
+    </bean>
+
+    <!-- User Service -->
+    <bean id="userService" class="org.example.service.impl.UserServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+        <property name="addressDAO" ref="addressDAO"/>
+        <property name="orderDAO" ref="orderDAO"/>
+    </bean>
+
+    <jaxrs:server id="restServer" address="/api">
+        <jaxrs:serviceBeans>
+            <ref component-id="addressService"/>
+            <ref component-id="authService"/>
+            <ref component-id="imageService"/>
+            <ref component-id="laptopService"/>
+            <ref component-id="orderService"/>
+            <ref component-id="promotionService"/>
+            <ref component-id="ratingReplyService"/>
+            <ref component-id="ratingService"/>
+            <ref component-id="tagService"/>
+            <ref component-id="userService"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+</blueprint>
