@@ -24,9 +24,7 @@ public class TagServiceImpl implements TagService {
     public Response findAllTags() {
         try {
             List<Tag> tags = tagDAO.findAll();
-            ObjectMapper om = new ObjectMapper();
-            String tagsJSON = om.writeValueAsString(tags);
-            return Response.ok(tagsJSON).build();
+            return Response.ok(tags).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

@@ -45,6 +45,11 @@
         <property name="promotionDAO" ref="promotionDAO"/>
     </bean>
 
+    <!-- Auth Filters -->
+    <bean id="authorizationFilter" class="org.example.security.AuthorizationFilter">
+        <property name="userDAO" ref="userDAO"/>
+    </bean>
+
     <!-- Address Service -->
     <bean id="addressService" class="org.example.service.impl.AddressServiceImpl">
         <property name="addressDAO" ref="addressDAO"/>
@@ -126,7 +131,9 @@
             <ref component-id="tagService"/>
             <ref component-id="userService"/>
         </jaxrs:serviceBeans>
+
         <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
         </jaxrs:providers>
     </jaxrs:server>

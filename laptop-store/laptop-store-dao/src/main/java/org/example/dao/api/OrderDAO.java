@@ -1,6 +1,7 @@
 package org.example.dao.api;
 
 import org.example.model.Order;
+import org.example.model.OrderOverview;
 import org.example.type.OrderStatus;
 
 
@@ -15,9 +16,9 @@ public interface OrderDAO {
 
     Long findTotalOrder();
 
-    List<Order> findByUserId(Integer page, Integer userId);
+    List<OrderOverview> findByUserId(Integer page, Integer userId);
 
-    List<Order> findByPages(Integer page);
+    List<OrderOverview> findByPages(Integer page);
 
     Long findTotalOrdersByUserId(Integer userId);
 

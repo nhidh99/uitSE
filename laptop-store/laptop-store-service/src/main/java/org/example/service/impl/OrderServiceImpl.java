@@ -155,14 +155,10 @@ public class OrderServiceImpl implements OrderService {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
             Order order = orderDAO.findById(orderId).orElseThrow(NotFoundException::new);
+            String orderJSON = buildOrderJSON(order);
             RoleType role = order.getUser().getRole();
-
             boolean isValidUser = role == RoleType.ADMIN || (role == RoleType.USER && order.getUser().getId().equals(userId));
-            if (isValidUser) {
-                String orderJSON = buildOrderJSON(order);
-                return Response.ok(orderJSON).build();
-            }
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return isValidUser ? Response.ok(orderJSON).build() : Response.status(Response.Status.FORBIDDEN).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -186,13 +182,11 @@ public class OrderServiceImpl implements OrderService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findOrdersByPage(@QueryParam("page") @DefaultValue("1") Integer page) {
         try {
-            List<Order> orders = orderDAO.findByPages(page);
-            List<OrderOverview> orderOverviews = orders.stream().map(OrderOverview::fromOrder).collect(Collectors.toList());
+            List<OrderOverview> orderOverviews = orderDAO.findByPages(page);
             Long orderCount = orderDAO.findTotalOrder();
-            ObjectMapper om = new ObjectMapper();
-            String overviewsJSON = om.writeValueAsString(orderOverviews);
-            return Response.ok(overviewsJSON).header("X-Total-Count", orderCount).build();
+            return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.serverError().build();
         }
     }

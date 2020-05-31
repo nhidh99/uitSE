@@ -27,7 +27,7 @@ public class OrderDAOImpl implements OrderDAO {
     private PromotionDAO promotionDAO;
 
     @PersistenceContext(unitName = "laptop-store")
-    EntityManager em;
+    private EntityManager em;
 
     private static final Integer ELEMENT_PER_BLOCK = 5;
 
@@ -65,12 +65,34 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Order> findByUserId(Integer page, Integer userId) {
+    public List<OrderOverview> findByUserId(Integer page, Integer userId) {
         String query = "SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.id DESC";
         return em.createQuery(query, Order.class).setParameter("userId", userId)
                 .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_BLOCK)
-                .getResultList();
+                .getResultStream().map(this::buildOverviewFromOrder)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<OrderOverview> findByPages(Integer page) {
+        String query = "SELECT o FROM Order o ORDER BY o.id DESC";
+        return em.createQuery(query, Order.class)
+                .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_BLOCK)
+                .getResultStream().map(this::buildOverviewFromOrder)
+                .collect(Collectors.toList());
+    }
+
+    private OrderOverview buildOverviewFromOrder(Order order) {
+        List<OrderDetail> orderProducts = order.getOrderDetails().stream()
+                .filter(detail -> detail.getProductType() == ProductType.LAPTOP)
+                .collect(Collectors.toList());
+        Integer productCount = orderProducts.stream().mapToInt(OrderDetail::getQuantity).sum();
+        return OrderOverview.builder()
+                .order(order).firstProduct(orderProducts.get(0))
+                .productCount(productCount).build();
     }
 
     @Override
@@ -78,16 +100,6 @@ public class OrderDAOImpl implements OrderDAO {
     public Long findTotalOrder() {
         String query = "SELECT COUNT(o) FROM Order o";
         return em.createQuery(query, Long.class).getSingleResult();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Order> findByPages(Integer page) {
-        String query = "SELECT o FROM Order o ORDER BY o.id DESC";
-        return em.createQuery(query, Order.class)
-                .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
-                .setMaxResults(ELEMENT_PER_BLOCK)
-                .getResultList();
     }
 
     @Override

@@ -39,19 +39,15 @@ public class PromotionServiceImpl implements PromotionService {
         }
     }
 
-    private Response findByPage(Integer page) throws JsonProcessingException {
+    private Response findByPage(Integer page) {
         List<Promotion> promotions = (page == null) ? promotionDAO.findAll() : promotionDAO.findByPage(page);
         Long promotionCount = promotionDAO.findTotalPromotions();
-        ObjectMapper om = new ObjectMapper();
-        String promotionsJSON = om.writeValueAsString(promotions);
-        return Response.ok(promotionsJSON).header("X-Total-Count", promotionCount).build();
+        return Response.ok(promotions).header("X-Total-Count", promotionCount).build();
     }
 
-    private Response findByIds(List<Integer> ids) throws JsonProcessingException {
+    private Response findByIds(List<Integer> ids) {
         List<Promotion> promotions = promotionDAO.findByIds(ids);
-        ObjectMapper om = new ObjectMapper();
-        String promotionsJSON = om.writeValueAsString(promotions);
-        return Response.ok(promotionsJSON).build();
+        return Response.ok(promotions).build();
     }
 
     @Override
@@ -61,12 +57,9 @@ public class PromotionServiceImpl implements PromotionService {
     public Response findPromotionById(@PathParam("id") Integer id) {
         try {
             Promotion promotion = promotionDAO.findById(id).orElseThrow(BadRequestException::new);
-            if (!promotion.isRecordStatus()) throw new BadRequestException();
-            ObjectMapper om = new ObjectMapper();
-            String promotionJSON = om.writeValueAsString(promotion);
-            return Response.ok(promotionJSON).build();
-        } catch (BadRequestException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return promotion.isRecordStatus()
+                    ? Response.ok(promotion).build()
+                    : Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -97,8 +90,7 @@ public class PromotionServiceImpl implements PromotionService {
             return Response.noContent().build();
         } catch (BadRequestException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Response.serverError().build();
         }
     }

@@ -67,9 +67,7 @@ public class RatingServiceImpl implements RatingService {
     public Response findByProductId(@PathParam("id") Integer productId) {
         try {
             List<Rating> ratings = ratingDAO.findByProductId(productId);
-            ObjectMapper om = new ObjectMapper();
-            String ratingsJSON = om.writeValueAsString(ratings);
-            return Response.ok(ratingsJSON).build();
+            return Response.ok(ratings).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

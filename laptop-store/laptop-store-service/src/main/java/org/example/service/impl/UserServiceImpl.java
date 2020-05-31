@@ -10,7 +10,6 @@ import org.example.model.*;
 import org.example.security.Secured;
 import org.example.service.api.UserService;
 import org.example.type.GenderType;
-import org.example.type.ProductType;
 import org.example.type.RoleType;
 
 import javax.persistence.NoResultException;
@@ -20,7 +19,6 @@ import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +39,7 @@ public class UserServiceImpl implements UserService {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
             User user = userDAO.findById(userId).orElseThrow(Exception::new);
-            ObjectMapper om = new ObjectMapper();
-            String userJSON = om.writeValueAsString(user);
-            return Response.ok(userJSON).build();
+            return Response.ok(user).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -108,12 +104,11 @@ public class UserServiceImpl implements UserService {
     @Path("/me/password")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePassword(PasswordInput passwordInput, @Context SecurityContext securityContext) {
-        Principal principal = securityContext.getUserPrincipal();
-        Integer userId = Integer.parseInt(principal.getName());
-        String oldPassword = passwordInput.getOldPassword();
-        String newPassword = passwordInput.getNewPassword();
-
         try {
+            Principal principal = securityContext.getUserPrincipal();
+            Integer userId = Integer.parseInt(principal.getName());
+            String oldPassword = passwordInput.getOldPassword();
+            String newPassword = passwordInput.getNewPassword();
             return userDAO.updatePassword(userId, oldPassword, newPassword)
                     ? Response.noContent().build()
                     : Response.status(Response.Status.BAD_REQUEST).build();
@@ -125,16 +120,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @GET
     @Path("/me/addresses")
-    @Secured({RoleType.ADMIN, RoleType.USER})
     @Produces(MediaType.APPLICATION_JSON)
     public Response findUserAddresses(@Context SecurityContext securityContext) {
         try {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
             List<Address> addresses = addressDAO.findByUserId(userId);
-            ObjectMapper om = new ObjectMapper();
-            String addressesJSON = om.writeValueAsString(addresses);
-            return Response.ok(addressesJSON).build();
+            return Response.ok(addresses).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -142,7 +134,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @GET
-    @Secured({RoleType.ADMIN, RoleType.USER})
     @Path("/me/orders")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findUserOrderOverviews(@QueryParam("page") @DefaultValue("1") Integer page,
@@ -150,12 +141,9 @@ public class UserServiceImpl implements UserService {
         try {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
-            List<Order> orders = orderDAO.findByUserId(page, userId);
+            List<OrderOverview> orderOverviews = orderDAO.findByUserId(page, userId);
             Long orderCount = orderDAO.findTotalOrdersByUserId(userId);
-            List<OrderOverview> orderOverviews = orders.stream().map(OrderOverview::fromOrder).collect(Collectors.toList());
-            ObjectMapper om = new ObjectMapper();
-            String orderOverviewsJSON = om.writeValueAsString(orderOverviews);
-            return Response.ok(orderOverviewsJSON).header("X-Total-Count", orderCount).build();
+            return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

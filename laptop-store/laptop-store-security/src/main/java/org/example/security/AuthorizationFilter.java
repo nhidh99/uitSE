@@ -12,6 +12,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -56,9 +57,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             requestContext.setSecurityContext(new SecurityContext() {
                 @Override
                 public Principal getUserPrincipal() {
-                    return () -> {
-                        return userId.toString();
-                    };
+                    return () -> userId.toString();
                 }
 
                 @Override

@@ -45,19 +45,15 @@ public class LaptopServiceImpl implements LaptopService {
         }
     }
 
-    private Response findByPage(Integer page) throws JsonProcessingException {
+    private Response findByPage(Integer page) {
         List<Laptop> laptops = laptopDAO.findByPage(page);
         Long laptopCount = laptopDAO.findTotalLaptops();
-        ObjectMapper om = new ObjectMapper();
-        String laptopsJSON = om.writeValueAsString(laptops);
-        return Response.ok(laptopsJSON).header("X-Total-Count", laptopCount).build();
+        return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
-    private Response findByIds(List<Integer> ids) throws JsonProcessingException {
+    private Response findByIds(List<Integer> ids) {
         List<Laptop> laptops = laptopDAO.findByIds(ids);
-        ObjectMapper om = new ObjectMapper();
-        String laptopsJSON = om.writeValueAsString(laptops);
-        return Response.ok(laptopsJSON).build();
+        return Response.ok(laptops).build();
     }
 
     @Override
@@ -68,9 +64,8 @@ public class LaptopServiceImpl implements LaptopService {
         try {
             Optional<Laptop> optLaptop = laptopDAO.findById(id);
             if (optLaptop.isPresent() && optLaptop.get().isRecordStatus()) {
-                ObjectMapper om = new ObjectMapper();
-                String laptopJSON = om.writeValueAsString(optLaptop.get());
-                return Response.ok(laptopJSON).build();
+                Laptop laptop = optLaptop.get();
+                return Response.ok(laptop).build();
             }
             return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
@@ -211,11 +206,9 @@ public class LaptopServiceImpl implements LaptopService {
     public Response findPromotionsById(@PathParam("id") Integer id) {
         try {
             List<Promotion> promotions = promotionDAO.findByLaptopId(id);
-            ObjectMapper om = new ObjectMapper();
-            String promotionsJSON = om.writeValueAsString(promotions);
             return promotions == null
                     ? Response.status(Response.Status.NOT_FOUND).build()
-                    : Response.ok(promotionsJSON).build();
+                    : Response.ok(promotions).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -228,11 +221,9 @@ public class LaptopServiceImpl implements LaptopService {
     public Response findTagsById(@PathParam("id") Integer id) {
         try {
             List<Tag> tags = tagDAO.findByLaptopId(id);
-            ObjectMapper om = new ObjectMapper();
-            String tagsJSON = om.writeValueAsString(tags);
             return tags == null
                     ? Response.status(Response.Status.BAD_REQUEST).build()
-                    : Response.ok(tagsJSON).build();
+                    : Response.ok(tags).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

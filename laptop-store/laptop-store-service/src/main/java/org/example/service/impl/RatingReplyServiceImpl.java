@@ -1,6 +1,5 @@
 package org.example.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dao.api.RatingDAO;
 import org.example.dao.api.RatingReplyDAO;
 import org.example.dao.api.UserDAO;
@@ -56,9 +55,7 @@ public class RatingReplyServiceImpl implements RatingReplyService {
     public Response findByRatingIds(@QueryParam("rating-ids") List<Integer> ratingIds) {
         try {
             List<RatingReply> ratingReplies = ratingReplyDAO.findByRatingIds(ratingIds);
-            ObjectMapper om = new ObjectMapper();
-            String ratingRepliesJSON = om.writeValueAsString(ratingReplies);
-            return Response.ok(ratingRepliesJSON).build();
+            return Response.ok(ratingReplies).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -66,10 +63,7 @@ public class RatingReplyServiceImpl implements RatingReplyService {
 
     private RatingReply buildReplyFromRequestBody(Integer ratingId, RatingReplyInput ratingReplyInput) {
         Rating rating = ratingDAO.findById(ratingId).orElseThrow(BadRequestException::new);
-        Date input = new Date();
         LocalDate createdAt = LocalDate.now();
-        return RatingReply.builder().rating(rating)
-                .reply(ratingReplyInput.getReply()).replyDate(createdAt)
-                .build();
+        return RatingReply.builder().rating(rating).reply(ratingReplyInput.getReply()).replyDate(createdAt).build();
     }
 }

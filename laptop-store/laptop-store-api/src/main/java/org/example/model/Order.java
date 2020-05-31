@@ -76,7 +76,8 @@ public class Order {
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<OrderDetail> orderDetails;
 }

@@ -18,21 +18,11 @@ import java.util.stream.Collectors;
 public class OrderOverview {
     @JsonProperty("order")
     @JsonIgnoreProperties("user")
-    Order order;
+    private Order order;
 
     @JsonProperty("first_product")
-    OrderDetail firstProduct;
+    private OrderDetail firstProduct;
 
     @JsonProperty("product_count")
-    Integer productCount;
-
-    public static OrderOverview fromOrder(Order order) {
-        List<OrderDetail> orderProducts = order.getOrderDetails().stream()
-                .filter(detail -> detail.getProductType() == ProductType.LAPTOP)
-                .collect(Collectors.toList());
-        Integer productCount = orderProducts.stream().mapToInt(OrderDetail::getQuantity).sum();
-        return OrderOverview.builder()
-                .order(order).firstProduct(orderProducts.get(0))
-                .productCount(productCount).build();
-    }
+    private Integer productCount;
 }
