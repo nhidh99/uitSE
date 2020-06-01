@@ -25,7 +25,7 @@ const ProductDelete = ({ product }) => {
     const submit = async (e) => {
         const input = e.target;
         input.disabled = true;
-        const response = await fetch(`/api/laptops/${product["id"]}`, {
+        const response = await fetch(`/cxf/api/laptops/${product["id"]}`, {
             method: "DELETE",
         });
         if (response.ok) {

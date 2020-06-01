@@ -14,7 +14,7 @@ class OrderOverview extends Component {
     updateOrderStatus = async (e) => {
         e.target.disabled = true;
         const status = document.getElementById("status").value;
-        const response = await fetch(`/api/orders/${this.props.order.id}`, {
+        const response = await fetch(`/cxf/api/orders/${this.props.order.id}`, {
             method: "PUT",
             headers: {
                 Authorization: `Bearer ${getCookie("access_token")}`,

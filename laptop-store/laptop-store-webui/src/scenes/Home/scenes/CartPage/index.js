@@ -28,7 +28,7 @@ class CartPage extends Component {
 
         const params = new URLSearchParams();
         Object.keys(cart).forEach((id) => params.append("ids", id));
-        const response = await fetch("/api/laptops?" + params.toString());
+        const response = await fetch("/cxf/api/laptops?" + params.toString());
 
         if (response.ok) {
             const products = await response.json();

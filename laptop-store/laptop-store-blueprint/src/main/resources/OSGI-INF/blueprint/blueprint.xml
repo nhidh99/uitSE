@@ -44,6 +44,9 @@
         <property name="laptopDAO" ref="laptopDAO"/>
         <property name="promotionDAO" ref="promotionDAO"/>
     </bean>
+    
+    <!-- JSON Provider Bean -->
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
 
     <!-- Auth Filters -->
     <bean id="authorizationFilter" class="org.example.security.AuthorizationFilter">
@@ -92,18 +95,12 @@
         <property name="imageUtils" ref="imageUtils"/>
     </bean>
 
-    <!-- Rating Reply Service -->
-    <bean id="ratingReplyService" class="org.example.service.impl.RatingReplyServiceImpl">
-        <property name="ratingReplyDAO" ref="ratingReplyDAO"/>
-        <property name="userDAO" ref="userDAO"/>
-        <property name="ratingDAO" ref="ratingDAO"/>
-    </bean>
-
     <!-- Rating Service -->
     <bean id="ratingService" class="org.example.service.impl.RatingServiceImpl">
         <property name="ratingDAO" ref="ratingDAO"/>
         <property name="userDAO" ref="userDAO"/>
         <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="ratingReplyDAO" ref="ratingReplyDAO"/>
     </bean>
 
     <!-- Tag Service -->
@@ -118,23 +115,106 @@
         <property name="orderDAO" ref="orderDAO"/>
     </bean>
 
-    <jaxrs:server id="restServer" address="/api">
+    <!-- Address Server -->
+    <jaxrs:server id="address" address="/api/addresses">
         <jaxrs:serviceBeans>
-            <ref component-id="addressService"/>
             <ref component-id="authService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Auth Server -->
+    <jaxrs:server id="authServer" address="/api/auth">
+        <jaxrs:serviceBeans>
+            <ref component-id="authService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Image Server -->
+    <jaxrs:server id="imageServer" address="/api/images">
+        <jaxrs:serviceBeans>
             <ref component-id="imageService"/>
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
+    <!-- Laptop Server -->
+    <jaxrs:server id="laptopServer" address="/api/laptops">
+        <jaxrs:serviceBeans>
             <ref component-id="laptopService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Order Server -->
+    <jaxrs:server id="orderServer" address="/api/orders">
+        <jaxrs:serviceBeans>
             <ref component-id="orderService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Promotion Server -->
+    <jaxrs:server id="promotionServer" address="/api/promotions">
+        <jaxrs:serviceBeans>
             <ref component-id="promotionService"/>
-            <ref component-id="ratingReplyService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+    
+    <!-- Rating Server -->
+    <jaxrs:server id="ratingServer" address="/api/ratings">
+        <jaxrs:serviceBeans>
             <ref component-id="ratingService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Tag Server -->
+    <jaxrs:server id="tagServer" address="/api/tags">
+        <jaxrs:serviceBeans>
             <ref component-id="tagService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- User Server -->
+    <jaxrs:server id="userServer" address="/api/users">
+        <jaxrs:serviceBeans>
             <ref component-id="userService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:providers>
             <ref component-id="authorizationFilter"/>
-            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+            <ref component-id="jsonProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
 </blueprint>

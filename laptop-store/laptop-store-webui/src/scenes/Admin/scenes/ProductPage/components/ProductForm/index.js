@@ -15,7 +15,7 @@ import {
 class ProductForm extends Component {
     loadPromotions = async () => {
         const { product } = this.props;
-        const response = await fetch(`/api/laptops/${product["id"]}/promotions`);
+        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
         if (response.ok) {
             const promotions = await response.json();
             this.setState({ promotions: promotions });
@@ -24,7 +24,7 @@ class ProductForm extends Component {
 
     loadTags = async () => {
         const { product } = this.props;
-        const response = await fetch(`/api/laptops/${product["id"]}/tags`);
+        const response = await fetch(`/cxf/api/laptops/${product["id"]}/tags`);
         if (response.ok) {
             const tags = await response.json();
             this.setState({ tags: tags });
@@ -40,7 +40,7 @@ class ProductForm extends Component {
         data.append("monitor-id", product ? product["monitor"]["id"] : -1);
         data.append("hd-id", product ? product["hard_drive"]["id"] : -1);
 
-        const response = await fetch(`/api/laptops/${product?.["id"] ?? ""}`, {
+        const response = await fetch(`/cxf/api/laptops/${product?.["id"] ?? ""}`, {
             method: product ? "PUT" : "POST",
             header: {
                 "Content-Type": "multipart/form-data; charset=utf-8",
@@ -189,7 +189,7 @@ class ProductForm extends Component {
                         <InputImageRow
                             defaultSrc={
                                 product
-                                    ? `/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`
+                                    ? `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`
                                     : null
                             }
                         />

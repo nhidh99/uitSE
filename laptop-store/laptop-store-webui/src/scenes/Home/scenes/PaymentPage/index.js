@@ -29,7 +29,7 @@ class PaymentPage extends Component {
     }
 
     loadCart = async () => {
-        const response = await fetch("/api/users/me", {
+        const response = await fetch("/cxf/api/users/me", {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
@@ -57,7 +57,7 @@ class PaymentPage extends Component {
         const params = new URLSearchParams();
         Object.keys(cart).forEach((id) => params.append("ids", id));
 
-        const response = await fetch("/api/laptops?" + params.toString());
+        const response = await fetch("/cxf/api/laptops?" + params.toString());
         if (response.ok) {
             const products = await response.json();
             const productIds = products.map((product) => product["id"].toString());
@@ -69,7 +69,7 @@ class PaymentPage extends Component {
     };
 
     loadAddresses = async () => {
-        const response = await fetch("/api/users/me/addresses", {
+        const response = await fetch("/cxf/api/users/me/addresses", {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
@@ -88,7 +88,7 @@ class PaymentPage extends Component {
         let count = 0;
 
         Object.keys(cart).forEach(async (id) => {
-            const response = await fetch(`/api/laptops/${id}/promotions`);
+            const response = await fetch(`/cxf/api/laptops/${id}/promotions`);
             if (response.ok) {
                 const data = await response.json();
                 data.forEach((promotion) => {

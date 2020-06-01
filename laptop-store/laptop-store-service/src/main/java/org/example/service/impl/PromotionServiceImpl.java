@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-@Path("/promotions")
 public class PromotionServiceImpl implements PromotionService {
 
     private PromotionDAO promotionDAO;

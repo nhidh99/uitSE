@@ -18,7 +18,7 @@ class PromotionCheckboxes extends Component {
     };
 
     loadPromotions = async () => {
-        const response = await fetch("/api/promotions", {
+        const response = await fetch("/cxf/api/promotions", {
             method: "GET",
         });
         if (response.ok) {
@@ -32,7 +32,7 @@ class PromotionCheckboxes extends Component {
         if (!product) {
             return;
         }
-        const response = await fetch(`/api/laptops/${product["id"]}/promotions`);
+        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
         if (response.ok) {
             const promotions = await response.json();
             this.setState({ checked: promotions });

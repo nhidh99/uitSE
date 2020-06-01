@@ -9,7 +9,7 @@ const AddressDelete = ({ address }) => {
     const toggle = () => setModal(!modal);
 
     const submit = async () => {
-        const response = await fetch(`/api/addresses/${address["id"]}`, {
+        const response = await fetch(`/cxf/api/addresses/${address["id"]}`, {
             method: "DELETE",
             headers: { Authorization: "Bearer " + getCookie("access_token") },
         });

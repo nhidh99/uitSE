@@ -19,7 +19,7 @@ class OverviewBlock extends Component {
 
     loadData = async () => {
         const productId = this.props.product["id"];
-        const response = await fetch(`/api/laptops/${productId}/promotions`);
+        const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
         if (response.ok) {
             const promotions = await response.json();
             this.setState({
@@ -61,7 +61,7 @@ class OverviewBlock extends Component {
 
 const ProductImage = ({ product }) => (
     <img
-        src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
         width="300"
         height="300"
         className={styles.img}
@@ -139,7 +139,7 @@ const ProductPromotions = ({ promotions }) => (
         {promotions.map((promotion) => (
             <div className={styles.promotionItem}>
                 <img
-                    src={`/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
+                    src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
                     className={styles.promotionImg}
                     alt="promotions"
                     title={promotion["name"]}

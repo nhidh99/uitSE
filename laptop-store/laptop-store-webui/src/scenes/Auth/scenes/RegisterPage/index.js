@@ -58,7 +58,7 @@ class RegisterPage extends Component {
             return;
         }
 
-        const url = "/api/auth/register";
+        const url = "/cxf/api/auth/register";
         const response = await fetch(url, {
             method: "POST",
             headers: {

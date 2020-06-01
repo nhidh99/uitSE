@@ -25,7 +25,7 @@ class ProductsBlock extends Component {
                             <tr>
                                 <td className={styles.productCol}>
                                     <img
-                                        src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                                        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                                         width={60}
                                         height={60}
                                         alt={product["name"]}

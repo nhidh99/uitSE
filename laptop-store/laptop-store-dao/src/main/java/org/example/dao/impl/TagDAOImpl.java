@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.dao.api.TagDAO;
 import org.example.model.Laptop;
+import org.example.model.Promotion;
 import org.example.model.Tag;
 
 import javax.persistence.EntityManager;
@@ -41,9 +42,8 @@ public class TagDAOImpl implements TagDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Tag> findByLaptopId(Integer laptopId) {
-        Laptop laptop = em.find(Laptop.class, laptopId);
-        if (laptop == null) return null;
-        return laptop.getTags();
+        String query = "SELECT t FROM Tag t JOIN t.laptops l WHERE l.id = :laptopId";
+        return em.createQuery(query, Tag.class).setParameter("laptopId", laptopId).getResultList();
     }
 
     @Override

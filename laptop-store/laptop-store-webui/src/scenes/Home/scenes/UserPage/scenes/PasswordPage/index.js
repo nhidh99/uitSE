@@ -45,7 +45,7 @@ class PasswordPage extends Component {
             return;
         }
 
-        const response = await fetch("/api/users/me/password", {
+        const response = await fetch("/cxf/api/users/me/password", {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json',

@@ -23,7 +23,7 @@ const PromotionDelete = ({ promotion }) => {
     );
 
     const submit = async () => {
-        const response = await fetch(`/api/promotions/${promotion["id"]}`, {
+        const response = await fetch(`/cxf/api/promotions/${promotion["id"]}`, {
             method: "DELETE",
         });
         if (response.ok) {

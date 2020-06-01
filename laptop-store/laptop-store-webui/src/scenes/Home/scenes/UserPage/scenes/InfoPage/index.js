@@ -19,7 +19,7 @@ class InfoPage extends Component {
     }
 
     fetchData = async () => {
-        const response = await fetch("/api/users/me", {
+        const response = await fetch("/cxf/api/users/me", {
             method: "GET",
             headers: { Authorization: "Bearer " + getCookie("access_token") },
         });
@@ -72,7 +72,7 @@ class InfoPage extends Component {
         const gender = document.getElementById("gender").value;
         const birthday = document.getElementById("birthday").value;
 
-        const response = await fetch("/api/users/me", {
+        const response = await fetch("/cxf/api/users/me", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

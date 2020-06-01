@@ -22,7 +22,7 @@ class OrderPage extends Component {
     }
 
     loadData = async () => {
-        const url = `/api/users/me/orders?page=${this.state.activePage}`;
+        const url = `/cxf/api/users/me/orders?page=${this.state.activePage}`;
         const response = await fetch(url, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },

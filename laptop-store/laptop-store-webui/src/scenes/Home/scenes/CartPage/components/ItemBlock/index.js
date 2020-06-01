@@ -27,7 +27,7 @@ class ItemBlock extends Component {
 
     loadPromotions = async () => {
         const { product } = this.props;
-        const response = await fetch(`/api/laptops/${product["id"]}/promotions`);
+        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
         if (response.ok) {
             const promotions = await response.json();
             this.setState({ promotions: promotions });
@@ -96,7 +96,7 @@ class ItemBlock extends Component {
                 <Col xs="2" className={styles.blockLeft}>
                     <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                         <img
-                            src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                            src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                             width={135}
                             height={135}
                             alt={product["name"]}

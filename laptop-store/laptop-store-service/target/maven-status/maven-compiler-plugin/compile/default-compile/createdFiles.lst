@@ -1,7 +1,5 @@
 org\example\service\api\UserService.class
-org\example\service\api\RatingReplyService.class
 org\example\service\impl\OrderServiceImpl.class
-org\example\service\impl\RatingReplyServiceImpl.class
 org\example\service\api\ImageService.class
 org\example\service\impl\RatingServiceImpl.class
 org\example\service\api\PromotionService.class

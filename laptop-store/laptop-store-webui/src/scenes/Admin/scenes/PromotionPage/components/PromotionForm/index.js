@@ -26,7 +26,7 @@ class PromotionForm extends Component {
         const promotion = this.props.promotion;
         const preview = document.getElementById("image-preview");
         preview.style.display = "inline-block";
-        preview.src = `/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`;
+        preview.src = `/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`;
     };
 
     validateInputs = () => {
@@ -43,7 +43,7 @@ class PromotionForm extends Component {
     };
 
     postPromotion = async () => {
-        const response = await fetch(`/api/promotions/${this.props.promotion?.id ?? ""}`, {
+        const response = await fetch(`/cxf/api/promotions/${this.props.promotion?.id ?? ""}`, {
             method: this.props.promotion ? "PUT" : "POST",
             headers: { "Content-Type": "multipart/form-data; charset=utf-8" },
             body: buildFormData(),
@@ -134,7 +134,7 @@ class PromotionForm extends Component {
                                     imgHeight={100}
                                     defaultSrc={
                                         promotion
-                                            ? `/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`
+                                            ? `/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`
                                             : null
                                     }
                                 />

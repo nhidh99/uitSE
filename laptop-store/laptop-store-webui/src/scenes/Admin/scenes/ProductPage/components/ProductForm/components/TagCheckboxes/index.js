@@ -18,7 +18,7 @@ class TagCheckboxes extends Component {
     };
 
     loadTags = async () => {
-        const response = await fetch("/api/tags", {
+        const response = await fetch("/cxf/api/tags", {
             method: "GET",
         });
         if (response.ok) {
@@ -32,7 +32,7 @@ class TagCheckboxes extends Component {
         if (!product) {
             return;
         }
-        const response = await fetch(`/api/laptops/${product["id"]}/tags`);
+        const response = await fetch(`/cxf/api/laptops/${product["id"]}/tags`);
         if (response.ok) {
             const tags = await response.json();
             this.setState({ checked: tags });

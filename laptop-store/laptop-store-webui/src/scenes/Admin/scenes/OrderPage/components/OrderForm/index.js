@@ -18,7 +18,7 @@ const OrderForm = ({ orderId }) => {
     }, []);
 
     const loadData = async () => {
-        const response = await fetch(`/api/orders/${orderId}`, {
+        const response = await fetch(`/cxf/api/orders/${orderId}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
@@ -48,7 +48,7 @@ const OrderForm = ({ orderId }) => {
     const loadProducts = async (productIds) => {
         const params = new URLSearchParams();
         productIds.forEach((id) => params.append("ids", id));
-        const response = await fetch("/api/laptops?" + params.toString(), {
+        const response = await fetch("/cxf/api/laptops?" + params.toString(), {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
@@ -63,7 +63,7 @@ const OrderForm = ({ orderId }) => {
     const loadPromotions = async (promotionIds) => {
         const params = new URLSearchParams();
         promotionIds.forEach((id) => params.append("ids", id));
-        const response = await fetch("/api/promotions?" + params.toString(), {
+        const response = await fetch("/cxf/api/promotions?" + params.toString(), {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });

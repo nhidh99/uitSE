@@ -20,7 +20,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bundle.plugin.version>3.0.1</bundle.plugin.version>
-        <hibernate.version>5.4.16.Final</hibernate.version>
+        <hibernate.version>5.4.2.Final</hibernate.version>
         <jackson.version>2.10.3</jackson.version>
         <cxf.version>3.3.5</cxf.version>
     </properties>

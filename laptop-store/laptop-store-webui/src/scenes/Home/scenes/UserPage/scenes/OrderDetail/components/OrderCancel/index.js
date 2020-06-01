@@ -11,7 +11,7 @@ const OrderCancel = ({ orderId }) => {
 
     const cancelOrder = async (e) => {
         e.target.disabled = true;
-        const response = await fetch(`/api/orders/${orderId}/cancel`, {
+        const response = await fetch(`/cxf/api/orders/${orderId}/cancel`, {
             method: "PUT",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });

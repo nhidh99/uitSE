@@ -22,7 +22,7 @@ class App extends Component {
 
     fetchToken = async () => {
         const token = getCookie("access_token");
-        const response = await fetch("/api/auth/token", {
+        const response = await fetch("/cxf/api/auth/token", {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -60,7 +60,7 @@ class App extends Component {
         const token = await this.fetchToken();
         if (token) {
             createCookie("access_token", token);
-            const response = await fetch("/api/users/me", {
+            const response = await fetch("/cxf/api/users/me", {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
             });

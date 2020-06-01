@@ -10,7 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-@Path("/images/{resolution}")
+@Path("/{resolution}")
 public class ImageServiceImpl implements ImageService {
 
     private PromotionDAO promotionDAO;

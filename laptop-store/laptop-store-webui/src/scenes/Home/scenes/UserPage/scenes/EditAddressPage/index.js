@@ -55,7 +55,7 @@ class EditAddressPage extends Component {
         }
 
         const url =
-            "/api/addresses/" +
+            "/cxf/api/addresses/" +
             (this.props.location.state?.address
                 ? this.props.location.state.address["id"]
                 : "");

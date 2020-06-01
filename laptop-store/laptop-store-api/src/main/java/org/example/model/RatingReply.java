@@ -1,6 +1,7 @@
 package org.example.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,27 +19,26 @@ import java.time.LocalDate;
 @Table(name = "rating_reply")
 public class RatingReply {
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name="rating_id")
-    @JsonProperty("rating")
+    @JoinColumn(name = "rating_id")
+    @JsonIgnore
     private Rating rating;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     @JsonProperty("user")
     private User user;
 
-    @Column(name="reply")
+    @Column(name = "reply")
     @JsonProperty("reply")
     private String reply;
 
-    @Column(name="reply_date")
+    @Column(name = "reply_date")
     @JsonProperty("reply_date")
     private LocalDate replyDate;
-
 }

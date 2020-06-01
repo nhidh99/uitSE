@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Path("/laptops")
 public class LaptopServiceImpl implements LaptopService {
 
     private LaptopDAO laptopDAO;

@@ -1,6 +1,5 @@
 package org.example.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dao.api.AddressDAO;
 import org.example.dao.api.OrderDAO;
 import org.example.dao.api.UserDAO;
@@ -20,9 +19,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Path("/users")
 @Secured({RoleType.USER, RoleType.ADMIN})
 public class UserServiceImpl implements UserService {
 

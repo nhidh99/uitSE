@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface RatingReplyDAO {
     void save(RatingReply ratingReply);
-
-    List<RatingReply> findByRatingIds(List<Integer> ratingIds);
 }

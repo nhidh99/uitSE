@@ -1,7 +1,6 @@
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\AddressServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\LaptopService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\RatingService.java
-C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\RatingReplyService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\ImageService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\PromotionService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\UserService.java
@@ -16,5 +15,4 @@ C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\ma
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\AuthServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\AuthService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\AddressService.java
-C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\RatingReplyServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\UserServiceImpl.java

@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
-@Path("/addresses")
 @Secured({RoleType.ADMIN, RoleType.USER})
 public class AddressServiceImpl implements AddressService {
 

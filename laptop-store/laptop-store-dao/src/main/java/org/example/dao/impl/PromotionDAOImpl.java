@@ -98,9 +98,8 @@ public class PromotionDAOImpl implements PromotionDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Promotion> findByLaptopId(Integer laptopId) {
-        Laptop laptop = em.find(Laptop.class, laptopId);
-        if (laptop == null || !laptop.isRecordStatus()) return null;
-        return laptop.getPromotions();
+        String query = "SELECT p FROM Promotion p JOIN p.laptops l WHERE l.id = :laptopId AND p.recordStatus = true";
+        return em.createQuery(query, Promotion.class).setParameter("laptopId", laptopId).getResultList();
     }
 
     @Override

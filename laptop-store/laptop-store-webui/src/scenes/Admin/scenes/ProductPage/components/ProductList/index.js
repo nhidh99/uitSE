@@ -28,7 +28,7 @@ const ProductList = (props) => {
     }, [page]);
 
     const loadData = async () => {
-        const response = await fetch(`/api/laptops?page=${page}`, {
+        const response = await fetch(`/cxf/api/laptops?page=${page}`, {
             method: "GET",
             headers: { Authorization: "Bearer " + getCookie("access_token") },
         });
@@ -54,7 +54,7 @@ const ProductList = (props) => {
             <td className={styles.nameCol}>{product["name"]}</td>
             <td>
                 <img
-                    src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                    src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                     alt={product["name"]}
                     title={product["name"]}
                     width={60}

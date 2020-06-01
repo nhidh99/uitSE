@@ -29,7 +29,7 @@ const OrderList = (props) => {
     }, [page]);
 
     const loadData = async () => {
-        const response = await fetch(`/api/orders?page=${page}`, {
+        const response = await fetch(`/cxf/api/orders?page=${page}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });

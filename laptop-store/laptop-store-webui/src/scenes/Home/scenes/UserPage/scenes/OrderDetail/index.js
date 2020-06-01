@@ -21,7 +21,7 @@ const OrderDetail = (props) => {
     const loadData = async () => {
         const parts = window.location.pathname.split("/");
         const orderId = parseInt(parts[parts.length - 1]);
-        const response = await fetch(`/api/orders/${orderId}`, {
+        const response = await fetch(`/cxf/api/orders/${orderId}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
@@ -167,8 +167,8 @@ const OrderDetail = (props) => {
     const buildRowFromProductDetail = (detail) => {
         const imgURL =
             detail["product_type"] === "LAPTOP"
-                ? `/api/images/400/laptops/${detail["product_id"]}/laptop-${detail["product_id"]}.jpg`
-                : `/api/images/200/promotions/${detail["product_id"]}/promotion-${detail["product_id"]}.jpg`;
+                ? `/cxf/api/images/400/laptops/${detail["product_id"]}/laptop-${detail["product_id"]}.jpg`
+                : `/cxf/api/images/200/promotions/${detail["product_id"]}/promotion-${detail["product_id"]}.jpg`;
 
         return (
             <tr>

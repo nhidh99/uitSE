@@ -21,7 +21,7 @@ class PromotionsBlock extends Component {
                             <tr>
                                 <td className={styles.promotionCol}>
                                     <img
-                                        src={`/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
+                                        src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
                                         width={40}
                                         height={40}
                                         alt={promotion["name"]}

@@ -44,7 +44,7 @@ export const updateCartDatabase = async (cart) => {
     const token = getCookie("access_token");
     if (!token) return;
 
-    await fetch("/api/users/me/carts", {
+    await fetch("/cxf/api/users/me/carts", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify(cart),

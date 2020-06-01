@@ -10,19 +10,19 @@ class RatingBlock extends Component {
     state = {
         rating: 0,
     }
+    
     buildRatingBody = () => {
-        const comment_title = document.getElementById("comment_title").value;
-        const comment_detail = document.getElementById("comment_detail").value;
-
+        const title = document.getElementById("comment-title").value;
+        const detail = document.getElementById("comment-detail").value;
         return {
-            commentTitle: comment_title,
-            commentDetail: comment_detail,
+            commentTitle: title,
+            commentDetail: detail,
             rating: this.state.rating,
         }
     }
 
     postRating = async () => {
-        const url = "/api/ratings?product-id=" + this.props.product['id']
+        const url = "/cxf/api/ratings?product-id=" + this.props.product['id']
         const body = this.buildRatingBody();
         const response = await fetch(url, {
             method: "POST",
@@ -100,12 +100,12 @@ class RatingBlock extends Component {
 
                         <FormGroup>
                             <Label class="col-form-Label"><b>2. Tiêu đề nhận xét:</b></Label>
-                            <input type="text" id="comment_title" class="form-control" maxlength="100" placeholder="(Không bắt buộc)" />
+                            <input type="text" id="comment-title" class="form-control" maxlength="100" placeholder="(Không bắt buộc)" />
                         </FormGroup>
 
                         <FormGroup>
                             <Label class="col-form-Label"><b>3. Nội dung nhận xét:</b></Label>
-                            <textarea id="comment_detail" class="form-control" rows="5" placeholder="(Không bắt buộc)"></textarea>
+                            <textarea id="comment-detail" class="form-control" rows="5" placeholder="(Không bắt buộc)"></textarea>
                         </FormGroup>
                     </Form>
                 </Col>

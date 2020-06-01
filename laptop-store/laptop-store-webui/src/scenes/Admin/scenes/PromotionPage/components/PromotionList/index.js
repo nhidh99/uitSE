@@ -28,7 +28,7 @@ const PromotionList = (props) => {
     }, [page]);
 
     const loadData = async () => {
-        const response = await fetch(`/api/promotions?page=${page}`, {
+        const response = await fetch(`/cxf/api/promotions?page=${page}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const PromotionList = (props) => {
             <td className={styles.nameCol}>{promotion["name"]}</td>
             <td>
                 <img
-                    src={`/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
+                    src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
                     alt={promotion["name"]}
                     title={promotion["name"]}
                     width={60}

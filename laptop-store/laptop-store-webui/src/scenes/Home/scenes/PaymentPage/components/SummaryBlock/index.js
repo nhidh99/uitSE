@@ -11,7 +11,7 @@ class SummaryBlock extends Component {
         this.props.toggleSubmit();
         const addressId = parseInt(document.getElementById("address").value);
         const cart = getCart();
-        const response = await fetch("/api/orders", {
+        const response = await fetch("/cxf/api/orders", {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${getCookie("access_token")}`,

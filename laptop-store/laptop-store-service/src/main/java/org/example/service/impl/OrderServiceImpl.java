@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Path("/orders")
 public class OrderServiceImpl implements OrderService {
 
     private LaptopDAO laptopDAO;
@@ -186,7 +185,6 @@ public class OrderServiceImpl implements OrderService {
             Long orderCount = orderDAO.findTotalOrder();
             return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.serverError().build();
         }
     }
