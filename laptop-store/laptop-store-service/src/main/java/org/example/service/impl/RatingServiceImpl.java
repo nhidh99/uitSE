@@ -20,8 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
-import java.time.ZoneId;
-import java.util.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -40,11 +38,7 @@ public class RatingServiceImpl implements RatingService {
                                  RatingInput ratingInput,
                                  @Context SecurityContext securityContext) {
         try {
-            Rating rating = buildRatingFromRequestBody(productId, ratingInput);
-            Principal principal = securityContext.getUserPrincipal();
-            Integer userId = Integer.parseInt(principal.getName());
-            User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
-            rating.setUser(user);
+            Rating rating = buildRatingFromRequestBody(productId, ratingInput, securityContext);
             ratingDAO.save(rating);
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception ex) {
@@ -52,15 +46,16 @@ public class RatingServiceImpl implements RatingService {
         }
     }
 
-    private Rating buildRatingFromRequestBody(Integer productId, RatingInput ratingInput) {
+    private Rating buildRatingFromRequestBody(Integer productId, RatingInput ratingInput, SecurityContext securityContext) {
+        Principal principal = securityContext.getUserPrincipal();
+        Integer userId = Integer.parseInt(principal.getName());
+        User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
         Laptop laptop = laptopDAO.findById(productId).orElseThrow(BadRequestException::new);
-        Date input = new Date();
-        LocalDate createdAt = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        return Rating.builder().laptop(laptop)
+        return Rating.builder().laptop(laptop).user(user)
                 .rating(ratingInput.getRating())
-                .commentTitle(ratingInput.getCommentTitle())
-                .commentDetail(ratingInput.getCommentDetail())
-                .ratingDate(createdAt).build();
+                .commentTitle(ratingInput.getTitle())
+                .commentDetail(ratingInput.getDetail())
+                .ratingDate(LocalDate.now()).build();
     }
 
     @Override

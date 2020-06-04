@@ -54,8 +54,6 @@ public class RatingDAOImpl implements RatingDAO {
         String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId";
         return em.createQuery(query, Double.class)
                 .setParameter("laptopId", laptopId)
-                .getSingleResult()
-                .floatValue();
+                .getSingleResult().floatValue();
     }
-
 }

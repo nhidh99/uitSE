@@ -55,7 +55,6 @@ class LoginPage extends Component {
                         </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                        autoFocus
                         id="username"
                         type="text"
                         placeholder="Tài khoản"

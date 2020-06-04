@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class AddressInput {
-    @JsonProperty("receiverName")
+    @JsonProperty("receiver_name")
     private String receiverName;
 
-    @JsonProperty("receiverPhone")
+    @JsonProperty("receiver_phone")
     private String receiverPhone;
 
     @JsonProperty("city")

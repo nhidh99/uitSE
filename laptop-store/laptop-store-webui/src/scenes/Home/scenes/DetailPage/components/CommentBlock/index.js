@@ -8,7 +8,7 @@ import ReplyBlock from "./components/ReplyBlock";
 const CommentBlock = (props) => {
     const ratings = props.ratings;
     return (
-        <ListGroup>
+        <ListGroup className={styles.listGroup}>
             {ratings.map((rating) => {
                 const replies = rating["replies"];
                 const commentDate = rating

@@ -10,22 +10,22 @@ class EditAddressPage extends Component {
     };
 
     buildAddressBody = () => {
-        const receiverName = document.getElementById("receiverName").value;
-        const phone = document.getElementById("phone").value;
+        const receiverName = document.getElementById("receiver-name").value;
+        const receiverPhone = document.getElementById("receiver-phone").value;
         const city = document.getElementById("city").value;
         const district = document.getElementById("district").value;
         const ward = document.getElementById("ward").value;
         const street = document.getElementById("street").value;
-        const addressNum = document.getElementById("addressNum").value;
+        const addressNum = document.getElementById("address-num").value;
 
         return {
-            receiverName: receiverName,
-            receiverPhone: phone,
+            receiver_name: receiverName,
+            receiver_phone: receiverPhone,
             city: city,
             district: district,
             ward: ward,
             street: street,
-            addressNum: addressNum,
+            address_num: addressNum,
         };
     };
 
@@ -33,17 +33,18 @@ class EditAddressPage extends Component {
         const errors = [];
         const validate = (message, condition) => (condition() ? null : errors.push(message));
         validate("Họ và tên không được để trống hoặc chứa chữ số", () =>
-            inputs["receiverName"].match(/^[a-zA-Z\s\p{L}]{3,30}$/gu)
+            inputs["receiver_name"].match(/^[a-zA-Z\s\p{L}]{3,30}$/gu)
         );
-        validate("Số điện thoại từ 6 - 12 chữ số", () => inputs["receiverPhone"].match(/^\d{6,12}$/));
+        validate("Số điện thoại từ 6 - 12 chữ số", () =>
+            inputs["receiver_phone"].match(/^\d{6,12}$/)
+        );
         validate("Tỉnh/Thành phố không được để trống", () => inputs["city"].length > 0);
         validate("Quận huyện không được để trống", () => inputs["district"].length > 0);
         validate("Phường xã không được để trống", () => inputs["ward"].length > 0);
         validate("Đường không được để trống", () => inputs["street"].length > 0);
-        validate("Số nhà không được để trống", () => inputs["addressNum"].length > 0);
+        validate("Số nhà không được để trống", () => inputs["address_num"].length > 0);
         return errors;
     };
-
 
     createAddress = async () => {
         const body = this.buildAddressBody();
@@ -56,45 +57,21 @@ class EditAddressPage extends Component {
 
         const url =
             "/cxf/api/addresses/" +
-            (this.props.location.state?.address
-                ? this.props.location.state.address["id"]
-                : "");
+            (this.props.location.state?.address ? this.props.location.state.address["id"] : "");
 
         const response = await fetch(url, {
-            method: this.props.location.state?.address ? 'PUT' : 'POST',
+            method: this.props.location.state?.address ? "PUT" : "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + getCookie("access_token"),
             },
             body: JSON.stringify(body),
         });
+
         if (response.ok) {
-            alert("success");
             window.location.href = "/user/address";
         }
-        const status = parseInt(response.status);
-        switch (status) {
-            case 201:
-                alert("insert thành công");
-                window.location.href = "/user/address";
-                break;
-            case 403:
-                this.setState({
-                    error: "Not permission",
-                    loading: false,
-                });
-                break;
-            case 401:
-                alert("You have to login to access this page.");
-                window.location.href = "/auth/login";
-                break;
-            default:
-                this.setState({
-                    error: "Server error",
-                    loading: false,
-                });
-        }
-    }
+    };
 
     render() {
         const address = this.props.location.state?.address;
@@ -108,13 +85,13 @@ class EditAddressPage extends Component {
                         Lưu địa chỉ
                     </Button>
                 </header>
-        {errors.length > 0 ? (
-            <p>
-            {errors.map((error) => (
-                    <label className={styles.error}>{error}.</label>
-        ))}
-        </p>
-        ) : null}
+                {errors.length > 0 ? (
+                    <p>
+                        {errors.map((error) => (
+                            <label className={styles.error}>{error}.</label>
+                        ))}
+                    </p>
+                ) : null}
                 <table className={styles.form}>
                     <tbody>
                         <tr>
@@ -124,8 +101,8 @@ class EditAddressPage extends Component {
                             <td className={styles.inputCol}>
                                 <Input
                                     type="text"
-                                    name="receiverName"
-                                    id="receiverName"
+                                    name="receiver-name"
+                                    id="receiver-name"
                                     placeholder="Nhập họ và tên"
                                     defaultValue={address != null ? address["receiver_name"] : null}
                                 />
@@ -139,8 +116,8 @@ class EditAddressPage extends Component {
                             <td>
                                 <Input
                                     type="text"
-                                    name="phone"
-                                    id="phone"
+                                    name="receiver-phone"
+                                    id="receiver-phone"
                                     placeholder="Nhập số điện thoại"
                                     defaultValue={
                                         address != null ? address["receiver_phone"] : null
@@ -216,8 +193,8 @@ class EditAddressPage extends Component {
                             <td>
                                 <Input
                                     type="text"
-                                    name="addressNum"
-                                    id="addressNum"
+                                    name="address-num"
+                                    id="address-num"
                                     rows="3"
                                     placeholder="Nhập địa chỉ (hẻm, số nhà)"
                                     defaultValue={address != null ? address["address_num"] : null}

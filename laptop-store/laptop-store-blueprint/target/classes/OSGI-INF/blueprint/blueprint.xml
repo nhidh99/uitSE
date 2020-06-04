@@ -118,7 +118,7 @@
     <!-- Address Server -->
     <jaxrs:server id="address" address="/api/addresses">
         <jaxrs:serviceBeans>
-            <ref component-id="authService"/>
+            <ref component-id="addressService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:providers>

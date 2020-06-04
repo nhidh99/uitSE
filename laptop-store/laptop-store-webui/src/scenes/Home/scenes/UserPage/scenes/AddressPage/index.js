@@ -20,7 +20,7 @@ class AddressPage extends Component {
     fetchData = async () => {
         const response = await fetch("/cxf/api/users/me/addresses", {
             method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") },
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
 
         if (response.ok) {

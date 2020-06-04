@@ -6,7 +6,7 @@ import { getCookie } from "../../../../../../../../services/helper/cookie";
 
 const ReplyBlock = (props) => {
     const postReply = async () => {
-        const url = "/cxf/api/replies?rating-id=" + props.rating["id"];
+        const url = `/cxf/api/ratings/${props.rating["id"]}/replies`;
         const reply = document.getElementById(`reply-${props.rating["id"]}`).value;
         const body = { reply: reply };
 
@@ -20,7 +20,7 @@ const ReplyBlock = (props) => {
         });
 
         if (response.ok) {
-            // handle here
+            window.location.reload();
         } else {
             // handle error here
         }
