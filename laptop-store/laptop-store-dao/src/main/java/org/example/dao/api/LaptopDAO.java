@@ -12,6 +12,14 @@ public interface LaptopDAO {
 
     List<Laptop> findByPage(Integer page);
 
+    List<Laptop> findBySelling(Integer page);
+
+    List<Laptop> findByCreatedDateDesc(Integer page);
+
+    List<Laptop> findByDiscountDesc(Integer page);
+
+    List<Laptop> findByPriceAsc(Integer page);
+
     Long findTotalLaptops();
 
     List<Laptop> findByIds(List<Integer> ids);

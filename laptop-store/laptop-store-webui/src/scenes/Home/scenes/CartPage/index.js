@@ -6,6 +6,7 @@ import styles from "./styles.module.scss";
 import { getCart, removeFromCart } from "../../../../services/helper/cart";
 import Loader from "react-loader-advanced";
 import { withRouter } from "react-router-dom";
+import { getCookie } from "../../../../services/helper/cookie";
 
 class CartPage extends Component {
     state = {
@@ -63,7 +64,9 @@ class CartPage extends Component {
     };
 
     redirectToPayment = () => {
-        this.props.history.push("/payment");
+        const url = getCookie("access_token") ? "/payment" : "/auth/login";
+        this.props.history.push(url);
+        window.scroll(0, 0);
     };
 
     render() {

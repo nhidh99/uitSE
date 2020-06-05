@@ -58,93 +58,91 @@ const Filter = (props) => {
                     <td>
                         <b>Mức giá</b> <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Dưới
-                            15 triệu
+                            <Input type="radio" className={styles.checkbox} defaultChecked name="price" />{" "}
+                            Tất cả mức giá
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 15
-                            - 20 triệu
+                            <Input type="radio" className={styles.checkbox} name="price" /> Dưới 15
+                            triệu
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 20
-                            - 25 triệu
+                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 15 -
+                            20 triệu
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Trên
+                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 20 -
                             25 triệu
+                        </Label>
+                        <br />
+                        <Label>
+                            <Input type="radio" className={styles.checkbox} name="price" /> Trên 25
+                            triệu
                         </Label>
                     </td>
 
                     <td>
                         <b>Nhu cầu</b> <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Học
-                            tập - Văn phòng
+                            <Input type="checkbox" className={styles.checkbox} /> Học tập - Văn
+                            phòng
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Đồ
-                            họa - Kỹ thuật
+                            <Input type="checkbox" className={styles.checkbox} /> Đồ họa - Kỹ thuật
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" />{" "}
-                            Laptop Gaming
+                            <Input type="checkbox" className={styles.checkbox} /> Laptop Gaming
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Cao
-                            cấp sang trọng
+                            <Input type="checkbox" className={styles.checkbox} /> Cao cấp sang trọng
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Mỏng
-                            nhẹ
+                            <Input type="checkbox" className={styles.checkbox} /> Mỏng nhẹ
                         </Label>
                     </td>
 
                     <td>
                         <b>CPU</b> <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Intel
-                            Core i7
+                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i7
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Intel
-                            Core i5
+                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i5
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Intel
-                            Core i3
+                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i3
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> Intel
-                            Core Celeron/Pentium
+                            <Input type="checkbox" className={styles.checkbox} /> Intel Core
+                            Celeron/Pentium
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> AMD
+                            <Input type="checkbox" className={styles.checkbox} /> AMD
                         </Label>
                     </td>
 
                     <td>
                         <b>RAM</b> <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> 16 GB
+                            <Input type="checkbox" className={styles.checkbox} /> 16 GB
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> 8 GB
+                            <Input type="checkbox" className={styles.checkbox} /> 8 GB
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} name="price" /> 4 GB
+                            <Input type="checkbox" className={styles.checkbox} /> 4 GB
                         </Label>
                     </td>
                 </tr>

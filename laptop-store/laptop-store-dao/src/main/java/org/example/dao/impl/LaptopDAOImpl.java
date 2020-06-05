@@ -17,7 +17,8 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LaptopDAOImpl implements LaptopDAO {
-    private static final Integer ELEMENT_PER_BLOCK = 5;
+    private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
+    private static final Integer ELEMENT_PER_FILTER_BLOCK = 8;
 
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;
@@ -40,7 +41,7 @@ public class LaptopDAOImpl implements LaptopDAO {
     private void update(Laptop laptop) {
         Laptop oldLaptop = findById(laptop.getId()).orElseThrow(BadRequestException::new);
         if (laptop.getImage() == null) {
-            laptop.setImage(oldLaptop.getImage()); 
+            laptop.setImage(oldLaptop.getImage());
             laptop.setThumbnail(oldLaptop.getThumbnail());
         }
         laptop.setAvgRating(oldLaptop.getAvgRating());
@@ -52,8 +53,56 @@ public class LaptopDAOImpl implements LaptopDAO {
     public List<Laptop> findByPage(Integer page) {
         String query = "SELECT l FROM Laptop l WHERE l.recordStatus = true ORDER BY l.id DESC";
         return em.createQuery(query, Laptop.class)
-                .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
-                .setMaxResults(ELEMENT_PER_BLOCK)
+                .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
+                .getResultList();
+    }
+
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findBySelling(Integer page) {
+        String query = "SELECT l FROM Laptop l " +
+                "JOIN OrderDetail d ON d.productId = l.id " +
+                "JOIN Order o ON o.id = d.order.id " +
+                "AND o.status = 'DELIVERED' " +
+                "AND l.recordStatus = true " +
+                "AND d.productType = 'LAPTOP' " +
+                "GROUP BY l.id " +
+                "ORDER BY SUM(d.quantity) DESC";
+        return em.createQuery(query, Laptop.class)
+                .setFirstResult(ELEMENT_PER_FILTER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_FILTER_BLOCK)
+                .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findByCreatedDateDesc(Integer page) {
+        String query = "SELECT l FROM Laptop l WHERE l.recordStatus = true ORDER BY l.id DESC";
+        return em.createQuery(query, Laptop.class)
+                .setFirstResult(ELEMENT_PER_FILTER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_FILTER_BLOCK)
+                .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findByDiscountDesc(Integer page) {
+        String query = "SELECT l FROM Laptop l WHERE l.recordStatus = true ORDER BY l.discountPrice DESC";
+        return em.createQuery(query, Laptop.class)
+                .setFirstResult(ELEMENT_PER_FILTER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_FILTER_BLOCK)
+                .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findByPriceAsc(Integer page) {
+        String query = "SELECT l FROM Laptop l WHERE l.recordStatus = true ORDER BY l.unitPrice ASC";
+        return em.createQuery(query, Laptop.class)
+                .setFirstResult(ELEMENT_PER_FILTER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_FILTER_BLOCK)
                 .getResultList();
     }
 

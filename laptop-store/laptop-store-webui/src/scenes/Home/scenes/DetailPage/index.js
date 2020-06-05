@@ -9,14 +9,16 @@ import { Row, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
-import { getCookie } from "../../../../services/helper/cookie";
+import ReactPlaceholder from "react-placeholder/lib";
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [ratings, setRatings] = useState([]);
+    const [promotions, setPromotions] = useState([]);
 
     useEffect(() => {
+        window.scroll(0, 0);
         const path = window.location.pathname;
         const productId = path.split("/").slice(-1).pop();
         if (isNaN(parseInt(productId))) {
@@ -27,28 +29,29 @@ const DetailPage = (props) => {
     }, []);
 
     const loadData = async (productId) => {
-        const [product, ratings] = await Promise.all([
+        const [product, ratings, promotions] = await Promise.all([
             loadProduct(productId),
             loadRatings(productId),
+            loadPromotions(productId),
         ]);
         setProduct(product);
         setRatings(ratings);
+        setPromotions(promotions);
         setLoading(false);
     };
 
     const loadProduct = async (productId) => {
-        const response = await fetch(`/cxf/api/laptops/${productId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
+        const response = await fetch(`/cxf/api/laptops/${productId}`);
         return response.ok ? await response.json() : null;
     };
 
     const loadRatings = async (productId) => {
-        const response = await fetch(`/cxf/api/ratings?product-id=${productId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
+        const response = await fetch(`/cxf/api/ratings?product-id=${productId}`);
+        return response.ok ? await response.json() : [];
+    };
+
+    const loadPromotions = async (productId) => {
+        const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
         return response.ok ? await response.json() : [];
     };
 
@@ -62,31 +65,42 @@ const DetailPage = (props) => {
         );
     };
 
-    const ProductTitle = (props) => {
-        const { product } = props;
-        return (
-            <Label className={styles.title}>
-                <a href="/" className={styles.productRedirect}>
-                    Trang chủ
-                </a>
-                &nbsp;
-                <FaCaretRight color="#007bff" />
-                &nbsp;
-                <a href="/" className={styles.productRedirect}>
-                    {convertBrandType(product?.["brand"])}
-                </a>
-                &nbsp;
-                <FaCaretRight color="#007bff" />
-                &nbsp;Laptop {product?.["name"]}
-            </Label>
-        );
-    };
+    const ProductTitle = ({ product }) => (
+        <Label className={styles.title}>
+            <a href="/" className={styles.productRedirect}>
+                Trang chủ
+            </a>
+            &nbsp;
+            <FaCaretRight color="#007bff" />
+            &nbsp;
+            <a href="/" className={styles.productRedirect}>
+                {convertBrandType(product?.["brand"])}
+            </a>
+            &nbsp;
+            <FaCaretRight color="#007bff" />
+            &nbsp;Laptop {product?.["name"]}
+        </Label>
+    );
 
-    return loading ? null : (
+    const DetailLoading = () =>
+        [...Array(5)].map((_) => (
+            <Fragment>
+                <ReactPlaceholder
+                    type="textRow"
+                    className={styles.textHolder}
+                    showLoadingAnimation
+                />
+                <ReactPlaceholder type="rect" className={styles.rectHolder} showLoadingAnimation />
+            </Fragment>
+        ));
+
+    return loading ? (
+        <DetailLoading />
+    ) : (
         <Fragment>
             <ContentBlock
                 title={<ProductTitle product={product} />}
-                component={<OverviewBlock product={product} />}
+                component={<OverviewBlock product={product} promotions={promotions} />}
             />
 
             <ContentBlock

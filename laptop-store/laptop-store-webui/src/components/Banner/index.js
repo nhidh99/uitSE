@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import {
     FaLaptopCode,
     FaSearch,
@@ -17,17 +17,14 @@ import store from "../../services/redux/store";
 import { toggleFilter, closeFilter } from "../../services/redux/actions";
 
 const Banner = (props) => {
-    const toggleFilterBlock = () => {
-        store.dispatch(toggleFilter());
-    };
-
-    const closeFilterBlock = () => {
-        store.dispatch(closeFilter());
+    const redirectToPage = (href, toggle) => {
+        props.history.push(href);
+        store.dispatch(toggle ? toggleFilter() : closeFilter());
     };
 
     const BannerLeft = () => (
         <div className={styles.bannerLeft}>
-            <Link className={styles.logo} to="/" onClick={closeFilterBlock}>
+            <Link className={styles.logo} to="/" onClick={() => store.dispatch(closeFilter())}>
                 <FaLaptopCode className={styles.icon} color="white" size={35} />
                 <Label className={styles.name}>Laptop Store</Label>
             </Link>
@@ -53,12 +50,7 @@ const Banner = (props) => {
                         <tr>
                             <BannerCategory href="/" icon={<FaInfoCircle />} title="Thông tin" />
 
-                            <BannerCategory
-                                href="#"
-                                icon={<FaSearch />}
-                                title="Tìm kiếm"
-                                toggleFilter
-                            />
+                            <BannerCategory icon={<FaSearch />} title="Tìm kiếm" toggle />
 
                             {role === ROLE_ADMIN ? (
                                 <BannerCategory
@@ -68,7 +60,11 @@ const Banner = (props) => {
                                 />
                             ) : null}
 
-                            <BannerCategory href="/" icon={<FaBoxes />} title="Đơn hàng" />
+                            <BannerCategory
+                                href={role === ROLE_GUEST ? "/auth/login" : "/user/order"}
+                                icon={<FaBoxes />}
+                                title="Đơn hàng"
+                            />
 
                             <BannerCategory href="/cart" icon={<CartIcon />} title="Giỏ hàng" />
 
@@ -93,15 +89,13 @@ const Banner = (props) => {
     };
 
     const BannerCategory = (props) => {
-        const { href, icon, title, toggleFilter } = props;
+        const { href, icon, title, toggle } = props;
         return (
-            <span onClick={() => (toggleFilter ? toggleFilterBlock() : closeFilterBlock())}>
-                <Link to={href}>
-                    <td className={styles.category}>
-                        <div className={styles.icon}>{icon}</div>
-                        <Label className={styles.label}>{title}</Label>
-                    </td>
-                </Link>
+            <span className={styles.bannerCategory} onClick={() => redirectToPage(href, toggle)}>
+                <td className={styles.category}>
+                    <div className={styles.icon}>{icon}</div>
+                    <Label className={styles.label}>{title}</Label>
+                </td>
             </span>
         );
     };
@@ -126,4 +120,4 @@ const Banner = (props) => {
     );
 };
 
-export default Banner;
+export default withRouter(Banner);

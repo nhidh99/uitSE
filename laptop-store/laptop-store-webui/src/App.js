@@ -2,7 +2,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import "./App.scss";
 import { createHeart, killHeart } from "heartbeats";
-import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Home from "./scenes/Home";
 import Auth from "./scenes/Auth";
 import Admin from "./scenes/Admin";
@@ -142,13 +142,13 @@ const App = (props) => {
     );
 
     return loading ? null : (
-        <BrowserRouter>
+        <Fragment>
             <Banner role={role} />
             <Filter />
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>
             </div>
-        </BrowserRouter>
+        </Fragment>
     );
 };
 

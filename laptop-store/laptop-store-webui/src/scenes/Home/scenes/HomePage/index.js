@@ -1,7 +1,16 @@
-import React from "react";
+import React, { Fragment } from "react";
+import RecentCategory from "./components/RecentCategory";
+import DiscountCategory from "./components/DiscountCategory";
+import CheapCategory from "./components/CheapCategory";
 
 const HomePage = () => {
-    return <h1>Hellu</h1>
+    return (
+        <Fragment>
+            <DiscountCategory />
+            <RecentCategory />
+            <CheapCategory />
+        </Fragment>
+    );
 };
 
 export default HomePage;

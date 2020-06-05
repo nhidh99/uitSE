@@ -1,6 +1,5 @@
 package org.example.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.dao.api.LaptopDAO;
@@ -53,6 +52,36 @@ public class LaptopServiceImpl implements LaptopService {
     private Response findByIds(List<Integer> ids) {
         List<Laptop> laptops = laptopDAO.findByIds(ids);
         return Response.ok(laptops).build();
+    }
+
+    @Override
+    @GET
+    @Path("/recent")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findLaptopByCreatedDateDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
+        List<Laptop> laptops = laptopDAO.findByCreatedDateDesc(page);
+        Long laptopCount = laptopDAO.findTotalLaptops();
+        return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
+    }
+
+    @Override
+    @GET
+    @Path("/discount")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findLaptopByDiscountDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
+        List<Laptop> laptops = laptopDAO.findByDiscountDesc(page);
+        Long laptopCount = laptopDAO.findTotalLaptops();
+        return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
+    }
+
+    @Override
+    @GET
+    @Path("/cheap")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findLaptopByPriceAsc(@QueryParam("page") @DefaultValue("1") Integer page) {
+        List<Laptop> laptops = laptopDAO.findByPriceAsc(page);
+        Long laptopCount = laptopDAO.findTotalLaptops();
+        return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
     @Override

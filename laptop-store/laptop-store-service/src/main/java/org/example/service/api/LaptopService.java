@@ -12,6 +12,12 @@ public interface LaptopService {
 
     Response findLaptopById(Integer id);
 
+    Response findLaptopByCreatedDateDesc(Integer page);
+
+    Response findLaptopByDiscountDesc(Integer page);
+
+    Response findLaptopByPriceAsc(Integer page);
+
     Response createLaptop(MultipartBody body);
 
     Response updateLaptop(Integer id, MultipartBody body);
