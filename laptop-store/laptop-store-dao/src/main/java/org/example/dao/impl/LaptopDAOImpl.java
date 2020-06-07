@@ -62,15 +62,11 @@ public class LaptopDAOImpl implements LaptopDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Laptop> findBySelling(Integer page) {
-        String query = "SELECT l FROM Laptop l " +
-                "JOIN OrderDetail d ON d.productId = l.id " +
-                "JOIN Order o ON o.id = d.order.id " +
-                "AND o.status = 'DELIVERED' " +
-                "AND l.recordStatus = true " +
-                "AND d.productType = 'LAPTOP' " +
-                "GROUP BY l.id " +
-                "ORDER BY SUM(d.quantity) DESC";
-        return em.createQuery(query, Laptop.class)
+        String query = "SELECT * FROM laptop l " +
+                "JOIN best_selling_laptop bsl " +
+                "ON l.id = bsl.id " +
+                "WHERE l.record_status = true";
+        return em.createNativeQuery(query, Laptop.class)
                 .setFirstResult(ELEMENT_PER_FILTER_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_FILTER_BLOCK)
                 .getResultList();

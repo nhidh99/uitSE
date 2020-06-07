@@ -5,18 +5,19 @@ import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.filter.LaptopFilter;
 
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 public interface LaptopService {
     Response findLaptops(LaptopFilter laptopFilter);
 
     Response findLaptopById(Integer id);
 
-    Response findLaptopByCreatedDateDesc(Integer page);
+    Response findLaptopsBySelling(Integer page);
 
-    Response findLaptopByDiscountDesc(Integer page);
+    Response findLaptopsByCreatedDateDesc(Integer page);
 
-    Response findLaptopByPriceAsc(Integer page);
+    Response findLaptopsByDiscountDesc(Integer page);
+
+    Response findLaptopsByPriceAsc(Integer page);
 
     Response createLaptop(MultipartBody body);
 

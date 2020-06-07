@@ -42,7 +42,8 @@ const Banner = (props) => {
         </div>
     );
 
-    const BannerRight = ({ role }) => {
+    const BannerRight = () => {
+        const role = props.role;
         return (
             <div className={styles.bannerRight}>
                 <table cellspacing="10">
@@ -114,7 +115,7 @@ const Banner = (props) => {
         <div className={styles.container}>
             <div className={styles.banner}>
                 <BannerLeft />
-                <BannerRight role={props.role} />
+                <BannerRight />
             </div>
         </div>
     );

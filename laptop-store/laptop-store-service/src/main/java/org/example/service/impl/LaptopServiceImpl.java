@@ -56,9 +56,19 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     @GET
+    @Path("/best-selling")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findLaptopsBySelling(@QueryParam("page") @DefaultValue("1") Integer page) {
+        List<Laptop> laptops = laptopDAO.findBySelling(page);
+        Long laptopCount = laptopDAO.findTotalLaptops();
+        return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
+    }
+
+    @Override
+    @GET
     @Path("/recent")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findLaptopByCreatedDateDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
+    public Response findLaptopsByCreatedDateDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findByCreatedDateDesc(page);
         Long laptopCount = laptopDAO.findTotalLaptops();
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
@@ -68,7 +78,7 @@ public class LaptopServiceImpl implements LaptopService {
     @GET
     @Path("/discount")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findLaptopByDiscountDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
+    public Response findLaptopsByDiscountDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findByDiscountDesc(page);
         Long laptopCount = laptopDAO.findTotalLaptops();
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
@@ -78,7 +88,7 @@ public class LaptopServiceImpl implements LaptopService {
     @GET
     @Path("/cheap")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findLaptopByPriceAsc(@QueryParam("page") @DefaultValue("1") Integer page) {
+    public Response findLaptopsByPriceAsc(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findByPriceAsc(page);
         Long laptopCount = laptopDAO.findTotalLaptops();
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();

@@ -172,17 +172,21 @@ const OrderDetail = (props) => {
 
         return (
             <tr>
-                <td className={styles.productsCol}>
-                    <img
-                        src={imgURL}
-                        alt={detail["product_name"]}
-                        title={detail["product_name"]}
-                        width={55}
-                        height={55}
-                        className={styles.img}
-                    />
-                    {detail["product_name"]}
-                </td>
+                <table className={styles.productName}>
+                    <tr>
+                        <td>
+                            <img
+                                src={imgURL}
+                                alt={detail["product_name"]}
+                                title={detail["product_name"]}
+                                width={55}
+                                height={55}
+                                className={styles.img}
+                            />
+                        </td>
+                        <td>{detail["product_name"]}</td>
+                    </tr>
+                </table>
 
                 <td className={styles.unitPriceCol}>
                     {detail["unit_price"].toLocaleString()}

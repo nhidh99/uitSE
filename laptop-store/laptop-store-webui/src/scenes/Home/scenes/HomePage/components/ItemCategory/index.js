@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import { FaStar } from "react-icons/fa";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import LazyLoad from "react-lazyload";
 import ReactPlaceHolder from "react-placeholder";
 import "react-placeholder/lib/reactPlaceholder.css";
@@ -11,7 +11,7 @@ const ItemCategory = (props) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
-    const { title, url, history } = props;
+    const { title, url } = props;
 
     useEffect(() => {
         loadData();
@@ -42,13 +42,9 @@ const ItemCategory = (props) => {
         }
     };
 
-    const redirectToDetail = (product) => {
-        history.push(`/product/${product["alt"]}/${product["id"]}`);
-    };
-
     const Item = ({ product }) => {
         return (
-            <div onClick={() => redirectToDetail(product)} className={styles.itemBlock}>
+            <Link to={`/product/${product["alt"]}/${product["id"]}`} className={styles.itemBlock}>
                 <LazyLoad height={200} offset={100} once>
                     <img
                         width={200}
@@ -81,7 +77,7 @@ const ItemCategory = (props) => {
                     {(product["unit_price"] + product["discount_price"]).toLocaleString()}
                     <sup>đ</sup>
                 </label>
-            </div>
+            </Link>
         );
     };
 
