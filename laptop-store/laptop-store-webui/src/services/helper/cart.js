@@ -20,11 +20,11 @@ export const addToCart = (productId, quantity) => {
     }
 };
 
-export const removeFromCart = (productId) => {
+export const removeFromCart = async (productId) => {
     let cart = JSON.parse(localStorage.getItem("cart"));
     if (cart && productId in cart) {
         delete cart[productId];
-        updateCart(cart);
+        await updateCart(cart);
     }
 };
 

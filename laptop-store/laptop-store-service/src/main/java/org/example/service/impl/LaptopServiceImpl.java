@@ -112,6 +112,15 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @GET
+    @Path("/{id}/suggestions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findLaptopSuggestions(@PathParam("id") Integer laptopId) {
+        List<Laptop> laptops = laptopDAO.findSuggestionsByLaptop(laptopId);
+        return Response.ok(laptops).build();
+    }
+
+    @Override
     @POST
     @Path("/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)

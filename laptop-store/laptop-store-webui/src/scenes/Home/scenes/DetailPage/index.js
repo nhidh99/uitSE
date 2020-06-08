@@ -16,6 +16,7 @@ const DetailPage = (props) => {
     const [product, setProduct] = useState(null);
     const [ratings, setRatings] = useState([]);
     const [promotions, setPromotions] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
         window.scroll(0, 0);
@@ -29,14 +30,16 @@ const DetailPage = (props) => {
     }, []);
 
     const loadData = async (productId) => {
-        const [product, ratings, promotions] = await Promise.all([
+        const [product, ratings, promotions, suggestions] = await Promise.all([
             loadProduct(productId),
             loadRatings(productId),
             loadPromotions(productId),
+            loadSuggestions(productId),
         ]);
         setProduct(product);
         setRatings(ratings);
         setPromotions(promotions);
+        setSuggestions(suggestions);
         setLoading(false);
     };
 
@@ -52,6 +55,11 @@ const DetailPage = (props) => {
 
     const loadPromotions = async (productId) => {
         const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
+        return response.ok ? await response.json() : [];
+    };
+
+    const loadSuggestions = async (productId) => {
+        const response = await fetch(`/cxf/api/laptops/${productId}/suggestions`);
         return response.ok ? await response.json() : [];
     };
 
@@ -108,7 +116,10 @@ const DetailPage = (props) => {
                 component={<DetailBlock product={product} />}
             />
 
-            <ContentBlock title="Sản phẩm tương tự" component={<SuggestBlock />} />
+            <ContentBlock
+                title="Sản phẩm tương tự"
+                component={<SuggestBlock suggestions={suggestions} />}
+            />
 
             <ContentBlock
                 title="Đánh giá sản phẩm"

@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useState, useEffect } from "react";
 import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
 import { FaShoppingCart, FaBoxOpen, FaGift, FaMoneyBillWave } from "react-icons/fa";
@@ -8,22 +9,27 @@ import Loader from "react-loader-advanced";
 import { withRouter } from "react-router-dom";
 import { getCookie } from "../../../../services/helper/cookie";
 
-class CartPage extends Component {
-    state = {
-        loading: true,
-        products: [],
-        totalPrice: 0,
-        totalDiscount: 0,
-    };
+const CartPage = (props) => {
+    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalDiscount, setTotalDiscount] = useState(0);
+    const cart = getCart();
 
-    componentDidMount() {
-        this.loadData();
-    }
+    useEffect(() => {
+        loadData();
+    }, [loading]);
 
-    loadData = async () => {
-        const cart = getCart();
+    const toggleLoading = () => setLoading(true);
+
+    const loadData = async () => {
+        if (!loading) return;
+
         if (Object.keys(cart).length === 0) {
-            this.setState({ loading: false });
+            setLoading(false);
+            setProducts([]);
+            setTotalPrice(0);
+            setTotalDiscount(0);
             return;
         }
 
@@ -33,12 +39,11 @@ class CartPage extends Component {
 
         if (response.ok) {
             const products = await response.json();
-            this.loadCart(products);
+            loadCart(products);
         }
     };
 
-    loadCart = (products) => {
-        const cart = getCart();
+    const loadCart = (products) => {
         let totalPrice = 0;
         let totalDiscount = 0;
 
@@ -55,91 +60,88 @@ class CartPage extends Component {
             .filter((id) => !productIds.includes(id))
             .forEach((id) => removeFromCart(id));
 
-        this.setState({
-            products: products,
-            totalPrice: totalPrice,
-            totalDiscount: totalDiscount,
-            loading: false,
-        });
+        setProducts(products);
+        setTotalPrice(totalPrice);
+        setTotalDiscount(totalDiscount);
+        setLoading(false);
     };
 
-    redirectToPayment = () => {
+    const redirectToPayment = () => {
         const url = getCookie("access_token") ? "/payment" : "/auth/login";
-        this.props.history.push(url);
+        props.history.push(url);
         window.scroll(0, 0);
     };
 
-    render() {
-        const { products, totalPrice, totalDiscount, loading } = this.state;
-        const cart = getCart();
+    return (
+        <Fragment>
+            <div className={styles.title}>
+                <Label className={styles.pageTitle}>Giỏ hàng của tôi</Label>
+                <Button
+                    onClick={redirectToPayment}
+                    className={styles.btn}
+                    color="success"
+                    disabled={products.length === 0 || loading}
+                >
+                    <FaShoppingCart className={styles.icon} /> Tiến hành đặt hàng
+                </Button>
+            </div>
 
-        return (
-            <Fragment>
-                <div className={styles.title}>
-                    <Label className={styles.pageTitle}>Giỏ hàng của tôi</Label>
-                    <Button
-                        onClick={this.redirectToPayment}
-                        className={styles.btn}
-                        color="success"
-                        disabled={products.length === 0}
-                    >
-                        <FaShoppingCart className={styles.icon} /> Tiến hành đặt hàng
-                    </Button>
+            <Loader show={loading} message={<Spinner />}>
+                <div className={styles.total}>
+                    <span>
+                        <b>
+                            <FaBoxOpen />
+                            &nbsp; Số lượng:&nbsp;&nbsp;
+                        </b>
+                        {Object.values(cart).reduce((a, b) => a + b, 0)}
+                    </span>
+                    <span>
+                        <b>
+                            <FaGift />
+                            &nbsp; Tổng giảm giá:&nbsp;&nbsp;
+                        </b>
+                        {totalDiscount.toLocaleString()}
+                        <sup>đ</sup>
+                    </span>
+                    <span>
+                        <b>
+                            <FaMoneyBillWave />
+                            &nbsp; Tạm tính:&nbsp;&nbsp;
+                        </b>
+                        {totalPrice.toLocaleString()}
+                        <sup>đ</sup>
+                    </span>
                 </div>
 
-                <Loader show={loading} message={<Spinner />}>
-                    <div className={styles.total}>
-                        <span>
-                            <b>
-                                <FaBoxOpen />
-                                &nbsp; Số lượng:&nbsp;&nbsp;
-                            </b>
-                            {Object.values(cart).reduce((a, b) => a + b, 0)}
-                        </span>
-                        <span>
-                            <b>
-                                <FaGift />
-                                &nbsp; Tổng giảm giá:&nbsp;&nbsp;
-                            </b>
-                            {totalDiscount.toLocaleString()}
-                            <sup>đ</sup>
-                        </span>
-                        <span>
-                            <b>
-                                <FaMoneyBillWave />
-                                &nbsp; Tạm tính:&nbsp;&nbsp;
-                            </b>
-                            {totalPrice.toLocaleString()}
-                            <sup>đ</sup>
-                        </span>
-                    </div>
-
-                    <div className={styles.list}>
-                        {products.length === 0 ? (
-                            <div className={styles.emptyCart}>
-                                <FaBoxOpen size={80} />
-                                <br />
-                                {loading ? (
-                                    <h5>Đang tải giỏ hàng...</h5>
-                                ) : (
-                                    <Fragment>
-                                        <h4>Giỏ hàng trống</h4>
-                                        <Button size="lg" color="warning" type="a" href="/">
-                                            Quay lại trang mua sắm
-                                        </Button>
-                                    </Fragment>
-                                )}
-                            </div>
-                        ) : (
-                            products.map((product) => (
-                                <ItemBlock product={product} quantity={cart[product["id"]]} />
-                            ))
-                        )}
-                    </div>
-                </Loader>
-            </Fragment>
-        );
-    }
-}
+                <div className={styles.list}>
+                    {products.length === 0 ? (
+                        <div className={styles.emptyCart}>
+                            <FaBoxOpen size={80} />
+                            <br />
+                            {loading ? (
+                                <h5>Đang tải giỏ hàng...</h5>
+                            ) : (
+                                <Fragment>
+                                    <h4>Giỏ hàng trống</h4>
+                                    <Button size="lg" color="warning" type="a" href="/">
+                                        Quay lại trang mua sắm
+                                    </Button>
+                                </Fragment>
+                            )}
+                        </div>
+                    ) : (
+                        products.map((product) => (
+                            <ItemBlock
+                                product={product}
+                                quantity={cart[product["id"]]}
+                                toggleLoading={toggleLoading}
+                            />
+                        ))
+                    )}
+                </div>
+            </Loader>
+        </Fragment>
+    );
+};
 
 export default withRouter(CartPage);

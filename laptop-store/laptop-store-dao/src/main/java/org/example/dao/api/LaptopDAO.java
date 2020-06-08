@@ -20,6 +20,8 @@ public interface LaptopDAO {
 
     List<Laptop> findByPriceAsc(Integer page);
 
+    List<Laptop> findSuggestionsByLaptop(Integer laptopId);
+
     Long findTotalLaptops();
 
     List<Laptop> findByIds(List<Integer> ids);

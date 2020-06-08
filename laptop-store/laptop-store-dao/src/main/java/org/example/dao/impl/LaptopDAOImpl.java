@@ -19,6 +19,7 @@ import java.util.Optional;
 public class LaptopDAOImpl implements LaptopDAO {
     private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
     private static final Integer ELEMENT_PER_FILTER_BLOCK = 8;
+    private static final Integer ELEMENT_PER_SUGGEST = 4;
 
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;
@@ -99,6 +100,16 @@ public class LaptopDAOImpl implements LaptopDAO {
         return em.createQuery(query, Laptop.class)
                 .setFirstResult(ELEMENT_PER_FILTER_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_FILTER_BLOCK)
+                .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findSuggestionsByLaptop(Integer laptopId) {
+        String query = "CALL laptop_suggest(:laptopId, :maxResults)";
+        return em.createNativeQuery(query, Laptop.class)
+                .setParameter("laptopId", laptopId)
+                .setParameter("maxResults", ELEMENT_PER_SUGGEST)
                 .getResultList();
     }
 
