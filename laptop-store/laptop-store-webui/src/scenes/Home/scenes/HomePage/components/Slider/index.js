@@ -34,7 +34,6 @@ const Slider = (props) => {
     };
 
     const slides = items.map((item) => {
-        console.log(item.src);
         return (
             <CarouselItem
                 onExiting={() => setAnimating(true)}

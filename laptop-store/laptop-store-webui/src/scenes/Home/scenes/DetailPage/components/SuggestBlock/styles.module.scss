@@ -19,10 +19,6 @@
     }
     text-decoration: none;
     box-shadow: 0 0 5px 5px #ccc;
-
-    * {
-        cursor: pointer;
-    }
 }
 
 .cell:not(:first-of-type) {
@@ -37,6 +33,7 @@
     font-size: 16px;
     font-weight: 600;
     color: black;
+    cursor: pointer;
 }
 
 .img {
@@ -56,7 +53,7 @@
 }
 
 .suggest {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .icon {
@@ -73,4 +70,12 @@
     font-weight: 600;
     margin-bottom: -2px;
     cursor: pointer;
+}
+
+.redirect {
+    margin: 0 -20px;
+    > * {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 }

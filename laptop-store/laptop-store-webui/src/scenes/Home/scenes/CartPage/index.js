@@ -26,10 +26,10 @@ const CartPage = (props) => {
         if (!loading) return;
 
         if (Object.keys(cart).length === 0) {
-            setLoading(false);
             setProducts([]);
             setTotalPrice(0);
             setTotalDiscount(0);
+            setLoading(false);
             return;
         }
 

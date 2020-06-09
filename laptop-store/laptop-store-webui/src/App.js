@@ -94,7 +94,15 @@ const App = (props) => {
             <Route
                 exact
                 component={Home}
-                path={["/", "/search", "/user", "/cart", "/product/:id", "/product/:alt/:id"]}
+                path={[
+                    "/",
+                    "/search",
+                    "/user",
+                    "/cart",
+                    "/product/:id",
+                    "/product/:alt/:id",
+                    "/product/compare/:alt/:id1/:id2",
+                ]}
             />
             <Route exact component={Auth} path="/auth/(forgot|login|register)" />
         </Fragment>
@@ -112,6 +120,7 @@ const App = (props) => {
                 "/payment",
                 "/product/:id",
                 "/product/:alt/:id",
+                "/product/compare/:alt/:id1/:id2",
                 "/user/(info|password|address|order)",
                 "/user/address/(edit|create)",
                 "/user/address/:id",
@@ -132,6 +141,7 @@ const App = (props) => {
                     "/payment",
                     "/product/:id",
                     "/product/:alt/:id",
+                    "/product/compare/:alt/:id1/:id2",
                     "/user/(info|password|address|order)",
                     "/user/address/(edit|create)",
                     "/user/order/:orderId",

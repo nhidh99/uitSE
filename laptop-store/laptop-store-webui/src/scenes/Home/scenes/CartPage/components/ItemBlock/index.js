@@ -12,7 +12,6 @@ import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
 const ItemBlock = ({ product, quantity, toggleLoading }) => {
     const [promotions, setPromotions] = useState([]);
     const [qty, setQty] = useState(quantity);
-    const [cart, setCart] = useState(getCart());
     const { cpu, ram, hard_drive, monitor } = product;
 
     useEffect(() => {
@@ -20,7 +19,6 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
     }, []);
 
     useEffect(() => {
-        updateCart(cart);
         toggleLoading();
     }, [qty]);
 
@@ -33,29 +31,32 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
     };
 
     const minusQuantity = (productId) => {
+        const cart = getCart();
         if (qty > 1 && productId in cart) {
             cart[productId] = qty - 1;
+            updateCart(cart);
             setQty(qty - 1);
-            setCart(cart);
         }
     };
 
     const addQuantity = async (productId) => {
+        const cart = getCart();
         if (qty < 10 && productId in cart) {
             cart[productId] = qty + 1;
+            updateCart(cart);
             setQty(qty + 1);
-            setCart(cart);
         }
     };
 
     const updateQuantity = (productId) => {
         const input = document.getElementById("quantity-" + productId);
         const quantity = parseInt(input.value);
+        const cart = getCart();
 
         if (productId in cart && cart[productId] !== quantity) {
             cart[productId] = quantity;
+            updateCart(cart);
             setQty(quantity);
-            setCart(cart);
         }
     };
 
