@@ -6,10 +6,7 @@ import org.example.dao.api.RatingReplyDAO;
 import org.example.dao.api.UserDAO;
 import org.example.input.RatingInput;
 import org.example.input.RatingReplyInput;
-import org.example.model.Laptop;
-import org.example.model.Rating;
-import org.example.model.RatingReply;
-import org.example.model.User;
+import org.example.model.*;
 import org.example.security.Secured;
 import org.example.service.api.RatingService;
 import org.example.type.RoleType;
@@ -64,8 +61,59 @@ public class RatingServiceImpl implements RatingService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRatingsByProductId(@QueryParam("product-id") Integer productId) {
         try {
-            List<Rating> ratings = ratingDAO.findByProductId(productId);
-            return Response.ok(ratings).build();
+            List<Rating> ratings;
+            Long ratingCount;
+            if(productId != null) {
+                ratings = ratingDAO.findByProductId(productId);
+                ratingCount = ratingDAO.findTotalRatingByProductId(productId);
+            } else {
+                ratings = ratingDAO.findAll();
+                ratingCount = ratingDAO.findTotalRatingByFilter(null, null);
+            }
+            return Response.ok(ratings).header("X-Total-Count", ratingCount).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findRatingsByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+        try {
+            List<Rating> ratings = ratingDAO.findByFilter(id, status, page);
+            Long ratingCount = ratingDAO.findTotalRatingByFilter(id, status);
+            return Response.ok(ratings).header("X-Total-Count", ratingCount).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    public Response deleteRatingById(@PathParam("id") Integer id) {
+        try {
+            ratingDAO.delete(id);
+            return Response.noContent().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @PUT
+    @Path("/{id}")
+    public Response approveRatingById(@PathParam("id") Integer id) {
+        try {
+            ratingDAO.approve(id);
+            return Response.ok().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

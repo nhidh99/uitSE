@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
-import { FaBoxes, FaLaptop, FaGifts } from "react-icons/fa";
+import { FaBoxes, FaLaptop, FaGifts, FaStar } from "react-icons/fa";
 import styles from "./styles.module.scss";
 
 const AdminNavBar = () => (
@@ -20,6 +20,11 @@ const AdminNavBar = () => (
             icon={<FaGifts />}
             href="/admin/promotions"
             title="Khuyến mãi"
+        />
+        <AdminNavItem 
+            icon={<FaStar />}
+            href="/admin/ratings"
+            title="Đánh giá"
         />
     </Nav>
 );

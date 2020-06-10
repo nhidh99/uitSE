@@ -14,7 +14,9 @@ public interface OrderDAO {
 
     Optional<Order> findById(Integer id);
 
-    Long findTotalOrder();
+    Long findTotalOrder(String filter, String status);
+
+    List<OrderOverview> findByFilter(String id, String status, Integer page);
 
     List<OrderOverview> findByUserId(Integer page, Integer userId);
 

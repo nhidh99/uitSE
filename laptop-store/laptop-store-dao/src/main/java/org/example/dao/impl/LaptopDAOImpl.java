@@ -19,6 +19,7 @@ import java.util.Optional;
 public class LaptopDAOImpl implements LaptopDAO {
     private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
     private static final Integer ELEMENT_PER_FILTER_BLOCK = 8;
+    private static final Integer ELEMENT_PER_SUGGEST = 4;
 
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;
@@ -103,6 +104,16 @@ public class LaptopDAOImpl implements LaptopDAO {
     }
 
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findSuggestionsByLaptop(Integer laptopId) {
+        String query = "CALL laptop_suggest(:laptopId, :maxResults)";
+        return em.createNativeQuery(query, Laptop.class)
+                .setParameter("laptopId", laptopId)
+                .setParameter("maxResults", ELEMENT_PER_SUGGEST)
+                .getResultList();
+    }
+
+    @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void delete(Integer id) {
         Laptop laptop = em.find(Laptop.class, id);
@@ -120,9 +131,29 @@ public class LaptopDAOImpl implements LaptopDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public Long findTotalLaptops() {
-        String query = "SELECT COUNT(l) FROM Laptop l WHERE l.recordStatus = true";
-        return em.createQuery(query, Long.class).getSingleResult();
+    public List<Laptop> findByFilter(String filter, Integer page) {
+        String query = "SELECT * FROM Laptop l WHERE l.id = ? OR l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+        return em.createNativeQuery(query, Laptop.class)
+                .setParameter(1, filter)
+                .setParameter(2, filter)
+                .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
+                .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public Long findTotalLaptops(String filter) {
+        if(filter == null) {
+            String query = "SELECT COUNT(l) FROM Laptop l WHERE l.recordStatus = true";
+            return em.createQuery(query, Long.class).getSingleResult();
+        } else {
+            String query = "SELECT COUNT(*) FROM Laptop l WHERE l.id = ? OR l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+            return ((Number) em.createNativeQuery(query)
+                    .setParameter(1, filter)
+                    .setParameter(2, filter)
+                    .getSingleResult()).longValue();
+        }
     }
 
     @Override

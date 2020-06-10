@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import {
     Row,
     Col,
@@ -10,14 +10,14 @@ import {
 } from "reactstrap";
 import { FaSearch } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import ProductEdit from "../ProductEdit";
 
-class ProductFilter extends Component {
+class RatingFilter extends Component {
     search = () => {
+        const status = document.getElementById("statusSelect").value;
         const filter = document.getElementById("filter").value;
-        if (filter !== "") {
-            window.location.href = `/admin/products/search?q=${filter}`
-        } else window.location.href = "/admin/products";
+        if (filter === "" && status === "") {
+            window.location.href = "/admin/ratings";
+        } else window.location.href = `/admin/ratings/search?id=${filter}&status=${status}`
     }
     render() {
         return (
@@ -32,20 +32,22 @@ class ProductFilter extends Component {
                         <Input type="text" id="filter" placeholder="Tìm kiếm..." />
                     </InputGroup>
                 </Col>
-
+                <Col sm="2" className={styles.buttonCol}>
+                <Input type="select" id="statusSelect" className={styles.select}>
+                        <option value = "">Tất cả</option>
+                        <option value = "1">Đã duyệt</option>
+                        <option value = "0">Chưa duyệt</option>
+                    </Input>
+                </Col>
                 <Col sm="2" className={styles.buttonCol}>
                     <Button className={styles.button} color="info" onClick={this.search}>
                         <FaSearch />
                 &nbsp;&nbsp;Tìm kiếm
             </Button>
                 </Col>
-
-                <Col sm="2" className={styles.buttonCol}>
-                    <ProductEdit />
-                </Col>
             </Row>
         )
-    };
+    }
 }
 
-export default ProductFilter;
+export default RatingFilter;

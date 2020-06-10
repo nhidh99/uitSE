@@ -12,5 +12,11 @@ public interface RatingService {
 
     Response findRatingsByProductId(Integer productId);
 
+    Response deleteRatingById(Integer ratingId);
+
+    Response approveRatingById(Integer ratingId);
+
+    Response findRatingsByFilter(String id, String status, Integer page);
+
     Response createReply(Integer ratingId, RatingReplyInput ratingReplyInput, SecurityContext securityContext);
 }

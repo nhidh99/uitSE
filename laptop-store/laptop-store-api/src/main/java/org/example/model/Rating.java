@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,6 +49,10 @@ public class Rating {
     @Column(name = "rating_date")
     @JsonProperty("rating_date")
     private LocalDate ratingDate;
+
+    @Column(name = "approve_status")
+    @JsonProperty("approve_status")
+    private boolean approveStatus;
 
     @OneToMany(mappedBy = "rating", fetch = FetchType.EAGER)
     @JsonProperty("replies")
