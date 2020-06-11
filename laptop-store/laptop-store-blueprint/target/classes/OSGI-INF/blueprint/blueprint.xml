@@ -65,6 +65,18 @@
         <property name="jwtUtils" ref="jwtUtils"/>
     </bean>
 
+    <!-- Facebook Auth Service -->
+    <bean id="facebookAuthService" class="org.example.service.impl.FacebookAuthServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+        <property name="jwtUtils" ref="jwtUtils"/>
+    </bean>
+
+    <!-- Google Auth Service -->
+    <bean id="googleAuthService" class="org.example.service.impl.GoogleAuthServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+        <property name="jwtUtils" ref="jwtUtils"/>
+    </bean>
+
     <!-- Image Service -->
     <bean id="imageService" class="org.example.service.impl.ImageServiceImpl">
         <property name="promotionDAO" ref="promotionDAO"/>
@@ -139,6 +151,30 @@
         </jaxrs:providers>
     </jaxrs:server>
 
+    <!-- Facebook Auth Server -->
+    <jaxrs:server id="facebookAuthServer" address="/api/auth/facebook">
+        <jaxrs:serviceBeans>
+            <ref component-id="facebookAuthService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Google Auth Server -->
+    <jaxrs:server id="googleAuthServer" address="/api/auth/google">
+        <jaxrs:serviceBeans>
+            <ref component-id="googleAuthService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
     <!-- Image Server -->
     <jaxrs:server id="imageServer" address="/api/images">
         <jaxrs:serviceBeans>
@@ -157,6 +193,7 @@
             <ref component-id="jsonProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
+
 
     <!-- Order Server -->
     <jaxrs:server id="orderServer" address="/api/orders">

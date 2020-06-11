@@ -11,6 +11,7 @@ import { getCookie, createCookie, removeCookie } from "./services/helper/cookie"
 import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./constants";
 import { getCart, updateCartDatabase } from "./services/helper/cart";
 import Filter from "./components/Filter";
+import ConfirmModal from "./components/ConfirmModal";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -154,6 +155,7 @@ const App = (props) => {
     return loading ? null : (
         <Fragment>
             <Banner role={role} />
+            <ConfirmModal />
             <Filter />
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>

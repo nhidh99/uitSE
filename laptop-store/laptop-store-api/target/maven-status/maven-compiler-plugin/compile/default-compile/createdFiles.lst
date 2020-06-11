@@ -38,11 +38,13 @@ org\example\model\Rating.class
 org\example\type\OrderStatus$1.class
 org\example\model\OrderOverview.class
 org\example\model\Promotion.class
+org\example\input\SocialMediaInput.class
 org\example\model\RAM.class
 org\example\model\Laptop.class
 org\example\type\ResolutionType.class
 org\example\model\Laptop$LaptopBuilder.class
 org\example\model\Address.class
+org\example\type\SocialMediaType.class
 org\example\model\CPU$CPUBuilder.class
 org\example\model\OrderDetail$OrderDetailBuilder.class
 org\example\input\OrderInput.class

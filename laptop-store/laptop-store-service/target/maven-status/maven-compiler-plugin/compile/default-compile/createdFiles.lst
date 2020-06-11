@@ -1,4 +1,6 @@
 org\example\service\api\UserService.class
+org\example\service\impl\GoogleAuthServiceImpl.class
+org\example\service\api\SocialMediaAuthService.class
 org\example\service\impl\OrderServiceImpl.class
 org\example\service\api\ImageService.class
 org\example\service\impl\RatingServiceImpl.class
@@ -8,6 +10,7 @@ org\example\service\api\OrderService.class
 org\example\service\impl\AddressServiceImpl.class
 org\example\service\api\LaptopService.class
 org\example\service\impl\TagServiceImpl.class
+org\example\service\impl\FacebookAuthServiceImpl.class
 org\example\service\impl\UserServiceImpl.class
 org\example\service\api\AuthService.class
 org\example\service\api\AddressService.class

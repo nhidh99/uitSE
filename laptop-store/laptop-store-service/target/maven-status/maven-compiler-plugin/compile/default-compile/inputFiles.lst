@@ -5,9 +5,11 @@ C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\ma
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\PromotionService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\UserService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\RatingServiceImpl.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\FacebookAuthServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\PromotionServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\ImageServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\OrderService.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\SocialMediaAuthService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\OrderServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\TagService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\LaptopServiceImpl.java
@@ -15,4 +17,5 @@ C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\ma
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\AuthServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\AuthService.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\AddressService.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\GoogleAuthServiceImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\UserServiceImpl.java

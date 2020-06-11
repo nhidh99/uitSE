@@ -19,4 +19,6 @@ public interface UserService {
     Response findUserAddresses(SecurityContext securityContext);
 
     Response findUserOrderOverviews(Integer page, SecurityContext securityContext);
+
+    Response checkUserSocialMediaAuth(SecurityContext securityContext);
 }
