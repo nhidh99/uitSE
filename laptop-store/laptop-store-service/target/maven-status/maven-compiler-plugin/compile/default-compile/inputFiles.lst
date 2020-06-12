@@ -10,9 +10,11 @@ D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\e
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\LaptopService.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\LaptopServiceImpl.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\UserService.java
+D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\CommentServiceImpl.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\OrderService.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\TagService.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\RatingService.java
+D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\CommentService.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\api\PromotionService.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\AddressServiceImpl.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-service\src\main\java\org\example\service\impl\ImageServiceImpl.java

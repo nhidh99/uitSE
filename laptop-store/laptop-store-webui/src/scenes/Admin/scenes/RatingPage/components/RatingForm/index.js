@@ -6,16 +6,6 @@ class RatingForm extends Component {
         submitted: false,
     };
 
-    componentDidMount() {
-        if (this.props.rating) {
-            this.loadRating();
-        }
-    }
-
-    loadRating = () => {
-        const rating = this.props.rating;
-    };
-
     submit = () => {
         this.setState({ submitted: true });
         this.postApprove();

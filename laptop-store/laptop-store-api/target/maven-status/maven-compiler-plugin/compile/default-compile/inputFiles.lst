@@ -13,10 +13,12 @@ D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\examp
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\HardDrive.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\AddressInput.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Rating.java
+D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\ReplyInput.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Promotion.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\OrderOverview.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\CPU.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\type\HardDriveType.java
+D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\CommentInput.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\OrderDetail.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Tag.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\type\BrandType.java
@@ -25,10 +27,11 @@ D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\examp
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Order.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\filter\LaptopFilter.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\RegisterInput.java
+D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\CommentReply.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\type\RoleType.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Laptop.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\UserInput.java
-D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\RatingReplyInput.java
+D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Comment.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\RatingInput.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\type\ProductType.java
 D:\UIT\Projects\J2EE\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Monitor.java

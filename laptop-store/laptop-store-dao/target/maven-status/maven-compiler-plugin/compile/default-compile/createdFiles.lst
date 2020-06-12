@@ -7,12 +7,16 @@ org\example\dao\impl\RatingReplyDAOImpl.class
 org\example\dao\impl\PromotionDAOImpl.class
 org\example\dao\api\RatingReplyDAO.class
 org\example\dao\api\UserDAO.class
+org\example\dao\impl\CommentDAOImpl.class
+org\example\dao\api\CommentReplyDAO.class
 org\example\dao\impl\RatingDAOImpl.class
 org\example\dao\impl\TagDAOImpl.class
 org\example\dao\api\PromotionDAO.class
 org\example\dao\api\TagDAO.class
 org\example\dao\impl\OrderDAOImpl.class
+org\example\dao\api\CommentDAO.class
 org\example\dao\api\RatingDAO.class
 org\example\dao\api\AddressDAO.class
+org\example\dao\impl\CommentReplyDAOImpl.class
 org\example\dao\impl\OrderDetailDAOImpl.class
 org\example\dao\api\OrderDetailDAO.class

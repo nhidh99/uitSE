@@ -5,7 +5,7 @@ import org.example.dao.api.RatingDAO;
 import org.example.dao.api.RatingReplyDAO;
 import org.example.dao.api.UserDAO;
 import org.example.input.RatingInput;
-import org.example.input.RatingReplyInput;
+import org.example.input.ReplyInput;
 import org.example.model.*;
 import org.example.security.Secured;
 import org.example.service.api.RatingService;
@@ -125,10 +125,10 @@ public class RatingServiceImpl implements RatingService {
     @Secured({RoleType.ADMIN, RoleType.USER})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createReply(@PathParam("id") Integer ratingId,
-                                RatingReplyInput ratingReplyInput,
+                                ReplyInput replyInput,
                                 @Context SecurityContext securityContext) {
         try {
-            RatingReply ratingReply = buildReplyFromRequestBody(ratingId, ratingReplyInput, securityContext);
+            RatingReply ratingReply = buildReplyFromRequestBody(ratingId, replyInput, securityContext);
             ratingReplyDAO.save(ratingReply);
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception ex) {
@@ -137,13 +137,13 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private RatingReply buildReplyFromRequestBody(Integer ratingId,
-                                                  RatingReplyInput ratingReplyInput,
+                                                  ReplyInput replyInput,
                                                   SecurityContext securityContext) {
         Principal principal = securityContext.getUserPrincipal();
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
         Rating rating = ratingDAO.findById(ratingId).orElseThrow(BadRequestException::new);
-        String reply = ratingReplyInput.getReply();
+        String reply = replyInput.getReply();
         return RatingReply.builder().user(user).rating(rating).reply(reply).replyDate(LocalDate.now()).build();
     }
 }

@@ -1,53 +1,44 @@
 import React from "react";
 import { Label, Col, Row, ListGroup, ListGroupItem } from "reactstrap";
 import styles from "./styles.module.scss";
-import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ReplyBlock from "./components/ReplyBlock";
 
-const CommentBlock = (props) => {
-    const ratings = props.ratings;
+const QuestionList = (props) => {
+    const comments = props.comments;
     return (
         <ListGroup className={styles.listGroup}>
-            {ratings.map((rating) => {
-                const replies = rating["replies"];
-                const commentDate = rating
+            {comments.map((comment) => {
+                const replies = comment["replies"];
+                const commentDate = comment
                     ? new Date(
-                          rating["rating_date"]["year"],
-                          rating["rating_date"]["monthValue"] - 1,
-                          rating["rating_date"]["dayOfMonth"]
-                      )
+                        comment["comment_date"]["year"],
+                        comment["comment_date"]["monthValue"] - 1,
+                        comment["comment_date"]["dayOfMonth"]
+                    )
                     : null;
                 return (
                     <ListGroupItem>
                         <Row>
                             <Col sm="2" className={styles.blockLeft}>
-                                <Label className={styles.commentRating}>
-                                    {rating["rating"]}&nbsp;
-                                    <FaStar />
-                                </Label>
                                 <Label className={styles.commentAuthor}>
-                                    {rating["user"]["name"]}
+                                    {comment["user"]["name"]}
                                 </Label>
                                 <br />
                                 <Label>{commentDate.toLocaleDateString()}</Label>
                             </Col>
-
                             <Col sm="10" className={styles.blockRight}>
-                                <Label className={styles.commentTitle}>
-                                    {rating["comment_title"]}
+                                <Label className={styles.question}>
+                                    {comment["question"]}
                                 </Label>
-                                <p>{rating["comment_detail"]}</p>
-
+                                <ReplyBlock comment={comment} replies={replies}/>
+                                <br />
                                 <Link
-                                    id={"toggler-" + rating["id"]}
+                                    id={"toggler-" + comment["id"] }
                                     style={{ marginBottom: "1rem" }}
                                 >
                                     Gửi trả lời
-                                </Link>
-                                <br />
-                                <br />
-                                <ReplyBlock rating={rating} replies={replies} />
+                        </Link>
                             </Col>
                         </Row>
                     </ListGroupItem>
@@ -57,4 +48,4 @@ const CommentBlock = (props) => {
     );
 };
 
-export default CommentBlock;
+export default QuestionList;

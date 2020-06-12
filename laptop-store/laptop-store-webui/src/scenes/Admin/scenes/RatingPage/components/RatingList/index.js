@@ -42,9 +42,7 @@ const RatingList = (props) => {
         });
         if (response.ok) {
             const ratings = await response.json();
-            //const count = parseInt(response.headers.get("X-Total-Count"));
             setRatings(ratings);
-            //setCount(count);
             setLoading(false);
         }
     }
@@ -58,7 +56,6 @@ const RatingList = (props) => {
         if (response.ok) {
             const ratings = await response.json();
             const count = parseInt(response.headers.get("X-Total-Count"));
-            console.log(ratings);
             setRatings(ratings);
             setCount(count);
             setLoading(false);

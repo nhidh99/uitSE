@@ -4,17 +4,20 @@ import OverviewBlock from "./components/OverviewBlock";
 import DetailBlock from "./components/DetailBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import RatingBlock from "./components/RatingBlock";
-import CommentBlock from "./components/CommentBlock";
+import RatingList from "./components/RatingList";
+import QuestionBlock from "./components/QuestionBlock";
 import { Row, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
+import QuestionList from "./components/QuestionList";
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [ratings, setRatings] = useState([]);
+    const [comments, setComments] = useState([]);
     const [promotions, setPromotions] = useState([]);
 
     useEffect(() => {
@@ -29,16 +32,23 @@ const DetailPage = (props) => {
     }, []);
 
     const loadData = async (productId) => {
-        const [product, ratings, promotions] = await Promise.all([
+        const [product, ratings, promotions, comments] = await Promise.all([
             loadProduct(productId),
             loadRatings(productId),
             loadPromotions(productId),
+            loadComments(productId),
         ]);
         setProduct(product);
         setRatings(ratings);
+        setComments(comments);
         setPromotions(promotions);
         setLoading(false);
     };
+
+    const loadComments = async (productId) => {
+        const response = await fetch(`/cxf/api/comments?product-id=${productId}`);
+        return response.ok ? await response.json() : [];
+    }
 
     const loadProduct = async (productId) => {
         const response = await fetch(`/cxf/api/laptops/${productId}`);
@@ -97,30 +107,38 @@ const DetailPage = (props) => {
     return loading ? (
         <DetailLoading />
     ) : (
-        <Fragment>
-            <ContentBlock
-                title={<ProductTitle product={product} />}
-                component={<OverviewBlock product={product} promotions={promotions} />}
-            />
+            <Fragment>
+                <ContentBlock
+                    title={<ProductTitle product={product} />}
+                    component={<OverviewBlock product={product} promotions={promotions} />}
+                />
 
-            <ContentBlock
-                title="Thông tin chi tiết"
-                component={<DetailBlock product={product} />}
-            />
+                <ContentBlock
+                    title="Thông tin chi tiết"
+                    component={<DetailBlock product={product} />}
+                />
 
-            <ContentBlock title="Sản phẩm tương tự" component={<SuggestBlock />} />
+                <ContentBlock title="Sản phẩm tương tự" component={<SuggestBlock />} />
 
-            <ContentBlock
-                title="Đánh giá sản phẩm"
-                component={<RatingBlock ratings={ratings} product={product} />}
-            />
+                <ContentBlock 
+                    title="Hỏi, đáp về sản phẩm" 
+                    component={<QuestionBlock comments={comments} product={product} />} />
 
-            <ContentBlock
-                title="Khách hàng nhận xét"
-                component={<CommentBlock ratings={ratings} />}
-            />
-        </Fragment>
-    );
+                <ContentBlock title="Khách hàng hỏi đáp" component={<QuestionList comments={comments}/>} />
+
+                <ContentBlock
+                    title="Đánh giá sản phẩm"
+                    component={<RatingBlock ratings={ratings} product={product} />}
+                />
+
+                {
+                    ratings.length > 0 ? <ContentBlock
+                        title="Khách hàng đánh giá"
+                        component={<RatingList ratings={ratings} />}
+                    /> : null
+                }
+            </Fragment>
+        );
 };
 
 export default DetailPage;

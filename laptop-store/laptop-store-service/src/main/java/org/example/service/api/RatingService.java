@@ -1,11 +1,10 @@
 package org.example.service.api;
 
 import org.example.input.RatingInput;
-import org.example.input.RatingReplyInput;
+import org.example.input.ReplyInput;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.List;
 
 public interface RatingService {
     Response createRating(Integer productId, RatingInput rating, SecurityContext securityContext);
@@ -18,5 +17,5 @@ public interface RatingService {
 
     Response findRatingsByFilter(String id, String status, Integer page);
 
-    Response createReply(Integer ratingId, RatingReplyInput ratingReplyInput, SecurityContext securityContext);
+    Response createReply(Integer ratingId, ReplyInput replyInput, SecurityContext securityContext);
 }

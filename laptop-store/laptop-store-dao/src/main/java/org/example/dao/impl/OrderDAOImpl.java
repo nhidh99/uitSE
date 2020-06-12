@@ -102,60 +102,23 @@ public class OrderDAOImpl implements OrderDAO {
             String query = "SELECT COUNT(o) FROM Order o";
             return em.createQuery(query, Long.class).getSingleResult();
         } else {
-            if (!id.isEmpty() && status.isEmpty()) {
-                String query = "SELECT COUNT(o) FROM Order o WHERE o.id = :id";
-                return ((Number) em.createQuery(query)
-                        .setParameter("id", Integer.parseInt(id))
-                        .getSingleResult()).longValue();
-            } else if (id.isEmpty() && !status.isEmpty()) {
-                String query = "SELECT COUNT(o) FROM Order o WHERE o.status = :status";
-                return ((Number) em.createQuery(query)
-                        .setParameter("status", OrderStatus.valueOf(status))
-                        .getSingleResult()).longValue();
-            } else {
-                String query = "SELECT COUNT(o) FROM Order o WHERE o.id = :id AND o.status = :status";
-                return ((Number) em.createQuery(query)
-                        .setParameter("id", id)
-                        .setParameter("status", OrderStatus.valueOf(status))
-                        .getSingleResult()).longValue();
-            }
+            String query = "SELECT COUNT(o) FROM Order o " +
+                    "WHERE (o.id is NULL OR cast(o.id as string) = '' OR cast(o.id as string) LIKE CONCAT('%', :id, '%')) " +
+                    "AND (o.status is NULL OR o.status = '' OR cast(o.status as string) LIKE CONCAT('%', :status, '%'))";
+            return em.createQuery(query, Long.class)
+                    .setParameter("id", id)
+                    .setParameter("status", status)
+                    .getSingleResult();
         }
     }
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<OrderOverview> findByFilter(String id, String status, Integer page) {
-//        if (!id.isEmpty() && status.isEmpty()) {
-//            String query = "SELECT o FROM Order o WHERE o.id = :id";
-//            return em.createQuery(query, Order.class)
-//                    .setParameter("id", Integer.parseInt(id))
-//                    .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
-//                    .setMaxResults(ELEMENT_PER_BLOCK)
-//                    .getResultStream().map(this::buildOverviewFromOrder)
-//                    .collect(Collectors.toList());
-//        } else if (id.isEmpty() && !status.isEmpty()) {
-//            String query = "SELECT o FROM Order o WHERE o.status = :status";
-//            return em.createQuery(query, Order.class)
-//                    .setParameter("status", OrderStatus.valueOf(status))
-//                    .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
-//                    .setMaxResults(ELEMENT_PER_BLOCK)
-//                    .getResultStream().map(this::buildOverviewFromOrder)
-//                    .collect(Collectors.toList());
-//        } else {
-//            String query = "SELECT o FROM Order o WHERE o.id = :id AND o.status = :status";
-//            return em.createQuery(query, Order.class)
-//                    .setParameter("id", Integer.parseInt(id))
-//                    .setParameter("status", status)
-//                    .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
-//                    .setMaxResults(ELEMENT_PER_BLOCK)
-//                    .getResultStream().map(this::buildOverviewFromOrder)
-//                    .collect(Collectors.toList());
-//        }
-
-        String query = "SELECT * FROM `Order` " +
-                       "WHERE (id is NULL OR id = '' OR id LIKE CONCAT('%', :id, '%')) " +
-                       "AND (status is NULL OR status = '' OR status LIKE CONCAT('%', :status, '%'))";
-        List<Order> orders = em.createNativeQuery(query, Order.class)
+        String query = "SELECT o FROM Order o " +
+                "WHERE (o.id is NULL OR cast(o.id as string) = '' OR cast(o.id as string) LIKE CONCAT('%', :id, '%')) " +
+                "AND (o.status is NULL OR o.status = '' OR cast(o.status as string) LIKE CONCAT('%', :status, '%'))";
+        List<Order> orders = em.createQuery(query, Order.class)
                     .setParameter("id", id)
                     .setParameter("status", status)
                     .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))

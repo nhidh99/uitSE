@@ -45,7 +45,7 @@ public class RatingDAOImpl implements RatingDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Rating> findByProductId(Integer laptopId) {
-        String query = "SELECT r FROM Rating r WHERE r.laptop.id = :laptopId";
+        String query = "SELECT r FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
         return em.createQuery(query, Rating.class)
                 .setParameter("laptopId", laptopId)
                 .getResultList();
