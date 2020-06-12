@@ -77,7 +77,7 @@ public class FacebookAuthServiceImpl implements SocialMediaAuthService {
     }
 
     @Override
-    @GET
+    @POST
     @Path("/")
     @Secured({RoleType.ADMIN, RoleType.USER})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ public class FacebookAuthServiceImpl implements SocialMediaAuthService {
         try {
             String facebookId = facebookInput.getId();
             Optional<User> optUser = userDAO.findByFacebookId(facebookId);
-            boolean result = !optUser.isPresent();
+            boolean result = optUser.isPresent();
             return Response.ok(result).build();
         } catch (Exception e) {
             return Response.serverError().build();

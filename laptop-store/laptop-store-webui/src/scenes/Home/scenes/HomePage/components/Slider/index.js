@@ -57,6 +57,7 @@ const Slider = (props) => {
                 items={items}
                 activeIndex={activeIndex}
                 onClickHandler={goToIndex}
+                className={styles.indicator}
             />
             {slides}
             <CarouselControl direction="prev" directionText="Previous" onClickHandler={previous} />

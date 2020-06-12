@@ -61,12 +61,13 @@ public class GoogleAuthServiceImpl implements SocialMediaAuthService {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response authBySocialMedia(SocialMediaInput googleInput) {
         try {
             String googleId = googleInput.getId();
             Optional<User> optUser = userDAO.findByGoogleId(googleId);
             if (!optUser.isPresent()) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             User user = optUser.get();
             String token = jwtUtils.issueToken(user.getId());
@@ -77,7 +78,7 @@ public class GoogleAuthServiceImpl implements SocialMediaAuthService {
     }
 
     @Override
-    @GET
+    @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -86,7 +87,7 @@ public class GoogleAuthServiceImpl implements SocialMediaAuthService {
         try {
             String googleId = googleInput.getId();
             Optional<User> optUser = userDAO.findByGoogleId(googleId);
-            boolean result = !optUser.isPresent();
+            boolean result = optUser.isPresent();
             return Response.ok(result).build();
         } catch (Exception e) {
             return Response.serverError().build();

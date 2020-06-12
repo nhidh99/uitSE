@@ -16,6 +16,44 @@ const FacebookSync = (props) => {
 
     const responseFacebook = async (res) => {
         const facebookId = res["id"];
+        const isExistedSync = await checkFacebookSync(facebookId);
+
+        if (isExistedSync === null) {
+            const modal = {
+                title: "Lỗi hệ thống",
+                message: "Không thể xử lí yêu cầu",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
+            return;
+        }
+
+        if (isExistedSync === true) {
+            const modal = {
+                title: "Đã tồn tại liên kết",
+                message: "Tài khoản Facebook đã được liên kết với người dùng khác",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
+            return;
+        }
+
+        syncFacebook(facebookId);
+    };
+
+    const checkFacebookSync = async (facebookId) => {
+        const response = await fetch("/cxf/api/auth/facebook", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getCookie("access_token")}`,
+            },
+            body: JSON.stringify({ id: facebookId }),
+        });
+        return response.ok ? await response.json() : null;
+    };
+
+    const syncFacebook = async (facebookId) => {
         const response = await fetch("/cxf/api/auth/facebook/sync", {
             method: "POST",
             headers: {
@@ -24,12 +62,20 @@ const FacebookSync = (props) => {
             },
             body: JSON.stringify({ id: facebookId }),
         });
+
         if (response.ok) {
             setFbAuth(true);
+        } else {
+            const modal = {
+                title: "Lỗi hệ thống",
+                message: "Không thể xử lí yêu cầu",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 
-    const cancelSyncFacebook = async () => {
+    const cancelFacebookSync = async () => {
         const response = await fetch("/cxf/api/auth/facebook/sync", {
             method: "DELETE",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
@@ -43,7 +89,7 @@ const FacebookSync = (props) => {
         const modal = {
             title: "Hủy liên kết Facebook",
             message: "Xác nhận hủy liên kết tài khoản Facebook?",
-            confirm: () => cancelSyncFacebook,
+            confirm: () => cancelFacebookSync,
         };
         store.dispatch(buildModal(modal));
     };

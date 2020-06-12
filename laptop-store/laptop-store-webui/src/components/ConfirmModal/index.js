@@ -16,10 +16,10 @@ const ConfirmModal = () => {
         store.subscribe(() => {
             const state = store.getState();
             const modal = state["modal"];
-            setIsOpen(modal["open"]);
             setTitle(modal["title"]);
             setMessage(modal["message"]);
             setConfirm(modal["confirm"]);
+            setIsOpen(modal["open"]);
         });
     }, []);
 
@@ -33,9 +33,11 @@ const ConfirmModal = () => {
             <ModalHeader toggle={toggle}>{title}</ModalHeader>
             <ModalBody className={styles.body}>{message}</ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={confirmAction}>
-                    Xác nhận
-                </Button>
+                {confirm === null ? null : (
+                    <Button color="primary" onClick={confirmAction}>
+                        Xác nhận
+                    </Button>
+                )}
                 <Button color="secondary" onClick={toggle}>
                     Đóng
                 </Button>

@@ -57,7 +57,15 @@ const LoginPage = () => {
             createCookie("access_token", token, 1);
             window.location.href = "/";
         } else {
-            const error = "Lỗi hệ thống";
+            let error = "";
+            switch (response.status) {
+                case 404:
+                    error = "Không tìm thấy tài khoản liên kết";
+                    break;
+                default:
+                    error = "Lỗi hệ thống";
+                    break;
+            }
             setError(error);
             setLoading(false);
         }
@@ -75,7 +83,15 @@ const LoginPage = () => {
             createCookie("access_token", token, 1);
             window.location.href = "/";
         } else {
-            const error = "Lỗi hệ thống";
+            let error = "";
+            switch (response.status) {
+                case 400:
+                    error = "Không tìm thấy tài khoản liên kết";
+                    break;
+                default:
+                    error = "Lỗi hệ thống";
+                    break;
+            }
             setError(error);
             setLoading(false);
         }

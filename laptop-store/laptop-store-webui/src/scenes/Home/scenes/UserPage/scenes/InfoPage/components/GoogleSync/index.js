@@ -16,6 +16,44 @@ const GoogleSync = (props) => {
 
     const responseGoogle = async (res) => {
         const googleId = res["googleId"];
+        const isExistedSync = await checkGoogleSync(googleId);
+
+        if (isExistedSync === null) {
+            const modal = {
+                title: "Lỗi hệ thống",
+                message: "Không thể xử lí yêu cầu",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
+            return;
+        }
+
+        if (isExistedSync === true) {
+            const modal = {
+                title: "Đã tồn tại liên kết",
+                message: "Tài khoản Google đã được liên kết với người dùng khác",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
+            return;
+        }
+
+        syncGoogle(googleId);
+    };
+
+    const checkGoogleSync = async (googleId) => {
+        const response = await fetch("/cxf/api/auth/google", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getCookie("access_token")}`,
+            },
+            body: JSON.stringify({ id: googleId }),
+        });
+        return response.ok ? await response.json() : null;
+    };
+
+    const syncGoogle = async (googleId) => {
         const response = await fetch("/cxf/api/auth/google/sync", {
             method: "POST",
             headers: {
@@ -26,10 +64,17 @@ const GoogleSync = (props) => {
         });
         if (response.ok) {
             setGoogleAuth(true);
+        } else {
+            const modal = {
+                title: "Lỗi hệ thống",
+                message: "Không thể xử lí yêu cầu",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 
-    const cancelSyncGoogle = async () => {
+    const cancelGoogleSync = async () => {
         const response = await fetch("/cxf/api/auth/google/sync", {
             method: "DELETE",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
@@ -43,7 +88,7 @@ const GoogleSync = (props) => {
         const modal = {
             title: "Hủy liên kết Google",
             message: "Xác nhận hủy liên kết tài khoản Google?",
-            confirm: () => cancelSyncGoogle,
+            confirm: () => cancelGoogleSync,
         };
         store.dispatch(buildModal(modal));
     };
