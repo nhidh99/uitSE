@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect } from "react";
-import { Label, Input, Button } from "reactstrap";
+import React, { useState, useEffect } from "react";
+import { Label, Input, Button, Spinner } from "reactstrap";
 import { FaBook } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { getCookie } from "../../../../../../services/helper/cookie";
@@ -9,18 +9,26 @@ import {
     loadDistrictsByCityId,
     loadWardsByDistrictId,
 } from "../../../../../../services/helper/address";
+import { useParams } from "react-router-dom";
+import store from "../../../../../../services/redux/store";
+import { buildModal } from "../../../../../../services/redux/actions";
+import Loader from "react-loader-advanced";
 
-const EditAddressPage = ({ location }) => {
+const EditAddressPage = () => {
+    const { id } = useParams();
+
     const [errors, setErrors] = useState([]);
     const [cities, setCities] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
 
+    const [address, setAddress] = useState(null);
     const [cityId, setCityId] = useState(null);
     const [districtId, setDistrictId] = useState(null);
     const [wardId, setWardId] = useState(null);
 
-    const address = location.state?.address;
+    const [loading, setLoading] = useState(true);
+    const [reloading, setReloading] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -36,31 +44,73 @@ const EditAddressPage = ({ location }) => {
         loadWards();
     }, [districtId]);
 
+    const findCityIdByName = (cities, cityName) => {
+        return cities.find((city) => city["name"] === cityName)?.id;
+    };
+
+    const findDistrictIdByName = (districts, districtName) => {
+        return districts.find((district) => district["name"] === districtName)?.id;
+    };
+
+    const findWardIdByName = (wards, wardName) => {
+        return wards.find((ward) => ward["name"] === wardName)?.id;
+    };
+
     const loadData = async () => {
-        const cities = await loadCities();
+        const [address, cities] = await Promise.all([loadAddress(), loadCities()]);
+        if (address) {
+            const cityId = findCityIdByName(cities, address["city"]);
+
+            const districts = await loadDistrictsByCityId(cityId);
+            const districtId = findDistrictIdByName(districts, address["district"]);
+
+            const wards = await loadWardsByDistrictId(districtId);
+            const wardId = findWardIdByName(wards, address["ward"]);
+
+            setCityId(cityId);
+            setDistrictId(districtId);
+            setWardId(wardId);
+        } else {
+            setDistrictId("");
+        }
+
+        setAddress(address);
         setCities(cities);
-        setDistricts([]);
-        setDistrictId("");
+        setLoading(false);
+    };
+
+    const loadAddress = async () => {
+        if (id === "create") return null;
+        const response = await fetch(`/cxf/api/addresses/${id}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
+        });
+        return response.ok ? await response.json() : null;
     };
 
     const loadDistricts = async () => {
+        setReloading(true);
         const districts = await loadDistrictsByCityId(cityId);
         setDistricts(districts);
-        setWards([]);
-        setWardId("");
+        if (!loading) {
+            setWardId("");
+        }
+        setReloading(false);
     };
 
     const loadWards = async () => {
+        setReloading(true);
         const wards = await loadWardsByDistrictId(districtId);
         setWards(wards);
+        setReloading(false);
     };
 
     const buildAddressBody = () => {
         const receiverName = document.getElementById("receiver-name").value;
         const receiverPhone = document.getElementById("receiver-phone").value;
-        const city = document.getElementById("city").value;
-        const district = document.getElementById("district").value;
-        const ward = document.getElementById("ward").value;
+        const city = document.getElementById(`city-${cityId}`)?.text;
+        const district = document.getElementById(`district-${districtId}`)?.text;
+        const ward = document.getElementById(`ward-${wardId}`)?.text;
         const street = document.getElementById("street").value;
         const addressNum = document.getElementById("address-num").value;
 
@@ -84,9 +134,9 @@ const EditAddressPage = ({ location }) => {
         validate("Số điện thoại từ 6 - 12 chữ số", () =>
             inputs["receiver_phone"].match(/^\d{6,12}$/)
         );
-        validate("Tỉnh/Thành phố không được để trống", () => inputs["city"].length > 0);
-        validate("Quận huyện không được để trống", () => inputs["district"].length > 0);
-        validate("Phường xã không được để trống", () => inputs["ward"].length > 0);
+        validate("Tỉnh/Thành phố không được để trống", () => inputs["city"]?.length > 0);
+        validate("Quận huyện không được để trống", () => inputs["district"]?.length > 0);
+        validate("Phường xã không được để trống", () => inputs["ward"]?.length > 0);
         validate("Đường không được để trống", () => inputs["street"].length > 0);
         validate("Số nhà không được để trống", () => inputs["address_num"].length > 0);
         return errors;
@@ -101,11 +151,11 @@ const EditAddressPage = ({ location }) => {
             return;
         }
 
-        const url =
-            "/cxf/api/addresses/" + (location.state?.address ? location.state.address["id"] : "");
+        const url = "/cxf/api/addresses/" + (id === "create" ? "" : id);
+        const method = id === "create" ? "POST" : "PUT";
 
         const response = await fetch(url, {
-            method: location.state?.address ? "PUT" : "POST",
+            method: method,
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + getCookie("access_token"),
@@ -114,15 +164,26 @@ const EditAddressPage = ({ location }) => {
         });
 
         if (response.ok) {
-            window.location.href = "/user/address";
+            setErrors([]);
+            if (method === "POST") {
+                const addressId = await response.text();
+                window.location.href = `/user/address/${addressId}`;
+            } else {
+                const modal = {
+                    title: "Cập nhật thành công",
+                    message: "Cập nhật địa chỉ mới thành công",
+                    confirm: null,
+                };
+                store.dispatch(buildModal(modal));
+            }
         }
     };
 
     return (
-        <Fragment>
+        <Loader show={loading || reloading} message={<Spinner />}>
             <header className={styles.header}>
                 <FaBook />
-                &nbsp;&nbsp;{address ? "SỬA ĐỊA CHỈ" : "TẠO ĐỊA CHỈ"}
+                &nbsp;&nbsp;{id === 'create' ? "THÊM ĐỊA CHỈ" : "SỬA ĐỊA CHỈ"}
                 <Button color="success" onClick={createAddress} className={styles.button}>
                     Lưu địa chỉ
                 </Button>
@@ -176,13 +237,15 @@ const EditAddressPage = ({ location }) => {
                                 name="city"
                                 id="city"
                                 onChange={(e) => setCityId(e.target.value)}
-                                defaultValue={cityId}
+                                value={cityId}
                             >
                                 <option value="" hidden>
                                     Chọn Tỉnh/Thành
                                 </option>
                                 {cities.map((city) => (
-                                    <option value={city["id"]}>{city["name"]}</option>
+                                    <option value={city["id"]} id={`city-${city["id"]}`}>
+                                        {city["name"]}
+                                    </option>
                                 ))}
                             </Input>
                         </td>
@@ -204,7 +267,12 @@ const EditAddressPage = ({ location }) => {
                                     Chọn Quận/Huyện
                                 </option>
                                 {districts.map((district) => (
-                                    <option value={district["id"]}>{district["name"]}</option>
+                                    <option
+                                        value={district["id"]}
+                                        id={`district-${district["id"]}`}
+                                    >
+                                        {district["name"]}
+                                    </option>
                                 ))}
                             </Input>
                         </td>
@@ -219,14 +287,16 @@ const EditAddressPage = ({ location }) => {
                                 type="select"
                                 name="ward"
                                 id="ward"
-                                value={wardId}
                                 onChange={(e) => setWardId(e.target.value)}
+                                value={wardId}
                             >
                                 <option value="" hidden>
                                     Chọn Phường/Xã
                                 </option>
                                 {wards.map((ward) => (
-                                    <option value={ward["id"]}>{ward["name"]}</option>
+                                    <option value={ward["id"]} id={`ward-${ward["id"]}`}>
+                                        {ward["name"]}
+                                    </option>
                                 ))}
                             </Input>
                         </td>
@@ -264,7 +334,7 @@ const EditAddressPage = ({ location }) => {
                     </tr>
                 </tbody>
             </table>
-        </Fragment>
+        </Loader>
     );
 };
 

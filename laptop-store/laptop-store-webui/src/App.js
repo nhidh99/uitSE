@@ -123,8 +123,8 @@ const App = (props) => {
                 "/product/:alt/:id",
                 "/product/compare/:alt/:id1/:id2",
                 "/user/(info|password|address|order)",
-                "/user/address/(edit|create)",
-                "/user/address/:id",
+                "/user/address/:id",    
+                "/user/order/:orderId",
             ]}
         />
     );
@@ -144,7 +144,7 @@ const App = (props) => {
                     "/product/:alt/:id",
                     "/product/compare/:alt/:id1/:id2",
                     "/user/(info|password|address|order)",
-                    "/user/address/(edit|create)",
+                    "/user/address/:id",    
                     "/user/order/:orderId",
                 ]}
             />

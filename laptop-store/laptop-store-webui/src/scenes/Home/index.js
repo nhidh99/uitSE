@@ -22,12 +22,12 @@ class Home extends Component {
                     <Route exact component={ResultPage} path="/result" />
                     <Route exact component={CartPage} path="/cart" />
                     <Route exact component={PaymentPage} path="/payment" />
-                    <Route exact component={ComparePage} path="/product/compare/:alt/:id1/:id2"/>
+                    <Route exact component={ComparePage} path="/product/compare/:alt/:id1/:id2" />
                     <Route
                         exact
                         component={UserPage}
                         path={[
-                            "/user/address/(edit|create)",
+                            "/user/address/:id",
                             "/user/order/:orderId",
                             "/user/(info|password|address|order|payment)",
                         ]}
