@@ -44,28 +44,16 @@ const EditAddressPage = () => {
         loadWards();
     }, [districtId]);
 
-    const findCityIdByName = (cities, cityName) => {
-        return cities.find((city) => city["name"] === cityName)?.id;
-    };
-
-    const findDistrictIdByName = (districts, districtName) => {
-        return districts.find((district) => district["name"] === districtName)?.id;
-    };
-
-    const findWardIdByName = (wards, wardName) => {
-        return wards.find((ward) => ward["name"] === wardName)?.id;
-    };
-
     const loadData = async () => {
         const [address, cities] = await Promise.all([loadAddress(), loadCities()]);
         if (address) {
-            const cityId = findCityIdByName(cities, address["city"]);
+            const cityId = cities.find((c) => c["name"] === address["city"])?.id;
 
             const districts = await loadDistrictsByCityId(cityId);
-            const districtId = findDistrictIdByName(districts, address["district"]);
+            const districtId = districts.find((d) => d["name"] === address["district"])?.id;
 
             const wards = await loadWardsByDistrictId(districtId);
-            const wardId = findWardIdByName(wards, address["ward"]);
+            const wardId = wards.find((w) => w["name"] === address["ward"])?.id;
 
             setCityId(cityId);
             setDistrictId(districtId);
@@ -73,7 +61,6 @@ const EditAddressPage = () => {
         } else {
             setDistrictId("");
         }
-
         setAddress(address);
         setCities(cities);
         setLoading(false);
@@ -183,7 +170,7 @@ const EditAddressPage = () => {
         <Loader show={loading || reloading} message={<Spinner />}>
             <header className={styles.header}>
                 <FaBook />
-                &nbsp;&nbsp;{id === 'create' ? "THÊM ĐỊA CHỈ" : "SỬA ĐỊA CHỈ"}
+                &nbsp;&nbsp;{id === "create" ? "THÊM ĐỊA CHỈ" : "SỬA ĐỊA CHỈ"}
                 <Button color="success" onClick={createAddress} className={styles.button}>
                     Lưu địa chỉ
                 </Button>

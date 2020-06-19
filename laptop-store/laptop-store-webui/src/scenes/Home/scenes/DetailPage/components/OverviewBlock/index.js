@@ -7,20 +7,39 @@ import { FaStar, FaShoppingCart } from "react-icons/fa";
 import { convertCPUType, convertResolutionType } from "../../../../../../services/helper/converter";
 import { addToCart } from "../../../../../../services/helper/cart";
 import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
+import ImageGallery from "react-image-gallery";
+import "react-image-gallery/styles/scss/image-gallery.scss";
 
-const OverviewBlock = ({ product, promotions }) => {
-    const ProductImage = ({ product }) => (
-        <img
-            src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
-            width="300"
-            height="300"
-            className={styles.img}
-            title={`Laptop ${product["name"]}`}
-            alt={product["name"]}
-        />
+const OverviewBlock = ({ product, promotions, imageIds }) => {
+    const images = [
+        {
+            original: `/cxf/api/images/600/laptops/${product["id"]}/${product["alt"]}.jpg`,
+            thumbnail: `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`,
+            thumbnailClass: styles.thumbnail,
+        },
+    ].concat(
+        imageIds.map((id) => {
+            return {
+                original: `/cxf/api/images/600/details/${id}/${product["alt"]}.jpg`,
+                thumbnail: `/cxf/api/images/600/details/${id}/${product["alt"]}.jpg`,
+                thumbnailClass: styles.thumbnail,
+            };
+        })
     );
 
-    const ProductOverview = ({ product }) => (
+    const ProductImage = () => (
+        <div className={styles.gallery}>
+            <ImageGallery
+                items={images}
+                showPlayButton={false}
+                showFullscreenButton={false}
+                showNav={false}
+                slideDuration={0}
+            />
+        </div>
+    );
+
+    const ProductOverview = () => (
         <div className={styles.blockChild}>
             <div id="product-name">
                 <Label className={styles.productName}>Laptop {product["name"]}</Label>
@@ -46,7 +65,7 @@ const OverviewBlock = ({ product, promotions }) => {
         </div>
     );
 
-    const ProductInfo = ({ product }) => {
+    const ProductInfo = () => {
         const { cpu, ram, hard_drive, monitor } = product;
         return (
             <div className={styles.blockChild}>
@@ -85,7 +104,7 @@ const OverviewBlock = ({ product, promotions }) => {
         );
     };
 
-    const ProductPromotions = ({ promotions }) => (
+    const ProductPromotions = () => (
         <div className={styles.blockChild}>
             <Label className={styles.promotionLabel}>Quà khuyến mãi</Label>
             {promotions.map((promotion) => (
@@ -104,10 +123,10 @@ const OverviewBlock = ({ product, promotions }) => {
         </div>
     );
 
-    const ProductActions = ({ product }) => (
+    const ProductActions = () => (
         <div className={styles.blockChild}>
             <Row>
-                <Col xs="4" className={styles.quantityCol}>
+                <Col sm="5" className={styles.quantityCol}>
                     <Label className={styles.quantityLabel}>Số lượng:</Label>
                     <Input
                         id="quantity"
@@ -118,7 +137,7 @@ const OverviewBlock = ({ product, promotions }) => {
                         className={styles.quantityInput}
                     />
                 </Col>
-                <Col xs="8" className={styles.quantityCol}>
+                <Col sm="7" className={styles.quantityCol}>
                     <Button color="success" onClick={() => addQuantityToCart(product["id"])}>
                         <FaShoppingCart />
                         &nbsp;&nbsp;Thêm vào giỏ hàng
@@ -144,25 +163,25 @@ const OverviewBlock = ({ product, promotions }) => {
 
     return (
         <Fragment>
-            <Col xs="4" className={styles.blockLeft}>
-                <ProductImage product={product} />
+            <Col xs="5" className={styles.blockLeft}>
+                <ProductImage />
             </Col>
 
-            <Col xs="8" className={styles.blockRight}>
-                <ProductOverview product={product} />
+            <Col xs="7" className={styles.blockRight}>
+                <ProductOverview />
                 <hr className={styles.divider} />
 
-                <ProductInfo product={product} />
+                <ProductInfo />
                 <hr className={styles.divider} />
 
                 {promotions.length > 0 ? (
                     <Fragment>
-                        <ProductPromotions promotions={promotions} />
+                        <ProductPromotions />
                         <hr className={styles.divider} />
                     </Fragment>
                 ) : null}
 
-                <ProductActions product={product} />
+                <ProductActions />
             </Col>
         </Fragment>
     );

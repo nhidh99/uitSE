@@ -36,7 +36,7 @@ const ProductEdit = ({ product }) => {
                 </ModalHeader>
 
                 <ModalBody>
-                    <ProductForm product={product} />
+                    <ProductForm product={product} toggle={toggle} />
                 </ModalBody>
             </Modal>
         </Fragment>

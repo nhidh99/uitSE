@@ -60,5 +60,4 @@ public class AddressDAOImpl implements AddressDAO {
     private void update(Address address) {
         em.merge(address);
     }
-
 }

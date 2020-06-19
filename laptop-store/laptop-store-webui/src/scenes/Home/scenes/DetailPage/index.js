@@ -14,6 +14,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
+    const [imageIds, setImageIds] = useState([]);
     const [ratings, setRatings] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
@@ -30,13 +31,15 @@ const DetailPage = (props) => {
     }, []);
 
     const loadData = async (productId) => {
-        const [product, ratings, promotions, suggestions] = await Promise.all([
+        const [product, imageIds, ratings, promotions, suggestions] = await Promise.all([
             loadProduct(productId),
+            loadImages(productId),
             loadRatings(productId),
             loadPromotions(productId),
             loadSuggestions(productId),
         ]);
         setProduct(product);
+        setImageIds(imageIds);
         setRatings(ratings);
         setPromotions(promotions);
         setSuggestions(suggestions);
@@ -45,6 +48,11 @@ const DetailPage = (props) => {
 
     const loadProduct = async (productId) => {
         const response = await fetch(`/cxf/api/laptops/${productId}`);
+        return response.ok ? await response.json() : null;
+    };
+
+    const loadImages = async (productId) => {
+        const response = await fetch(`/cxf/api/laptops/${productId}/image-ids`);
         return response.ok ? await response.json() : null;
     };
 
@@ -108,7 +116,9 @@ const DetailPage = (props) => {
         <Fragment>
             <ContentBlock
                 title={<ProductTitle product={product} />}
-                component={<OverviewBlock product={product} promotions={promotions} />}
+                component={
+                    <OverviewBlock product={product} promotions={promotions} imageIds={imageIds} />
+                }
             />
 
             <ContentBlock

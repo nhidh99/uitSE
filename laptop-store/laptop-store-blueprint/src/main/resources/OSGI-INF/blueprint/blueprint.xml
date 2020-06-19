@@ -28,6 +28,8 @@
 
     <bean id="laptopDAO" class="org.example.dao.impl.LaptopDAOImpl"/>
 
+    <bean id="laptopImageDAO" class="org.example.dao.impl.LaptopImageDAOImpl"/>
+
     <bean id="orderDetailDAO" class="org.example.dao.impl.OrderDetailDAOImpl"/>
 
     <bean id="promotionDAO" class="org.example.dao.impl.PromotionDAOImpl"/>
@@ -81,12 +83,14 @@
     <bean id="imageService" class="org.example.service.impl.ImageServiceImpl">
         <property name="promotionDAO" ref="promotionDAO"/>
         <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="laptopImageDAO" ref="laptopImageDAO"/>
     </bean>
 
     <!-- Laptop Service -->
     <bean id="laptopService" class="org.example.service.impl.LaptopServiceImpl">
         <property name="laptopDAO" ref="laptopDAO"/>
         <property name="promotionDAO" ref="promotionDAO"/>
+        <property name="laptopImageDAO" ref="laptopImageDAO"/>
         <property name="tagDAO" ref="tagDAO"/>
         <property name="imageUtils" ref="imageUtils"/>
     </bean>
@@ -193,7 +197,6 @@
             <ref component-id="jsonProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
-
 
     <!-- Order Server -->
     <jaxrs:server id="orderServer" address="/api/orders">

@@ -9,6 +9,7 @@ C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\j
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\RatingReplyDAOImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\api\OrderDetailDAO.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\UserDAOImpl.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\api\LaptopImageDAO.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\AddressDAOImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\api\AddressDAO.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\OrderDAOImpl.java
@@ -16,3 +17,4 @@ C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\j
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\api\UserDAO.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\PromotionDAOImpl.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\LaptopDAOImpl.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-dao\src\main\java\org\example\dao\impl\LaptopImageDAOImpl.java

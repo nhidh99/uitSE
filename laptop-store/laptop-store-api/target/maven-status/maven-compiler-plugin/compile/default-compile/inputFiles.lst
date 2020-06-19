@@ -14,8 +14,10 @@ C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\j
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\filter\LaptopFilter.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\PasswordInput.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\type\HardDriveType.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\ImageInput.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\OrderUpdateInput.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\filter\PromotionFilter.java
+C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\LaptopImage.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\input\RegisterInput.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\model\Laptop.java
 C:\Users\Admin\Desktop\uitBundles\uitSE\laptop-store\laptop-store-api\src\main\java\org\example\type\OrderStatus.java

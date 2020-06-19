@@ -23,13 +23,13 @@ const ConfirmModal = () => {
         });
     }, []);
 
-    const confirmAction = () => {
+    const confirmAction = async () => {
+        await confirm();
         toggle();
-        confirm();
     };
 
     return (
-        <Modal isOpen={isOpen} toggle={toggle}>
+        <Modal isOpen={isOpen} toggle={toggle} className={styles.modal}>
             <ModalHeader toggle={toggle}>{title}</ModalHeader>
             <ModalBody className={styles.body}>{message}</ModalBody>
             <ModalFooter>
