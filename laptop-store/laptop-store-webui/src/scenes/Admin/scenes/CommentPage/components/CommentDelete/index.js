@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import styles from "./styles.module.scss";
 import { getCookie } from "../../../../../../services/helper/cookie";
 
-const RatingDelete = ({ rating }) => {
+const CommentDelete = ({ comment }) => {
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
 
@@ -24,7 +24,7 @@ const RatingDelete = ({ rating }) => {
     );
 
     const submit = async () => {
-        const response = await fetch(`/cxf/api/ratings/${rating["id"]}`, {
+        const response = await fetch(`/cxf/api/comments/${comment["id"]}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${getCookie("access_token")}`,
@@ -44,13 +44,13 @@ const RatingDelete = ({ rating }) => {
             <Modal isOpen={modal} external={externalCloseBtn} className={styles.modal}>
                 <ModalHeader>
                     <FaTrash />
-                    &nbsp;&nbsp;Xóa đánh giá
+                    &nbsp;&nbsp;Xóa câu hỏi
                 </ModalHeader>
 
                 <ModalBody>
-                    Xác nhận xóa đánh giá{" "}
+                    Xác nhận xóa câu hỏi{" "}
                     <b>
-                        {rating["id"]} - {rating["comment_title"]}?
+                        {comment["id"]} - {comment["question"]}?
                     </b>
                 </ModalBody>
 
@@ -67,4 +67,4 @@ const RatingDelete = ({ rating }) => {
     );
 };
 
-export default RatingDelete;
+export default CommentDelete;

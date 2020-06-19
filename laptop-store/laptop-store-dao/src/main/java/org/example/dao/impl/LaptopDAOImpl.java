@@ -144,7 +144,7 @@ public class LaptopDAOImpl implements LaptopDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public Long findTotalLaptops(String filter) {
-        if(filter == null) {
+        if (filter == null) {
             String query = "SELECT COUNT(l) FROM Laptop l WHERE l.recordStatus = true";
             return em.createQuery(query, Long.class).getSingleResult();
         } else {

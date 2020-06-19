@@ -48,10 +48,12 @@ public class RatingServiceImpl implements RatingService {
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
         Laptop laptop = laptopDAO.findById(productId).orElseThrow(BadRequestException::new);
+        String commentTitle = ratingInput.getTitle().isEmpty() ? null : ratingInput.getTitle();
+        String commentDetail = ratingInput.getDetail().isEmpty() ? null : ratingInput.getDetail();
         return Rating.builder().laptop(laptop).user(user)
                 .rating(ratingInput.getRating())
-                .commentTitle(ratingInput.getTitle())
-                .commentDetail(ratingInput.getDetail())
+                .commentTitle(commentTitle)
+                .commentDetail(commentDetail)
                 .ratingDate(LocalDate.now()).build();
     }
 
@@ -94,7 +96,8 @@ public class RatingServiceImpl implements RatingService {
     @Override
     @DELETE
     @Path("/{id}")
-    public Response deleteRatingById(@PathParam("id") Integer id) {
+    @Secured({RoleType.ADMIN})
+    public Response deleteRatingById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
         try {
             ratingDAO.delete(id);
             return Response.noContent().build();
@@ -108,7 +111,8 @@ public class RatingServiceImpl implements RatingService {
     @Override
     @PUT
     @Path("/{id}")
-    public Response approveRatingById(@PathParam("id") Integer id) {
+    @Secured({RoleType.ADMIN})
+    public Response approveRatingById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
         try {
             ratingDAO.approve(id);
             return Response.ok().build();

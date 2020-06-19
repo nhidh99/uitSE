@@ -7,14 +7,14 @@ import Loader from "react-loader-advanced";
 import Pagination from "react-js-pagination";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
-import RatingDelete from "../RatingDelete";
-import RatingDetail from "../RatingDetail";
+import CommentDelete from "../CommentDelete";
+import CommentDetail from "../CommentDetail";
 
-const RatingList = (props) => {
+const CommentList = (props) => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(null);
     const [count, setCount] = useState(1);
-    const [ratings, setRatings] = useState([]);
+    const [comments, setComments] = useState([]);
 
     useEffect(() => {
         const params = new URLSearchParams(props.location.search);
@@ -36,27 +36,27 @@ const RatingList = (props) => {
     }, [page]);
 
     const search = async (id, status) => {
-        const response = await fetch(`/cxf/api/ratings/search?id=${id}&status=${status}&page=${page}`, {
+        const response = await fetch(`/cxf/api/comments/search?id=${id}&status=${status}&page=${page}`, {
             method: "GET",
             headers: { Authorization: "Bearer " + getCookie("access_token") }
         });
         if (response.ok) {
-            const ratings = await response.json();
-            setRatings(ratings);
+            const comments = await response.json();
+            setComments(comments);
             setLoading(false);
         }
     }
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/ratings/`, {
+        const response = await fetch(`/cxf/api/comments/`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
 
         if (response.ok) {
-            const ratings = await response.json();
+            const comments = await response.json();
             const count = parseInt(response.headers.get("X-Total-Count"));
-            setRatings(ratings);
+            setComments(comments);
             setCount(count);
             setLoading(false);
         }
@@ -68,60 +68,52 @@ const RatingList = (props) => {
         const id = params.get("id");
         const status = params.get("status");
         if (id === null) {
-            props.history.push("/admin/ratings?page=" + pageNumber);
+            props.history.push("/admin/comments?page=" + pageNumber);
         } else {
-            props.history.push("/admin/ratings/search?id=" + id + "&status=" + status + "&page=" + pageNumber);
+            props.history.push("/admin/comments/search?id=" + id + "&status=" + status + "&page=" + pageNumber);
         }
         setPage(pageNumber);
     };
 
-    const buildRowFromRating = (rating) => (
+    const buildRowFromComment = (comment) => (
         <tr>
-            <td className={styles.idCol}>{rating["id"]}</td>
-            <td className={styles.nameCol}>{rating["laptop"]["name"]}</td>
-            <td>{rating["rating"]}</td>
-            <td className={styles.titleCol}>
-                {rating["comment_title"] === null ? '' : rating["comment_title"].length > 30 ?
-                    rating["comment_title"].substring(0, 30) + '...' :
-                    rating["comment_title"]}
-            </td>
+            <td className={styles.idCol}>{comment["id"]}</td>
+            <td className={styles.nameCol}>{comment["laptop"]["name"]}</td>
             <td className={styles.detailCol}>
-                {rating["comment_detail"] === null ? '' : rating["comment_detail"].length > 30 ?
-                    rating["comment_detail"].substring(0, 30) + '...' :
-                    rating["comment_detail"]}
+                {comment["question"].length > 30 ?
+                    comment["question"].substring(0, 30) + '...' :
+                    comment["question"]}
             </td>
-            <td>{rating["approve_status"] ? 'Đã duyệt' : 'Chưa duyệt'}</td>
+            <td>{comment["approve_status"] ? 'Đã duyệt' : 'Chưa duyệt'}</td>
             <td className={styles.actionCol}>
                 <ButtonGroup>
                     <ButtonGroup>
-                        <RatingDelete rating={rating} />
-                        <RatingDetail rating={rating} />
+                        <CommentDelete comment={comment} />
+                        <CommentDetail comment={comment} />
                     </ButtonGroup>
                 </ButtonGroup>
             </td>
         </tr>
     );
 
-    const RatingTable = () => (
+    const CommentTable = () => (
         <Loader show={loading} message={<Spinner />}>
             <Table className={styles.table} bordered>
                 <tbody>
                     <tr>
-                        <th className={styles.idCol}>Mã đánh giá</th>
+                        <th className={styles.idCol}>Mã câu hỏi</th>
                         <th className={styles.nameCol}>Tên sản phẩm</th>
-                        <th className={styles.ratingCol}>Đánh giá</th>
-                        <th className={styles.titleCol}>Tiêu đề</th>
-                        <th className={styles.detailCol}>Nội dung</th>
+                        <th className={styles.titleCol}>Câu hỏi</th>
                         <th className={styles.statusCol}>Tình trạng</th>
                         <th className={styles.actionCol}>Thao tác</th>
                     </tr>
-                    {ratings.map((rating) => buildRowFromRating(rating))}
+                    {comments.map((comment) => buildRowFromComment(comment))}
                 </tbody>
             </Table>
         </Loader>
     );
 
-    const RatingPagination = () => (
+    const CommentPagination = () => (
         <div className={styles.pagination}>
             <Pagination
                 activePage={page}
@@ -137,10 +129,10 @@ const RatingList = (props) => {
 
     return (
         <Fragment>
-            <RatingTable />
-            <RatingPagination />
+            <CommentTable />
+            <CommentPagination />
         </Fragment>
     );
 };
 
-export default withRouter(RatingList);
+export default withRouter(CommentList);

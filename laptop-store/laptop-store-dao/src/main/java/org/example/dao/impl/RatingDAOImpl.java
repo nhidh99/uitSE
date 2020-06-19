@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.dao.api.RatingDAO;
 import org.example.model.Laptop;
-import org.example.model.Order;
-import org.example.model.Promotion;
 import org.example.model.Rating;
 
 import javax.persistence.EntityManager;
@@ -14,7 +12,6 @@ import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @NoArgsConstructor
@@ -45,7 +42,10 @@ public class RatingDAOImpl implements RatingDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Rating> findByProductId(Integer laptopId) {
-        String query = "SELECT r FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
+        String query = "SELECT r FROM Rating r " +
+                "WHERE r.laptop.id = :laptopId " +
+                "AND r.approveStatus = true " +
+                "AND (r.commentTitle is not null OR r.commentDetail is not null)";
         return em.createQuery(query, Rating.class)
                 .setParameter("laptopId", laptopId)
                 .getResultList();
@@ -65,7 +65,10 @@ public class RatingDAOImpl implements RatingDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public Long findTotalRatingByProductId(Integer laptopId) {
-        String query = "SELECT COUNT(r) FROM Rating r WHERE r.laptop.id = :laptopId";
+        String query = "SELECT COUNT(r) FROM Rating r " +
+                "WHERE r.laptop.id = :laptopId " +
+                "AND r.approveStatus = true " +
+                "AND (r.commentTitle is not null OR r.commentDetail is not null)";
         return em.createQuery(query, Long.class)
                 .setParameter("laptopId", laptopId)
                 .getSingleResult();
@@ -74,7 +77,7 @@ public class RatingDAOImpl implements RatingDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public Long findTotalRatingByFilter(String id, String status) {
-        if(id == null && status == null) {
+        if (id == null && status == null) {
             String query = "SELECT COUNT(r) FROM Rating r";
             return em.createQuery(query, Long.class).getSingleResult();
         } else {

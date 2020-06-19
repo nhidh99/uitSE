@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
 import { getCookie } from "../../../../../../services/helper/cookie";
-class RatingForm extends Component {
+class CommentForm extends Component {
     state = {
         submitted: false,
     };
@@ -12,14 +12,18 @@ class RatingForm extends Component {
         this.postApprove();
     }
 
-
     postApprove = async () => {
-        const rating = this.props.rating;
-        const response = await fetch(`/cxf/api/ratings/${rating["id"]}`, {
+        const comment = this.props.comment;
+        const reply = comment.approve_status ? '' : document.getElementById(`reply`).value;
+        const body =  { reply: reply };
+
+        const response = await fetch(`/cxf/api/comments/${comment["id"]}`, {
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${getCookie("access_token")}`,
             },
+            body: JSON.stringify(body),
         });
         if (response.ok) {
             window.location.reload();
@@ -28,7 +32,7 @@ class RatingForm extends Component {
 
     render() {
         const { submitted } = this.state;
-        const { rating } = this.props;
+        const { comment } = this.props;
 
         return (
             <Fragment>
@@ -42,58 +46,48 @@ class RatingForm extends Component {
                                     id="name"
                                     placeholder="Tên sản phẩm"
                                     maxLength={80}
-                                    defaultValue={rating?.laptop.name ?? null}
+                                    defaultValue={comment?.laptop.name ?? null}
                                 />
                             </td>
                         </tr>
                         <tr>
-                            <td className={styles.labelCol}>Đánh giá:</td>
+                            <td className={styles.labelCol}>Câu hỏi:</td>
                             <td>
                                 <Input
                                     type="text"
                                     className={"form-control"}
-                                    id="rating"
+                                    id="question"
                                     disabled
-                                    defaultValue={rating?.rating ?? null}
+                                    defaultValue={comment?.question ?? null}
                                 />
                             </td>
                         </tr>
-                        <tr>
-                            <td className={styles.labelCol}>Tiêu đề:</td>
-                            <td>
-                                <Input
-                                    type="text"
-                                    className={"form-control"}
-                                    id="title"
-                                    disabled
-                                    defaultValue={rating?.comment_title ?? null}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className={styles.imageLabel}>Nội dung:</td>
-                            <td>
-                                <Input
-                                    type="textarea"
-                                    rows="5"
-                                    className={"form-control"}
-                                    id="title"
-                                    disabled
-                                    defaultValue={rating?.comment_detail ?? null}
-                                />
-                            </td>
-                        </tr>
+                        {comment?.approve_status ? null :
+                            <tr>
+                                <td className={styles.imageLabel}>Trả lời:</td>
+                                <td>
+                                    <Input
+                                        type="textarea"
+                                        rows="5"
+                                        className={"form-control"}
+                                        id="reply"
+                                    // disabled
+                                    // defaultValue={comment.replies[0]?.reply ?? null}
+                                    />
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
 
                 <div className={styles.buttons}>
                     <Button
-                        color={rating?.approve_status ? "danger" : "success"}
+                        color={comment?.approve_status ? "danger" : "success"}
                         onClick={this.submit}
                         className={styles.button}
                         disabled={submitted}
                     >
-                        {rating?.approve_status ? "Bỏ duyệt" : "Duyệt"}
+                        {comment?.approve_status ? "Bỏ duyệt" : "Duyệt"}
                     </Button>
 
                     <Button color="secondary" onClick={this.props.toggle} className={styles.button}>
@@ -105,4 +99,4 @@ class RatingForm extends Component {
     }
 }
 
-export default RatingForm;
+export default CommentForm;

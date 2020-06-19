@@ -5,11 +5,9 @@ import lombok.NoArgsConstructor;
 import org.example.dao.api.RatingReplyDAO;
 import org.example.model.RatingReply;
 
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Transactional
 @NoArgsConstructor

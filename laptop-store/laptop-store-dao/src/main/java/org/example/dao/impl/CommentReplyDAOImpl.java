@@ -2,6 +2,7 @@ package org.example.dao.impl;
 
 import org.example.dao.api.CommentReplyDAO;
 import org.example.model.CommentReply;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;

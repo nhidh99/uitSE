@@ -41,6 +41,10 @@ public class Comment {
     @JsonProperty("comment_date")
     private LocalDate commentDate;
 
+    @Column(name = "approve_status")
+    @JsonProperty("approve_status")
+    private boolean approveStatus;
+
     @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER)
     @JsonProperty("replies")
     private List<CommentReply> replies;

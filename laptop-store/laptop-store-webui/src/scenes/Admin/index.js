@@ -5,6 +5,7 @@ import PromotionPage from "./scenes/PromotionPage";
 import OrderPage from "./scenes/OrderPage";
 import ProductPage from "./scenes/ProductPage";
 import RatingPage from "./scenes/RatingPage";
+import CommentPage from "./scenes/CommentPage";
 
 class Admin extends Component {
     render() {
@@ -58,6 +59,18 @@ class Admin extends Component {
                         exact
                         component={RatingPage}
                         path="/admin/ratings/search"
+                    />
+
+                    <Route
+                        exact
+                        component={CommentPage}
+                        path="/admin/comments"
+                    />
+
+                    <Route
+                        exact
+                        component={CommentPage}
+                        path="/admin/comments/search"
                     />
                 </Switch>
             </Fragment>

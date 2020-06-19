@@ -21,10 +21,15 @@ const AdminNavBar = () => (
             href="/admin/promotions"
             title="Khuyến mãi"
         />
-        <AdminNavItem 
+        <AdminNavItem
             icon={<FaStar />}
             href="/admin/ratings"
             title="Đánh giá"
+        />
+        <AdminNavItem
+            icon={<FaStar />}
+            href="/admin/comments"
+            title="Hỏi đáp"
         />
     </Nav>
 );

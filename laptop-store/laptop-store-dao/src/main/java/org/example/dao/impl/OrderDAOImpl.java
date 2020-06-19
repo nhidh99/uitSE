@@ -119,11 +119,11 @@ public class OrderDAOImpl implements OrderDAO {
                 "WHERE (o.id is NULL OR cast(o.id as string) = '' OR cast(o.id as string) LIKE CONCAT('%', :id, '%')) " +
                 "AND (o.status is NULL OR o.status = '' OR cast(o.status as string) LIKE CONCAT('%', :status, '%'))";
         List<Order> orders = em.createQuery(query, Order.class)
-                    .setParameter("id", id)
-                    .setParameter("status", status)
-                    .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
-                    .setMaxResults(ELEMENT_PER_BLOCK)
-                    .getResultList();
+                .setParameter("id", id)
+                .setParameter("status", status)
+                .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_BLOCK)
+                .getResultList();
         return orders.stream().map(this::buildOverviewFromOrder).collect(Collectors.toList());
     }
 

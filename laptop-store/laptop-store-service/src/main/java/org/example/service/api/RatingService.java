@@ -11,9 +11,9 @@ public interface RatingService {
 
     Response findRatingsByProductId(Integer productId);
 
-    Response deleteRatingById(Integer ratingId);
+    Response deleteRatingById(Integer ratingId, SecurityContext securityContext);
 
-    Response approveRatingById(Integer ratingId);
+    Response approveRatingById(Integer ratingId, SecurityContext securityContext);
 
     Response findRatingsByFilter(String id, String status, Integer page);
 

@@ -56,13 +56,72 @@ public class CommentServiceImpl implements CommentService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findByProductId(@QueryParam("product-id") Integer productId) {
         try {
-            List<Comment> comments = commentDAO.findByProductId(productId);
-            return Response.ok(comments).build();
+            List<Comment> comments;
+            Long commentCount;
+            if(productId != null) {
+                comments = commentDAO.findByProductId(productId);
+                commentCount = commentDAO.findTotalCommentByProductId(productId);
+            } else {
+                comments = commentDAO.findAll();
+                commentCount = commentDAO.findTotalCommentByFilter(null, null);
+            }
+            return Response.ok(comments).header("X-Total-Count", commentCount).build();
         } catch (Exception ex) {
             return Response.serverError().build();
         }
     }
 
+    @Override
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findCommentsByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+        try {
+            List<Comment> comments = commentDAO.findByFilter(id, status, page);
+            Long commentCount = commentDAO.findTotalCommentByFilter(id, status);
+            return Response.ok(comments).header("X-Total-Count", commentCount).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @Secured({RoleType.ADMIN})
+    public Response deleteCommentById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
+        try {
+            commentDAO.delete(id);
+            return Response.noContent().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Secured({RoleType.ADMIN})
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response approveCommentById(@PathParam("id") Integer id,
+                                       ReplyInput replyInput,
+                                       @Context SecurityContext securityContext) {
+        try {
+            CommentReply commentReply = null;
+            if(!replyInput.getReply().isEmpty()) {
+                commentReply = buildReplyFromRequestBody(id, replyInput, securityContext);
+            }
+            commentDAO.approve(id, commentReply);
+            return Response.ok().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
 
     @Override
     @POST
