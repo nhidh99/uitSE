@@ -4,8 +4,7 @@ import OverviewBlock from "./components/OverviewBlock";
 import DetailBlock from "./components/DetailBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import RatingBlock from "./components/RatingBlock";
-import RatingList from "./components/RatingList";
-import QuestionBlock from "./components/QuestionBlock";
+import CommentBlock from "./components/CommentBlock";
 import { Row, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaCaretRight } from "react-icons/fa";
@@ -16,9 +15,11 @@ import QuestionList from "./components/QuestionList";
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
+    const [imageIds, setImageIds] = useState([]);
     const [ratings, setRatings] = useState([]);
     const [comments, setComments] = useState([]);
     const [promotions, setPromotions] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
         window.scroll(0, 0);
@@ -32,16 +33,20 @@ const DetailPage = (props) => {
     }, []);
 
     const loadData = async (productId) => {
-        const [product, ratings, promotions, comments] = await Promise.all([
+        const [product, imageIds, ratings, promotions, comments, suggestions] = await Promise.all([
             loadProduct(productId),
+            loadImages(productId),
             loadRatings(productId),
             loadPromotions(productId),
             loadComments(productId),
+            loadSuggestions(productId),
         ]);
         setProduct(product);
+        setImageIds(imageIds);
         setRatings(ratings);
         setComments(comments);
         setPromotions(promotions);
+        setSuggestions(suggestions);
         setLoading(false);
     };
 
@@ -55,6 +60,11 @@ const DetailPage = (props) => {
         return response.ok ? await response.json() : null;
     };
 
+    const loadImages = async (productId) => {
+        const response = await fetch(`/cxf/api/laptops/${productId}/image-ids`);
+        return response.ok ? await response.json() : null;
+    };
+
     const loadRatings = async (productId) => {
         const response = await fetch(`/cxf/api/ratings?product-id=${productId}`);
         return response.ok ? await response.json() : [];
@@ -62,6 +72,11 @@ const DetailPage = (props) => {
 
     const loadPromotions = async (productId) => {
         const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
+        return response.ok ? await response.json() : [];
+    };
+
+    const loadSuggestions = async (productId) => {
+        const response = await fetch(`/cxf/api/laptops/${productId}/suggestions`);
         return response.ok ? await response.json() : [];
     };
 
@@ -107,21 +122,26 @@ const DetailPage = (props) => {
     return loading ? (
         <DetailLoading />
     ) : (
-            <Fragment>
-                <ContentBlock
-                    title={<ProductTitle product={product} />}
-                    component={<OverviewBlock product={product} promotions={promotions} />}
-                />
+        <Fragment>
+            <ContentBlock
+                title={<ProductTitle product={product} />}
+                component={
+                    <OverviewBlock product={product} promotions={promotions} imageIds={imageIds} />
+                }
+            />
 
                 <ContentBlock
                     title="Thông tin chi tiết"
                     component={<DetailBlock product={product} />}
                 />
 
-                <ContentBlock title="Sản phẩm tương tự" component={<SuggestBlock />} />
+            <ContentBlock
+                title="Sản phẩm tương tự"
+                component={<SuggestBlock suggestions={suggestions} />}
+            />
 
-                <ContentBlock 
-                    title="Hỏi, đáp về sản phẩm" 
+                <ContentBlock
+                    title="Hỏi, đáp về sản phẩm"
                     component={<QuestionBlock comments={comments} product={product} />} />
 
                 <ContentBlock title="Khách hàng hỏi đáp" component={<QuestionList comments={comments}/>} />

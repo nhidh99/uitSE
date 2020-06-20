@@ -23,14 +23,33 @@ public class AddressServiceImpl implements AddressService {
     private UserDAO userDAO;
 
     @Override
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured({RoleType.ADMIN, RoleType.USER})
+    public Response findAddressById(@PathParam("id") Integer id,
+                                    @Context SecurityContext securityContext) {
+        try {
+            Principal principal = securityContext.getUserPrincipal();
+            Integer userId = Integer.parseInt(principal.getName());
+            Address address = addressDAO.findById(id).orElseThrow(Exception::new);
+            boolean isValidRequest = address.getUser().getId().equals(userId);
+            return isValidRequest ? Response.ok(address).build() : Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Secured({RoleType.ADMIN, RoleType.USER})
     public Response createAddress(AddressInput addressInput, @Context SecurityContext securityContext) {
         try {
             Address address = buildAddressFromRequestBody(addressInput, securityContext);
             addressDAO.save(address);
-            return Response.status(Response.Status.CREATED).build();
+            return Response.status(Response.Status.CREATED).entity(address.getId()).build();
         } catch (Exception ex) {
             return Response.serverError().build();
         }
@@ -40,6 +59,7 @@ public class AddressServiceImpl implements AddressService {
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Secured({RoleType.ADMIN, RoleType.USER})
     public Response updateAddress(@PathParam("id") Integer id, AddressInput addressInput, @Context SecurityContext securityContext) {
         try {
             Address address = buildAddressFromRequestBody(addressInput, securityContext);
@@ -69,6 +89,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @DELETE
     @Path("/{id}")
+    @Secured({RoleType.ADMIN, RoleType.USER})
     public Response deleteAddress(@PathParam("id") Integer id) {
         try {
             addressDAO.delete(id);

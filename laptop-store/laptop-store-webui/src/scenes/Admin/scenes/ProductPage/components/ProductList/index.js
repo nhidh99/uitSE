@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from "react";
-import { Table, ButtonGroup, Spinner } from "reactstrap";
+import { Table, ButtonGroup, Spinner, Button } from "reactstrap";
 import styles from "./styles.module.scss";
 import ProductDelete from "../ProductDelete";
 import ProductEdit from "../ProductEdit";
@@ -9,6 +9,10 @@ import { getCookie } from "../../../../../../services/helper/cookie";
 import Loader from "react-loader-advanced";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
+import { FaImages } from "react-icons/fa";
+import ImageUpload from "../ImageUpload";
+import store from "../../../../../../services/redux/store";
+import { buildModal } from "../../../../../../services/redux/actions";
 
 const ProductList = (props) => {
     const [loading, setLoading] = useState(true);
@@ -76,6 +80,54 @@ const ProductList = (props) => {
         setPage(pageNumber);
     };
 
+    const updateDetailImages = async (productId) => {
+        const data = new FormData();
+        const images = store.getState()["images"];
+        const deleteIds = images["deleteIds"];
+        const uploads = images["uploads"];
+
+        data.append("del-ids", new Blob([JSON.stringify(deleteIds)], { type: "application/json" }));
+
+        if (uploads.length === 0) {
+            const emptyImages = new File([new Blob()], "empty.jpg", { type: "image/jpeg" });
+            data.append("uploads", emptyImages);
+        } else {
+            uploads.forEach((upload) => data.append("uploads", upload));
+        }
+
+        const url = `/cxf/api/laptops/${productId}/detail-images`;
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${getCookie("access_token")}`,
+                "Content-Type": "multipart/form-data",
+            },
+            body: data,
+        });
+    };
+
+    const toggleImageUploader = async (productId) => {
+        const imageDetailIds = await loadImageDetailIds(productId);
+        const defaultURLs = imageDetailIds.map(
+            (id) => `/cxf/api/images/600/details/${id}/images-${id}.jpg`
+        );
+        const modal = {
+            title: "Thêm hình ảnh giới thiệu sản phẩm",
+            message: <ImageUpload defaultURLs={defaultURLs} />,
+            confirm: () => () => updateDetailImages(productId),
+        };
+        store.dispatch(buildModal(modal));
+    };
+
+    const loadImageDetailIds = async (productId) => {
+        const url = `/cxf/api/laptops/${productId}/image-ids`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
+        });
+        return response.ok ? await response.json() : null;
+    };
+
     const buildRowFromProduct = (product) => (
         <tr>
             <td>{product["id"]}</td>
@@ -99,6 +151,9 @@ const ProductList = (props) => {
                 <ButtonGroup>
                     <ButtonGroup>
                         <ProductDelete product={product} />
+                        <Button onClick={() => toggleImageUploader(product["id"])} color="success">
+                            <FaImages />
+                        </Button>
                         <ProductEdit product={product} />
                     </ButtonGroup>
                 </ButtonGroup>

@@ -11,6 +11,7 @@ import { getCookie, createCookie, removeCookie } from "./services/helper/cookie"
 import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./constants";
 import { getCart, updateCartDatabase } from "./services/helper/cart";
 import Filter from "./components/Filter";
+import ConfirmModal from "./components/ConfirmModal";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -94,7 +95,15 @@ const App = (props) => {
             <Route
                 exact
                 component={Home}
-                path={["/", "/search", "/user", "/cart", "/product/:id", "/product/:alt/:id"]}
+                path={[
+                    "/",
+                    "/search",
+                    "/user",
+                    "/cart",
+                    "/product/:id",
+                    "/product/:alt/:id",
+                    "/product/compare/:alt/:id1/:id2",
+                ]}
             />
             <Route exact component={Auth} path="/auth/(forgot|login|register)" />
         </Fragment>
@@ -112,9 +121,10 @@ const App = (props) => {
                 "/payment",
                 "/product/:id",
                 "/product/:alt/:id",
+                "/product/compare/:alt/:id1/:id2",
                 "/user/(info|password|address|order)",
-                "/user/address/(edit|create)",
-                "/user/address/:id",
+                "/user/address/:id",    
+                "/user/order/:orderId",
             ]}
         />
     );
@@ -132,8 +142,9 @@ const App = (props) => {
                     "/payment",
                     "/product/:id",
                     "/product/:alt/:id",
+                    "/product/compare/:alt/:id1/:id2",
                     "/user/(info|password|address|order)",
-                    "/user/address/(edit|create)",
+                    "/user/address/:id",    
                     "/user/order/:orderId",
                 ]}
             />
@@ -151,6 +162,7 @@ const App = (props) => {
     return loading ? null : (
         <Fragment>
             <Banner role={role} />
+            <ConfirmModal />
             <Filter />
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>

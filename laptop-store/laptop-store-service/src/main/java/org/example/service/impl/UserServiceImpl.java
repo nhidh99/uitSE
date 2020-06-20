@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.example.dao.api.AddressDAO;
 import org.example.dao.api.OrderDAO;
 import org.example.dao.api.UserDAO;
@@ -10,6 +11,7 @@ import org.example.security.Secured;
 import org.example.service.api.UserService;
 import org.example.type.GenderType;
 import org.example.type.RoleType;
+import org.example.type.SocialMediaType;
 
 import javax.persistence.NoResultException;
 import javax.ws.rs.*;
@@ -18,7 +20,9 @@ import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Secured({RoleType.USER, RoleType.ADMIN})
 public class UserServiceImpl implements UserService {
@@ -133,6 +137,7 @@ public class UserServiceImpl implements UserService {
     @GET
     @Path("/me/orders")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured({RoleType.ADMIN, RoleType.USER})
     public Response findUserOrderOverviews(@QueryParam("page") @DefaultValue("1") Integer page,
                                            @Context SecurityContext securityContext) {
         try {
@@ -141,6 +146,25 @@ public class UserServiceImpl implements UserService {
             List<OrderOverview> orderOverviews = orderDAO.findByUserId(page, userId);
             Long orderCount = orderDAO.findTotalOrdersByUserId(userId);
             return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/me/social-auth")
+    @Secured({RoleType.ADMIN, RoleType.USER})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkUserSocialMediaAuth(@Context SecurityContext securityContext) {
+        try {
+            Principal principal = securityContext.getUserPrincipal();
+            Integer userId = Integer.parseInt(principal.getName());
+            User user = userDAO.findById(userId).orElseThrow(Exception::new);
+            Map<SocialMediaType, Boolean> socialMediaAuth = new HashMap<>();
+            socialMediaAuth.put(SocialMediaType.FACEBOOK, user.getFacebookId() != null);
+            socialMediaAuth.put(SocialMediaType.GOOGLE, user.getGoogleId() != null);
+            return Response.ok(socialMediaAuth).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

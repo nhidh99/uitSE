@@ -23,11 +23,7 @@ class UserPage extends Component {
                     <Switch>
                         <Route exact component={InfoPage} path="/user/info" />
                         <Route exact component={AddressPage} path="/user/address" />
-                        <Route
-                            exact
-                            component={EditAddressPage}
-                            path="/user/address/(edit|create)"
-                        />
+                        <Route exact component={EditAddressPage} path="/user/address/:id" />
                         <Route exact component={PasswordPage} path="/user/password" />
                         <Route exact component={OrderPage} path="/user/order" />
                         <Route exact component={OrderDetail} path="/user/order/:orderId" />

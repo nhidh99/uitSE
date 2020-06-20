@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1592456469245
-Build-Jdk: 1.8.0_241
-Built-By: vuong
+Bnd-LastModified: 1592578230752
+Build-Jdk: 1.8.0_251
+Built-By: Admin
 Bundle-ManifestVersion: 2
 Bundle-Name: laptop-store-api
 Bundle-SymbolicName: org.example.laptop-store-api

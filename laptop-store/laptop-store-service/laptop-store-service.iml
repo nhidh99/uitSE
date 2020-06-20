@@ -4,7 +4,7 @@
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="laptop-store-service-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.example.laptop-store-service" bundleVersion="1.0.0.SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
-          <property key="Import-Package" value="org.apache.cxf.jaxrs.ext.multipart;version=!,*" />
+          <property key="Import-Package" value="org.apache.cxf.jaxrs.ext.multipart;version=!,javax.activation.*;version=!,*" />
           <property key="Export-Package" value="org.example.service.api,org.example.service.impl" />
           <property key="Bundle-Name" value="laptop-store-service" />
         </additionalProperties>

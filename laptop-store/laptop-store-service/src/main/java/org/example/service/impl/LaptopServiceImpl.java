@@ -1,12 +1,16 @@
 package org.example.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.dao.api.LaptopDAO;
+import org.example.dao.api.LaptopImageDAO;
 import org.example.dao.api.PromotionDAO;
 import org.example.dao.api.TagDAO;
 import org.example.filter.LaptopFilter;
 import org.example.model.*;
+import org.example.security.Secured;
 import org.example.service.api.LaptopService;
 import org.example.type.*;
 import org.example.util.api.ImageUtils;
@@ -19,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +32,7 @@ public class LaptopServiceImpl implements LaptopService {
     private LaptopDAO laptopDAO;
     private PromotionDAO promotionDAO;
     private TagDAO tagDAO;
+    private LaptopImageDAO laptopImageDAO;
     private ImageUtils imageUtils;
 
     @Override
@@ -138,6 +144,7 @@ public class LaptopServiceImpl implements LaptopService {
     @POST
     @Path("/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Secured(RoleType.ADMIN)
     public Response createLaptop(MultipartBody body) {
         try {
             Laptop laptop = buildLaptopFromRequestBody(body);
@@ -247,6 +254,56 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @PUT
+    @Path("/{id}/detail-images")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Secured(RoleType.ADMIN)
+    public Response updateLaptopDetailImages(
+            @PathParam("id") Integer laptopId,
+            @Multipart(value = "del-ids", type = "application/json") Integer[] deleteIds,
+            @Multipart(value = "uploads", type = "image/*") List<Attachment> attachments) {
+        try {
+            List<LaptopImage> uploadedImages = buildUploadedImagesFromRequestBody(laptopId, attachments);
+            List<LaptopImage> deletedImages = buildDeletedImagesFromRequestBody(laptopId, deleteIds);
+            laptopImageDAO.update(uploadedImages, deletedImages);
+            return Response.noContent().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    private List<LaptopImage> buildUploadedImagesFromRequestBody(Integer laptopId, List<Attachment> attachments) throws Exception {
+        Laptop laptop = laptopDAO.findById(laptopId).orElseThrow(Exception::new);
+        List<LaptopImage> uploadedImages = new LinkedList<>();
+        boolean isEmptyUploadedImages = attachments.size() == 1 && attachments.get(0).getDataHandler().getName().equals("empty.jpg");
+
+        if (!isEmptyUploadedImages) {
+            for (Attachment attachment : attachments) {
+                InputStream is = attachment.getDataHandler().getInputStream();
+                BufferedImage image = ImageIO.read(is);
+                byte[] imageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_IMAGE);
+                LaptopImage laptopImage = LaptopImage.builder().id(null).image(imageBlob).laptop(laptop).build();
+                uploadedImages.add(laptopImage);
+            }
+        }
+        return uploadedImages;
+    }
+
+    private List<LaptopImage> buildDeletedImagesFromRequestBody(Integer laptopId, Integer[] deleteIds) {
+        List<Integer> curImageIds = laptopImageDAO.findIdsByLaptopId(laptopId);
+        List<Integer> deletedImageIds = Arrays.asList(deleteIds);
+        boolean isValidDeletion = curImageIds.containsAll(deletedImageIds);
+        if (isValidDeletion) {
+            return laptopImageDAO.findByIds(deletedImageIds);
+        } else {
+            throw new BadRequestException();
+        }
+    }
+
+    @Override
     @DELETE
     @Path("/{id}")
     public Response deleteLaptop(@PathParam("id") Integer id) {
@@ -285,6 +342,21 @@ public class LaptopServiceImpl implements LaptopService {
             return tags == null
                     ? Response.status(Response.Status.BAD_REQUEST).build()
                     : Response.ok(tags).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/{id}/image-ids")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findDetailImageIdsById(@PathParam("id") Integer id) {
+        try {
+            List<Integer> ids = laptopImageDAO.findIdsByLaptopId(id);
+            return ids == null
+                    ? Response.status(Response.Status.BAD_REQUEST).build()
+                    : Response.ok(ids).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

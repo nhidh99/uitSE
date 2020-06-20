@@ -32,6 +32,8 @@
             <version>2.10.3</version>
         </dependency>
 
+
+
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -71,6 +73,7 @@
                     <instructions>
                         <Import-Package>
                             org.apache.cxf.jaxrs.ext.multipart;version=!,
+                            javax.activation.*;version=!,
                             *
                         </Import-Package>
                         <Export-Package>

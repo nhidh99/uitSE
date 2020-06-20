@@ -13,6 +13,7 @@ org\example\filter\LaptopFilter.class
 org\example\type\ProductType.class
 org\example\input\OrderUpdateInput.class
 org\example\model\Order.class
+org\example\model\LaptopImage.class
 org\example\model\User.class
 org\example\type\BrandType.class
 org\example\model\RatingReply$RatingReplyBuilder.class
@@ -43,11 +44,15 @@ org\example\type\OrderStatus$1.class
 org\example\model\OrderOverview.class
 org\example\input\CommentInput.class
 org\example\model\Promotion.class
+org\example\input\SocialMediaInput.class
 org\example\model\RAM.class
 org\example\model\Laptop.class
 org\example\type\ResolutionType.class
+org\example\input\ImageInput.class
 org\example\model\Laptop$LaptopBuilder.class
 org\example\model\Address.class
+org\example\model\LaptopImage$LaptopImageBuilder.class
+org\example\type\SocialMediaType.class
 org\example\model\CPU$CPUBuilder.class
 org\example\model\OrderDetail$OrderDetailBuilder.class
 org\example\input\OrderInput.class

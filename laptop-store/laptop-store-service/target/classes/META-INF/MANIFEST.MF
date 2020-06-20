@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1592456479276
-Build-Jdk: 1.8.0_241
-Built-By: vuong
+Bnd-LastModified: 1592578245361
+Build-Jdk: 1.8.0_251
+Built-By: Admin
 Bundle-ManifestVersion: 2
 Bundle-Name: laptop-store-service
 Bundle-SymbolicName: org.example.laptop-store-service
@@ -13,15 +13,15 @@ Export-Package: org.example.service.api;uses:="javax.ws.rs.core,org.apac
  org.apache.cxf.jaxrs.ext.multipart,org.example.filter,org.example.input
  ,org.example.security,org.example.service.api,org.example.type";version
  ="1.0.0"
-Import-Package: org.apache.cxf.jaxrs.ext.multipart,com.fasterxml.jackson
- .core;version="[2.10,3)",com.fasterxml.jackson.core.type;version="[2.10
- ,3)",com.fasterxml.jackson.databind;version="[2.10,3)",com.fasterxml.ja
- ckson.databind.node;version="[2.10,3)",javax.imageio,javax.persistence;
- version="[2.2,3)",javax.ws.rs;version="[2.0,3)",javax.ws.rs.core;versio
- n="[2.0,3)",org.example.dao.api;version="[1.0,2)",org.example.filter;ve
- rsion="[1.0,2)",org.example.input;version="[1.0,2)",org.example.model;v
- ersion="[1.0,2)",org.example.security;version="[1.0,2)",org.example.ser
- vice.api,org.example.type;version="[1.0,2)",org.example.util.api;versio
- n="[1.0,2)"
+Import-Package: org.apache.cxf.jaxrs.ext.multipart,javax.activation,com.
+ fasterxml.jackson.core;version="[2.10,3)",com.fasterxml.jackson.core.ty
+ pe;version="[2.10,3)",com.fasterxml.jackson.databind;version="[2.10,3)"
+ ,com.fasterxml.jackson.databind.node;version="[2.10,3)",javax.imageio,j
+ avax.persistence;version="[2.2,3)",javax.ws.rs;version="[2.0,3)",javax.
+ ws.rs.core;version="[2.0,3)",org.example.dao.api;version="[1.0,2)",org.
+ example.filter;version="[1.0,2)",org.example.input;version="[1.0,2)",or
+ g.example.model;version="[1.0,2)",org.example.security;version="[1.0,2)
+ ",org.example.service.api,org.example.type;version="[1.0,2)",org.exampl
+ e.util.api;version="[1.0,2)"
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Tool: Bnd-3.0.0.201509101326

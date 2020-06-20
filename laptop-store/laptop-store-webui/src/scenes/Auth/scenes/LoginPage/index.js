@@ -1,18 +1,20 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import { Input, InputGroup, InputGroupAddon, InputGroupText, Button } from "reactstrap";
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser, FaLock, FaGoogle, FaFacebookF } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { createCookie } from "../../../../services/helper/cookie";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import { GoogleLogin } from "react-google-login";
 
-class LoginPage extends Component {
-    state = {
-        error: null,
-        submitted: false,
-    };
+const LoginPage = () => {
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    login = async () => {
-        this.setState({ error: null, submitted: true });
+    const login = async () => {
+        setError(null);
+        setLoading(true);
+
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         const response = await fetch("/cxf/api/auth/login", {
@@ -38,15 +40,66 @@ class LoginPage extends Component {
                     error = "Lỗi hệ thống";
                     break;
             }
-            this.setState({ error: error, submitted: false });
+            setError(error);
+            setLoading(false);
         }
     };
 
-    render() {
-        const { error, submitted } = this.state;
+    const responseFacebook = async (res) => {
+        const facebookId = res["id"];
+        const response = await fetch("/cxf/api/auth/facebook/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: facebookId }),
+        });
+        if (response.ok) {
+            const token = await response.text();
+            createCookie("access_token", token, 1);
+            window.location.href = "/";
+        } else {
+            let error = "";
+            switch (response.status) {
+                case 404:
+                    error = "Không tìm thấy tài khoản liên kết";
+                    break;
+                default:
+                    error = "Lỗi hệ thống";
+                    break;
+            }
+            setError(error);
+            setLoading(false);
+        }
+    };
 
-        return (
-            <div className={styles.form}>
+    const responseGoogle = async (res) => {
+        const googleId = res["googleId"];
+        const response = await fetch("/cxf/api/auth/google/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: googleId }),
+        });
+        if (response.ok) {
+            const token = await response.text();
+            createCookie("access_token", token, 1);
+            window.location.href = "/";
+        } else {
+            let error = "";
+            switch (response.status) {
+                case 400:
+                    error = "Không tìm thấy tài khoản liên kết";
+                    break;
+                default:
+                    error = "Lỗi hệ thống";
+                    break;
+            }
+            setError(error);
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className={styles.form}>
+            <div className={styles.loginForm}>
                 <header>ĐĂNG NHẬP</header>
                 <InputGroup>
                     <InputGroupAddon addonType="prepend">
@@ -61,7 +114,6 @@ class LoginPage extends Component {
                         className={styles.borderInputRight}
                     />
                 </InputGroup>
-
                 <InputGroup>
                     <InputGroupAddon addonType="prepend">
                         <InputGroupText className={styles.borderInputLeft}>
@@ -79,8 +131,8 @@ class LoginPage extends Component {
                 <Button
                     color="secondary"
                     className={styles.button}
-                    onClick={this.login}
-                    disabled={submitted}
+                    onClick={login}
+                    disabled={loading}
                 >
                     Đăng nhập
                 </Button>
@@ -94,8 +146,43 @@ class LoginPage extends Component {
 
                 {error ? <p className={styles.error}>{error}</p> : null}
             </div>
-        );
-    }
-}
+
+            <GoogleLogin
+                clientId="273728474565-jtpupgab0il3lrc0qdlkm88e6ijq3nev.apps.googleusercontent.com"
+                fields="name"
+                onSuccess={responseGoogle}
+                render={(renderProps) => (
+                    <button
+                        className={`${styles.altBtn} ${styles.googleBtn}`}
+                        onClick={renderProps.onClick}
+                        disabled={renderProps.disabled}
+                    >
+                        <span className={styles.iconLogin}>
+                            <FaGoogle size={25} color="#white" />
+                        </span>
+                        Đăng nhập với Google
+                    </button>
+                )}
+            />
+
+            <FacebookLogin
+                appId={1961661687297528}
+                fields="name"
+                callback={responseFacebook}
+                render={(renderProps) => (
+                    <button
+                        className={`${styles.altBtn} ${styles.facebookBtn}`}
+                        onClick={renderProps.onClick}
+                    >
+                        <span className={styles.iconLogin}>
+                            <FaFacebookF color="white" size={25} onClick={renderProps.onClick} />
+                        </span>
+                        Đăng nhập với Facebook
+                    </button>
+                )}
+            />
+        </div>
+    );
+};
 
 export default LoginPage;

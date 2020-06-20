@@ -40,7 +40,7 @@ const RatingBlock = (props) => {
         <Fragment>
             <Col xs="4" className={styles.blockLeft}>
                 <Label className={styles.ratingLabel}>Đánh giá trung bình</Label>
-                <Label className={styles.ratingPoint}>{props.product["avg_rating"]}/5</Label>
+                <Label className={styles.ratingPoint}>{props.product["avg_rating"].toFixed(1)}/5.0</Label>
                 <Label className={styles.commentCount}>
                     ({props.ratings?.["length"]} đánh giá)
                 </Label>

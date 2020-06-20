@@ -68,4 +68,12 @@ public class User {
     @Column(name = "cart")
     @JsonProperty("cart")
     private String cart;
+
+    @Column(name = "facebook_id")
+    @JsonIgnore
+    private String facebookId;
+
+    @Column(name = "google_id")
+    @JsonIgnore
+    private String googleId;
 }

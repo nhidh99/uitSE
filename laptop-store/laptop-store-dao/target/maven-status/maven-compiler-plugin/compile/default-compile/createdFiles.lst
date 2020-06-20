@@ -2,6 +2,7 @@ org\example\dao\api\OrderDAO.class
 org\example\dao\impl\UserDAOImpl.class
 org\example\dao\impl\AddressDAOImpl.class
 org\example\dao\impl\LaptopDAOImpl.class
+org\example\dao\impl\LaptopImageDAOImpl.class
 org\example\dao\api\LaptopDAO.class
 org\example\dao\impl\RatingReplyDAOImpl.class
 org\example\dao\impl\PromotionDAOImpl.class
@@ -10,6 +11,7 @@ org\example\dao\api\UserDAO.class
 org\example\dao\impl\CommentDAOImpl.class
 org\example\dao\api\CommentReplyDAO.class
 org\example\dao\impl\RatingDAOImpl.class
+org\example\dao\api\LaptopImageDAO.class
 org\example\dao\impl\TagDAOImpl.class
 org\example\dao\api\PromotionDAO.class
 org\example\dao\api\TagDAO.class

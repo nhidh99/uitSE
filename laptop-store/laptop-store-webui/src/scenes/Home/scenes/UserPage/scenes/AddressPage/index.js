@@ -43,7 +43,7 @@ class AddressPage extends Component {
                         <FaBook />
                         &nbsp;&nbsp;SỔ ĐỊA CHỈ
                     </label>
-                    <Link to={{ pathname: "/user/address/create", state: { address: null } }}>
+                    <Link to={{ pathname: "/user/address/create" }}>
                         <Button color="success" className={styles.submit}>
                             Thêm địa chỉ
                         </Button>

@@ -22,5 +22,9 @@ public interface UserDAO {
 
     Optional<User> findById(Integer id);
 
+    Optional<User> findByFacebookId(String facebookId);
+
+    Optional<User> findByGoogleId(String googleId);
+
     boolean updatePassword(Integer userId, String oldPassword, String newPassword);
 }

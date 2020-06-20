@@ -17,7 +17,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
-          <factory-entry name="laptop-store" />
+          <factory-entry name="laptop-store" value="cd296e9c-da13-41fc-8f4d-9349a4ddd8c3" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />

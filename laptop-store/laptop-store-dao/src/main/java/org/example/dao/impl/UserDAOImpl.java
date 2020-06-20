@@ -9,6 +9,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +60,24 @@ public class UserDAOImpl implements UserDAO {
         String query = "SELECT u FROM User u WHERE u.username = :username";
         List<User> users = em.createQuery(query, User.class)
                 .setParameter("username", username)
+                .setMaxResults(1).getResultList();
+        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
+    }
+
+    @Override
+    public Optional<User> findByFacebookId(String facebookId) {
+        String query = "SELECT u FROM User u WHERE u.facebookId = :facebookId";
+        List<User> users = em.createQuery(query, User.class)
+                .setParameter("facebookId", facebookId)
+                .setMaxResults(1).getResultList();
+        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
+    }
+
+    @Override
+    public Optional<User> findByGoogleId(String googleId) {
+        String query = "SELECT u FROM User u WHERE u.googleId = :googleId";
+        List<User> users = em.createQuery(query, User.class)
+                .setParameter("googleId", googleId)
                 .setMaxResults(1).getResultList();
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }

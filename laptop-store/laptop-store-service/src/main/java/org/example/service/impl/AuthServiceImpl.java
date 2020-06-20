@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
                         .name(registerInput.getName())
                         .phone(registerInput.getPhone())
                         .gender(gender).birthday(birthday)
-                        .role(RoleType.USER).build();
+                        .role(RoleType.USER).facebookId(null).build();
                 userDAO.register(user);
                 return Response.ok().build();
             }

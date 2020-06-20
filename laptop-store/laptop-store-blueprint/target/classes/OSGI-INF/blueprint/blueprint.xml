@@ -32,6 +32,8 @@
 
     <bean id="laptopDAO" class="org.example.dao.impl.LaptopDAOImpl"/>
 
+    <bean id="laptopImageDAO" class="org.example.dao.impl.LaptopImageDAOImpl"/>
+
     <bean id="orderDetailDAO" class="org.example.dao.impl.OrderDetailDAOImpl"/>
 
     <bean id="promotionDAO" class="org.example.dao.impl.PromotionDAOImpl"/>
@@ -77,16 +79,30 @@
         <property name="jwtUtils" ref="jwtUtils"/>
     </bean>
 
+    <!-- Facebook Auth Service -->
+    <bean id="facebookAuthService" class="org.example.service.impl.FacebookAuthServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+        <property name="jwtUtils" ref="jwtUtils"/>
+    </bean>
+
+    <!-- Google Auth Service -->
+    <bean id="googleAuthService" class="org.example.service.impl.GoogleAuthServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+        <property name="jwtUtils" ref="jwtUtils"/>
+    </bean>
+
     <!-- Image Service -->
     <bean id="imageService" class="org.example.service.impl.ImageServiceImpl">
         <property name="promotionDAO" ref="promotionDAO"/>
         <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="laptopImageDAO" ref="laptopImageDAO"/>
     </bean>
 
     <!-- Laptop Service -->
     <bean id="laptopService" class="org.example.service.impl.LaptopServiceImpl">
         <property name="laptopDAO" ref="laptopDAO"/>
         <property name="promotionDAO" ref="promotionDAO"/>
+        <property name="laptopImageDAO" ref="laptopImageDAO"/>
         <property name="tagDAO" ref="tagDAO"/>
         <property name="imageUtils" ref="imageUtils"/>
     </bean>
@@ -155,6 +171,30 @@
     <jaxrs:server id="authServer" address="/api/auth">
         <jaxrs:serviceBeans>
             <ref component-id="authService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Facebook Auth Server -->
+    <jaxrs:server id="facebookAuthServer" address="/api/auth/facebook">
+        <jaxrs:serviceBeans>
+            <ref component-id="facebookAuthService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Google Auth Server -->
+    <jaxrs:server id="googleAuthServer" address="/api/auth/google">
+        <jaxrs:serviceBeans>
+            <ref component-id="googleAuthService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:providers>

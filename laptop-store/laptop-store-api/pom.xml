@@ -23,7 +23,6 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-bundle-jaxrs</artifactId>
             <version>2.7.18</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
