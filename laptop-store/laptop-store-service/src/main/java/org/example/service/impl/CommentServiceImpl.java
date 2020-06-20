@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByProductId(@QueryParam("product-id") Integer productId) {
+    public Response findByProductId(@QueryParam("product-id") Integer productId, @QueryParam("page") @DefaultValue("1") Integer page) {
         try {
             List<Comment> comments;
             Long commentCount;
@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
                 comments = commentDAO.findByProductId(productId);
                 commentCount = commentDAO.findTotalCommentByProductId(productId);
             } else {
-                comments = commentDAO.findAll();
+                comments = commentDAO.findByPage(page);
                 commentCount = commentDAO.findTotalCommentByFilter(null, null);
             }
             return Response.ok(comments).header("X-Total-Count", commentCount).build();

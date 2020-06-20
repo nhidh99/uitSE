@@ -17,7 +17,7 @@ public interface RatingDAO {
 
     Long findTotalRatingByProductId(Integer laptopId);
 
-    List<Rating> findAll();
+    List<Rating> findByPage(Integer page);
 
     void delete(Integer id);
 

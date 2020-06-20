@@ -4,13 +4,15 @@ import OverviewBlock from "./components/OverviewBlock";
 import DetailBlock from "./components/DetailBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import RatingBlock from "./components/RatingBlock";
-import CommentBlock from "./components/CommentBlock";
+import QuestionBlock from "./components/QuestionBlock";
+import RatingList from "./components/RatingList";
 import { Row, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
+
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);

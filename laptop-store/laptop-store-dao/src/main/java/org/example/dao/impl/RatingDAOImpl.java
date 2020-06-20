@@ -17,7 +17,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RatingDAOImpl implements RatingDAO {
-
+    private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;
 
@@ -32,11 +32,6 @@ public class RatingDAOImpl implements RatingDAO {
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void save(Rating rating) {
         em.persist(rating);
-        Integer laptopId = rating.getLaptop().getId();
-        Laptop laptop = em.find(Laptop.class, laptopId);
-        Float avgRating = findAvgRatingByProductId(laptopId);
-        laptop.setAvgRating(avgRating);
-        em.merge(laptop);
     }
 
     @Override
@@ -59,6 +54,8 @@ public class RatingDAOImpl implements RatingDAO {
         return em.createQuery(query, Rating.class)
                 .setParameter("id", id)
                 .setParameter("status", status)
+                .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
     }
 
@@ -93,19 +90,22 @@ public class RatingDAOImpl implements RatingDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Rating> findAll() {
+    public List<Rating> findByPage(Integer page) {
         String query = "SELECT r FROM Rating r";
         return em.createQuery(query, Rating.class)
+                .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
     }
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public Float findAvgRatingByProductId(Integer laptopId) {
-        String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId";
-        return em.createQuery(query, Double.class)
+        String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
+        Double result = em.createQuery(query, Double.class)
                 .setParameter("laptopId", laptopId)
-                .getSingleResult().floatValue();
+                .getSingleResult();
+        return result == null ? 5.0f : result.floatValue();
     }
 
     @Override
@@ -123,5 +123,11 @@ public class RatingDAOImpl implements RatingDAO {
         if (rating == null) throw new BadRequestException();
         rating.setApproveStatus(!rating.isApproveStatus());
         em.merge(rating);
+
+        Integer laptopId = rating.getLaptop().getId();
+        Laptop laptop = em.find(Laptop.class, laptopId);
+        Float avgRating = findAvgRatingByProductId(laptopId);
+        laptop.setAvgRating(avgRating);
+        em.merge(laptop);
     }
 }

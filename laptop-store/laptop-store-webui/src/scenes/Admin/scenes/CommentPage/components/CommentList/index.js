@@ -48,7 +48,7 @@ const CommentList = (props) => {
     }
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/comments/`, {
+        const response = await fetch(`/cxf/api/comments?page=${page}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });

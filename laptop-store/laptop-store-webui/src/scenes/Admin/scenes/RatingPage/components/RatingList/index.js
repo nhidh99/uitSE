@@ -43,12 +43,13 @@ const RatingList = (props) => {
         if (response.ok) {
             const ratings = await response.json();
             setRatings(ratings);
+            setCount(count);
             setLoading(false);
         }
     }
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/ratings/`, {
+        const response = await fetch(`/cxf/api/ratings?page=${page}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });

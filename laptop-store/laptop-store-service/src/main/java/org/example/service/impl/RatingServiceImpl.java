@@ -61,7 +61,7 @@ public class RatingServiceImpl implements RatingService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findRatingsByProductId(@QueryParam("product-id") Integer productId) {
+    public Response findRatingsByProductId(@QueryParam("product-id") Integer productId, @QueryParam("page") @DefaultValue("1") Integer page) {
         try {
             List<Rating> ratings;
             Long ratingCount;
@@ -69,7 +69,7 @@ public class RatingServiceImpl implements RatingService {
                 ratings = ratingDAO.findByProductId(productId);
                 ratingCount = ratingDAO.findTotalRatingByProductId(productId);
             } else {
-                ratings = ratingDAO.findAll();
+                ratings = ratingDAO.findByPage(page);
                 ratingCount = ratingDAO.findTotalRatingByFilter(null, null);
             }
             return Response.ok(ratings).header("X-Total-Count", ratingCount).build();
@@ -119,6 +119,7 @@ public class RatingServiceImpl implements RatingService {
         } catch (BadRequestException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.serverError().build();
         }
     }

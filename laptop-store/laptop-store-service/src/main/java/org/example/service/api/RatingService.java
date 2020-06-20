@@ -9,7 +9,7 @@ import javax.ws.rs.core.SecurityContext;
 public interface RatingService {
     Response createRating(Integer productId, RatingInput rating, SecurityContext securityContext);
 
-    Response findRatingsByProductId(Integer productId);
+    Response findRatingsByProductId(Integer productId, Integer page);
 
     Response deleteRatingById(Integer ratingId, SecurityContext securityContext);
 
