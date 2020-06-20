@@ -24,3 +24,25 @@ hs_err_pid*
 
 #IDE
 .idea/
+laptop-store/laptop-store-api/target/classes/META-INF/MANIFEST.MF
+laptop-store/laptop-store-api/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+laptop-store/laptop-store-api/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+laptop-store/laptop-store-api/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+laptop-store/laptop-store-api/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+laptop-store/laptop-store-blueprint/target/classes/META-INF/MANIFEST.MF
+laptop-store/laptop-store-dao/target/classes/META-INF/MANIFEST.MF
+laptop-store/laptop-store-dao/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+laptop-store/laptop-store-dao/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+laptop-store/laptop-store-dao/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+laptop-store/laptop-store-dao/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+laptop-store/laptop-store-security/target/classes/META-INF/MANIFEST.MF
+laptop-store/laptop-store-security/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+laptop-store/laptop-store-service/target/classes/META-INF/MANIFEST.MF
+laptop-store/laptop-store-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+laptop-store/laptop-store-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+laptop-store/laptop-store-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+laptop-store/laptop-store-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+laptop-store/laptop-store-util/target/classes/META-INF/MANIFEST.MF
+laptop-store/laptop-store-util/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+laptop-store/laptop-store-util/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+laptop-store/laptop-store-util/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst

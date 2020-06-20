@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1592456479863
-Build-Jdk: 1.8.0_241
-Built-By: vuong
+Bnd-LastModified: 1592632430965
+Build-Jdk: 1.8.0_251
+Built-By: Admin
 Bundle-Blueprint: OSGI-INF/blueprint/blueprint.xml
 Bundle-ManifestVersion: 2
 Bundle-Name: laptop-store-blueprint
