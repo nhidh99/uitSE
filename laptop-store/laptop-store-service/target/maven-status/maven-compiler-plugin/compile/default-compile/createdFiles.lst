@@ -15,8 +15,10 @@ org\example\service\impl\UserServiceImpl.class
 org\example\service\api\AuthService.class
 org\example\service\api\AddressService.class
 org\example\service\impl\OrderServiceImpl$1.class
+org\example\service\api\CommentService.class
 org\example\service\api\RatingService.class
 org\example\service\impl\LaptopServiceImpl.class
 org\example\service\api\TagService.class
 org\example\service\impl\PromotionServiceImpl.class
+org\example\service\impl\CommentServiceImpl.class
 org\example\service\impl\AuthServiceImpl.class

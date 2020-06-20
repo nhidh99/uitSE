@@ -26,6 +26,10 @@
     <!-- DAO Beans -->
     <bean id="addressDAO" class="org.example.dao.impl.AddressDAOImpl"/>
 
+    <bean id="commentDAO" class="org.example.dao.impl.CommentDAOImpl"/>
+
+    <bean id="commentReplyDAO" class="org.example.dao.impl.CommentReplyDAOImpl"/>
+
     <bean id="laptopDAO" class="org.example.dao.impl.LaptopDAOImpl"/>
 
     <bean id="laptopImageDAO" class="org.example.dao.impl.LaptopImageDAOImpl"/>
@@ -59,6 +63,14 @@
     <bean id="addressService" class="org.example.service.impl.AddressServiceImpl">
         <property name="addressDAO" ref="addressDAO"/>
         <property name="userDAO" ref="userDAO"/>
+    </bean>
+
+    <!-- Comment Service -->
+    <bean id="commentService" class="org.example.service.impl.CommentServiceImpl">
+        <property name="commentDAO" ref="commentDAO"/>
+        <property name="userDAO" ref="userDAO"/>
+        <property name="laptopDAO" ref="laptopDAO"/>
+        <property name="commentReplyDAO" ref="commentReplyDAO"/>
     </bean>
 
     <!-- Auth Service -->
@@ -135,6 +147,18 @@
     <jaxrs:server id="address" address="/api/addresses">
         <jaxrs:serviceBeans>
             <ref component-id="addressService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <ref component-id="authorizationFilter"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <!-- Comment Server -->
+    <jaxrs:server id="comment" address="/api/comments">
+        <jaxrs:serviceBeans>
+            <ref component-id="commentService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:providers>

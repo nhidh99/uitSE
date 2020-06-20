@@ -5,11 +5,8 @@ import org.example.dao.api.RatingDAO;
 import org.example.dao.api.RatingReplyDAO;
 import org.example.dao.api.UserDAO;
 import org.example.input.RatingInput;
-import org.example.input.RatingReplyInput;
-import org.example.model.Laptop;
-import org.example.model.Rating;
-import org.example.model.RatingReply;
-import org.example.model.User;
+import org.example.input.ReplyInput;
+import org.example.model.*;
 import org.example.security.Secured;
 import org.example.service.api.RatingService;
 import org.example.type.RoleType;
@@ -51,10 +48,12 @@ public class RatingServiceImpl implements RatingService {
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
         Laptop laptop = laptopDAO.findById(productId).orElseThrow(BadRequestException::new);
+        String commentTitle = ratingInput.getTitle().isEmpty() ? null : ratingInput.getTitle();
+        String commentDetail = ratingInput.getDetail().isEmpty() ? null : ratingInput.getDetail();
         return Rating.builder().laptop(laptop).user(user)
                 .rating(ratingInput.getRating())
-                .commentTitle(ratingInput.getTitle())
-                .commentDetail(ratingInput.getDetail())
+                .commentTitle(commentTitle)
+                .commentDetail(commentDetail)
                 .ratingDate(LocalDate.now()).build();
     }
 
@@ -64,8 +63,61 @@ public class RatingServiceImpl implements RatingService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRatingsByProductId(@QueryParam("product-id") Integer productId) {
         try {
-            List<Rating> ratings = ratingDAO.findByProductId(productId);
-            return Response.ok(ratings).build();
+            List<Rating> ratings;
+            Long ratingCount;
+            if(productId != null) {
+                ratings = ratingDAO.findByProductId(productId);
+                ratingCount = ratingDAO.findTotalRatingByProductId(productId);
+            } else {
+                ratings = ratingDAO.findAll();
+                ratingCount = ratingDAO.findTotalRatingByFilter(null, null);
+            }
+            return Response.ok(ratings).header("X-Total-Count", ratingCount).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findRatingsByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+        try {
+            List<Rating> ratings = ratingDAO.findByFilter(id, status, page);
+            Long ratingCount = ratingDAO.findTotalRatingByFilter(id, status);
+            return Response.ok(ratings).header("X-Total-Count", ratingCount).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @DELETE
+    @Path("/{id}")
+    @Secured({RoleType.ADMIN})
+    public Response deleteRatingById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
+        try {
+            ratingDAO.delete(id);
+            return Response.noContent().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @PUT
+    @Path("/{id}")
+    @Secured({RoleType.ADMIN})
+    public Response approveRatingById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
+        try {
+            ratingDAO.approve(id);
+            return Response.ok().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }
@@ -77,10 +129,10 @@ public class RatingServiceImpl implements RatingService {
     @Secured({RoleType.ADMIN, RoleType.USER})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createReply(@PathParam("id") Integer ratingId,
-                                RatingReplyInput ratingReplyInput,
+                                ReplyInput replyInput,
                                 @Context SecurityContext securityContext) {
         try {
-            RatingReply ratingReply = buildReplyFromRequestBody(ratingId, ratingReplyInput, securityContext);
+            RatingReply ratingReply = buildReplyFromRequestBody(ratingId, replyInput, securityContext);
             ratingReplyDAO.save(ratingReply);
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception ex) {
@@ -89,13 +141,13 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private RatingReply buildReplyFromRequestBody(Integer ratingId,
-                                                  RatingReplyInput ratingReplyInput,
+                                                  ReplyInput replyInput,
                                                   SecurityContext securityContext) {
         Principal principal = securityContext.getUserPrincipal();
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
         Rating rating = ratingDAO.findById(ratingId).orElseThrow(BadRequestException::new);
-        String reply = ratingReplyInput.getReply();
+        String reply = replyInput.getReply();
         return RatingReply.builder().user(user).rating(rating).reply(reply).replyDate(LocalDate.now()).build();
     }
 }

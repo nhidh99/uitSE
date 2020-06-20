@@ -27,9 +27,31 @@ const ProductList = (props) => {
     }, []);
 
     useEffect(() => {
+        if (!page) return;
         setLoading(true);
-        loadData();
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get("q");
+        if (query === null) {
+            loadData();
+        } else {
+            search(query);
+        }
     }, [page]);
+
+    
+    const search = async (query) => {
+        const response = await fetch(`/cxf/api/laptops/search?q=${query}&page=${page}`, {
+            method: "GET",
+            headers: { Authorization: "Bearer " + getCookie("access_token") }
+        });
+        if (response.ok) {
+            const products = await response.json();
+            const count = parseInt(response.headers.get("X-Total-Count"));
+            setProducts(products);
+            setCount(count);
+            setLoading(false);
+        }
+    }
 
     const loadData = async () => {
         const response = await fetch(`/cxf/api/laptops?page=${page}`, {
@@ -48,7 +70,13 @@ const ProductList = (props) => {
 
     const pageChange = (pageNumber) => {
         if (pageNumber === page) return;
-        props.history.push("/admin/products?page=" + pageNumber);
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get("q");
+        if (query === null) {
+            props.history.push("/admin/products?page=" + pageNumber);
+        } else {
+            props.history.push("/admin/products/search?q=" + query + "&page=" + pageNumber);
+        }
         setPage(pageNumber);
     };
 

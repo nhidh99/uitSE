@@ -22,7 +22,9 @@ public interface LaptopDAO {
 
     List<Laptop> findSuggestionsByLaptop(Integer laptopId);
 
-    Long findTotalLaptops();
+    List<Laptop> findByFilter(String filter, Integer page);
+
+    Long findTotalLaptops(String filter);
 
     List<Laptop> findByIds(List<Integer> ids);
 

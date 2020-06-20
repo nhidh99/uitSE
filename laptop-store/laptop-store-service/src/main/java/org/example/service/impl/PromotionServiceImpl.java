@@ -40,7 +40,7 @@ public class PromotionServiceImpl implements PromotionService {
 
     private Response findByPage(Integer page) {
         List<Promotion> promotions = (page == null) ? promotionDAO.findAll() : promotionDAO.findByPage(page);
-        Long promotionCount = promotionDAO.findTotalPromotions();
+        Long promotionCount = promotionDAO.findTotalPromotions(null);
         return Response.ok(promotions).header("X-Total-Count", promotionCount).build();
     }
 
@@ -59,6 +59,20 @@ public class PromotionServiceImpl implements PromotionService {
             return promotion.isRecordStatus()
                     ? Response.ok(promotion).build()
                     : Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findPromotionsByFilter(@QueryParam("q") String queryParam, @QueryParam("page") Integer page) {
+        try {
+            List<Promotion> promotions = promotionDAO.findByFilter(queryParam, page);
+            Long promotionCount = promotionDAO.findTotalPromotions(queryParam);
+            return Response.ok(promotions).header("X-Total-Count", promotionCount).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

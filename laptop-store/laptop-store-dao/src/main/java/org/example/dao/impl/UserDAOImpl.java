@@ -6,7 +6,6 @@ import org.example.dao.api.UserDAO;
 import org.example.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -51,7 +50,9 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void update(User user) { em.merge(user); }
+    public void update(User user) {
+        em.merge(user);
+    }
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)

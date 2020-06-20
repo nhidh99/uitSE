@@ -97,9 +97,34 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public Long findTotalOrder() {
-        String query = "SELECT COUNT(o) FROM Order o";
-        return em.createQuery(query, Long.class).getSingleResult();
+    public Long findTotalOrder(String id, String status) {
+        if (id == null && status == null) {
+            String query = "SELECT COUNT(o) FROM Order o";
+            return em.createQuery(query, Long.class).getSingleResult();
+        } else {
+            String query = "SELECT COUNT(o) FROM Order o " +
+                    "WHERE (o.id is NULL OR cast(o.id as string) = '' OR cast(o.id as string) LIKE CONCAT('%', :id, '%')) " +
+                    "AND (o.status is NULL OR o.status = '' OR cast(o.status as string) LIKE CONCAT('%', :status, '%'))";
+            return em.createQuery(query, Long.class)
+                    .setParameter("id", id)
+                    .setParameter("status", status)
+                    .getSingleResult();
+        }
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<OrderOverview> findByFilter(String id, String status, Integer page) {
+        String query = "SELECT o FROM Order o " +
+                "WHERE (o.id is NULL OR cast(o.id as string) = '' OR cast(o.id as string) LIKE CONCAT('%', :id, '%')) " +
+                "AND (o.status is NULL OR o.status = '' OR cast(o.status as string) LIKE CONCAT('%', :status, '%'))";
+        List<Order> orders = em.createQuery(query, Order.class)
+                .setParameter("id", id)
+                .setParameter("status", status)
+                .setFirstResult(ELEMENT_PER_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_BLOCK)
+                .getResultList();
+        return orders.stream().map(this::buildOverviewFromOrder).collect(Collectors.toList());
     }
 
     @Override

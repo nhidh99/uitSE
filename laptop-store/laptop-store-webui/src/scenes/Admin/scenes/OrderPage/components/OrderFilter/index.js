@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import {
     Row,
     Col,
@@ -11,37 +11,48 @@ import {
 import { FaSearch } from "react-icons/fa";
 import styles from "./styles.module.scss";
 
-const OrderFilter = () => (
-    <Row className={styles.row}>
-        <Col sm="8" className={styles.searchCol}>
-            <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                        <FaSearch />
-                    </InputGroupText>
-                </InputGroupAddon>
-                <Input type="text" placeholder="Tìm kiếm..." />
-            </InputGroup>
-        </Col>
+class OrderFilter extends Component {
+    search = () => {
+        const status = document.getElementById("statusSelect").value;
+        const filter = document.getElementById("filter").value;
+        if (filter === "" && status === "") {
+            window.location.href = "/admin/orders";
+        } else window.location.href = `/admin/orders/search?id=${filter}&status=${status}`
+    }
+    render() {
+        return (
+            <Row className={styles.row}>
+                <Col sm="8" className={styles.searchCol}>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                                <FaSearch />
+                            </InputGroupText>
+                        </InputGroupAddon>
+                        <Input type="text" id ="filter" placeholder="Tìm kiếm..." />
+                    </InputGroup>
+                </Col>
 
-        <Col sm="2" className={styles.buttonCol}>
-            <Button className={styles.button} color="info">
-                <FaSearch />
+                <Col sm="2" className={styles.buttonCol}>
+                    <Input type="select" id="statusSelect" className={styles.select}>
+                        <option value="">Tất cả đơn</option>
+                        <option value="PENDING">Chờ xử lí</option>
+                        <option value="PACKAGED">Đang đóng gói</option>
+                        <option value="DELIVERING">Đang vận chuyển</option>
+                        <option value="DELIVERED">Đã nhận hàng</option>
+                        <option value="CANCELED">Bị hủy</option>
+                    </Input>
+                </Col>
+
+                <Col sm="2" className={styles.buttonCol}>
+                    <Button className={styles.button} color="info" onClick={this.search}>
+                        <FaSearch />
                 &nbsp;&nbsp;Tìm kiếm
             </Button>
-        </Col>
-
-        <Col sm="2" className={styles.buttonCol}>
-            <Input type="select" className={styles.select}>
-                <option>Tất cả đơn</option>
-                <option>Chờ xử lí</option>
-                <option>Đang đóng gói</option>
-                <option>Đang vận chuyển</option>
-                <option>Đã nhận hàng</option>
-                <option>Bị hủy</option>
-            </Input>
-        </Col>
-    </Row>
-);
+                </Col>
+            </Row>
+        );
+    }
+}
 
 export default OrderFilter;

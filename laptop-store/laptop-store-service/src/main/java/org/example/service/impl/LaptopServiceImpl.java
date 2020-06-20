@@ -51,7 +51,7 @@ public class LaptopServiceImpl implements LaptopService {
 
     private Response findByPage(Integer page) {
         List<Laptop> laptops = laptopDAO.findByPage(page);
-        Long laptopCount = laptopDAO.findTotalLaptops();
+        Long laptopCount = laptopDAO.findTotalLaptops(null);
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
@@ -66,7 +66,7 @@ public class LaptopServiceImpl implements LaptopService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findLaptopsBySelling(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findBySelling(page);
-        Long laptopCount = laptopDAO.findTotalLaptops();
+        Long laptopCount = laptopDAO.findTotalLaptops(null);
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
@@ -76,7 +76,7 @@ public class LaptopServiceImpl implements LaptopService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findLaptopsByCreatedDateDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findByCreatedDateDesc(page);
-        Long laptopCount = laptopDAO.findTotalLaptops();
+        Long laptopCount = laptopDAO.findTotalLaptops(null);
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
@@ -86,7 +86,7 @@ public class LaptopServiceImpl implements LaptopService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findLaptopsByDiscountDesc(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findByDiscountDesc(page);
-        Long laptopCount = laptopDAO.findTotalLaptops();
+        Long laptopCount = laptopDAO.findTotalLaptops(null);
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
@@ -96,7 +96,7 @@ public class LaptopServiceImpl implements LaptopService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findLaptopsByPriceAsc(@QueryParam("page") @DefaultValue("1") Integer page) {
         List<Laptop> laptops = laptopDAO.findByPriceAsc(page);
-        Long laptopCount = laptopDAO.findTotalLaptops();
+        Long laptopCount = laptopDAO.findTotalLaptops(null);
         return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
     }
 
@@ -124,6 +124,20 @@ public class LaptopServiceImpl implements LaptopService {
     public Response findLaptopSuggestions(@PathParam("id") Integer laptopId) {
         List<Laptop> laptops = laptopDAO.findSuggestionsByLaptop(laptopId);
         return Response.ok(laptops).build();
+    }
+
+    @Override
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findLaptopsByFilter(@QueryParam("q") String queryParam, @QueryParam("page") Integer page) {
+        try {
+            List<Laptop> laptops = laptopDAO.findByFilter(queryParam, page);
+            Long laptopCount = laptopDAO.findTotalLaptops(queryParam);
+            return Response.ok(laptops).header("X-Total-Count", laptopCount).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
     }
 
     @Override

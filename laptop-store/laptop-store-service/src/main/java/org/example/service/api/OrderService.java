@@ -13,6 +13,8 @@ public interface OrderService {
 
     Response findOrdersByPage(Integer page);
 
+    Response findOrdersByFilter(String id, String status, Integer page);
+
     Response updateOrder(Integer orderId, OrderUpdateInput orderUpdateInput);
 
     Response cancelOrder(Integer orderId, SecurityContext securityContext);

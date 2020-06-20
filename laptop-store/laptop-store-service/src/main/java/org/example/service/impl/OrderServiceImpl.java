@@ -182,9 +182,24 @@ public class OrderServiceImpl implements OrderService {
     public Response findOrdersByPage(@QueryParam("page") @DefaultValue("1") Integer page) {
         try {
             List<OrderOverview> orderOverviews = orderDAO.findByPages(page);
-            Long orderCount = orderDAO.findTotalOrder();
+            Long orderCount = orderDAO.findTotalOrder(null, null);
             return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
         } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findOrdersByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+        try {
+            List<OrderOverview> orderOverviews = orderDAO.findByFilter(id, status, page);
+            Long orderCount = orderDAO.findTotalOrder(id, status);
+            return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
+        } catch (Exception e) {
+            e.printStackTrace();
             return Response.serverError().build();
         }
     }

@@ -4,18 +4,21 @@ import OverviewBlock from "./components/OverviewBlock";
 import DetailBlock from "./components/DetailBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import RatingBlock from "./components/RatingBlock";
-import CommentBlock from "./components/CommentBlock";
+import RatingList from "./components/RatingList";
+import QuestionBlock from "./components/QuestionBlock";
 import { Row, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
+import QuestionList from "./components/QuestionList";
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [imageIds, setImageIds] = useState([]);
     const [ratings, setRatings] = useState([]);
+    const [comments, setComments] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
 
@@ -37,13 +40,20 @@ const DetailPage = (props) => {
             loadRatings(productId),
             loadPromotions(productId),
             loadSuggestions(productId),
+            loadComments(productId),
         ]);
         setProduct(product);
         setImageIds(imageIds);
         setRatings(ratings);
+        setComments(comments);
         setPromotions(promotions);
         setSuggestions(suggestions);
         setLoading(false);
+    };
+
+    const loadComments = async (productId) => {
+        const response = await fetch(`/cxf/api/comments?product-id=${productId}`);
+        return response.ok ? await response.json() : [];
     };
 
     const loadProduct = async (productId) => {
@@ -132,14 +142,26 @@ const DetailPage = (props) => {
             />
 
             <ContentBlock
+                title="Hỏi, đáp về sản phẩm"
+                component={<QuestionBlock comments={comments} product={product} />}
+            />
+
+            <ContentBlock
+                title="Khách hàng hỏi đáp"
+                component={<QuestionList comments={comments} />}
+            />
+
+            <ContentBlock
                 title="Đánh giá sản phẩm"
                 component={<RatingBlock ratings={ratings} product={product} />}
             />
 
-            <ContentBlock
-                title="Khách hàng nhận xét"
-                component={<CommentBlock ratings={ratings} />}
-            />
+            {ratings.length > 0 ? (
+                <ContentBlock
+                    title="Khách hàng đánh giá"
+                    component={<RatingList ratings={ratings} />}
+                />
+            ) : null}
         </Fragment>
     );
 };

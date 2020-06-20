@@ -148,7 +148,14 @@ const App = (props) => {
                     "/user/order/:orderId",
                 ]}
             />
-            <Route exact component={Admin} path="/admin/(|products|orders|promotions)" />
+            <Route exact component={Admin} path={[
+                "/admin/(|products|orders|promotions|ratings|comments)",
+                "/admin/products/search",
+                "/admin/orders/search",
+                "/admin/promotions/search",
+                "/admin/ratings/search",
+                "/admin/comments/search",
+                ]} />
         </Fragment>
     );
 

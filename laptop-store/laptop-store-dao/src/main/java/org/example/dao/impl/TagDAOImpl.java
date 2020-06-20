@@ -3,8 +3,6 @@ package org.example.dao.impl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.dao.api.TagDAO;
-import org.example.model.Laptop;
-import org.example.model.Promotion;
 import org.example.model.Tag;
 
 import javax.persistence.EntityManager;
