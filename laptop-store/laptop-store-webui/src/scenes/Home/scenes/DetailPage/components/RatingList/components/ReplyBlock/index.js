@@ -30,10 +30,10 @@ const ReplyBlock = (props) => {
         <Fragment>
             <UncontrolledCollapse toggler={"#toggler-" + props.rating["id"]}>
                 <textarea
-                    class={styles.replyInput}
+                    className={styles.replyInput}
                     id={"reply-" + props.rating["id"]}
                     rows="5"
-                    maxlength="500"
+                    maxLength="500"
                     placeholder="Gửi trả lời của bạn (tối đa 500 từ)"
                 ></textarea>
                 <br />

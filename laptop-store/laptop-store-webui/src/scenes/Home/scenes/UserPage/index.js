@@ -10,6 +10,7 @@ import styles from "./styles.module.scss";
 import { Col, Row } from "reactstrap";
 import OrderDetail from "./scenes/OrderDetail";
 import CartPage from "../CartPage";
+import WishListPage from "./scenes/WishListPage";
 
 class UserPage extends Component {
     render() {
@@ -28,6 +29,7 @@ class UserPage extends Component {
                         <Route exact component={OrderPage} path="/user/order" />
                         <Route exact component={OrderDetail} path="/user/order/:orderId" />
                         <Route exact component={CartPage} path="/user/cart" />
+                        <Route exact component={WishListPage} path="/user/wish-list" />
                     </Switch>
                 </Col>
             </Row>

@@ -9,6 +9,7 @@ import {
     FaInfoCircle,
     FaLock,
     FaDoorOpen,
+    FaHeart,
 } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { Link } from "react-router-dom";
@@ -78,6 +79,13 @@ class SideBar extends Component {
                         <ListGroupItem>
                             <FaShoppingCart className={styles.icon} />
                             Giỏ hàng
+                        </ListGroupItem>
+                    </Link>
+
+                    <Link to="/user/wish-list" className={styles.link}>
+                        <ListGroupItem>
+                            <FaHeart className={styles.icon} />
+                            Xem sau
                         </ListGroupItem>
                     </Link>
                 </ListGroup>

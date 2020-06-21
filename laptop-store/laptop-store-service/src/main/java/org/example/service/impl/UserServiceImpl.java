@@ -64,6 +64,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @POST
+    @Path("/me/wish-list")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response updateWishlist(String wishlistJSON, @Context SecurityContext securityContext) {
+        try {
+            Principal principal = securityContext.getUserPrincipal();
+            Integer userId = Integer.parseInt(principal.getName());
+            userDAO.saveWishList(userId, wishlistJSON);
+            return Response.noContent().build();
+        } catch (NoResultException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
     @PUT
     @Path("/me")
     @Consumes(MediaType.APPLICATION_JSON)

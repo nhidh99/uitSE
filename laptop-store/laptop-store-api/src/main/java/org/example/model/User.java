@@ -79,8 +79,12 @@ public class User {
     private String googleId;
 
     @OneToOne
-    @JsonProperty("default-address")
+    @JsonProperty("default_address")
     @JsonIgnoreProperties("user")
     @JoinColumn(name = "address_id")
     private Address defaultAddress;
+
+    @Column(name = "wish_list")
+    @JsonProperty("wish_list")
+    private String wishList;
 }

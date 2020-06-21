@@ -1,0 +1,47 @@
+.itemBlock {
+    padding: 20px;
+    border: 1.5px dashed darkgray;
+    font-size: 14px;
+}
+
+.itemBlock:not(:last-of-type) {
+    margin-bottom: 15px;
+}
+
+.blockLeft {
+    padding: 5px 0px;
+}
+
+.blockCenter {
+    margin-top: 20px;
+}
+
+.blockRight {
+    margin-top: 20px;
+    padding: 0 !important;
+}
+
+.name {
+    font-size: 15px;
+    margin-bottom: 2px !important;
+    color:#0000FF;
+    font-weight: 500;
+}
+
+.name:hover {
+    cursor: pointer;
+}
+
+.priceLabel {
+    margin-top: 3px;
+    font-weight: bold;
+    font-size: 15px;
+    color: red;
+}
+
+.pricePromotion {
+    text-decoration: line-through;
+    color: grey;
+    margin-left: 10px;
+    font-size: 13px;
+}
