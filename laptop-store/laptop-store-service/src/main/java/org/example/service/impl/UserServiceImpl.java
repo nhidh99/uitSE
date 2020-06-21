@@ -67,11 +67,11 @@ public class UserServiceImpl implements UserService {
     @POST
     @Path("/me/wish-list")
     @Consumes(MediaType.TEXT_PLAIN)
-    public Response updateWishlist(String wishlistJSON, @Context SecurityContext securityContext) {
+    public Response updateWishlist(String wishListJSON, @Context SecurityContext securityContext) {
         try {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
-            userDAO.saveWishList(userId, wishlistJSON);
+            userDAO.saveWishList(userId, wishListJSON);
             return Response.noContent().build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.NOT_FOUND).build();

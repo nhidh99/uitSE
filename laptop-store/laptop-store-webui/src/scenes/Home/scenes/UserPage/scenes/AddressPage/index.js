@@ -28,7 +28,9 @@ const AddressPage = () => {
             const data = await response.json();
             const defaultAddress = data.find((address) => address.id === defaultAddressId);
             const addresses = data.filter((address) => address !== defaultAddress);
-            addresses.unshift(defaultAddress);
+            if (defaultAddress) {
+                addresses.unshift(defaultAddress);
+            }
             setAddresses(addresses);
             setLoading(false);
         }

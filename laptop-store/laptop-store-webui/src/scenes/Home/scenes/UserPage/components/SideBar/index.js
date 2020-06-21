@@ -19,6 +19,7 @@ class SideBar extends Component {
     logout = () => {
         removeCookie("access_token");
         localStorage.setItem("cart", null);
+        localStorage.setItem("wish-list", null);
         window.location.href = "/";
     };
 

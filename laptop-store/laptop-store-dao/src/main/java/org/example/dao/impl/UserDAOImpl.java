@@ -121,10 +121,10 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void saveWishList(Integer userId, String wishlistJSON) {
+    public void saveWishList(Integer userId, String wishListJSON) {
         User user = em.find(User.class, userId);
         if (user == null) throw new NoResultException();
-        user.setWishlist(wishlistJSON);
+        user.setWishList(wishListJSON);
         em.merge(user);
     }
 

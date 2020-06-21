@@ -21,6 +21,13 @@ const App = (props) => {
 
     useEffect(() => loadData(), []);
 
+    useEffect(() => {
+        if (role === ROLE_GUEST) {
+            localStorage.setItem("cart", null);
+            localStorage.setItem("wish-list", null);
+        }
+    }, [role]);
+
     const fetchToken = async () => {
         const token = getCookie("access_token");
         const response = await fetch("/cxf/api/auth/token", {
@@ -36,6 +43,10 @@ const App = (props) => {
         Object.keys(cart).length === 0
             ? localStorage.setItem("cart", userCart)
             : updateCartDatabase(cart);
+    };
+
+    const syncUserWishList = (userWishList) => {
+        localStorage.setItem("wish-list", userWishList);
     };
 
     const createRefreshTokenHeart = () => {
@@ -69,11 +80,12 @@ const App = (props) => {
                 const user = await response.json();
                 createRefreshTokenHeart();
                 syncUserCart(user["cart"]);
+                syncUserWishList(user["wish_list"]);
                 setRole(user["role"]);
 
                 store.dispatch(
                     setDefaultAddressId({
-                        "default-id": user["default-address"]["id"],
+                        "default-id": user["default_address"]?.["id"],
                     })
                 );
             }
@@ -131,7 +143,7 @@ const App = (props) => {
                 "/product/:alt/:id",
                 "/product/compare/:alt/:id1/:id2",
                 "/user/(info|password|address|order|wish-list)",
-                "/user/address/:id",    
+                "/user/address/:id",
                 "/user/order/:orderId",
             ]}
         />
@@ -152,7 +164,7 @@ const App = (props) => {
                     "/product/:alt/:id",
                     "/product/compare/:alt/:id1/:id2",
                     "/user/(info|password|address|order|wish-list)",
-                    "/user/address/:id",    
+                    "/user/address/:id",
                     "/user/order/:orderId",
                 ]}
             />

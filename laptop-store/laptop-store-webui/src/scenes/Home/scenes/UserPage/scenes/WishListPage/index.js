@@ -1,16 +1,18 @@
-import React, { useState, useEffect, Fragment } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, Fragment } from "react";
 import { withRouter } from "react-router-dom";
-import styles from './styles.module.scss';
-import { FaBook, FaBoxOpen } from 'react-icons/fa';
-import ItemBlock from './components/ItemBlock';
-import Loader from 'react-loader-advanced';
-import { Spinner, Button } from 'reactstrap';
-import { getWishList } from '../../../../../../services/helper/wish-list';
+import styles from "./styles.module.scss";
+import { FaBook, FaBoxOpen } from "react-icons/fa";
+import ItemBlock from "./components/ItemBlock";
+import Loader from "react-loader-advanced";
+import { Spinner, Button } from "reactstrap";
+import { getWishList } from "../../../../../../services/helper/wish-list";
+
 const WishListPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
     const wishList = getWishList();
-    
+
     useEffect(() => {
         loadData();
     }, [loading]);
@@ -18,10 +20,6 @@ const WishListPage = (props) => {
     const toggleLoading = () => setLoading(true);
 
     const loadData = async () => {
-        wishList.map(item => {
-            console.log(item);
-        })
-
         if (wishList.length === 0) {
             setProducts([]);
             setLoading(false);
@@ -37,12 +35,15 @@ const WishListPage = (props) => {
             setProducts(products);
             setLoading(false);
         }
-    }
+    };
 
     return (
         <Fragment>
             <div className={styles.title}>
-    <label className={styles.header}><FaBook />&nbsp;&nbsp;DANH SÁCH XEM SAU {`(${wishList.length})`}</label>
+                <label className={styles.header}>
+                    <FaBook />
+                    &nbsp;&nbsp;DANH SÁCH XEM SAU {`(${wishList.length})`}
+                </label>
             </div>
 
             <Loader show={loading} message={<Spinner />}>
@@ -64,16 +65,13 @@ const WishListPage = (props) => {
                         </div>
                     ) : (
                         products.map((product) => (
-                            <ItemBlock
-                                product={product}
-                                toggleLoading={toggleLoading}
-                            />
+                            <ItemBlock product={product} toggleLoading={toggleLoading} />
                         ))
                     )}
                 </div>
             </Loader>
         </Fragment>
+    );
+};
 
-    )
-}
 export default withRouter(WishListPage);

@@ -30,6 +30,10 @@ const EditAddressPage = () => {
     const [loading, setLoading] = useState(true);
     const [reloading, setReloading] = useState(false);
 
+    const [isDefaultAddress, setIsDefaultAddress] = useState(
+        store.getState()["address"]["default-id"] === parseInt(id)
+    );
+
     useEffect(() => {
         loadData();
     }, []);
@@ -143,8 +147,10 @@ const EditAddressPage = () => {
                 message: "Đã lưu địa chỉ mặc định thành công",
                 confirm: () => null,
             };
-            store.dispatch(setDefaultAddressId({ "default-id": parseInt(id) }));
+            const addressId = parseInt(id);
+            store.dispatch(setDefaultAddressId({ "default-id": parseInt(addressId) }));
             store.dispatch(buildModal(modal));
+            setIsDefaultAddress(true);
         }
     };
 
@@ -191,7 +197,7 @@ const EditAddressPage = () => {
                 <FaBook />
                 &nbsp;&nbsp;{id === "create" ? "THÊM ĐỊA CHỈ" : "SỬA ĐỊA CHỈ"}
                 <div className={styles.buttons}>
-                    {id === "create" ? null : (
+                    {id === "create" || isDefaultAddress ? null : (
                         <Button color="primary" onClick={setDefaultAddress}>
                             <FaAddressBook />
                             &nbsp;&nbsp;Đặt làm địa chỉ mặc định
