@@ -18,6 +18,8 @@ public interface UserDAO {
 
     void saveCart(Integer userId, String cartJSON);
 
+    void saveWishList(Integer userId, String wishlistJSON);
+
     Optional<User> findByUsername(String username);
 
     Optional<User> findById(Integer id);

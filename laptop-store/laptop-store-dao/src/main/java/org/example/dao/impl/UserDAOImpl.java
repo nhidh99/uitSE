@@ -120,6 +120,15 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void saveWishList(Integer userId, String wishlistJSON) {
+        User user = em.find(User.class, userId);
+        if (user == null) throw new NoResultException();
+        user.setWishlist(wishlistJSON);
+        em.merge(user);
+    }
+
+    @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
         User user = em.find(User.class, userId);

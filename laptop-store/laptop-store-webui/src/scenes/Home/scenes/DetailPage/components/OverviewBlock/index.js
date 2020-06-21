@@ -1,16 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Col, Label, Button, Input, Row } from "reactstrap";
 import styles from "./styles.module.scss";
 import Rating from "react-rating";
-import { FaStar, FaShoppingCart } from "react-icons/fa";
+import { FaStar, FaShoppingCart, FaHeart } from "react-icons/fa";
 import { convertCPUType, convertResolutionType } from "../../../../../../services/helper/converter";
 import { addToCart } from "../../../../../../services/helper/cart";
 import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/scss/image-gallery.scss";
+import { addToWishList, getWishList, removeFromWishList } from "../../../../../../services/helper/wish-list";
 
 const OverviewBlock = ({ product, promotions, imageIds }) => {
+    const [wishList, setWishList] = useState(getWishList());
+    const [isInWishList, setIsInWishList] = useState(false);
+
+    useEffect(() => {
+        const isInWishList = wishList.includes(product['id']);
+        setIsInWishList(isInWishList);
+    }, [wishList]);
+
     const images = [
         {
             original: `/cxf/api/images/600/laptops/${product["id"]}/${product["alt"]}.jpg`,
@@ -142,6 +151,11 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
                         <FaShoppingCart />
                         &nbsp;&nbsp;Thêm vào giỏ hàng
                     </Button>
+                    <Button className={styles.wishlistBtn} color="danger" onClick={() => postWishlist(product["id"])}>
+                        <FaHeart />
+                        &nbsp;&nbsp;{isInWishList ? 'Bỏ xem sau' : 'Xem sau'}
+                    </Button>
+
                 </Col>
             </Row>
             <Label className={styles.quantityError} id="quantity-error">
@@ -150,6 +164,15 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
         </div>
     );
 
+    const postWishlist = (productId) => {
+        if(isInWishList) {
+            removeFromWishList(productId);
+        }
+        else {
+            addToWishList(productId);
+        }
+        setWishList(getWishList());
+    }
     const addQuantityToCart = (productId) => {
         const quantity = parseInt(document.getElementById("quantity").value);
         const success = addToCart(productId, quantity);
