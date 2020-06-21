@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import AddressBlock from "./components/AddressBlock";
 import ProductsBlock from "./components/ProductsBlock";
@@ -10,25 +11,40 @@ import { getCookie } from "../../../../services/helper/cookie";
 import { FaBoxOpen } from "react-icons/fa";
 import Loader from "react-loader-advanced";
 import { withRouter } from "react-router-dom";
+import store from "../../../../services/redux/store";
 
-class PaymentPage extends Component {
-    state = {
-        addresses: [],
-        promotions: [],
-        promotionQties: {},
-        products: [],
-        cart: {},
-        isEmptyCart: false,
-        submitted: false,
-        loading: true,
+const PaymentPage = (props) => {
+    const defaultAddressId = store.getState()["address"]["default-id"];
+    const [addresses, setAddresses] = useState([]);
+    const [promotions, setPromotions] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [productPrice, setProductPrice] = useState(0);
+    const [promotionQties, setPromotionQties] = useState(0);
+    const [cart, setCart] = useState({});
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        loadDetail();
+    }, [cart]);
+
+    useEffect(() => {
+        const productPrice = products
+            .map((p) => cart[p["id"]] * (p["unit_price"] - p["discount_price"]))
+            .reduce((a, b) => a + b, 0);
+        setProductPrice(productPrice);
+    }, [products]);
+
+    const loadData = async () => {
+        const cart = await loadCart();
+        setCart(cart);
     };
 
-    async componentDidMount() {
-        const cart = await this.loadCart();
-        this.setState({ cart: cart }, () => this.loadData());
-    }
-
-    loadCart = async () => {
+    const loadCart = async () => {
         const response = await fetch("/cxf/api/users/me", {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
@@ -42,16 +58,14 @@ class PaymentPage extends Component {
         }
     };
 
-    loadData = async () => {
-        await Promise.all([this.loadProducts(), this.loadAddresses(), this.loadPromotions()]);
-        this.setState({ loading: false });
+    const loadDetail = async () => {
+        await Promise.all([loadProducts(), loadAddresses(), loadPromotions()]);
+        setLoading(false);
     };
 
-    loadProducts = async () => {
-        const cart = this.state.cart;
+    const loadProducts = async () => {
         if (Object.keys(cart).length === 0) {
-            this.setState({ products: [] });
-            return;
+            setProducts([]);
         }
 
         const params = new URLSearchParams();
@@ -64,30 +78,32 @@ class PaymentPage extends Component {
             Object.keys(cart)
                 .filter((id) => !productIds.includes(id))
                 .forEach((id) => removeFromCart(id));
-            this.setState({ products: products });
+            setProducts(products);
         }
     };
 
-    loadAddresses = async () => {
+    const loadAddresses = async () => {
         const response = await fetch("/cxf/api/users/me/addresses", {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         });
 
         if (response.ok) {
-            const addresses = await response.json();
-            this.setState({ addresses: addresses });
+            const data = await response.json();
+            const defaultAddress = data.find((address) => address.id === defaultAddressId);
+            const addresses = data.filter((address) => address !== defaultAddress);
+            addresses.unshift(defaultAddress);
+            setAddresses(addresses);
         }
     };
 
-    loadPromotions = async () => {
-        const cart = this.state.cart;
+    const loadPromotions = async () => {
         const quantities = {};
         const promotions = [];
         const length = Object.keys(cart).length;
         let count = 0;
 
-        Object.keys(cart).forEach(async (id) => {
+        Object.keys(cart).map(async (id) => {
             const response = await fetch(`/cxf/api/laptops/${id}/promotions`);
             if (response.ok) {
                 const data = await response.json();
@@ -103,79 +119,58 @@ class PaymentPage extends Component {
             }
 
             if (++count === length) {
-                this.setState({
-                    promotionQties: quantities,
-                    promotions: promotions,
-                });
+                setPromotionQties(quantities);
+                setPromotions(promotions);
             }
         });
     };
 
-    toggleSubmit = () => {
-        this.setState({ submitted: !this.state.submitted });
+    const toggleSubmit = () => {
+        setIsSubmitted(!isSubmitted);
     };
 
-    redirectToCreateAddress = () => {
-        this.props.history.push("/user/address/create");
-    }
+    const redirectToCreateAddress = () => {
+        props.history.push("/user/address/create");
+    };
 
-    render() {
-        const {
-            addresses,
-            promotions,
-            products,
-            promotionQties,
-            loading,
-            submitted,
-            cart,
-        } = this.state;
-
-        const productsPrice = products
-            .map((p) => cart[p["id"]] * (p["unit_price"] - p["discount_price"]))
-            .reduce((a, b) => a + b, 0);
-
-        return (
-            <Loader show={loading || submitted} message={<Spinner />}>
-                {products.length === 0 ? (
-                    <div className={styles.emptyCart}>
-                        <FaBoxOpen size={80} />
-                        <br />
-                        {loading ? (
-                            <h5>Đang tải giỏ hàng...</h5>
-                        ) : (
-                            <Fragment>
-                                <h4>Giỏ hàng trống</h4>
-                                <Button size="lg" color="warning" type="a" href="/">
-                                    Quay lại trang mua sắm
-                                </Button>
-                            </Fragment>
-                        )}
-                    </div>
-                ) : (
-                    <div className={styles.container}>
-                        <div className={styles.address}>
-                            <header className={styles.header}>A. ĐỊA CHỈ GIAO HÀNG</header>
-                            <Button onClick={this.redirectToCreateAddress} color="primary">
-                                Tạo địa chỉ mới
+    return (
+        <Loader show={loading || isSubmitted} message={<Spinner />}>
+            {products.length === 0 ? (
+                <div className={styles.emptyCart}>
+                    <FaBoxOpen size={80} />
+                    <br />
+                    {loading ? (
+                        <h5>Đang tải giỏ hàng...</h5>
+                    ) : (
+                        <Fragment>
+                            <h4>Giỏ hàng trống</h4>
+                            <Button size="lg" color="warning" type="a" href="/">
+                                Quay lại trang mua sắm
                             </Button>
-                        </div>
-                        <AddressBlock addresses={addresses} />
-
-                        <header className={styles.header}>B. DANH SÁCH SẢN PHẨM</header>
-                        <ProductsBlock products={products} />
-
-                        <header className={styles.header}>C. DANH SÁCH KHUYẾN MÃI</header>
-                        <PromotionsBlock promotions={promotions} quantities={promotionQties} />
-
-                        <SummaryBlock
-                            productsPrice={productsPrice}
-                            toggleSubmit={this.toggleSubmit}
-                        />
+                        </Fragment>
+                    )}
+                </div>
+            ) : (
+                <div className={styles.container}>
+                    <div className={styles.address}>
+                        <header className={styles.header}>A. ĐỊA CHỈ GIAO HÀNG</header>
+                        <Button onClick={redirectToCreateAddress} color="primary">
+                            Tạo địa chỉ mới
+                        </Button>
                     </div>
-                )}
-            </Loader>
-        );
-    }
-}
+                    <AddressBlock addresses={addresses} />
+
+                    <header className={styles.header}>B. DANH SÁCH SẢN PHẨM</header>
+                    <ProductsBlock products={products} />
+
+                    <header className={styles.header}>C. DANH SÁCH KHUYẾN MÃI</header>
+                    <PromotionsBlock promotions={promotions} quantities={promotionQties} />
+
+                    <SummaryBlock productsPrice={productPrice} toggleSubmit={toggleSubmit} />
+                </div>
+            )}
+        </Loader>
+    );
+};
 
 export default withRouter(PaymentPage);

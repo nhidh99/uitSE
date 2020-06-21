@@ -12,6 +12,8 @@ import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./co
 import { getCart, updateCartDatabase } from "./services/helper/cart";
 import Filter from "./components/Filter";
 import ConfirmModal from "./components/ConfirmModal";
+import store from "./services/redux/store";
+import { setDefaultAddressId } from "./services/redux/actions";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -68,6 +70,12 @@ const App = (props) => {
                 createRefreshTokenHeart();
                 syncUserCart(user["cart"]);
                 setRole(user["role"]);
+
+                store.dispatch(
+                    setDefaultAddressId({
+                        "default-id": user["default-address"]["id"],
+                    })
+                );
             }
         } else {
             removeCookie("access_token");
@@ -123,7 +131,7 @@ const App = (props) => {
                 "/product/:alt/:id",
                 "/product/compare/:alt/:id1/:id2",
                 "/user/(info|password|address|order)",
-                "/user/address/:id",    
+                "/user/address/:id",
                 "/user/order/:orderId",
             ]}
         />
@@ -144,18 +152,22 @@ const App = (props) => {
                     "/product/:alt/:id",
                     "/product/compare/:alt/:id1/:id2",
                     "/user/(info|password|address|order)",
-                    "/user/address/:id",    
+                    "/user/address/:id",
                     "/user/order/:orderId",
                 ]}
             />
-            <Route exact component={Admin} path={[
-                "/admin/(|products|orders|promotions|ratings|comments)",
-                "/admin/products/search",
-                "/admin/orders/search",
-                "/admin/promotions/search",
-                "/admin/ratings/search",
-                "/admin/comments/search",
-                ]} />
+            <Route
+                exact
+                component={Admin}
+                path={[
+                    "/admin/(|products|orders|promotions|ratings|comments)",
+                    "/admin/products/search",
+                    "/admin/orders/search",
+                    "/admin/promotions/search",
+                    "/admin/ratings/search",
+                    "/admin/comments/search",
+                ]}
+            />
         </Fragment>
     );
 

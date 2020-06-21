@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { Label, Input, Button, Spinner } from "reactstrap";
-import { FaBook } from "react-icons/fa";
+import { FaBook, FaAddressBook, FaSave } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { getCookie } from "../../../../../../services/helper/cookie";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../../../../../../services/helper/address";
 import { useParams } from "react-router-dom";
 import store from "../../../../../../services/redux/store";
-import { buildModal } from "../../../../../../services/redux/actions";
+import { buildModal, setDefaultAddressId } from "../../../../../../services/redux/actions";
 import Loader from "react-loader-advanced";
 
 const EditAddressPage = () => {
@@ -129,6 +129,25 @@ const EditAddressPage = () => {
         return errors;
     };
 
+    const setDefaultAddress = async () => {
+        const url = "/cxf/api/addresses/default";
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
+            body: id,
+        });
+
+        if (response.ok) {
+            const modal = {
+                title: "Lưu thành công",
+                message: "Đã lưu địa chỉ mặc định thành công",
+                confirm: () => null,
+            };
+            store.dispatch(setDefaultAddressId({ "default-id": parseInt(id) }));
+            store.dispatch(buildModal(modal));
+        }
+    };
+
     const createAddress = async () => {
         const body = buildAddressBody();
         const errors = validateInputs(body);
@@ -171,9 +190,19 @@ const EditAddressPage = () => {
             <header className={styles.header}>
                 <FaBook />
                 &nbsp;&nbsp;{id === "create" ? "THÊM ĐỊA CHỈ" : "SỬA ĐỊA CHỈ"}
-                <Button color="success" onClick={createAddress} className={styles.button}>
-                    Lưu địa chỉ
-                </Button>
+                <div className={styles.buttons}>
+                    {id === "create" ? null : (
+                        <Button color="primary" onClick={setDefaultAddress}>
+                            <FaAddressBook />
+                            &nbsp;&nbsp;Đặt làm địa chỉ mặc định
+                        </Button>
+                    )}
+
+                    <Button color="success" onClick={createAddress}>
+                        <FaSave />
+                        &nbsp;&nbsp;Lưu địa chỉ
+                    </Button>
+                </div>
             </header>
             {errors.length > 0 ? (
                 <p>

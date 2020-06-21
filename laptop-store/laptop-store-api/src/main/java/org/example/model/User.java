@@ -1,6 +1,7 @@
 package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.example.type.GenderType;
@@ -76,4 +77,10 @@ public class User {
     @Column(name = "google_id")
     @JsonIgnore
     private String googleId;
+
+    @OneToOne
+    @JsonProperty("default-address")
+    @JsonIgnoreProperties("user")
+    @JoinColumn(name = "address_id")
+    private Address defaultAddress;
 }

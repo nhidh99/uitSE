@@ -13,4 +13,6 @@ public interface AddressService {
     Response updateAddress(Integer id, AddressInput addressInput, SecurityContext securityContext);
 
     Response deleteAddress(Integer id);
+
+    Response updateDefaultAddress(Integer addressId, SecurityContext securityContext);
 }

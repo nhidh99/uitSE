@@ -21,4 +21,5 @@ public interface UserService {
     Response findUserOrderOverviews(Integer page, SecurityContext securityContext);
 
     Response checkUserSocialMediaAuth(SecurityContext securityContext);
+
 }
