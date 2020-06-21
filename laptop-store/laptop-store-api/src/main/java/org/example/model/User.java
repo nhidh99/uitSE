@@ -76,4 +76,8 @@ public class User {
     @Column(name = "google_id")
     @JsonIgnore
     private String googleId;
+
+    @Column(name = "wishlist")
+    @JsonProperty("wishlist")
+    private String wishlist;
 }

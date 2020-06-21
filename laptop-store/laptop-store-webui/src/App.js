@@ -122,7 +122,7 @@ const App = (props) => {
                 "/product/:id",
                 "/product/:alt/:id",
                 "/product/compare/:alt/:id1/:id2",
-                "/user/(info|password|address|order)",
+                "/user/(info|password|address|order|wish-list)",
                 "/user/address/:id",    
                 "/user/order/:orderId",
             ]}
@@ -143,7 +143,7 @@ const App = (props) => {
                     "/product/:id",
                     "/product/:alt/:id",
                     "/product/compare/:alt/:id1/:id2",
-                    "/user/(info|password|address|order)",
+                    "/user/(info|password|address|order|wish-list)",
                     "/user/address/:id",    
                     "/user/order/:orderId",
                 ]}

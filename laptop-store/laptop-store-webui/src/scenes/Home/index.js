@@ -29,7 +29,7 @@ class Home extends Component {
                         path={[
                             "/user/address/:id",
                             "/user/order/:orderId",
-                            "/user/(info|password|address|order|payment)",
+                            "/user/(info|password|address|order|payment|wish-list)",
                         ]}
                     />
                 </Switch>

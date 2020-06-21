@@ -12,6 +12,8 @@ public interface UserService {
 
     Response updateCart(String cartJSON, SecurityContext securityContext);
 
+    Response updateWishlist(String wishlistJSON, SecurityContext securityContext);
+
     Response updateUser(UserInput userInput, @Context SecurityContext securityContext);
 
     Response updatePassword(PasswordInput passwordInput, SecurityContext securityContext);
