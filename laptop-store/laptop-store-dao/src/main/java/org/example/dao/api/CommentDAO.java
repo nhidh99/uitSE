@@ -19,7 +19,7 @@ public interface CommentDAO {
 
     Long findTotalCommentByProductId(Integer laptopId);
 
-    List<Comment> findAll();
+    List<Comment> findByPage(Integer page);
 
     void approve(Integer id, CommentReply commentReply);
 

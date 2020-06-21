@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommentDAOImpl implements CommentDAO {
+
+    private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
+
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;
 
@@ -45,6 +48,8 @@ public class CommentDAOImpl implements CommentDAO {
         return em.createQuery(query, Comment.class)
                 .setParameter("id", id)
                 .setParameter("status", status)
+                .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
     }
 
@@ -76,9 +81,11 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Comment> findAll() {
+    public List<Comment> findByPage(Integer page) {
         String query = "SELECT c FROM Comment c";
         return em.createQuery(query, Comment.class)
+                .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
+                .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
     }
 

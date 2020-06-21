@@ -4,14 +4,15 @@ import OverviewBlock from "./components/OverviewBlock";
 import DetailBlock from "./components/DetailBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import RatingBlock from "./components/RatingBlock";
-import RatingList from "./components/RatingList";
 import QuestionBlock from "./components/QuestionBlock";
+import RatingList from "./components/RatingList";
 import { Row, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
+
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
@@ -34,13 +35,13 @@ const DetailPage = (props) => {
     }, []);
 
     const loadData = async (productId) => {
-        const [product, imageIds, ratings, promotions, suggestions] = await Promise.all([
+        const [product, imageIds, ratings, promotions, comments, suggestions] = await Promise.all([
             loadProduct(productId),
             loadImages(productId),
             loadRatings(productId),
             loadPromotions(productId),
-            loadSuggestions(productId),
             loadComments(productId),
+            loadSuggestions(productId),
         ]);
         setProduct(product);
         setImageIds(imageIds);
@@ -131,10 +132,10 @@ const DetailPage = (props) => {
                 }
             />
 
-            <ContentBlock
-                title="Thông tin chi tiết"
-                component={<DetailBlock product={product} />}
-            />
+                <ContentBlock
+                    title="Thông tin chi tiết"
+                    component={<DetailBlock product={product} />}
+                />
 
             <ContentBlock
                 title="Sản phẩm tương tự"
@@ -155,15 +156,25 @@ const DetailPage = (props) => {
                 title="Đánh giá sản phẩm"
                 component={<RatingBlock ratings={ratings} product={product} />}
             />
-
-            {ratings.length > 0 ? (
                 <ContentBlock
-                    title="Khách hàng đánh giá"
-                    component={<RatingList ratings={ratings} />}
+                    title="Hỏi, đáp về sản phẩm"
+                    component={<QuestionBlock comments={comments} product={product} />} />
+
+                <ContentBlock title="Khách hàng hỏi đáp" component={<QuestionList comments={comments}/>} />
+
+                <ContentBlock
+                    title="Đánh giá sản phẩm"
+                    component={<RatingBlock ratings={ratings} product={product} />}
                 />
-            ) : null}
-        </Fragment>
-    );
+
+                {
+                    ratings.length > 0 ? <ContentBlock
+                        title="Khách hàng đánh giá"
+                        component={<RatingList ratings={ratings} />}
+                    /> : null
+                }
+            </Fragment>
+        );
 };
 
 export default DetailPage;

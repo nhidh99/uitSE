@@ -9,7 +9,7 @@ import javax.ws.rs.core.SecurityContext;
 public interface CommentService {
     Response createComment(Integer productId, CommentInput commentInput, SecurityContext securityContext);
 
-    Response findByProductId(Integer productId);
+    Response findByProductId(Integer productId, Integer page);
 
     Response deleteCommentById(Integer commentId, SecurityContext securityContext);
 
