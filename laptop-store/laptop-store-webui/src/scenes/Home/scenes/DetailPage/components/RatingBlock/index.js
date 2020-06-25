@@ -74,6 +74,7 @@ const RatingBlock = (props) => {
                     </tbody>
                 </Table>
             </Col>
+
             <Col xs="8" className={styles.blockRight}>
                 <Form>
                     <FormGroup>
@@ -86,7 +87,7 @@ const RatingBlock = (props) => {
                             color="primary"
                         >
                             <FaPaperPlane />
-                            &nbsp; Gửi nhận xét
+                            &nbsp; Gửi đánh giá
                         </Button>
                         <br />
                         <Rating
@@ -117,7 +118,7 @@ const RatingBlock = (props) => {
                         <textarea
                             id="comment-detail"
                             class="form-control"
-                            rows="5"
+                            rows="4"
                             placeholder="(Không bắt buộc)"
                         ></textarea>
                     </FormGroup>

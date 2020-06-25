@@ -8,16 +8,18 @@
 }
 
 .blockLeft {
-    padding: 5px 0px;
+    img {
+        padding: 2px; 
+    }
 }
 
 .blockCenter {
-    margin-top: 20px;
+    margin-top: 25px;
+    padding: 0 20px 0 35px !important;
 }
 
 .blockRight {
     margin-top: 20px;
-    padding: 0 !important;
 }
 
 .name {

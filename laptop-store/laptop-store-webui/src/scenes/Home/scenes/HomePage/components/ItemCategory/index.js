@@ -65,8 +65,10 @@ const ItemCategory = (props) => {
                         ? "1TB"
                         : `${product["hard_drive"]["size"]}GB`}
                 </label>
+                <br />
 
                 <label className={styles.itemName}>{product["name"]}</label>
+                <br />
 
                 <label className={styles.itemUnitPrice}>
                     {product["unit_price"].toLocaleString()}
@@ -95,7 +97,7 @@ const ItemCategory = (props) => {
             <header className={styles.categoryHeader}>{title}</header>
             <div className={styles.itemList}>
                 {loading
-                    ? [...Array(8)].map((x) => <EmptyItem />)
+                    ? [...Array(10)].map((x) => <EmptyItem />)
                     : products.map((product) => <Item product={product} />)}
             </div>
             <button className={styles.moreBtn} onClick={toggleMore}>

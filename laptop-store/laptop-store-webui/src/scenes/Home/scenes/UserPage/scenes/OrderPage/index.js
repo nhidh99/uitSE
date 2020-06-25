@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from "react";
 import styles from "./styles.module.scss";
-import Loader from "react-loader-advanced";
-import { FaBoxes } from "react-icons/fa";
-import { Spinner, Table } from "reactstrap";
+import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
+import { Table } from "reactstrap";
 import { getCookie } from "../../../../../../services/helper/cookie";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import Pagination from "react-js-pagination";
 import { convertOrderStatus } from "../../../../../../services/helper/converter";
 import { withRouter } from "react-router-dom";
+import EmptyBlock from "../../../../../../components/EmptyBlock";
 
 class OrderPage extends Component {
     state = {
@@ -53,19 +53,30 @@ class OrderPage extends Component {
                         &nbsp;&nbsp;ĐƠN HÀNG CỦA TÔI
                     </label>
 
-                    <div className={styles.pagination}>
-                        <Pagination
-                            activePage={activePage}
-                            itemsCountPerPage={ITEM_COUNT_PER_PAGE}
-                            totalItemsCount={orderCount}
-                            pageRangeDisplayed={5}
-                            onChange={this.pageChange}
-                            itemClass="page-item"
-                            linkClass="page-link"
-                        />
-                    </div>
+                    {orders.length === 0 ? null : (
+                        <div className={styles.pagination}>
+                            <Pagination
+                                activePage={activePage}
+                                itemsCountPerPage={ITEM_COUNT_PER_PAGE}
+                                totalItemsCount={orderCount}
+                                pageRangeDisplayed={5}
+                                onChange={this.pageChange}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                            />
+                        </div>
+                    )}
                 </div>
-                <Loader show={loading} message={<Spinner />}>
+
+                {orders.length === 0 ? (
+                    <EmptyBlock
+                        icon={<FaShoppingBasket />}
+                        loading={loading}
+                        backToHome={!loading}
+                        loadingText="Đang tải đơn hàng"
+                        emptyText="Danh sách trống"
+                    />
+                ) : (
                     <Table className={styles.table} hover bordered>
                         <tbody>
                             <tr>
@@ -112,7 +123,7 @@ class OrderPage extends Component {
                             })}
                         </tbody>
                     </Table>
-                </Loader>
+                )}
             </Fragment>
         );
     }

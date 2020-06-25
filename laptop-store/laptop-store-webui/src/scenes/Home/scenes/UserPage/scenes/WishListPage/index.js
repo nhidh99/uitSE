@@ -4,11 +4,10 @@ import { withRouter } from "react-router-dom";
 import styles from "./styles.module.scss";
 import { FaBook, FaBoxOpen } from "react-icons/fa";
 import ItemBlock from "./components/ItemBlock";
-import Loader from "react-loader-advanced";
-import { Spinner, Button } from "reactstrap";
 import { getWishList } from "../../../../../../services/helper/wish-list";
+import EmptyBlock from "../../../../../../components/EmptyBlock";
 
-const WishListPage = (props) => {
+const WishListPage = () => {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
     const wishList = getWishList();
@@ -46,30 +45,21 @@ const WishListPage = (props) => {
                 </label>
             </div>
 
-            <Loader show={loading} message={<Spinner />}>
+            {products.length === 0 ? (
+                <EmptyBlock
+                    loading={loading}
+                    backToHome={!loading}
+                    icon={<FaBoxOpen />}
+                    loadingText="Đang tải danh sách"
+                    emptyText="Danh sách trống"
+                />
+            ) : (
                 <div className={styles.list}>
-                    {products.length === 0 ? (
-                        <div className={styles.emptyWishList}>
-                            <FaBoxOpen size={80} />
-                            <br />
-                            {loading ? (
-                                <h5>Đang tải danh sách xem sau...</h5>
-                            ) : (
-                                <Fragment>
-                                    <h4>Danh sách trống</h4>
-                                    <Button size="lg" color="warning" type="a" href="/">
-                                        Quay lại trang mua sắm
-                                    </Button>
-                                </Fragment>
-                            )}
-                        </div>
-                    ) : (
-                        products.map((product) => (
-                            <ItemBlock product={product} toggleLoading={toggleLoading} />
-                        ))
-                    )}
+                    {products.map((product) => (
+                        <ItemBlock product={product} toggleLoading={toggleLoading} />
+                    ))}
                 </div>
-            </Loader>
+            )}
         </Fragment>
     );
 };

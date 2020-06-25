@@ -18,8 +18,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class LaptopDAOImpl implements LaptopDAO {
     private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
-    private static final Integer ELEMENT_PER_FILTER_BLOCK = 8;
-    private static final Integer ELEMENT_PER_SUGGEST = 4;
+    private static final Integer ELEMENT_PER_FILTER_BLOCK = 10;
+    private static final Integer ELEMENT_PER_SUGGEST = 5;
 
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;

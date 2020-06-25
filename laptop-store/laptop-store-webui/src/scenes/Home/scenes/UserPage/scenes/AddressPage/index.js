@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { Button, Spinner } from "reactstrap";
-import { FaBook } from "react-icons/fa";
+import React, { useState, useEffect, Fragment } from "react";
+import { Button } from "reactstrap";
+import { FaBook, FaNewspaper } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.scss";
 import AddressBlock from "./components/AddressBlock";
 import { getCookie } from "../../../../../../services/helper/cookie";
-import Loader from "react-loader-advanced";
 import store from "../../../../../../services/redux/store";
+import EmptyBlock from "../../../../../../components/EmptyBlock";
 
 const AddressPage = () => {
     const [addresses, setAddresses] = useState([]);
@@ -37,12 +37,7 @@ const AddressPage = () => {
     };
 
     return (
-        <Loader
-            show={loading}
-            message={<Spinner color="primary" />}
-            className={styles.loader}
-            backgroundStyle={{ backgroundColor: "transparent" }}
-        >
+        <Fragment>
             <div className={styles.title}>
                 <label className={styles.header}>
                     <FaBook />
@@ -56,10 +51,19 @@ const AddressPage = () => {
                 </Link>
             </div>
 
-            {addresses.map((address) => (
-                <AddressBlock address={address} isDefault={defaultAddressId === address.id} />
-            ))}
-        </Loader>
+            {addresses.length === 0 ? (
+                <EmptyBlock
+                    loading={loading}
+                    icon={<FaNewspaper />}
+                    loadingText="Đang tải sổ địa chỉ"
+                    emptyText="Sổ địa chỉ trống"
+                />
+            ) : (
+                addresses.map((address) => (
+                    <AddressBlock address={address} isDefault={defaultAddressId === address.id} />
+                ))
+            )}
+        </Fragment>
     );
 };
 

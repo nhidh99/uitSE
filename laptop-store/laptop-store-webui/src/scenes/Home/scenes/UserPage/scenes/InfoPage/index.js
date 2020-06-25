@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { Label, Input, Button, Spinner } from "reactstrap";
+import React, { useState, useEffect, Fragment } from "react";
+import { Label, Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaUserCircle } from "react-icons/fa";
 import { getCookie } from "../../../../../../services/helper/cookie";
-import Loader from "react-loader-advanced";
 import FacebookSync from "./components/FacebookSync";
 import GoogleSync from "./components/GoogleSync";
+import EmptyBlock from "../../../../../../components/EmptyBlock";
 
 const InfoPage = () => {
     const [loading, setLoading] = useState(true);
@@ -134,12 +134,7 @@ const InfoPage = () => {
     };
 
     return (
-        <Loader
-            show={loading}
-            message={<Spinner color="primary" />}
-            className={styles.loader}
-            backgroundStyle={{ backgroundColor: "transparent" }}
-        >
+        <Fragment>
             <div className={styles.title}>
                 <label className={styles.header}>
                     <FaInfoCircle />
@@ -154,6 +149,7 @@ const InfoPage = () => {
                         className={styles.submit}
                         color="success"
                         onClick={submit}
+                        disabled={loading}
                     >
                         Lưu
                     </Button>
@@ -166,7 +162,14 @@ const InfoPage = () => {
                     : null}
             </div>
 
-            {loading ? null : (
+            {loading ? (
+                <EmptyBlock
+                    loading={loading}
+                    backToHome={!loading}
+                    icon={<FaUserCircle />}
+                    loadingText="Đang tải thông tin"
+                />
+            ) : (
                 <table className={styles.table}>
                     <tr>
                         <td className={styles.labelCol}>
@@ -258,7 +261,7 @@ const InfoPage = () => {
                     </tr>
                 </table>
             )}
-        </Loader>
+        </Fragment>
     );
 };
 

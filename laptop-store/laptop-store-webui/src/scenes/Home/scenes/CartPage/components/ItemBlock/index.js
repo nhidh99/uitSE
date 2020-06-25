@@ -66,7 +66,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
     };
 
     return (
-        <Row>
+        <Row className={styles.row}>
             <Col xs="2" className={styles.blockLeft}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                     <img
@@ -153,7 +153,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                         color="transparent"
                         onClick={() => removeProduct(product["id"])}
                     >
-                        <FaTrashAlt />
+                        <FaTrashAlt className={styles.trashIcon} />
                     </Button>
                 </InputGroup>
             </Col>

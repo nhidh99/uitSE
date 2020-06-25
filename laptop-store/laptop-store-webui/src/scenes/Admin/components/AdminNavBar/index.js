@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
-import { FaBoxes, FaLaptop, FaGifts, FaStar } from "react-icons/fa";
+import { FaBoxes, FaLaptop, FaGifts, FaStar, FaQuestionCircle } from "react-icons/fa";
 import styles from "./styles.module.scss";
 
 const AdminNavBar = () => (
@@ -27,7 +27,7 @@ const AdminNavBar = () => (
             title="Đánh giá"
         />
         <AdminNavItem
-            icon={<FaStar />}
+            icon={<FaQuestionCircle />}
             href="/admin/comments"
             title="Hỏi đáp"
         />

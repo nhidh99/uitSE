@@ -135,7 +135,7 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
     const ProductActions = () => (
         <div className={styles.blockChild}>
             <Row>
-                <Col sm="5" className={styles.quantityCol}>
+                <Col sm="4" className={styles.quantityCol}>
                     <Label className={styles.quantityLabel}>Số lượng:</Label>
                     <Input
                         id="quantity"
@@ -146,7 +146,7 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
                         className={styles.quantityInput}
                     />
                 </Col>
-                <Col sm="7" className={styles.quantityCol}>
+                <Col sm="8" className={styles.quantityCol}>
                     <Button color="success" onClick={() => addQuantityToCart(product["id"])}>
                         <FaShoppingCart />
                         &nbsp;&nbsp;Thêm vào giỏ hàng
@@ -186,11 +186,11 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
 
     return (
         <Fragment>
-            <Col xs="5" className={styles.blockLeft}>
+            <Col xs="4" className={styles.blockLeft}>
                 <ProductImage />
             </Col>
 
-            <Col xs="7" className={styles.blockRight}>
+            <Col xs="8" className={styles.blockRight}>
                 <ProductOverview />
                 <hr className={styles.divider} />
 

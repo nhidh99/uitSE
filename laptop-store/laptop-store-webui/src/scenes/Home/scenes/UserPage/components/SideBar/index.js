@@ -5,7 +5,6 @@ import {
     FaMapMarkerAlt,
     FaUser,
     FaBoxes,
-    FaShoppingCart,
     FaInfoCircle,
     FaLock,
     FaDoorOpen,
@@ -73,13 +72,6 @@ class SideBar extends Component {
                         <ListGroupItem>
                             <FaBoxes className={styles.icon} />
                             Đơn hàng
-                        </ListGroupItem>
-                    </Link>
-
-                    <Link to="/cart" className={styles.link}>
-                        <ListGroupItem>
-                            <FaShoppingCart className={styles.icon} />
-                            Giỏ hàng
                         </ListGroupItem>
                     </Link>
 

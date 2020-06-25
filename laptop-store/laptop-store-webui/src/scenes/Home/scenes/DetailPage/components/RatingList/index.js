@@ -5,8 +5,7 @@ import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ReplyBlock from "./components/ReplyBlock";
 
-const RatingList = (props) => {
-    const ratings = props.ratings;
+const RatingList = ({ ratings }) => {
     return (
         <ListGroup className={styles.listGroup}>
             {ratings.map((rating) => {

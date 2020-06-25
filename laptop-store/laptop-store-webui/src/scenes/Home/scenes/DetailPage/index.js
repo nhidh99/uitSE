@@ -13,8 +13,7 @@ import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
 
-
-const DetailPage = (props) => {
+const DetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [imageIds, setImageIds] = useState([]);
@@ -82,9 +81,8 @@ const DetailPage = (props) => {
         return response.ok ? await response.json() : [];
     };
 
-    const ContentBlock = (props) => {
-        const { title, component } = props;
-        return (
+    const ContentBlock = ({ hide, title, component }) => {
+        return hide ? null : (
             <section className={styles.section}>
                 <Label className={styles.title}>{title}</Label>
                 <Row className={styles.info}>{component}</Row>
@@ -132,10 +130,10 @@ const DetailPage = (props) => {
                 }
             />
 
-                <ContentBlock
-                    title="Thông tin chi tiết"
-                    component={<DetailBlock product={product} />}
-                />
+            <ContentBlock
+                title="Thông tin chi tiết"
+                component={<DetailBlock product={product} />}
+            />
 
             <ContentBlock
                 title="Sản phẩm tương tự"
@@ -148,6 +146,7 @@ const DetailPage = (props) => {
             />
 
             <ContentBlock
+                hide={comments.length === 0}
                 title="Khách hàng hỏi đáp"
                 component={<QuestionList comments={comments} />}
             />
@@ -156,25 +155,14 @@ const DetailPage = (props) => {
                 title="Đánh giá sản phẩm"
                 component={<RatingBlock ratings={ratings} product={product} />}
             />
-                <ContentBlock
-                    title="Hỏi, đáp về sản phẩm"
-                    component={<QuestionBlock comments={comments} product={product} />} />
 
-                <ContentBlock title="Khách hàng hỏi đáp" component={<QuestionList comments={comments}/>} />
-
-                <ContentBlock
-                    title="Đánh giá sản phẩm"
-                    component={<RatingBlock ratings={ratings} product={product} />}
-                />
-
-                {
-                    ratings.length > 0 ? <ContentBlock
-                        title="Khách hàng đánh giá"
-                        component={<RatingList ratings={ratings} />}
-                    /> : null
-                }
-            </Fragment>
-        );
+            <ContentBlock
+                hide={ratings.length === 0}
+                title="Khách hàng đánh giá"
+                component={<RatingList ratings={ratings} />}
+            />
+        </Fragment>
+    );
 };
 
 export default DetailPage;
