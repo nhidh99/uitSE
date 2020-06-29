@@ -1,5 +1,6 @@
 package org.example.dao.api;
 
+import org.example.filter.LaptopSearchFilter;
 import org.example.model.Laptop;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public interface LaptopDAO {
     List<Laptop> findSuggestionsByLaptop(Integer laptopId);
 
     List<Laptop> findByFilter(String filter, Integer page);
+
+    List<Laptop> findByFilter(LaptopSearchFilter laptopSearchFilter);
 
     Long findTotalLaptops(String filter);
 

@@ -24,4 +24,5 @@ public interface UserService {
 
     Response checkUserSocialMediaAuth(SecurityContext securityContext);
 
+    Response findUserRewards(SecurityContext securityContext);
 }

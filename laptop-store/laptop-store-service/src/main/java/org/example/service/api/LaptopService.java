@@ -2,11 +2,10 @@ package org.example.service.api;
 
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.filter.LaptopFilter;
+import org.example.filter.LaptopSearchFilter;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -40,4 +39,6 @@ public interface LaptopService {
     Response findTagsById(Integer id);
 
     Response findDetailImageIdsById(Integer id);
+
+    Response searchLaptop(LaptopSearchFilter laptopSearchFilter);
 }

@@ -3,19 +3,20 @@ package org.example.dao.impl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.dao.api.LaptopDAO;
+import org.example.filter.LaptopSearchFilter;
 import org.example.model.Laptop;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class LaptopDAOImpl implements LaptopDAO {
     private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
     private static final Integer ELEMENT_PER_FILTER_BLOCK = 10;
@@ -139,6 +140,66 @@ public class LaptopDAOImpl implements LaptopDAO {
                 .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findByFilter(LaptopSearchFilter laptopSearchFilter) {
+        String query;
+        Map<String, Object> params = new HashMap<>();
+
+        if (laptopSearchFilter.getTags().isEmpty()) {
+            query = "SELECT DISTINCT(l) FROM Laptop l WHERE l.recordStatus = true";
+        } else {
+            query = "SELECT DISTINCT(l) FROM Laptop l, IN (l.tags) t WHERE t.id in :tags AND l.recordStatus = true";
+            params.put("tags", laptopSearchFilter.getTags());
+        }
+
+        if (laptopSearchFilter.getPrice() != null) {
+            Long minPrice = null, maxPrice = null;
+            switch (laptopSearchFilter.getPrice()) {
+                case 1:
+                    minPrice = 0L;
+                    maxPrice = 15_000_000L;
+                    break;
+                case 2:
+                    minPrice = 15_000_000L;
+                    maxPrice = 20_000_000L;
+                    break;
+                case 3:
+                    minPrice = 20_000_000L;
+                    maxPrice = 25_000_000L;
+                    break;
+                case 4:
+                    minPrice = 25_000_000L;
+                    maxPrice = Long.MAX_VALUE;
+                    break;
+            }
+            query += " AND l.unitPrice >= :minPrice AND l.unitPrice < :maxPrice";
+            params.put("minPrice", minPrice);
+            params.put("maxPrice", maxPrice);
+        }
+
+        if (!laptopSearchFilter.getBrands().isEmpty()) {
+            query += " AND l.brand IN :brands";
+            params.put("brands", laptopSearchFilter.getBrands());
+        }
+
+        if (!laptopSearchFilter.getCpus().isEmpty()) {
+            query += " AND l.cpu.type IN :cpus";
+            params.put("cpus", laptopSearchFilter.getCpus());
+        }
+
+        if (!laptopSearchFilter.getRams().isEmpty()) {
+            query += " AND l.ram.size IN :rams";
+            params.put("rams", laptopSearchFilter.getRams());
+        }
+
+        TypedQuery<Laptop> typedQuery = em.createQuery(query, Laptop.class);
+        for (String key : params.keySet()) {
+            typedQuery.setParameter(key, params.get(key));
+        }
+        return typedQuery.getResultList();
     }
 
     @Override

@@ -7,5 +7,9 @@ public enum BrandType {
     HP,
     LENOVO,
     MAC,
-    MSI
+    MSI;
+
+    public static BrandType fromString(final String s) {
+        return BrandType.valueOf(s);
+    }
 }

@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Collapse, Table, Label, Input } from "reactstrap";
 import styles from "./styles.module.scss";
 import store from "../../services/redux/store";
+import { withRouter } from "react-router-dom";
+import { closeFilter } from "../../services/redux/actions";
 
 const Filter = (props) => {
     const brands = ["ACER", "ASUS", "DELL", "HP", "LENOVO", "MAC", "MSI"];
-
+    const isInSearchPage = props.location.pathname === "/search";
     const [isOpen, setIsOpen] = useState(false);
-    const selectedBrands = [];
+    const [selectedBrands, setSelectedBrands] = useState([]);
 
     useState(() => {
         store.subscribe(() => {
@@ -16,27 +18,67 @@ const Filter = (props) => {
         });
     }, []);
 
-    useEffect(() => {}, []);
-
     const toggleSelectedBrands = (brand) => {
-        const index = selectedBrands.indexOf(brand);
         const label = document.getElementById("brand-" + brand);
-
-        if (index === -1) {
-            selectedBrands.push(brand);
-            label.style.border = "5px solid #52a2e1";
-        } else {
-            selectedBrands.splice(index, 1);
+        if (selectedBrands.includes(brand)) {
+            const brands = selectedBrands.filter((b) => b !== brand);
+            setSelectedBrands(brands);
             label.style.border = "1px solid lightgray";
+        } else {
+            setSelectedBrands([...selectedBrands, brand]);
+            label.style.border = "5px solid #52a2e1";
         }
     };
 
+    const buildURLSearchParams = () => {
+        const params = new URLSearchParams();
+
+        const selectedPrice = document.querySelector("input[name='price']:checked").value;
+
+        const selectedTags = Array(...document.querySelectorAll("input[name='tag']:checked")).map(
+            (input) => input.value
+        );
+
+        const selectedCPUs = Array(...document.querySelectorAll("input[name='cpu']:checked")).map(
+            (input) => input.value
+        );
+
+        const selectedRAMs = Array(...document.querySelectorAll("input[name='ram']:checked")).map(
+            (input) => input.value
+        );
+
+        if (parseInt(selectedPrice) !== 0) params.append("price", selectedPrice);
+        selectedBrands.forEach((brand) => params.append("brands", brand));
+        selectedTags.forEach((tag) => params.append("tags", tag));
+        selectedRAMs.forEach((ram) => params.append("rams", ram));
+        selectedCPUs.forEach((cpu) => {
+            if (cpu === "CELERON_PENTIUM") {
+                params.append("cpus", "INTEL_CELERON");
+                params.append("cpus", "INTEL_PENTIUM");
+            } else {
+                params.append("cpus", cpu);
+            }
+        });
+        return params;
+    };
+
+    const submit = async () => {
+        store.dispatch(closeFilter());
+        const params = buildURLSearchParams();
+        const url = `/search?${params.toString()}`;
+        props.history.push(url);
+    };
+
     return (
-        <Collapse isOpen={isOpen} className={styles.collapse}>
+        <Collapse
+            isOpen={isOpen}
+            className={`${styles.collapse} ${
+                isInSearchPage ? styles.relativeCollapse : styles.absoluteCollapse
+            }`}
+        >
             <Table borderless className={styles.table}>
                 <tr>
                     <td colSpan={4}>
-                        <b>Nhãn hiệu</b>
                         <div className={styles.logosRow}>
                             {brands.map((brand) => (
                                 <Label
@@ -58,101 +100,203 @@ const Filter = (props) => {
                     <td>
                         <b>Mức giá</b> <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} defaultChecked name="price" />{" "}
+                            <Input
+                                type="radio"
+                                className={styles.checkbox}
+                                defaultChecked
+                                name="price"
+                                value="0"
+                            />{" "}
                             Tất cả mức giá
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Dưới 15
-                            triệu
+                            <Input
+                                type="radio"
+                                className={styles.checkbox}
+                                name="price"
+                                value="1"
+                            />{" "}
+                            Dưới 15 triệu
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 15 -
-                            20 triệu
+                            <Input
+                                type="radio"
+                                className={styles.checkbox}
+                                name="price"
+                                value="2"
+                            />{" "}
+                            Từ 15 - 20 triệu
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 20 -
-                            25 triệu
+                            <Input
+                                type="radio"
+                                className={styles.checkbox}
+                                name="price"
+                                value="3"
+                            />{" "}
+                            Từ 20 - 25 triệu
                         </Label>
                         <br />
                         <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Trên 25
-                            triệu
+                            <Input
+                                type="radio"
+                                className={styles.checkbox}
+                                name="price"
+                                value="4"
+                            />{" "}
+                            Trên 25 triệu
                         </Label>
                     </td>
 
                     <td>
                         <b>Nhu cầu</b> <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Học tập - Văn
-                            phòng
+                            <Input
+                                type="checkbox"
+                                name="tag"
+                                value="100003"
+                                className={styles.checkbox}
+                            />{" "}
+                            Học tập - Văn phòng
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Đồ họa - Kỹ thuật
+                            <Input
+                                type="checkbox"
+                                name="tag"
+                                value="100004"
+                                className={styles.checkbox}
+                            />{" "}
+                            Đồ họa - Kỹ thuật
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Laptop Gaming
+                            <Input
+                                type="checkbox"
+                                name="tag"
+                                value="100005"
+                                className={styles.checkbox}
+                            />{" "}
+                            Laptop Gaming
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Cao cấp sang trọng
+                            <Input
+                                type="checkbox"
+                                name="tag"
+                                value="100006"
+                                className={styles.checkbox}
+                            />{" "}
+                            Cao cấp sang trọng
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Mỏng nhẹ
+                            <Input
+                                type="checkbox"
+                                name="tag"
+                                value="100007"
+                                className={styles.checkbox}
+                            />{" "}
+                            Mỏng nhẹ
                         </Label>
                     </td>
 
                     <td>
                         <b>CPU</b> <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i7
+                            <Input
+                                type="checkbox"
+                                name="cpu"
+                                value="INTEL_CORE_I7"
+                                className={styles.checkbox}
+                            />{" "}
+                            Intel Core i7
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i5
+                            <Input
+                                type="checkbox"
+                                name="cpu"
+                                value="INTEL_CORE_I5"
+                                className={styles.checkbox}
+                            />{" "}
+                            Intel Core i5
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i3
+                            <Input
+                                type="checkbox"
+                                name="cpu"
+                                value="INTEL_CORE_I3"
+                                className={styles.checkbox}
+                            />{" "}
+                            Intel Core i3
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core
-                            Celeron/Pentium
+                            <Input
+                                name="cpu"
+                                type="checkbox"
+                                value="CELERON_PENTIUM"
+                                className={styles.checkbox}
+                            />{" "}
+                            Intel Core Celeron/Pentium
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> AMD
+                            <Input
+                                type="checkbox"
+                                name="cpu"
+                                value="AMD"
+                                className={styles.checkbox}
+                            />{" "}
+                            AMD
                         </Label>
                     </td>
 
                     <td>
                         <b>RAM</b> <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> 16 GB
+                            <Input
+                                type="checkbox"
+                                name="ram"
+                                value="16"
+                                className={styles.checkbox}
+                            />{" "}
+                            16 GB
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> 8 GB
+                            <Input
+                                type="checkbox"
+                                name="ram"
+                                value="8"
+                                className={styles.checkbox}
+                            />{" "}
+                            8 GB
                         </Label>
                         <br />
                         <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> 4 GB
+                            <Input
+                                type="checkbox"
+                                name="ram"
+                                value="4"
+                                className={styles.checkbox}
+                            />{" "}
+                            4 GB
                         </Label>
                     </td>
                 </tr>
             </Table>
 
-            <Button color="secondary" className={styles.button}>
+            <Button color="secondary" className={styles.button} onClick={submit}>
                 Tìm kiếm
             </Button>
         </Collapse>
     );
 };
 
-export default Filter;
+export default withRouter(Filter);

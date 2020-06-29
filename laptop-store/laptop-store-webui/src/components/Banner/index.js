@@ -18,7 +18,9 @@ import { toggleFilter, closeFilter } from "../../services/redux/actions";
 
 const Banner = (props) => {
     const redirectToPage = (href, toggle) => {
-        props.history.push(href);
+        if (href) {
+            props.history.push(href);
+        }
         store.dispatch(toggle ? toggleFilter() : closeFilter());
     };
 

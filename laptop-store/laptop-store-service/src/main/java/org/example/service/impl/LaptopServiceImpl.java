@@ -9,6 +9,7 @@ import org.example.dao.api.LaptopImageDAO;
 import org.example.dao.api.PromotionDAO;
 import org.example.dao.api.TagDAO;
 import org.example.filter.LaptopFilter;
+import org.example.filter.LaptopSearchFilter;
 import org.example.model.*;
 import org.example.security.Secured;
 import org.example.service.api.LaptopService;
@@ -130,6 +131,7 @@ public class LaptopServiceImpl implements LaptopService {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured(RoleType.ADMIN)
     public Response findLaptopsByFilter(@QueryParam("q") String queryParam, @QueryParam("page") Integer page) {
         try {
             List<Laptop> laptops = laptopDAO.findByFilter(queryParam, page);
@@ -359,6 +361,21 @@ public class LaptopServiceImpl implements LaptopService {
                     : Response.ok(ids).build();
         } catch (Exception e) {
             return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/filter")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchLaptop(@BeanParam LaptopSearchFilter laptopSearchFilter) {
+        try {
+            System.out.println(laptopSearchFilter.toString());
+            List<Laptop> laptops = laptopDAO.findByFilter(laptopSearchFilter);
+            return Response.ok(laptops).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 }

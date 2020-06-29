@@ -17,13 +17,21 @@
     padding: 10px 20px 15px 20px;
     width: 1200px;
     margin: 0 auto !important;
-    position: absolute !important;
-    z-index: 2;
+    z-index: 15;
     left: 0;
     right: 0;
     border: 1px solid lightgray;
+}
+
+.absoluteCollapse {
+    position: absolute !important;
     border-radius: 5px;
     box-shadow: 0 0 3px 3px #ddd;
+}
+
+.relativeCollapse {
+    position: relative !important;
+    margin-bottom: 15px !important;
 }
 
 .checkbox {

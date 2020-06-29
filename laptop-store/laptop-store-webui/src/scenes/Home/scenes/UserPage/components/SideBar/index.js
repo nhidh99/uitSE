@@ -9,6 +9,7 @@ import {
     FaLock,
     FaDoorOpen,
     FaHeart,
+    FaTrophy,
 } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { Link } from "react-router-dom";
@@ -79,6 +80,13 @@ class SideBar extends Component {
                         <ListGroupItem>
                             <FaHeart className={styles.icon} />
                             Xem sau
+                        </ListGroupItem>
+                    </Link>
+
+                    <Link to="/user/reward" className={styles.link}>
+                        <ListGroupItem>
+                            <FaTrophy className={styles.icon} />
+                            Cột mốc
                         </ListGroupItem>
                     </Link>
                 </ListGroup>

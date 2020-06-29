@@ -11,6 +11,7 @@ import { Col, Row } from "reactstrap";
 import OrderDetail from "./scenes/OrderDetail";
 import CartPage from "../CartPage";
 import WishListPage from "./scenes/WishListPage";
+import RewardPage from "./scenes/RewardPage";
 
 class UserPage extends Component {
     render() {
@@ -30,6 +31,7 @@ class UserPage extends Component {
                         <Route exact component={OrderDetail} path="/user/order/:orderId" />
                         <Route exact component={CartPage} path="/user/cart" />
                         <Route exact component={WishListPage} path="/user/wish-list" />
+                        <Route exact component={RewardPage} path="/user/reward" />
                     </Switch>
                 </Col>
             </Row>
