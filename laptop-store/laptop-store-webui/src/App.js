@@ -12,6 +12,7 @@ import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./co
 import { getCart, updateCartDatabase } from "./services/helper/cart";
 import Filter from "./components/Filter";
 import ConfirmModal from "./components/ConfirmModal";
+import Footer from "./components/Footer";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -167,6 +168,7 @@ const App = (props) => {
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>
             </div>
+            <Footer/>
         </Fragment>
     );
 };

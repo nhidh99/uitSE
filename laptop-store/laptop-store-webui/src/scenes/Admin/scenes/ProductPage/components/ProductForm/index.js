@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Input, InputGroup, InputGroupAddon, InputGroupText, Button } from "reactstrap";
+import { Input, InputGroup, InputGroupAddon, InputGroupText, Button, Label } from "reactstrap";
 import styles from "./styles.module.scss";
 import PromotionCheckboxes from "./components/PromotionCheckboxes";
 import ImageInput from "../../../../components/ImageInput";
@@ -13,6 +13,11 @@ import {
 } from "../../../../../../constants";
 
 class ProductForm extends Component {
+
+    state = {
+        errors: [],
+    };
+
     loadPromotions = async () => {
         const { product } = this.props;
         const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
@@ -32,13 +37,21 @@ class ProductForm extends Component {
     };
 
     submit = async (e) => {
-        e.target.disabled = true;
+        //e.target.disabled = true;
         const { product } = this.props;
         const data = buildProductData();
         data.append("cpu-id", product ? product["cpu"]["id"] : -1);
         data.append("ram-id", product ? product["ram"]["id"] : -1);
         data.append("monitor-id", product ? product["monitor"]["id"] : -1);
         data.append("hd-id", product ? product["hard_drive"]["id"] : -1);
+
+        const errors = this.validateInputs(data);
+
+        if (errors.length > 0) {
+            this.setState({ errors: errors });
+            return;
+        }
+
 
         const response = await fetch(`/cxf/api/laptops/${product?.["id"] ?? ""}`, {
             method: product ? "PUT" : "POST",
@@ -53,8 +66,35 @@ class ProductForm extends Component {
         }
     };
 
+    validateInputs = (inputs) => {
+        const errors = [];
+        const validate = (tag, condition) => (condition() ? null : errors.push(tag));
+        validate("name", () =>
+            inputs.get("name").match(/^[a-zA-Z0-9\s\p{L}]{3,100}$/)
+        );
+        validate("unit-price", () => !isNaN(inputs.get("unit-price")));
+        validate("discount-price", () => !isNaN(inputs.get("discount-price")));
+        validate("quantity", () => !isNaN(inputs.get("quantity")));
+        validate("cpu-speed", () => !isNaN(inputs.get("cpu-speed")));
+        validate("cpu-max-speed", () => !isNaN(inputs.get("cpu-max-speed")));
+        validate("cpu-detail", () => inputs.get("cpu-detail").length > 0);
+        validate("hd-detail", () => inputs.get("hd-detail").length > 0);
+        validate("resolution-width", () => !isNaN(inputs.get("resolution-width")));
+        validate("resolution-height", () => !isNaN(inputs.get("resolution-height")));
+        validate("graphics-card", () => inputs.get("graphics-card").length > 0);
+        validate("ports", () => inputs.get("ports").length > 0);
+        validate("os", () => inputs.get("os").length > 0);
+        validate("design", () => inputs.get("design").length > 0);
+        validate("thickness", () => inputs.get("thickness") !== "NaN");
+        validate("weight", () => inputs.get("weight") !== "NaN");
+        validate("tags", () => JSON.parse(inputs.get("tags")).length > 0);
+        validate("image", () => inputs.get("image") !== "null");
+        return errors;
+    };
+
     render() {
         const { product, toggle } = this.props;
+        const { errors } = this.state;
         return (
             <Fragment>
                 <table borderless className={styles.table}>
@@ -70,14 +110,35 @@ class ProductForm extends Component {
                                 />
                             }
                         />
+                        <ErrorRow
+                            errors={errors}
+                            tag="name"
+                            component={
+                                <Label>Tên sản phẩm không được để trống</Label>}
+                        />
+
                         <InputRow
                             title="Đơn giá"
                             component={<PriceInput defaultValue={product?.["unit_price"]} />}
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="unit-price"
+                            component={
+                                <Label>Đơn giá không được để trống</Label>}
+                        />
+
                         <InputRow
                             title="Giảm giá"
                             component={<DiscountInput defaultValue={product?.["discount_price"]} />}
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="discount-price"
+                            component={
+                                <Label>Giảm giá không được để trống</Label>}
                         />
 
                         <InputRow
@@ -87,8 +148,8 @@ class ProductForm extends Component {
                                     defaultValue={
                                         product
                                             ? (
-                                                  product["unit_price"] - product["discount_price"]
-                                              ).toLocaleString()
+                                                product["unit_price"] - product["discount_price"]
+                                            ).toLocaleString()
                                             : null
                                     }
                                 />
@@ -99,12 +160,41 @@ class ProductForm extends Component {
                             component={<QuantityInput defaultValue={product?.["quantity"]} />}
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="quantity"
+                            component={
+                                <Label>Số lượng không được để trống</Label>}
+                        />
+
+
                         <InputRow
                             title="Nhãn hiệu"
                             component={<BrandInput defaultValue={product?.["brand"]} />}
                         />
 
                         <InputRow title="CPU" component={<CPUInputs cpu={product?.["cpu"]} />} />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="cpu-speed"
+                            component={
+                                <Label>Tốc độ CPU không được để trống</Label>}
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="cpu-max-speed"
+                            component={
+                                <Label>Tốc độ CPU tối đa không được để trống</Label>}
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="cpu-detail"
+                            component={
+                                <Label>Chi tiết CPU không được để trống</Label>}
+                        />
 
                         <InputRow title="RAM" component={<RAMInputs ram={product?.["ram"]} />} />
 
@@ -113,9 +203,30 @@ class ProductForm extends Component {
                             component={<HardDriveInputs hd={product?.["hard_drive"]} />}
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="hd-detail"
+                            component={
+                                <Label>Chi tiết ổ cứng không được để trống</Label>}
+                        />
+
                         <InputRow
                             title="Màn hình"
                             component={<MonitorInputs monitor={product?.["monitor"]} />}
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="resolution-width"
+                            component={
+                                <Label>Độ dài không được để trống</Label>}
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="resolution-height"
+                            component={
+                                <Label>Độ rộng không được để trống</Label>}
                         />
 
                         <InputRow
@@ -130,6 +241,13 @@ class ProductForm extends Component {
                             }
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="graphics-card"
+                            component={
+                                <Label>Card màn hình không được để trống</Label>}
+                        />
+
                         <InputRow
                             title="Cổng kết nối"
                             component={
@@ -141,6 +259,14 @@ class ProductForm extends Component {
                                 />
                             }
                         />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="ports"
+                            component={
+                                <Label>Cổng kết nối không được để trống</Label>}
+                        />
+
 
                         <InputRow
                             title="Hệ điều hành"
@@ -154,6 +280,14 @@ class ProductForm extends Component {
                             }
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="os"
+                            component={
+                                <Label>Hệ điều hành không được để trống</Label>}
+                        />
+
+
                         <InputRow
                             title="Thiết kế"
                             component={
@@ -166,14 +300,37 @@ class ProductForm extends Component {
                             }
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="design"
+                            component={
+                                <Label>Thiết kế không được để trống</Label>}
+                        />
+
+
                         <InputRow
                             title="Độ dày"
                             component={<ThicknessInput defaultValue={product?.["thickness"]} />}
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="thickness"
+                            component={
+                                <Label>Độ dày không được để trống</Label>}
+                        />
+
+
                         <InputRow
                             title="Khối lượng"
                             component={<WeightInput defaultValue={product?.["weight"]} />}
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="weight"
+                            component={
+                                <Label>Khối lượng không được để trống</Label>}
                         />
 
                         <InputRow
@@ -186,12 +343,26 @@ class ProductForm extends Component {
                             component={<TagCheckboxes product={product} />}
                         />
 
+                        <ErrorRow
+                            errors={errors}
+                            tag="tags"
+                            component={
+                                <Label>Loại sản phẩm không được để trống</Label>}
+                        />
+
                         <InputImageRow
                             defaultSrc={
                                 product
                                     ? `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`
                                     : null
                             }
+                        />
+
+                        <ErrorRow
+                            errors={errors}
+                            tag="image"
+                            component={
+                                <Label>Hình ảnh không được để trống</Label>}
                         />
                     </tbody>
                 </table>
@@ -218,6 +389,16 @@ const InputRow = (props) => {
         </tr>
     );
 };
+
+const ErrorRow = (props) => {
+    const { errors, component, tag } = props;
+    return (
+        <tr hidden={!errors.includes(tag)} className={styles.error}>
+            <td className={styles.labelCol}></td>
+            <td className={styles.inputCol}>{component}</td>
+        </tr>
+    )
+}
 
 const InputImageRow = (props) => (
     <tr>

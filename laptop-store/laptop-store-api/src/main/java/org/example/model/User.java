@@ -57,14 +57,6 @@ public class User {
     @JsonProperty("birthday")
     private LocalDate birthday;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Rating> ratings;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<RatingReply> ratingReplies;
-
     @Column(name = "cart")
     @JsonProperty("cart")
     private String cart;
