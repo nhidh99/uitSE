@@ -15,7 +15,7 @@ class Home extends Component {
                 <Switch>
                     <Route
                         exact
-                        path={["/product/:id", "/product/:alt/:id"]}
+                        path={["/product/:productId", "/product/:alt/:productId"]}
                         component={DetailPage}
                     />
                     <Route exact component={HomePage} path="/" />

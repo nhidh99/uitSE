@@ -5,13 +5,13 @@ import { Link, useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 
 const SuggestBlock = ({ suggestions }) => {
-    const { alt, id } = useParams();
+    const { alt, productId } = useParams();
 
     return (
         <section className={styles.block}>
             {suggestions.map((product) => (
                 <div className={styles.cell}>
-                    <a href={`/product/${product["alt"]}/${product["id"]}`}>
+                    <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                         <div className={styles.redirect}>
                             <img
                                 src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
@@ -33,7 +33,7 @@ const SuggestBlock = ({ suggestions }) => {
                             <Label className={styles.name}>{product["name"]}</Label>
                             <br />
                         </div>
-                    </a>
+                    </Link>
                     <Label className={styles.unitPrice}>
                         {product["unit_price"].toLocaleString()}
                         <sup>đ</sup>
@@ -45,7 +45,7 @@ const SuggestBlock = ({ suggestions }) => {
                     </Label>
                     <br />
                     <Link
-                        to={`/product/compare/${alt}-vs-${product["alt"]}/${id}/${product["id"]}`}
+                        to={`/product/compare/${alt}-vs-${product["alt"]}/${productId}/${product["id"]}`}
                         className={styles.suggest}
                     >
                         So sánh chi tiết

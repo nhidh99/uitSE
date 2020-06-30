@@ -40,7 +40,7 @@ public class RatingDAOImpl implements RatingDAO {
         String query = "SELECT r FROM Rating r " +
                 "WHERE r.laptop.id = :laptopId " +
                 "AND r.approveStatus = true " +
-                "AND (r.commentTitle is not null OR r.commentDetail is not null)";
+                "AND (r.commentTitle IS NOT NULL OR r.commentDetail IS NOT NULL)";
         return em.createQuery(query, Rating.class)
                 .setParameter("laptopId", laptopId)
                 .getResultList();
@@ -65,7 +65,7 @@ public class RatingDAOImpl implements RatingDAO {
         String query = "SELECT COUNT(r) FROM Rating r " +
                 "WHERE r.laptop.id = :laptopId " +
                 "AND r.approveStatus = true " +
-                "AND (r.commentTitle is not null OR r.commentDetail is not null)";
+                "AND (r.commentTitle IS NOT NULL OR r.commentDetail IS NOT NULL)";
         return em.createQuery(query, Long.class)
                 .setParameter("laptopId", laptopId)
                 .getSingleResult();
@@ -79,8 +79,8 @@ public class RatingDAOImpl implements RatingDAO {
             return em.createQuery(query, Long.class).getSingleResult();
         } else {
             String query = "SELECT Count(r) FROM Rating r " +
-                    "WHERE (r.id is NULL OR cast(r.id as string) = '' OR cast(r.id as string) LIKE CONCAT('%', :id, '%')) " +
-                    "AND (r.approveStatus is NULL OR cast(r.approveStatus as string) LIKE CONCAT('%', :status, '%'))";
+                    "WHERE (r.id IS NULL OR cast(r.id as string) = '' OR cast(r.id as string) LIKE CONCAT('%', :id, '%')) " +
+                    "AND (r.approveStatus IS NULL OR cast(r.approveStatus as string) LIKE CONCAT('%', :status, '%'))";
             return em.createQuery(query, Long.class)
                     .setParameter("id", id)
                     .setParameter("status", status)
@@ -91,7 +91,7 @@ public class RatingDAOImpl implements RatingDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Rating> findByPage(Integer page) {
-        String query = "SELECT r FROM Rating r";
+        String query = "SELECT r FROM Rating r ORDER BY r.id DESC";
         return em.createQuery(query, Rating.class)
                 .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)

@@ -4,6 +4,8 @@ import styles from "./styles.module.scss";
 import { FaStar, FaPaperPlane } from "react-icons/fa";
 import Rating from "react-rating";
 import { getCookie } from "../../../../../../services/helper/cookie";
+import { buildModal } from "../../../../../../services/redux/actions";
+import store from "../../../../../../services/redux/store";
 
 const RatingBlock = (props) => {
     const [rating, setRating] = useState(0);
@@ -30,7 +32,16 @@ const RatingBlock = (props) => {
             body: JSON.stringify(body),
         });
         if (response.ok) {
-            window.location.reload();
+            document.getElementById("comment-title").value = "";
+            document.getElementById("comment-detail").value = "";
+            setRating(0);
+            const modal = {
+                title: "Đã gửi đánh giá",
+                message:
+                    "Cảm ơn bạn đã gửi đánh giá về sản phẩm, Laptop Store sẽ xem xét duyệt nhận xét của bạn.",
+                confirm: () => null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 
@@ -40,7 +51,9 @@ const RatingBlock = (props) => {
         <Fragment>
             <Col xs="4" className={styles.blockLeft}>
                 <Label className={styles.ratingLabel}>Đánh giá trung bình</Label>
-                <Label className={styles.ratingPoint}>{props.product["avg_rating"].toFixed(1)}/5.0</Label>
+                <Label className={styles.ratingPoint}>
+                    {props.product["avg_rating"].toFixed(1)}/5.0
+                </Label>
                 <Label className={styles.commentCount}>
                     ({props.ratings?.["length"]} đánh giá)
                 </Label>

@@ -73,6 +73,34 @@ const CartPage = (props) => {
         window.scroll(0, 0);
     };
 
+    const SummaryBlock = () => (
+        <div className={styles.summary}>
+            <span>
+                <b>
+                    <FaBoxOpen />
+                    &nbsp; Số lượng:&nbsp;&nbsp;
+                </b>
+                {Object.values(cart).reduce((a, b) => a + b, 0)}
+            </span>
+            <span>
+                <b>
+                    <FaGift />
+                    &nbsp; Tổng giảm giá:&nbsp;&nbsp;
+                </b>
+                {totalDiscount.toLocaleString()}
+                <sup>đ</sup>
+            </span>
+            <span>
+                <b>
+                    <FaMoneyBillWave />
+                    &nbsp; Tạm tính:&nbsp;&nbsp;
+                </b>
+                {totalPrice.toLocaleString()}
+                <sup>đ</sup>
+            </span>
+        </div>
+    );
+
     return (
         <Fragment>
             <div className={styles.title}>
@@ -88,6 +116,7 @@ const CartPage = (props) => {
             </div>
 
             <div className={styles.list}>
+                <SummaryBlock />
                 {products.length === 0 ? (
                     <EmptyBlock
                         loading={loading}
@@ -99,31 +128,6 @@ const CartPage = (props) => {
                     />
                 ) : (
                     <Loader show={loading} message={<Spinner />}>
-                        <div className={styles.total}>
-                            <span>
-                                <b>
-                                    <FaBoxOpen />
-                                    &nbsp; Số lượng:&nbsp;&nbsp;
-                                </b>
-                                {Object.values(cart).reduce((a, b) => a + b, 0)}
-                            </span>
-                            <span>
-                                <b>
-                                    <FaGift />
-                                    &nbsp; Tổng giảm giá:&nbsp;&nbsp;
-                                </b>
-                                {totalDiscount.toLocaleString()}
-                                <sup>đ</sup>
-                            </span>
-                            <span>
-                                <b>
-                                    <FaMoneyBillWave />
-                                    &nbsp; Tạm tính:&nbsp;&nbsp;
-                                </b>
-                                {totalPrice.toLocaleString()}
-                                <sup>đ</sup>
-                            </span>
-                        </div>
                         {products.map((product) => (
                             <ItemBlock
                                 product={product}

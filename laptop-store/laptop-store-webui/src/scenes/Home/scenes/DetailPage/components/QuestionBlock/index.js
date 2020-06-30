@@ -3,10 +3,13 @@ import { Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
 import { getCookie } from "../../../../../../services/helper/cookie";
 import { FaPaperPlane } from "react-icons/fa";
+import store from "../../../../../../services/redux/store";
+import { buildModal } from "../../../../../../services/redux/actions";
 const QuestionBlock = (props) => {
     const postQuestion = async () => {
         const url = "/cxf/api/comments?product-id=" + props.product["id"];
-        const question = document.getElementById("question").value;
+        const input = document.getElementById("question");
+        const question = input.value;
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -17,8 +20,16 @@ const QuestionBlock = (props) => {
                 question: question,
             }),
         });
+
         if (response.ok) {
-            window.location.reload();
+            input.value = "";
+            const modal = {
+                title: "Đã gửi câu hỏi",
+                message:
+                    "Cảm ơn bạn đã gửi câu hỏi về sản phẩm, Laptop Store sẽ xem xét duyệt và phản hồi bạn trong thời gian sớm nhất.",
+                confirm: () => null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 

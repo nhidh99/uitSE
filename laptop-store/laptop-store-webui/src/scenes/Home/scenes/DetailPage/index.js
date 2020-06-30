@@ -12,9 +12,9 @@ import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
-import { Link } from "react-router-dom";
+import { Link, withRouter, useParams } from "react-router-dom";
 
-const DetailPage = () => {
+const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [imageIds, setImageIds] = useState([]);
@@ -22,26 +22,30 @@ const DetailPage = () => {
     const [comments, setComments] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
+    const { productId } = useParams();
 
     useEffect(() => {
+        loadData();
+    }, [props.location]);
+
+    const loadData = () => {
         window.scroll(0, 0);
-        const path = window.location.pathname;
-        const productId = path.split("/").slice(-1).pop();
+        setLoading(true);
         if (isNaN(parseInt(productId))) {
             window.location.href = "/";
         } else {
-            loadData(productId);
+            loadProductDetail();
         }
-    }, []);
+    };
 
-    const loadData = async (productId) => {
+    const loadProductDetail = async () => {
         const [product, imageIds, ratings, promotions, comments, suggestions] = await Promise.all([
-            loadProduct(productId),
-            loadImages(productId),
-            loadRatings(productId),
-            loadPromotions(productId),
-            loadComments(productId),
-            loadSuggestions(productId),
+            loadProduct(),
+            loadImages(),
+            loadRatings(),
+            loadPromotions(),
+            loadComments(),
+            loadSuggestions(),
         ]);
         setProduct(product);
         setImageIds(imageIds);
@@ -52,32 +56,32 @@ const DetailPage = () => {
         setLoading(false);
     };
 
-    const loadComments = async (productId) => {
+    const loadComments = async () => {
         const response = await fetch(`/cxf/api/comments?product-id=${productId}`);
         return response.ok ? await response.json() : [];
     };
 
-    const loadProduct = async (productId) => {
+    const loadProduct = async () => {
         const response = await fetch(`/cxf/api/laptops/${productId}`);
         return response.ok ? await response.json() : null;
     };
 
-    const loadImages = async (productId) => {
+    const loadImages = async () => {
         const response = await fetch(`/cxf/api/laptops/${productId}/image-ids`);
         return response.ok ? await response.json() : null;
     };
 
-    const loadRatings = async (productId) => {
+    const loadRatings = async () => {
         const response = await fetch(`/cxf/api/ratings?product-id=${productId}`);
         return response.ok ? await response.json() : [];
     };
 
-    const loadPromotions = async (productId) => {
+    const loadPromotions = async () => {
         const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
         return response.ok ? await response.json() : [];
     };
 
-    const loadSuggestions = async (productId) => {
+    const loadSuggestions = async () => {
         const response = await fetch(`/cxf/api/laptops/${productId}/suggestions`);
         return response.ok ? await response.json() : [];
     };
@@ -166,4 +170,4 @@ const DetailPage = () => {
     );
 };
 
-export default DetailPage;
+export default withRouter(DetailPage);
