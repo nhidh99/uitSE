@@ -370,7 +370,6 @@ public class LaptopServiceImpl implements LaptopService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchLaptop(@BeanParam LaptopSearchFilter laptopSearchFilter) {
         try {
-            System.out.println(laptopSearchFilter.toString());
             List<Laptop> laptops = laptopDAO.findByFilter(laptopSearchFilter);
             return Response.ok(laptops).build();
         } catch (Exception e) {

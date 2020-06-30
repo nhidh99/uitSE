@@ -1,28 +1,37 @@
-import React, { Component, Fragment } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
-import { Table } from "reactstrap";
+import { Table, Spinner } from "reactstrap";
 import { getCookie } from "../../../../../../services/helper/cookie";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import Pagination from "react-js-pagination";
 import { convertOrderStatus } from "../../../../../../services/helper/converter";
 import { withRouter } from "react-router-dom";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
+import Loader from "react-loader-advanced";
 
-class OrderPage extends Component {
-    state = {
-        loading: true,
-        activePage: 1,
-        orders: [],
-        orderCount: 1,
-    };
+const OrderPage = (props) => {
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(null);
+    const [orders, setOrders] = useState([]);
+    const [orderCount, setOrderCount] = useState(1);
 
-    componentDidMount() {
-        this.loadData();
-    }
+    useEffect(() => {
+        const params = new URLSearchParams(props.location.search);
+        const page = parseInt(params.get("page"));
+        setPage(page ? page : 1);
+    }, []);
 
-    loadData = async () => {
-        const url = `/cxf/api/users/me/orders?page=${this.state.activePage}`;
+    useEffect(() => {
+        if (!page) return;
+        props.history.push("/user/order?page=" + page);
+        setLoading(true);
+        loadData();
+    }, [page]);
+
+    const loadData = async () => {
+        const url = `/cxf/api/users/me/orders?page=${page}`;
         const response = await fetch(url, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
@@ -30,53 +39,54 @@ class OrderPage extends Component {
         if (response.ok) {
             const orders = await response.json();
             const orderCount = response.headers.get("X-Total-Count");
-            this.setState({ orders: orders, orderCount: orderCount, loading: false });
+            setOrders(orders);
+            setOrderCount(orderCount);
+            setLoading(false);
         }
     };
 
-    pageChange = (pageNumber) => {
-        if (pageNumber === this.state.activePage) return;
-        this.setState({ loading: true, activePage: pageNumber }, () => this.loadData());
+    const pageChange = (pageNumber) => {
+        if (pageNumber === page) return;
+        setPage(pageNumber);
     };
 
-    redirectToOrderDetail = (orderId) => {
-        this.props.history.push(`/user/order/${orderId}`);
+    const redirectToOrderDetail = (orderId) => {
+        props.history.push(`/user/order/${orderId}`);
     };
 
-    render() {
-        const { loading, orders, activePage, orderCount } = this.state;
-        return (
-            <Fragment>
-                <div className={styles.title}>
-                    <label className={styles.header}>
-                        <FaBoxes />
-                        &nbsp;&nbsp;ĐƠN HÀNG CỦA TÔI
-                    </label>
+    return (
+        <Fragment>
+            <div className={styles.title}>
+                <label className={styles.header}>
+                    <FaBoxes />
+                    &nbsp;&nbsp;ĐƠN HÀNG CỦA TÔI
+                </label>
 
-                    {orders.length === 0 ? null : (
-                        <div className={styles.pagination}>
-                            <Pagination
-                                activePage={activePage}
-                                itemsCountPerPage={ITEM_COUNT_PER_PAGE}
-                                totalItemsCount={orderCount}
-                                pageRangeDisplayed={5}
-                                onChange={this.pageChange}
-                                itemClass="page-item"
-                                linkClass="page-link"
-                            />
-                        </div>
-                    )}
-                </div>
+                {orders.length === 0 ? null : (
+                    <div className={styles.pagination}>
+                        <Pagination
+                            activePage={page}
+                            itemsCountPerPage={ITEM_COUNT_PER_PAGE}
+                            totalItemsCount={orderCount}
+                            pageRangeDisplayed={5}
+                            onChange={pageChange}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                        />
+                    </div>
+                )}
+            </div>
 
-                {orders.length === 0 ? (
-                    <EmptyBlock
-                        icon={<FaShoppingBasket />}
-                        loading={loading}
-                        backToHome={!loading}
-                        loadingText="Đang tải đơn hàng"
-                        emptyText="Danh sách trống"
-                    />
-                ) : (
+            {orders.length === 0 ? (
+                <EmptyBlock
+                    icon={<FaShoppingBasket />}
+                    loading={loading}
+                    backToHome={!loading}
+                    loadingText="Đang tải đơn hàng"
+                    emptyText="Danh sách trống"
+                />
+            ) : (
+                <Loader show={loading} message={<Spinner />}>
                     <Table className={styles.table} hover bordered>
                         <tbody>
                             <tr>
@@ -92,7 +102,7 @@ class OrderPage extends Component {
                                 const { order_date } = order;
                                 return (
                                     <tr
-                                        onClick={() => this.redirectToOrderDetail(order["id"])}
+                                        onClick={() => redirectToOrderDetail(order["id"])}
                                         className={styles.orderRow}
                                     >
                                         <td className={styles.idCol}>{order["id"]}</td>
@@ -123,10 +133,10 @@ class OrderPage extends Component {
                             })}
                         </tbody>
                     </Table>
-                )}
-            </Fragment>
-        );
-    }
-}
+                </Loader>
+            )}
+        </Fragment>
+    );
+};
 
 export default withRouter(OrderPage);

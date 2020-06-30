@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Collapse, Table, Label, Input } from "reactstrap";
+import { Collapse, Table, Label, Input } from "reactstrap";
 import styles from "./styles.module.scss";
 import store from "../../services/redux/store";
 import { withRouter } from "react-router-dom";
@@ -28,6 +28,23 @@ const Filter = (props) => {
             setSelectedBrands([...selectedBrands, brand]);
             label.style.border = "5px solid #52a2e1";
         }
+    };
+
+    const clearSelections = () => {
+        setSelectedBrands([]);
+        brands.forEach((brand) => {
+            if (selectedBrands.includes(brand)) {
+                const label = document.getElementById("brand-" + brand);
+                label.style.border = "1px solid lightgray";
+            }
+        });
+
+        const checkboxes = document.querySelectorAll("input[type=checkbox]");
+        checkboxes.forEach((item) => (item.checked = false));
+
+        const radios = document.querySelectorAll("input[type=radio]");
+        radios.forEach((item) => (item.checked = false));
+        document.getElementById("default-price").checked = true;
     };
 
     const buildURLSearchParams = () => {
@@ -101,6 +118,7 @@ const Filter = (props) => {
                         <b>Mức giá</b> <br />
                         <Label>
                             <Input
+                                id="default-price"
                                 type="radio"
                                 className={styles.checkbox}
                                 defaultChecked
@@ -292,9 +310,13 @@ const Filter = (props) => {
                 </tr>
             </Table>
 
-            <Button color="secondary" className={styles.button} onClick={submit}>
+            <button className={`${styles.buttonSearch} ${styles.button}`} onClick={submit}>
                 Tìm kiếm
-            </Button>
+            </button>
+            <br />
+            <button className={`${styles.buttonClear} ${styles.button}`} onClick={clearSelections}>
+                Bỏ tất cả lựa chọn
+            </button>
         </Collapse>
     );
 };

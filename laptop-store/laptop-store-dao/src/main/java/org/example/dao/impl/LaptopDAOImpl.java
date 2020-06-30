@@ -145,9 +145,19 @@ public class LaptopDAOImpl implements LaptopDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Laptop> findByFilter(LaptopSearchFilter laptopSearchFilter) {
+        return laptopSearchFilter.getName() != null
+                ? findByNameQuery(laptopSearchFilter.getName())
+                : findBySearchFilter(laptopSearchFilter);
+    }
+
+    private List<Laptop> findByNameQuery(String nameQuery) {
+        String query = "SELECT * FROM Laptop l WHERE l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+        return em.createNativeQuery(query, Laptop.class).setParameter(1, nameQuery).getResultList();
+    }
+
+    private List<Laptop> findBySearchFilter(LaptopSearchFilter laptopSearchFilter) {
         String query;
         Map<String, Object> params = new HashMap<>();
-
         if (laptopSearchFilter.getTags().isEmpty()) {
             query = "SELECT DISTINCT(l) FROM Laptop l WHERE l.recordStatus = true";
         } else {

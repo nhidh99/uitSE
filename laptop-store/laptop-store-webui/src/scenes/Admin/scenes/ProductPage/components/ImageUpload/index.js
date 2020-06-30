@@ -22,7 +22,6 @@ const ImageUpload = ({ defaultURLs }) => {
     const onDrop = (pictures, urls) => {
         setPictures(pictures);
         setUrls(urls);
-        console.log(urls);
     };
 
     return (

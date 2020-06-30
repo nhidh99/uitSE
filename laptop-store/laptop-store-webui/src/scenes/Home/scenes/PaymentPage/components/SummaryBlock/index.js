@@ -4,13 +4,12 @@ import { Table, Button } from "reactstrap";
 import { FaShoppingCart } from "react-icons/fa";
 import { NUMBER_OF_DELIVERY_DAYS, DELIVERY_FEE } from "../../../../../../constants";
 import { getCookie } from "../../../../../../services/helper/cookie";
-import { getCart } from "../../../../../../services/helper/cart";
 
 class SummaryBlock extends Component {
     createOrder = async () => {
         this.props.toggleSubmit();
         const addressId = parseInt(document.getElementById("address").value);
-        const cart = getCart();
+        const cart = this.props.cart;
         const response = await fetch("/cxf/api/orders", {
             method: "POST",
             headers: {

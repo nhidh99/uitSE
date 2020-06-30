@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import {
-    Carousel,
-    CarouselItem,
-    CarouselControl,
-    CarouselIndicators,
-    CarouselCaption,
-} from "reactstrap";
+import { Carousel, CarouselItem, CarouselControl } from "reactstrap";
 import styles from "./styles.module.scss";
+import { Link } from "react-router-dom";
 
 const Slider = (props) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [animating, setAnimating] = useState(false);
-    const items = ["hp-ad", "lenovo-ad", "acer-ad", "mac-ad"].map((imgSrc) => ({
-        src: `${imgSrc}.png`,
-        altText: imgSrc,
+    const items = ["HP", "LENOVO", "ACER", "MAC"].map((brand) => ({
+        src: `${brand.toLowerCase() + "-ad"}.png`,
+        altText: `${brand}-ad`,
+        href: `/search?brands=${brand}`,
     }));
 
     const next = () => {
@@ -28,11 +24,6 @@ const Slider = (props) => {
         setActiveIndex(nextIndex);
     };
 
-    const goToIndex = (newIndex) => {
-        if (animating) return;
-        setActiveIndex(newIndex);
-    };
-
     const slides = items.map((item) => {
         return (
             <CarouselItem
@@ -40,8 +31,12 @@ const Slider = (props) => {
                 onExited={() => setAnimating(false)}
                 key={item.src}
             >
-                <img src={require(`../../../../../../images/ads/${item.src}`)} alt={item.altText} />
-                <CarouselCaption captionText={item.caption} captionHeader={item.caption} />
+                <Link to={item.href}>
+                    <img
+                        src={require(`../../../../../../images/ads/${item.src}`)}
+                        alt={item.altText}
+                    />
+                </Link>
             </CarouselItem>
         );
     });
@@ -53,12 +48,6 @@ const Slider = (props) => {
             previous={previous}
             className={styles.slider}
         >
-            <CarouselIndicators
-                items={items}
-                activeIndex={activeIndex}
-                onClickHandler={goToIndex}
-                className={styles.indicator}
-            />
             {slides}
             <CarouselControl direction="prev" directionText="Previous" onClickHandler={previous} />
             <CarouselControl direction="next" directionText="Next" onClickHandler={next} />

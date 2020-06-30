@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import styles from "./styles.module.scss";
 import { Table } from "reactstrap";
-import { getCart } from "../../../../../../services/helper/cart";
 
 class ProductsBlock extends Component {
     render() {
-        const { products } = this.props;
-        const cart = getCart();
-
+        const { products, cart } = this.props;
         return (
             <Table bordered className={styles.table}>
                 <tbody>

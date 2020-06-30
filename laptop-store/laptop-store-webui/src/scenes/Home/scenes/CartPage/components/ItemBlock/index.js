@@ -41,7 +41,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
 
     const addQuantity = async (productId) => {
         const cart = getCart();
-        if (qty < 10 && productId in cart) {
+        if (qty < MAXIMUM_QUANTITY_PER_PRODUCT && productId in cart) {
             cart[productId] = qty + 1;
             updateCart(cart);
             setQty(qty + 1);

@@ -24,6 +24,16 @@ const Banner = (props) => {
         store.dispatch(toggle ? toggleFilter() : closeFilter());
     };
 
+    const searchProductsByName = (e) => {
+        if (e.keyCode === 13) {
+            const name = e.target.value;
+            const params = new URLSearchParams();
+            params.append("name", name);
+            const url = `/search?${params.toString()}`;
+            props.history.push(url);
+        }
+    };
+
     const BannerLeft = () => (
         <div className={styles.bannerLeft}>
             <Link className={styles.logo} to="/" onClick={() => store.dispatch(closeFilter())}>
@@ -38,7 +48,13 @@ const Banner = (props) => {
                             <FaSearch />
                         </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" placeholder="Tìm kiếm..." />
+                    <Input
+                        className={styles.searchInput}
+                        id="btn-search"
+                        type="text"
+                        placeholder="Tìm kiếm..."
+                        onKeyUp={searchProductsByName}
+                    />
                 </InputGroup>
             </div>
         </div>

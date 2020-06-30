@@ -96,7 +96,7 @@ const ProductList = (props) => {
         }
 
         const url = `/cxf/api/laptops/${productId}/detail-images`;
-        const response = await fetch(url, {
+        await fetch(url, {
             method: "PUT",
             headers: {
                 Authorization: `Bearer ${getCookie("access_token")}`,

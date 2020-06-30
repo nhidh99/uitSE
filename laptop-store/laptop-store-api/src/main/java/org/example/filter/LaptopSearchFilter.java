@@ -9,6 +9,9 @@ import java.util.List;
 
 @Data
 public class LaptopSearchFilter {
+    @QueryParam("name")
+    private String name;
+
     @QueryParam("price")
     private Integer price;
 

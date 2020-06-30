@@ -45,9 +45,16 @@
 }
 
 .searchBar {
-    width: 300px;
+    width: 350px;
     display: inline-block;
     background-color: white;
+    border-radius: 5px;
+}
+
+.searchInput:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: 1px solid #ced4da !important;
 }
 
 .category {

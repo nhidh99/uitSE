@@ -12,6 +12,7 @@ import { FaCaretRight } from "react-icons/fa";
 import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
+import { Link } from "react-router-dom";
 
 const DetailPage = () => {
     const [loading, setLoading] = useState(true);
@@ -92,15 +93,15 @@ const DetailPage = () => {
 
     const ProductTitle = ({ product }) => (
         <Label className={styles.title}>
-            <a href="/" className={styles.productRedirect}>
+            <Link to="/" className={styles.productRedirect}>
                 Trang chủ
-            </a>
+            </Link>
             &nbsp;
             <FaCaretRight color="#007bff" />
             &nbsp;
-            <a href="/" className={styles.productRedirect}>
+            <Link to={`/search?brands=${product["brand"]}`} className={styles.productRedirect}>
                 {convertBrandType(product?.["brand"])}
-            </a>
+            </Link>
             &nbsp;
             <FaCaretRight color="#007bff" />
             &nbsp;Laptop {product?.["name"]}

@@ -20,6 +20,12 @@ const ResultPage = (props) => {
     const loadData = async () => {
         const params = new URLSearchParams(props.location.search);
         const response = await fetch(`/cxf/api/laptops/filter?${params.toString()}`);
+
+        if (params.get('name')) {
+            const searchInput = document.getElementById('btn-search');
+            searchInput.value = params.get('name');
+        }
+
         if (response.ok) {
             const products = await response.json();
             setProducts(products);

@@ -6,7 +6,7 @@ import ProductsBlock from "./components/ProductsBlock";
 import PromotionsBlock from "./components/PromotionsBlock";
 import SummaryBlock from "./components/SummaryBlock";
 import { Button, Spinner } from "reactstrap";
-import { getCart, removeFromCart } from "../../../../services/helper/cart";
+import { removeFromCart } from "../../../../services/helper/cart";
 import { getCookie } from "../../../../services/helper/cookie";
 import { FaBoxOpen } from "react-icons/fa";
 import Loader from "react-loader-advanced";
@@ -20,7 +20,7 @@ const PaymentPage = (props) => {
     const [products, setProducts] = useState([]);
     const [productPrice, setProductPrice] = useState(0);
     const [promotionQties, setPromotionQties] = useState(0);
-    const [cart, setCart] = useState({});
+    const [cart, setCart] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -29,6 +29,7 @@ const PaymentPage = (props) => {
     }, []);
 
     useEffect(() => {
+        if (!cart) return;
         loadDetail();
     }, [cart]);
 
@@ -40,11 +41,6 @@ const PaymentPage = (props) => {
     }, [products]);
 
     const loadData = async () => {
-        const cart = await loadCart();
-        setCart(cart);
-    };
-
-    const loadCart = async () => {
         const response = await fetch("/cxf/api/users/me", {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
@@ -52,9 +48,7 @@ const PaymentPage = (props) => {
 
         if (response.ok) {
             const user = await response.json();
-            return JSON.parse(user["cart"]);
-        } else {
-            return getCart();
+            setCart(JSON.parse(user["cart"]));
         }
     };
 
@@ -161,12 +155,16 @@ const PaymentPage = (props) => {
                     <AddressBlock addresses={addresses} />
 
                     <header className={styles.header}>B. DANH SÁCH SẢN PHẨM</header>
-                    <ProductsBlock products={products} />
+                    <ProductsBlock products={products} cart={cart} />
 
                     <header className={styles.header}>C. DANH SÁCH KHUYẾN MÃI</header>
                     <PromotionsBlock promotions={promotions} quantities={promotionQties} />
 
-                    <SummaryBlock productsPrice={productPrice} toggleSubmit={toggleSubmit} />
+                    <SummaryBlock
+                        productsPrice={productPrice}
+                        toggleSubmit={toggleSubmit}
+                        cart={cart}
+                    />
                 </div>
             )}
         </Loader>

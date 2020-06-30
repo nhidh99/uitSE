@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from "react";
-import { Label, Button } from "reactstrap";
+import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
 import { FaShoppingCart, FaBoxOpen, FaGift, FaMoneyBillWave } from "react-icons/fa";
 import styles from "./styles.module.scss";
@@ -8,6 +8,7 @@ import { getCart, removeFromCart } from "../../../../services/helper/cart";
 import { withRouter } from "react-router-dom";
 import { getCookie } from "../../../../services/helper/cookie";
 import EmptyBlock from "../../../../components/EmptyBlock";
+import Loader from "react-loader-advanced";
 
 const CartPage = (props) => {
     const [loading, setLoading] = useState(true);
@@ -86,32 +87,6 @@ const CartPage = (props) => {
                 </Button>
             </div>
 
-            <div className={styles.total}>
-                <span>
-                    <b>
-                        <FaBoxOpen />
-                        &nbsp; Số lượng:&nbsp;&nbsp;
-                    </b>
-                    {Object.values(cart).reduce((a, b) => a + b, 0)}
-                </span>
-                <span>
-                    <b>
-                        <FaGift />
-                        &nbsp; Tổng giảm giá:&nbsp;&nbsp;
-                    </b>
-                    {totalDiscount.toLocaleString()}
-                    <sup>đ</sup>
-                </span>
-                <span>
-                    <b>
-                        <FaMoneyBillWave />
-                        &nbsp; Tạm tính:&nbsp;&nbsp;
-                    </b>
-                    {totalPrice.toLocaleString()}
-                    <sup>đ</sup>
-                </span>
-            </div>
-
             <div className={styles.list}>
                 {products.length === 0 ? (
                     <EmptyBlock
@@ -123,13 +98,40 @@ const CartPage = (props) => {
                         borderless
                     />
                 ) : (
-                    products.map((product) => (
-                        <ItemBlock
-                            product={product}
-                            quantity={cart[product["id"]]}
-                            toggleLoading={toggleLoading}
-                        />
-                    ))
+                    <Loader show={loading} message={<Spinner />}>
+                        <div className={styles.total}>
+                            <span>
+                                <b>
+                                    <FaBoxOpen />
+                                    &nbsp; Số lượng:&nbsp;&nbsp;
+                                </b>
+                                {Object.values(cart).reduce((a, b) => a + b, 0)}
+                            </span>
+                            <span>
+                                <b>
+                                    <FaGift />
+                                    &nbsp; Tổng giảm giá:&nbsp;&nbsp;
+                                </b>
+                                {totalDiscount.toLocaleString()}
+                                <sup>đ</sup>
+                            </span>
+                            <span>
+                                <b>
+                                    <FaMoneyBillWave />
+                                    &nbsp; Tạm tính:&nbsp;&nbsp;
+                                </b>
+                                {totalPrice.toLocaleString()}
+                                <sup>đ</sup>
+                            </span>
+                        </div>
+                        {products.map((product) => (
+                            <ItemBlock
+                                product={product}
+                                quantity={cart[product["id"]]}
+                                toggleLoading={toggleLoading}
+                            />
+                        ))}
+                    </Loader>
                 )}
             </div>
         </Fragment>
