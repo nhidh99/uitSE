@@ -1,44 +1,38 @@
 import React from "react";
-import { getCookie } from "../../../../../../../../services/helper/cookie";
 import { Button } from "reactstrap";
+import laptopApi from "../../../../../../../../services/api/laptopApi";
 
 const ProductSubmit = ({ product, disabled }) => {
     const submit = async (e) => {
         e.target.disabled = true;
-        const data = buildProductData();
+        const details = buildDetailsData();
+        const image = buildProductImageData();
 
-        const imageBlob = data["image"]
-            ? new File([data["image"]], "image.jpg", { type: "image/jpeg" })
+        const detailsJSON = new Blob([JSON.stringify(details)], { type: "application/json" });
+        const imageBlob = image
+            ? image
             : new File([new Blob()], "empty.jpg", { type: "image/jpeg" });
-        delete data["image"];
-
-        const detailsJSON = new Blob([JSON.stringify(data)], { type: "application/json" });
 
         const formData = new FormData();
         formData.append("details", detailsJSON);
         formData.append("image", imageBlob);
 
-        const response = await fetch(`/cxf/api/laptops/${product?.["id"] ?? ""}`, {
-            method: product ? "PUT" : "POST",
-            headers: {
-                Authorization: `Bearer ${getCookie("access_token")}`,
-                "Content-Type": "multipart/form-data",
-            },
-            body: formData,
-        });
-
-        if (response.ok) {
+        try {
+            await (product
+                ? laptopApi.putLaptop(product["id"], formData)
+                : laptopApi.postLaptop(formData));
             window.location.reload();
+        } catch (err) {
+            console.log("fail");
         }
     };
 
-    const buildProductData = () => {
+    const buildDetailsData = () => {
         return [
             buildProductStringData(),
             buildProductIntData(),
             buildProductFloatData(),
             buildProductArrayData(),
-            buildProductImageData(),
         ].reduce((a, b) => Object.assign(a, b));
     };
 
@@ -109,8 +103,7 @@ const ProductSubmit = ({ product, disabled }) => {
 
     const buildProductImageData = () => {
         const files = document.getElementById("image").files;
-        const image = files.length > 0 ? files[0] : null;
-        return { image: image };
+        return files.length > 0 ? files[0] : null;
     };
 
     return (

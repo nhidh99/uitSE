@@ -13,6 +13,7 @@ import { FaImages } from "react-icons/fa";
 import ImageUpload from "../ImageUpload";
 import store from "../../../../../../services/redux/store";
 import { buildModal } from "../../../../../../services/redux/actions";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
 const ProductList = (props) => {
     const [loading, setLoading] = useState(true);
@@ -38,33 +39,29 @@ const ProductList = (props) => {
         }
     }, [page]);
 
-    
     const search = async (query) => {
-        const response = await fetch(`/cxf/api/laptops/search?q=${query}&page=${page}`, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") }
-        });
-        if (response.ok) {
-            const products = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await laptopApi.getByQuery(query, page);
+            const products = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setProducts(products);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
-    }
+    };
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/laptops?page=${page}`, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") },
-        });
-
-        if (response.ok) {
-            const products = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await laptopApi.getByPage(page);
+            const products = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setProducts(products);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 

@@ -6,30 +6,36 @@ import { withRouter, Link } from "react-router-dom";
 import LazyLoad from "react-lazyload";
 import "react-placeholder/lib/reactPlaceholder.css";
 import EmptyBlock from "../../../../components/EmptyBlock";
+import queryString from "query-string";
+import laptopApi from "../../../../services/api/laptopApi";
 
 const ResultPage = (props) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setFilterBar();
         setProducts([]);
         setLoading(true);
         loadData();
     }, [props.location.search]);
 
-    const loadData = async () => {
-        const params = new URLSearchParams(props.location.search);
-        const response = await fetch(`/cxf/api/laptops/filter?${params.toString()}`);
-
-        if (params.get('name')) {
-            const searchInput = document.getElementById('btn-search');
-            searchInput.value = params.get('name');
+    const setFilterBar = () => {
+        const filter = queryString.parse(props.location.search);
+        if ("name" in filter) {
+            const searchInput = document.getElementById("btn-search");
+            searchInput.value = filter["name"];
         }
+    };
 
-        if (response.ok) {
-            const products = await response.json();
-            setProducts(products);
+    const loadData = async () => {
+        try {
+            const filter = queryString.parse(props.location.search);
+            const response = await laptopApi.getByFilter(filter);
+            setProducts(response.data);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 

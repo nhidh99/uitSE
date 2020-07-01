@@ -39,6 +39,7 @@ public class LaptopServiceImpl implements LaptopService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured(RoleType.ADMIN)
     public Response findLaptops(@BeanParam LaptopFilter laptopFilter) {
         try {
             return laptopFilter.getIds().isEmpty()
@@ -169,6 +170,8 @@ public class LaptopServiceImpl implements LaptopService {
             Laptop laptop = buildLaptopFromLaptopRequestBody(laptopInput, attachment);
             laptop.setId(laptopId);
             laptopDAO.save(laptop);
+            System.out.println(laptopInput.getName());
+            System.out.println(laptop.getName());
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.serverError().build();
@@ -179,6 +182,7 @@ public class LaptopServiceImpl implements LaptopService {
         String alt = imageUtils.buildSEOImageName(laptopInput.getName());
         byte[] imageBlob = null, thumbnailBlob = null;
         boolean isEmptyUploadedImages = attachment.getDataHandler().getName().equals("empty.jpg");
+
         if (!isEmptyUploadedImages) {
             InputStream is = attachment.getDataHandler().getInputStream();
             BufferedImage image = ImageIO.read(is);
@@ -261,6 +265,7 @@ public class LaptopServiceImpl implements LaptopService {
     @Override
     @DELETE
     @Path("/{id}")
+    @Secured(RoleType.ADMIN)
     public Response deleteLaptop(@PathParam("id") Integer id) {
         try {
             laptopDAO.delete(id);

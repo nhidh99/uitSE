@@ -6,29 +6,30 @@ import { withRouter, Link } from "react-router-dom";
 import LazyLoad from "react-lazyload";
 import ReactPlaceHolder from "react-placeholder";
 import "react-placeholder/lib/reactPlaceholder.css";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
-const ItemCategory = (props) => {
+const ItemCategory = ({ title, category }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(0);
-    const { title, url } = props;
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
         loadData();
     }, []);
 
     const loadData = async () => {
-        const response = await fetch(`${url}?page=${page + 1}`);
-        if (response.ok) {
-            const data = await response.json();
-            const length = parseInt(response.headers.get("X-Total-Count"));
-            const newProducts = products.concat(data);
+        try {
+            const response = await laptopApi.getByCategory(category, page);
+            const length = parseInt(response.headers["x-total-count"]);
+            const newProducts = products.concat(response.data);
             setProducts(newProducts);
             setLoading(false);
             setPage(page + 1);
             return newProducts.length !== length;
+        } catch (err) {
+            console.log("fail");
+            return true;
         }
-        return true;
     };
 
     const toggleMore = async (e) => {
