@@ -2,6 +2,7 @@ package org.example.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.example.type.GenderType;
 
 @Data
 public class RegisterInput {
@@ -10,6 +11,9 @@ public class RegisterInput {
 
     @JsonProperty("password")
     private String password;
+
+    @JsonProperty("confirm")
+    private String confirm;
 
     @JsonProperty("name")
     private String name;
@@ -21,7 +25,7 @@ public class RegisterInput {
     private String phone;
 
     @JsonProperty("gender")
-    private String gender;
+    private GenderType gender;
 
     @JsonProperty("birthday")
     private Long birthday;

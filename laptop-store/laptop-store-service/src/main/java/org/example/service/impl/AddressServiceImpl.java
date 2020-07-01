@@ -101,8 +101,6 @@ public class AddressServiceImpl implements AddressService {
         }
     }
 
-
-
     @Override
     @PUT
     @Path("/default")

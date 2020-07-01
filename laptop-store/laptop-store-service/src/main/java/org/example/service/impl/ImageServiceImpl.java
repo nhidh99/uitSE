@@ -72,7 +72,6 @@ public class ImageServiceImpl implements ImageService {
         try {
             byte[] image = imageInput.getResolution() == LAPTOP_IMAGE_RESOLUTION
                     ? laptopImageDAO.findImageById(imageInput.getId()) : null;
-
             return (image != null)
                     ? Response.ok(image).header(HttpHeaders.CONTENT_TYPE, "image/jpeg").build()
                     : Response.status(Response.Status.NOT_FOUND).build();

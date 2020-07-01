@@ -1,6 +1,5 @@
 package org.example.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.example.dao.api.*;
 import org.example.input.CommentInput;
 import org.example.input.ReplyInput;
@@ -29,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
     @Path("/")
     @Secured({RoleType.ADMIN, RoleType.USER})
     public Response createComment(@QueryParam("product-id") Integer productId, CommentInput commentInput,
-                                 @Context SecurityContext securityContext) {
+                                  @Context SecurityContext securityContext) {
         try {
             Comment comment = buildCommentFromRequestBody(productId, commentInput, securityContext);
             commentDAO.save(comment);
@@ -45,20 +44,19 @@ public class CommentServiceImpl implements CommentService {
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
         Laptop laptop = laptopDAO.findById(productId).orElseThrow(BadRequestException::new);
         String question = commentInput.getQuestion();
-        return Comment.builder().laptop(laptop).user(user)
-                .question(question)
-                .commentDate(LocalDate.now()).build();
+        return Comment.builder().laptop(laptop).user(user).question(question).commentDate(LocalDate.now()).build();
     }
 
     @Override
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByProductId(@QueryParam("product-id") Integer productId, @QueryParam("page") @DefaultValue("1") Integer page) {
+    public Response findByProductId(@QueryParam("product-id") Integer productId,
+                                    @QueryParam("page") @DefaultValue("1") Integer page) {
         try {
             List<Comment> comments;
             Long commentCount;
-            if(productId != null) {
+            if (productId != null) {
                 comments = commentDAO.findByProductId(productId);
                 commentCount = commentDAO.findTotalCommentByProductId(productId);
             } else {
@@ -75,13 +73,14 @@ public class CommentServiceImpl implements CommentService {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findCommentsByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+    public Response findCommentsByFilter(@QueryParam("id") String id,
+                                         @QueryParam("status") String status,
+                                         @QueryParam("page") Integer page) {
         try {
             List<Comment> comments = commentDAO.findByFilter(id, status, page);
             Long commentCount = commentDAO.findTotalCommentByFilter(id, status);
             return Response.ok(comments).header("X-Total-Count", commentCount).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.serverError().build();
         }
     }
@@ -90,7 +89,8 @@ public class CommentServiceImpl implements CommentService {
     @DELETE
     @Path("/{id}")
     @Secured({RoleType.ADMIN})
-    public Response deleteCommentById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
+    public Response deleteCommentById(@PathParam("id") Integer id,
+                                      @Context SecurityContext securityContext) {
         try {
             commentDAO.delete(id);
             return Response.noContent().build();
@@ -110,10 +110,10 @@ public class CommentServiceImpl implements CommentService {
                                        ReplyInput replyInput,
                                        @Context SecurityContext securityContext) {
         try {
-            CommentReply commentReply = null;
-            if(!replyInput.getReply().isEmpty()) {
-                commentReply = buildReplyFromRequestBody(id, replyInput, securityContext);
+            if (replyInput.getReply().isEmpty()) {
+                throw new BadRequestException();
             }
+            CommentReply commentReply = buildReplyFromRequestBody(id, replyInput, securityContext);
             commentDAO.approve(id, commentReply);
             return Response.ok().build();
         } catch (BadRequestException e) {
@@ -141,8 +141,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private CommentReply buildReplyFromRequestBody(Integer commentId,
-                                                  ReplyInput replyInput,
-                                                  SecurityContext securityContext) {
+                                                   ReplyInput replyInput,
+                                                   SecurityContext securityContext) {
         Principal principal = securityContext.getUserPrincipal();
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
@@ -150,6 +150,4 @@ public class CommentServiceImpl implements CommentService {
         String reply = replyInput.getReply();
         return CommentReply.builder().user(user).comment(comment).reply(reply).replyDate(LocalDate.now()).build();
     }
-
-
 }

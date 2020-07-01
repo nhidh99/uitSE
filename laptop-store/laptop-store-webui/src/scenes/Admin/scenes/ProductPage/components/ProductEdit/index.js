@@ -47,8 +47,8 @@ const ProductEdit = ({ product }) => {
                 &nbsp;&nbsp;Thêm sản phẩm
             </Button>
 
-            <Modal isOpen={modal} toggle={toggle} className={styles.modal}>
-                <ModalHeader toggle={toggle}>
+            <Modal isOpen={modal} className={styles.modal} external={externalCloseBtn}>
+                <ModalHeader>
                     <FaBox />
                     &nbsp;&nbsp;Thêm sản phẩm
                 </ModalHeader>
