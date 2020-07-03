@@ -1,5 +1,6 @@
 import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../constants";
 import { getCookie } from "./cookie";
+import userApi from "../api/userApi";
 
 export const getCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart"));
@@ -28,7 +29,7 @@ export const removeFromCart = async (productId) => {
     }
 };
 
-export const updateCart = (cart) => {
+export const updateCart = async (cart) => {
     updateCartQuantity(cart);
     updateCartDatabase(cart);
 };
@@ -43,10 +44,9 @@ export const updateCartQuantity = (cart) => {
 export const updateCartDatabase = async (cart) => {
     const token = getCookie("access_token");
     if (!token) return;
-
-    await fetch("/cxf/api/users/me/carts", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify(cart),
-    });
+    try {
+        await userApi.putCurrentUserCart(cart);
+    } catch (err) {
+        console.log("err");
+    }
 };

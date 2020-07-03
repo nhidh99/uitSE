@@ -13,6 +13,7 @@ import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
 import { Link, withRouter, useParams } from "react-router-dom";
+import laptopApi from "../../../../services/api/laptopApi";
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
@@ -62,8 +63,13 @@ const DetailPage = (props) => {
     };
 
     const loadProduct = async () => {
-        const response = await fetch(`/cxf/api/laptops/${productId}`);
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await laptopApi.getById(productId);
+            return response.data;
+        } catch (err) {
+            console.log('fail');
+            return null;
+        }
     };
 
     const loadImages = async () => {

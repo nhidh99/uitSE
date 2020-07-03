@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @POST
+    @PUT
     @Path("/me/carts")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response updateCart(String cartJSON, @Context SecurityContext securityContext) {
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @POST
+    @PUT
     @Path("/me/wish-list")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response updateWishlist(String wishListJSON, @Context SecurityContext securityContext) {

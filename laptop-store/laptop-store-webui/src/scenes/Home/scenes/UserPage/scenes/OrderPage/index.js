@@ -3,13 +3,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
 import { Table, Spinner } from "reactstrap";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import Pagination from "react-js-pagination";
 import { convertOrderStatus } from "../../../../../../services/helper/converter";
 import { withRouter } from "react-router-dom";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
 import Loader from "react-loader-advanced";
+import userApi from "../../../../../../services/api/userApi";
 
 const OrderPage = (props) => {
     const [loading, setLoading] = useState(true);
@@ -31,17 +31,15 @@ const OrderPage = (props) => {
     }, [page]);
 
     const loadData = async () => {
-        const url = `/cxf/api/users/me/orders?page=${page}`;
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        if (response.ok) {
-            const orders = await response.json();
-            const orderCount = response.headers.get("X-Total-Count");
+        try {
+            const response = await userApi.getCurrentUserOrders(page);
+            const orders = response.data;
+            const orderCount = response.headers["x-total-count"];
             setOrders(orders);
             setOrderCount(orderCount);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 

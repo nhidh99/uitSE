@@ -9,6 +9,7 @@ import { withRouter } from "react-router-dom";
 import { getCookie } from "../../../../services/helper/cookie";
 import EmptyBlock from "../../../../components/EmptyBlock";
 import Loader from "react-loader-advanced";
+import laptopApi from "../../../../services/api/laptopApi";
 
 const CartPage = (props) => {
     const [loading, setLoading] = useState(true);
@@ -25,8 +26,9 @@ const CartPage = (props) => {
 
     const loadData = async () => {
         if (!loading) return;
+        const ids = Object.keys(cart);
 
-        if (Object.keys(cart).length === 0) {
+        if (ids.length === 0) {
             setProducts([]);
             setTotalPrice(0);
             setTotalDiscount(0);
@@ -34,13 +36,12 @@ const CartPage = (props) => {
             return;
         }
 
-        const params = new URLSearchParams();
-        Object.keys(cart).forEach((id) => params.append("ids", id));
-        const response = await fetch("/cxf/api/laptops?" + params.toString());
-
-        if (response.ok) {
-            const products = await response.json();
+        try {
+            const response = await laptopApi.getByIds(ids);
+            const products = response.data;
             loadCart(products);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -115,29 +116,31 @@ const CartPage = (props) => {
                 </Button>
             </div>
 
-            <div className={styles.list}>
-                <SummaryBlock />
-                {products.length === 0 ? (
-                    <EmptyBlock
-                        loading={loading}
-                        backToHome={!loading}
-                        icon={<FaBoxOpen />}
-                        loadingText="Đang tải giỏ hàng..."
-                        emptyText="Giỏ hàng trống"
-                        borderless
-                    />
-                ) : (
-                    <Loader show={loading} message={<Spinner />}>
-                        {products.map((product) => (
-                            <ItemBlock
-                                product={product}
-                                quantity={cart[product["id"]]}
-                                toggleLoading={toggleLoading}
-                            />
-                        ))}
-                    </Loader>
-                )}
-            </div>
+            <Loader show={loading && products.length !== 0} message={<Spinner />}>
+                <div className={styles.list}>
+                    {products.length === 0 ? (
+                        <EmptyBlock
+                            loading={loading}
+                            backToHome={!loading}
+                            icon={<FaBoxOpen />}
+                            loadingText="Đang tải giỏ hàng..."
+                            emptyText="Giỏ hàng trống"
+                            borderless
+                        />
+                    ) : (
+                        <Fragment>
+                            <SummaryBlock />
+                            {products.map((product) => (
+                                <ItemBlock
+                                    product={product}
+                                    quantity={cart[product["id"]]}
+                                    toggleLoading={toggleLoading}
+                                />
+                            ))}
+                        </Fragment>
+                    )}
+                </div>
+            </Loader>
         </Fragment>
     );
 };

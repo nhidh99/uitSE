@@ -14,6 +14,7 @@ import Filter from "./components/Filter";
 import ConfirmModal from "./components/ConfirmModal";
 import store from "./services/redux/store";
 import { setDefaultAddressId } from "./services/redux/actions";
+import userApi from "./services/api/userApi";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ const App = (props) => {
 
     const createRefreshTokenHeart = () => {
         const heart = createHeart(REFRESH_TOKENS_TIMESPAN, "refresh_token");
+        console.log(heart);
         heart.createEvent(1, async () => {
             const token = await fetchToken();
             if (token) {
@@ -72,13 +74,10 @@ const App = (props) => {
         const token = await fetchToken();
         if (token) {
             createCookie("access_token", token);
-            const response = await fetch("/cxf/api/users/me", {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (response.ok) {
-                const user = await response.json();
-                createRefreshTokenHeart();
+            createRefreshTokenHeart();
+            try {
+                const response = await userApi.getCurrentUser();
+                const user = response.data;
                 syncUserCart(user["cart"]);
                 syncUserWishList(user["wish_list"]);
                 setRole(user["role"]);
@@ -88,6 +87,8 @@ const App = (props) => {
                         "default-id": user["default_address"]?.["id"],
                     })
                 );
+            } catch (err) {
+                console.log("fail");
             }
         } else {
             removeCookie("access_token");

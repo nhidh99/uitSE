@@ -17,6 +17,7 @@ import HardDriveInput from "./components/HardDriveInput";
 import MonitorInput from "./components/MonitorInput";
 import ThicknessInput from "./components/ThicknessInput";
 import WeightInput from "./components/WeightInput";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
 const ProductForm = ({ toggle, product }) => {
     const [loading, setLoading] = useState(true);
@@ -55,14 +56,24 @@ const ProductForm = ({ toggle, product }) => {
 
     const loadProductTags = async () => {
         if (!product) return [];
-        const response = await fetch(`/cxf/api/laptops/${product["id"]}/tags`);
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await laptopApi.getLaptopTags(product["id"]);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return [];
+        }
     };
 
     const loadProductPromotions = async () => {
         if (!product) return [];
-        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await laptopApi.getLaptopPromotions(product["id"]);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return [];
+        }
     };
 
     const InputImageRow = (props) => (

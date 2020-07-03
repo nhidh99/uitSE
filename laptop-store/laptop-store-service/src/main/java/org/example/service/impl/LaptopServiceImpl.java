@@ -39,7 +39,6 @@ public class LaptopServiceImpl implements LaptopService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured(RoleType.ADMIN)
     public Response findLaptops(@BeanParam LaptopFilter laptopFilter) {
         try {
             return laptopFilter.getIds().isEmpty()

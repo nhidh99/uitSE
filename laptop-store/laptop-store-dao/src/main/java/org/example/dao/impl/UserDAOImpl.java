@@ -129,14 +129,16 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
         User user = em.find(User.class, userId);
         boolean isValidCredential = user != null && BCrypt.checkpw(oldPassword, user.getPassword());
+        System.out.println(user.getPassword());
         if (isValidCredential) {
             String newHashedPassword = hashPassword(newPassword);
             user.setPassword(newHashedPassword);
-            return em.merge(user) != null;
+            em.merge(user);
+            return true;
         }
         return false;
     }

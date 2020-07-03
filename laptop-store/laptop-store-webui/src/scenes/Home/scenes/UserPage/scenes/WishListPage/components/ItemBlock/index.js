@@ -6,6 +6,7 @@ import styles from "./styles.module.scss";
 import { removeFromWishList } from "../../../../../../../../services/helper/wish-list";
 import { Link } from "react-router-dom";
 import { convertCPUType } from "../../../../../../../../services/helper/converter";
+import laptopApi from "../../../../../../../../services/api/laptopApi";
 
 const ItemBlock = ({ product, toggleLoading }) => {
     const [promotions, setPromotions] = useState([]);
@@ -16,10 +17,11 @@ const ItemBlock = ({ product, toggleLoading }) => {
     }, []);
 
     const loadPromotions = async () => {
-        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
-        if (response.ok) {
-            const promotions = await response.json();
-            setPromotions(promotions);
+        try {
+            const response = await laptopApi.getLaptopPromotions(product["id"]);
+            setPromotions(response.data);
+        } catch (err) {
+            console.log("fail");
         }
     };
 

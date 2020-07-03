@@ -1,4 +1,5 @@
 import { getCookie } from "./cookie";
+import userApi from "../api/userApi";
 
 export const getWishList = () => {
     const wishList = JSON.parse(localStorage.getItem("wish-list"));
@@ -25,13 +26,7 @@ export const removeFromWishList = async (productId) => {
 
 export const updateWishListDatabase = async (wishList) => {
     localStorage.setItem("wish-list", JSON.stringify(wishList));
-
     const token = getCookie("access_token");
     if (!token) return;
-
-    await fetch("/cxf/api/users/me/wish-list", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify(wishList),
-    });
+    await userApi.putCurrentUserWishList(wishList);
 };

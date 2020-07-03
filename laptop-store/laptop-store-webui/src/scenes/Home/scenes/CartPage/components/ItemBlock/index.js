@@ -8,6 +8,7 @@ import { getCart, removeFromCart, updateCart } from "../../../../../../services/
 import { Link } from "react-router-dom";
 import NumberFormat from "react-number-format";
 import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
 const ItemBlock = ({ product, quantity, toggleLoading }) => {
     const [promotions, setPromotions] = useState([]);
@@ -22,11 +23,16 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
         toggleLoading();
     }, [qty]);
 
+    useEffect(() => {
+        setQty(quantity);
+    }, [quantity]);
+
     const loadPromotions = async () => {
-        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
-        if (response.ok) {
-            const promotions = await response.json();
-            setPromotions(promotions);
+        try {
+            const response = await laptopApi.getLaptopPromotions(product["id"]);
+            setPromotions(response.data);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -65,7 +71,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
         toggleLoading();
     };
 
-    return (
+    return qty === 0 ? null : (
         <Row className={styles.row}>
             <Col xs="2" className={styles.blockLeft}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>

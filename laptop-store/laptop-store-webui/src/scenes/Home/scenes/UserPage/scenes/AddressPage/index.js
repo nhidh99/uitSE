@@ -5,9 +5,9 @@ import { FaBook, FaNewspaper } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.scss";
 import AddressBlock from "./components/AddressBlock";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import store from "../../../../../../services/redux/store";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
+import userApi from "../../../../../../services/api/userApi";
 
 const AddressPage = () => {
     const [addresses, setAddresses] = useState([]);
@@ -19,13 +19,9 @@ const AddressPage = () => {
     }, []);
 
     const fetchData = async () => {
-        const response = await fetch("/cxf/api/users/me/addresses", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const data = await response.json();
+        try {
+            const response = await userApi.getCurrentUserAddresses();
+            const data = response.data;
             const defaultAddress = data.find((address) => address.id === defaultAddressId);
             const addresses = data.filter((address) => address !== defaultAddress);
             if (defaultAddress) {
@@ -33,6 +29,8 @@ const AddressPage = () => {
             }
             setAddresses(addresses);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 

@@ -7,11 +7,12 @@ import PromotionsBlock from "./components/PromotionsBlock";
 import SummaryBlock from "./components/SummaryBlock";
 import { Button, Spinner } from "reactstrap";
 import { removeFromCart } from "../../../../services/helper/cart";
-import { getCookie } from "../../../../services/helper/cookie";
 import { FaBoxOpen } from "react-icons/fa";
 import Loader from "react-loader-advanced";
 import { withRouter } from "react-router-dom";
 import store from "../../../../services/redux/store";
+import userApi from "../../../../services/api/userApi";
+import laptopApi from "../../../../services/api/laptopApi";
 
 const PaymentPage = (props) => {
     const defaultAddressId = store.getState()["address"]["default-id"];
@@ -41,14 +42,12 @@ const PaymentPage = (props) => {
     }, [products]);
 
     const loadData = async () => {
-        const response = await fetch("/cxf/api/users/me", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const user = await response.json();
+        try {
+            const response = await userApi.getCurrentUser();
+            const user = response.data;
             setCart(JSON.parse(user["cart"]));
+        } catch (err) {
+            console.log("err");
         }
     };
 
@@ -58,36 +57,32 @@ const PaymentPage = (props) => {
     };
 
     const loadProducts = async () => {
-        if (Object.keys(cart).length === 0) {
+        const ids = Object.keys(cart);
+        if (ids.length === 0) {
             setProducts([]);
         }
 
-        const params = new URLSearchParams();
-        Object.keys(cart).forEach((id) => params.append("ids", id));
-
-        const response = await fetch("/cxf/api/laptops?" + params.toString());
-        if (response.ok) {
-            const products = await response.json();
+        try {
+            const response = await laptopApi.getByIds(ids);
+            const products = response.data;
             const productIds = products.map((product) => product["id"].toString());
-            Object.keys(cart)
-                .filter((id) => !productIds.includes(id))
-                .forEach((id) => removeFromCart(id));
+            ids.filter((id) => !productIds.includes(id)).forEach((id) => removeFromCart(id));
             setProducts(products);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
     const loadAddresses = async () => {
-        const response = await fetch("/cxf/api/users/me/addresses", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const data = await response.json();
+        try {
+            const response = await userApi.getCurrentUserAddresses();
+            const data = response.data;
             const defaultAddress = data.find((address) => address.id === defaultAddressId);
             const addresses = data.filter((address) => address !== defaultAddress);
             addresses.unshift(defaultAddress);
             setAddresses(addresses);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -98,10 +93,9 @@ const PaymentPage = (props) => {
         let count = 0;
 
         Object.keys(cart).map(async (id) => {
-            const response = await fetch(`/cxf/api/laptops/${id}/promotions`);
-            if (response.ok) {
-                const data = await response.json();
-                data.forEach((promotion) => {
+            try {
+                const response = await laptopApi.getLaptopPromotions(id);
+                response.data.forEach((promotion) => {
                     const key = promotion["id"];
                     if (key in quantities) {
                         quantities[key] = cart[id] + quantities[key];
@@ -110,6 +104,8 @@ const PaymentPage = (props) => {
                         promotions.push(promotion);
                     }
                 });
+            } catch (err) {
+                console.log("fail");
             }
 
             if (++count === length) {

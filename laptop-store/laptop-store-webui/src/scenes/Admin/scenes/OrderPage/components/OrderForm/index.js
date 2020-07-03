@@ -6,6 +6,7 @@ import OrderDetail from "./OrderDetail";
 import OrderOverview from "./OrderOverview";
 import Loader from "react-loader-advanced";
 import { getCookie } from "../../../../../../services/helper/cookie";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
 const OrderForm = ({ orderId }) => {
     const [loading, setLoading] = useState(true);
@@ -46,18 +47,16 @@ const OrderForm = ({ orderId }) => {
     };
 
     const loadProducts = async (productIds) => {
-        const params = new URLSearchParams();
-        productIds.forEach((id) => params.append("ids", id));
-        const response = await fetch("/cxf/api/laptops?" + params.toString(), {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        const output = {};
-        if (response.ok) {
-            const products = await response.json();
+        try {
+            const output = {};
+            const response = await laptopApi.getByIds(productIds);
+            const products = response.data;
             products.forEach((product) => (output[product["id"]] = product["quantity"]));
+            return output;
+        } catch (err) {
+            console.log("fail");
+            return {};
         }
-        return output;
     };
 
     const loadPromotions = async (promotionIds) => {

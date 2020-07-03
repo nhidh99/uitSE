@@ -10,8 +10,8 @@ import {
     FaStar,
     FaMoneyBillWave,
 } from "react-icons/fa";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
+import userApi from "../../../../../../services/api/userApi";
 
 const RewardPage = () => {
     const [loading, setLoading] = useState(true);
@@ -102,16 +102,13 @@ const RewardPage = () => {
     }, []);
 
     const loadData = async () => {
-        const url = "/cxf/api/users/me/rewards";
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const rewards = await response.json();
+        try {
+            const response = await userApi.getCurrentUserRewards();
+            const rewards = response.data;
             setRewards(rewards);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -124,7 +121,11 @@ const RewardPage = () => {
                 </label>
             </div>
             {loading ? (
-                <EmptyBlock loading={loading} icon={<FaTrophy />} loadingText="Đang tải các cột mốc" />
+                <EmptyBlock
+                    loading={loading}
+                    icon={<FaTrophy />}
+                    loadingText="Đang tải các cột mốc"
+                />
             ) : (
                 items.map((item) => (
                     <ItemBlock

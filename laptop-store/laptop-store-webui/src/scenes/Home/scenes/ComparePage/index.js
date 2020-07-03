@@ -6,6 +6,7 @@ import { convertCPUType, convertResolutionType } from "../../../../services/help
 import styles from "./styles.module.scss";
 import { FaStar } from "react-icons/fa";
 import ReactPlaceholder from "react-placeholder/lib";
+import laptopApi from "../../../../services/api/laptopApi";
 
 const ComparePage = () => {
     const [products, setProducts] = useState([]);
@@ -24,8 +25,13 @@ const ComparePage = () => {
     };
 
     const fetchProduct = async (productId) => {
-        const response = await fetch(`/cxf/api/laptops/${productId}`);
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await laptopApi.getById(productId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     return loading ? (

@@ -6,11 +6,11 @@ import { FaBook, FaBoxOpen } from "react-icons/fa";
 import ItemBlock from "./components/ItemBlock";
 import { getWishList } from "../../../../../../services/helper/wish-list";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
 const WishListPage = () => {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
-    const wishList = getWishList();
 
     useEffect(() => {
         loadData();
@@ -19,20 +19,20 @@ const WishListPage = () => {
     const toggleLoading = () => setLoading(true);
 
     const loadData = async () => {
-        if (wishList.length === 0) {
+        const ids = getWishList();
+        if (ids.length === 0) {
             setProducts([]);
             setLoading(false);
             return;
         }
 
-        const params = new URLSearchParams();
-        wishList.forEach((id) => params.append("ids", id));
-        const response = await fetch("/cxf/api/laptops?" + params.toString());
-
-        if (response.ok) {
-            const products = await response.json();
+        try {
+            const response = await laptopApi.getByIds(ids);
+            const products = response.data;
             setProducts(products);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -41,7 +41,7 @@ const WishListPage = () => {
             <div className={styles.title}>
                 <label className={styles.header}>
                     <FaBook />
-                    &nbsp;&nbsp;DANH SÁCH XEM SAU {`(${wishList.length})`}
+                    &nbsp;&nbsp;DANH SÁCH XEM SAU
                 </label>
             </div>
 

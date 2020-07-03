@@ -2,7 +2,9 @@ import React, { Component, Fragment } from "react";
 import { Label, Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaLock } from "react-icons/fa";
-import { getCookie } from "../../../../../../services/helper/cookie";
+import userApi from "../../../../../../services/api/userApi";
+import store from "../../../../../../services/redux/store";
+import { buildModal } from "../../../../../../services/redux/actions";
 
 class PasswordPage extends Component {
     state = {
@@ -15,18 +17,22 @@ class PasswordPage extends Component {
         const confirmPassword = document.getElementById("confirmPassword").value;
 
         return {
-            oldPassword: oldPassword,
-            newPassword: newPassword,
-            confirmPassword: confirmPassword,
+            old_password: oldPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
         };
     };
 
     validateInputs = (inputs) => {
         const errors = [];
         const validate = (message, condition) => (condition() ? null : errors.push(message));
-        validate("Mật khẩu cũ không được để trống", () => inputs["oldPassword"].length > 0);
-        validate("Mật khẩu mới phải từ 6 - 35 kí tự", () => inputs["newPassword"].match(/^.{6,35}$/));
-        validate("Mật khẩu xác nhận phải từ 6 - 35 kí tự", () => inputs["confirmPassword"].match(/^.{6,35}$/));
+        validate("Mật khẩu cũ không được để trống", () => inputs["old_password"].length > 0);
+        validate("Mật khẩu mới phải từ 6 - 35 kí tự", () =>
+            inputs["new_password"].match(/^.{6,35}$/)
+        );
+        validate("Mật khẩu xác nhận phải từ 6 - 35 kí tự", () =>
+            inputs["confirm_password"].match(/^.{6,35}$/)
+        );
         return errors;
     };
 
@@ -39,46 +45,29 @@ class PasswordPage extends Component {
             return;
         }
 
-
-        if (body["confirmPassword"] !== body["newPassword"]) {
+        if (body["confirm_password"] !== body["new_password"]) {
             alert("Vui lòng xác nhận lại mật khẩu");
             return;
         }
 
-        const response = await fetch("/cxf/api/users/me/password", {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie('access_token'),
-            },
-            body: JSON.stringify(body),
-        });
-
-        if (response.ok) {
-            alert('Đã lưu thông tin mới thành công')
-        }
-        else {
-            const status = parseInt(response.status);
-            switch (status) {
-                case 403:
-                    this.setState({
-                        error: "Not permission",
-                        loading: false
-                    });
-                    break;
-                case 401:
-                    alert('You have to login to access this page.');
-                    window.location.href = "/auth/login";
-                    break;
-                case 400:
-                    alert('Mật khẩu cũ không đúng');
-                    break;
-                default:
-                    this.setState({
-                        error: "Server error",
-                        loading: false
-                    });
-            }
+        try {
+            await userApi.putCurrentUserPassword(body);
+            document
+                .querySelectorAll("input[type='password']")
+                .forEach((input) => (input.value = ""));
+            const modal = {
+                title: "Cập nhật thành công",
+                message: "Đã cập nhật mật khẩu mới thành công",
+                confirm: () => null,
+            };
+            store.dispatch(buildModal(modal));
+        } catch (err) {
+            const modal = {
+                title: "Xảy ra lỗi",
+                message: "Đã xảy ra lỗi, bạn vui lòng thử lại sau",
+                confirm: () => null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 
@@ -91,7 +80,12 @@ class PasswordPage extends Component {
                         <FaLock />
                         &nbsp;&nbsp;ĐỔI MẬT KHẨU
                     </label>
-                    <Button type="submit" className={styles.submit} color="primary" onClick={this.updatePassword}>
+                    <Button
+                        type="submit"
+                        className={styles.submit}
+                        color="primary"
+                        onClick={this.updatePassword}
+                    >
                         Đổi mật khẩu
                     </Button>
                 </div>

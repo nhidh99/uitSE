@@ -118,10 +118,7 @@ const ProductList = (props) => {
 
     const loadImageDetailIds = async (productId) => {
         const url = `/cxf/api/laptops/${productId}/image-ids`;
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
+        const response = await fetch(url);
         return response.ok ? await response.json() : null;
     };
 

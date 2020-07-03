@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from "react";
 import { Table, Spinner } from "reactstrap";
 import { FaBoxes } from "react-icons/fa";
@@ -7,20 +8,20 @@ import "react-step-progress-bar/styles.css";
 import OrderProgress from "./components/OrderProgress";
 import Loader from "react-loader-advanced";
 import OrderCancel from "./components/OrderCancel";
+import { useParams } from "react-router-dom";
 
 const OrderDetail = (props) => {
     const [order, setOrder] = useState(null);
     const [details, setDetails] = useState([]);
     const [deliveryDate, setDeliveryDate] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { orderId } = useParams();
 
     useEffect(() => {
         loadData();
     }, []);
 
     const loadData = async () => {
-        const parts = window.location.pathname.split("/");
-        const orderId = parseInt(parts[parts.length - 1]);
         const response = await fetch(`/cxf/api/orders/${orderId}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
