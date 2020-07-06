@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getCookie } from "../../../../../../../../services/helper/cookie";
 import { buildModal } from "../../../../../../../../services/redux/actions";
 import store from "../../../../../../../../services/redux/store";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import { Button } from "reactstrap";
 import { FaFacebookF } from "react-icons/fa";
 import styles from "./styles.module.scss";
+import authApi from "../../../../../../../../services/api/authApi";
 
 const FacebookSync = (props) => {
     const [fbAuth, setFbAuth] = useState(props.auth);
@@ -42,30 +42,20 @@ const FacebookSync = (props) => {
     };
 
     const checkFacebookSync = async (facebookId) => {
-        const response = await fetch("/cxf/api/auth/facebook", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({ id: facebookId }),
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await authApi.checkFacebookSync(facebookId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const syncFacebook = async (facebookId) => {
-        const response = await fetch("/cxf/api/auth/facebook/sync", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({ id: facebookId }),
-        });
-
-        if (response.ok) {
+        try {
+            await authApi.syncFacebook(facebookId);
             setFbAuth(true);
-        } else {
+        } catch (err) {
             const modal = {
                 title: "Lỗi hệ thống",
                 message: "Không thể xử lí yêu cầu",
@@ -76,12 +66,16 @@ const FacebookSync = (props) => {
     };
 
     const cancelFacebookSync = async () => {
-        const response = await fetch("/cxf/api/auth/facebook/sync", {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        if (response.ok) {
+        try {
+            await authApi.cancelFacebookSync();
             setFbAuth(false);
+        } catch (err) {
+            const modal = {
+                title: "Lỗi hệ thống",
+                message: "Không thể xử lí yêu cầu",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 

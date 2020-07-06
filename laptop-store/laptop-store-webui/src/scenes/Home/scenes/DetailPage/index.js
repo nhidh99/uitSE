@@ -67,14 +67,19 @@ const DetailPage = (props) => {
             const response = await laptopApi.getById(productId);
             return response.data;
         } catch (err) {
-            console.log('fail');
+            console.log("fail");
             return null;
         }
     };
 
     const loadImages = async () => {
-        const response = await fetch(`/cxf/api/laptops/${productId}/image-ids`);
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await laptopApi.getLaptopImageIds(productId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const loadRatings = async () => {
@@ -83,13 +88,23 @@ const DetailPage = (props) => {
     };
 
     const loadPromotions = async () => {
-        const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await laptopApi.getLaptopPromotions(productId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return [];
+        }
     };
 
     const loadSuggestions = async () => {
-        const response = await fetch(`/cxf/api/laptops/${productId}/suggestions`);
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await laptopApi.getLaptopSuggestions(productId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return [];
+        }
     };
 
     const ContentBlock = ({ hide, title, component }) => {

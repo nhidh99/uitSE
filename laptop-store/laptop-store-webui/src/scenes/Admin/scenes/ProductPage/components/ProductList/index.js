@@ -5,7 +5,6 @@ import styles from "./styles.module.scss";
 import ProductDelete from "../ProductDelete";
 import ProductEdit from "../ProductEdit";
 import Pagination from "react-js-pagination";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import Loader from "react-loader-advanced";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
@@ -82,7 +81,6 @@ const ProductList = (props) => {
         const images = store.getState()["images"];
         const deleteIds = images["deleteIds"];
         const uploads = images["uploads"];
-
         data.append("del-ids", new Blob([JSON.stringify(deleteIds)], { type: "application/json" }));
 
         if (uploads.length === 0) {
@@ -92,15 +90,11 @@ const ProductList = (props) => {
             uploads.forEach((upload) => data.append("uploads", upload));
         }
 
-        const url = `/cxf/api/laptops/${productId}/detail-images`;
-        await fetch(url, {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${getCookie("access_token")}`,
-                "Content-Type": "multipart/form-data",
-            },
-            body: data,
-        });
+        try {
+            await laptopApi.putLaptopImages(productId, data);
+        } catch (err) {
+            console.log("fail");
+        }
     };
 
     const toggleImageUploader = async (productId) => {
@@ -117,9 +111,13 @@ const ProductList = (props) => {
     };
 
     const loadImageDetailIds = async (productId) => {
-        const url = `/cxf/api/laptops/${productId}/image-ids`;
-        const response = await fetch(url);
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await laptopApi.getLaptopImageIds(productId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const buildRowFromProduct = (product) => (

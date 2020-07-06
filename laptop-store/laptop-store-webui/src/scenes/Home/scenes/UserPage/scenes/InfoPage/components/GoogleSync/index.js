@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getCookie } from "../../../../../../../../services/helper/cookie";
 import { buildModal } from "../../../../../../../../services/redux/actions";
 import store from "../../../../../../../../services/redux/store";
 import { Button } from "reactstrap";
 import { FaGoogle } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import GoogleLogin from "react-google-login";
+import authApi from "../../../../../../../../services/api/authApi";
 
 const GoogleSync = (props) => {
     const [googleAuth, setGoogleAuth] = useState(props.auth);
@@ -42,29 +42,20 @@ const GoogleSync = (props) => {
     };
 
     const checkGoogleSync = async (googleId) => {
-        const response = await fetch("/cxf/api/auth/google", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({ id: googleId }),
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await authApi.checkGoogleSync(googleId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const syncGoogle = async (googleId) => {
-        const response = await fetch("/cxf/api/auth/google/sync", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({ id: googleId }),
-        });
-        if (response.ok) {
+        try {
+            await authApi.syncGoogle(googleId);
             setGoogleAuth(true);
-        } else {
+        } catch (err) {
             const modal = {
                 title: "Lỗi hệ thống",
                 message: "Không thể xử lí yêu cầu",
@@ -75,12 +66,16 @@ const GoogleSync = (props) => {
     };
 
     const cancelGoogleSync = async () => {
-        const response = await fetch("/cxf/api/auth/google/sync", {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        if (response.ok) {
+        try {
+            await authApi.cancelGoogleSync();
             setGoogleAuth(false);
+        } catch (err) {
+            const modal = {
+                title: "Lỗi hệ thống",
+                message: "Không thể xử lí yêu cầu",
+                confirm: null,
+            };
+            store.dispatch(buildModal(modal));
         }
     };
 
