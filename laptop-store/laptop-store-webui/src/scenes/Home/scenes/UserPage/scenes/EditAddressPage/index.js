@@ -3,16 +3,15 @@ import React, { useState, useEffect } from "react";
 import { Label, Input, Button, Spinner } from "reactstrap";
 import { FaBook, FaAddressBook, FaSave } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../services/helper/cookie";
-import {
-    loadCities,
-    loadDistrictsByCityId,
-    loadWardsByDistrictId,
-} from "../../../../../../services/helper/address";
 import { useParams } from "react-router-dom";
 import store from "../../../../../../services/redux/store";
-import { buildModal, setDefaultAddressId } from "../../../../../../services/redux/actions";
+import {
+    buildModal,
+    setDefaultAddressId,
+    buildErrorModal,
+} from "../../../../../../services/redux/actions";
 import Loader from "react-loader-advanced";
+import addressApi from "../../../../../../services/api/addressApi";
 
 const EditAddressPage = () => {
     const { id } = useParams();
@@ -53,10 +52,10 @@ const EditAddressPage = () => {
         if (address) {
             const cityId = cities.find((c) => c["name"] === address["city"])?.id;
 
-            const districts = await loadDistrictsByCityId(cityId);
+            const districts = await loadDistrictsByCity(cityId);
             const districtId = districts.find((d) => d["name"] === address["district"])?.id;
 
-            const wards = await loadWardsByDistrictId(districtId);
+            const wards = await loadWardsByDistrict(districtId);
             const wardId = wards.find((w) => w["name"] === address["ward"])?.id;
 
             setCityId(cityId);
@@ -70,18 +69,50 @@ const EditAddressPage = () => {
         setLoading(false);
     };
 
+    const loadCities = async () => {
+        try {
+            const response = await addressApi.getCities();
+            return response.data["data"];
+        } catch (err) {
+            console.log(err);
+            return [];
+        }
+    };
+
+    const loadDistrictsByCity = async (cityId) => {
+        try {
+            const response = await addressApi.getDistricts(cityId);
+            return response.data["data"];
+        } catch (err) {
+            console.log(err);
+            return [];
+        }
+    };
+
+    const loadWardsByDistrict = async (districtId) => {
+        try {
+            const response = await addressApi.getWards(districtId);
+            return response.data["data"];
+        } catch (err) {
+            console.log(err);
+            return [];
+        }
+    };
+
     const loadAddress = async () => {
         if (id === "create") return null;
-        const response = await fetch(`/cxf/api/addresses/${id}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await addressApi.getById(id);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const loadDistricts = async () => {
         setReloading(true);
-        const districts = await loadDistrictsByCityId(cityId);
+        const districts = await loadDistrictsByCity(cityId);
         setDistricts(districts);
         if (!loading) {
             setWardId("");
@@ -91,12 +122,12 @@ const EditAddressPage = () => {
 
     const loadWards = async () => {
         setReloading(true);
-        const wards = await loadWardsByDistrictId(districtId);
+        const wards = await loadWardsByDistrict(districtId);
         setWards(wards);
         setReloading(false);
     };
 
-    const buildAddressBody = () => {
+    const buildAddressData = () => {
         const receiverName = document.getElementById("receiver-name").value;
         const receiverPhone = document.getElementById("receiver-phone").value;
         const city = document.getElementById(`city-${cityId}`)?.text;
@@ -134,53 +165,40 @@ const EditAddressPage = () => {
     };
 
     const setDefaultAddress = async () => {
-        const url = "/cxf/api/addresses/default";
-        const response = await fetch(url, {
-            method: "PUT",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-            body: id,
-        });
-
-        if (response.ok) {
+        try {
+            await addressApi.putDefaultAddress(id);
             const modal = {
                 title: "Lưu thành công",
                 message: "Đã lưu địa chỉ mặc định thành công",
                 confirm: () => null,
             };
             const addressId = parseInt(id);
-            store.dispatch(setDefaultAddressId({ "default-id": parseInt(addressId) }));
+            store.dispatch(setDefaultAddressId({ "default-id": addressId }));
             store.dispatch(buildModal(modal));
             setIsDefaultAddress(true);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 
     const createAddress = async () => {
-        const body = buildAddressBody();
-        const errors = validateInputs(body);
+        const data = buildAddressData();
+        const errors = validateInputs(data);
 
         if (errors.length > 0) {
             setErrors(errors);
             return;
         }
 
-        const url = "/cxf/api/addresses/" + (id === "create" ? "" : id);
-        const method = id === "create" ? "POST" : "PUT";
-
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + getCookie("access_token"),
-            },
-            body: JSON.stringify(body),
-        });
-
-        if (response.ok) {
+        try {
+            const method = id === "create" ? "POST" : "PUT";
             setErrors([]);
             if (method === "POST") {
-                const addressId = await response.text();
+                const response = await addressApi.postAddress(data);
+                const addressId = response.data;
                 window.location.href = `/user/address/${addressId}`;
             } else {
+                await addressApi.putAddress(id, data);
                 const modal = {
                     title: "Cập nhật thành công",
                     message: "Cập nhật địa chỉ mới thành công",
@@ -188,6 +206,8 @@ const EditAddressPage = () => {
                 };
                 store.dispatch(buildModal(modal));
             }
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 

@@ -15,6 +15,7 @@ import ConfirmModal from "./components/ConfirmModal";
 import store from "./services/redux/store";
 import { setDefaultAddressId } from "./services/redux/actions";
 import userApi from "./services/api/userApi";
+import authApi from "./services/api/authApi";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -30,12 +31,13 @@ const App = (props) => {
     }, [role]);
 
     const fetchToken = async () => {
-        const token = getCookie("access_token");
-        const response = await fetch("/cxf/api/auth/token", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.ok ? await response.text() : null;
+        try {
+            const response = await authApi.refreshToken();
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const syncUserCart = (userCart) => {
@@ -52,7 +54,6 @@ const App = (props) => {
 
     const createRefreshTokenHeart = () => {
         const heart = createHeart(REFRESH_TOKENS_TIMESPAN, "refresh_token");
-        console.log(heart);
         heart.createEvent(1, async () => {
             const token = await fetchToken();
             if (token) {

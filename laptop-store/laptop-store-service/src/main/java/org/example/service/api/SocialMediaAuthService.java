@@ -12,5 +12,5 @@ public interface SocialMediaAuthService {
 
     Response authBySocialMedia(SocialMediaInput socialMediaInput);
 
-    Response checkSocialMediaAuth(SocialMediaInput socialMediaInput, SecurityContext securityContext);
+    Response checkSocialMediaAuth(SocialMediaInput socialMediaInput);
 }

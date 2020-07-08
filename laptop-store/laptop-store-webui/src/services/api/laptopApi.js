@@ -53,6 +53,16 @@ const laptopApi = {
         return axiosClient.get(url);
     },
 
+    getLaptopImageIds: (laptopId) => {
+        const url = `/laptops/${laptopId}/image-ids`;
+        return axiosClient.get(url);
+    },
+
+    getLaptopSuggestions: (laptopId) => {
+        const url = `/laptops/${laptopId}/suggestions`;
+        return axiosClient.get(url);
+    },
+
     deleteById: (id) => {
         const url = `/laptops/${id}`;
         const config = {
@@ -82,6 +92,17 @@ const laptopApi = {
         };
         return axiosClient.put(url, data, config);
     },
+
+    putLaptopImages: (id, data) => {
+        const url = `/laptops/${id}/detail-images`;
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${getCookie("access_token")}`,
+            },
+        };
+        return axiosClient.put(url, data, config);
+    }
 };
 
 export default laptopApi;

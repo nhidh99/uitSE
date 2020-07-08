@@ -133,7 +133,6 @@ public class UserDAOImpl implements UserDAO {
     public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
         User user = em.find(User.class, userId);
         boolean isValidCredential = user != null && BCrypt.checkpw(oldPassword, user.getPassword());
-        System.out.println(user.getPassword());
         if (isValidCredential) {
             String newHashedPassword = hashPassword(newPassword);
             user.setPassword(newHashedPassword);

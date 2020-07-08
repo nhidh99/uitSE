@@ -71,7 +71,7 @@ public class AddressServiceImpl implements AddressService {
         }
     }
 
-    private Address buildAddressFromRequestBody(AddressInput addressInput, @Context SecurityContext securityContext) {
+    private Address buildAddressFromRequestBody(AddressInput addressInput, SecurityContext securityContext) {
         Principal principal = securityContext.getUserPrincipal();
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);

@@ -83,7 +83,7 @@ public class GoogleAuthServiceImpl implements SocialMediaAuthService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @Secured({RoleType.ADMIN, RoleType.USER})
-    public Response checkSocialMediaAuth(SocialMediaInput googleInput, SecurityContext securityContext) {
+    public Response checkSocialMediaAuth(SocialMediaInput googleInput) {
         try {
             String googleId = googleInput.getId();
             Optional<User> optUser = userDAO.findByGoogleId(googleId);

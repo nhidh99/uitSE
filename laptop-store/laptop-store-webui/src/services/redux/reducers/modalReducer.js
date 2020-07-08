@@ -1,10 +1,17 @@
-import { TOGGLE_MODAL, BUILD_MODAL } from "../actions";
+import { TOGGLE_MODAL, BUILD_MODAL, BUILD_ERROR_MODAL } from "../actions";
 
 const initState = {
     title: "",
     message: "",
     confirm: null,
     open: false,
+};
+
+const errorState = {
+    title: "Có lỗi xảy ra",
+    message: "Không thể xử lí yêu cầu",
+    confirm: null,
+    open: true,
 };
 
 const modalReducer = (state = initState, action) => {
@@ -14,7 +21,12 @@ const modalReducer = (state = initState, action) => {
             break;
 
         case BUILD_MODAL:
-            Object.assign(state, action.payload);
+            state = action.payload;
+            state["open"] = true;
+            break;
+
+        case BUILD_ERROR_MODAL:
+            state = errorState;
             state["open"] = true;
             break;
 
