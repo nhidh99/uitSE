@@ -3,12 +3,12 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Table, Spinner } from "reactstrap";
 import { FaBoxes } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import "react-step-progress-bar/styles.css";
 import OrderProgress from "./components/OrderProgress";
 import Loader from "react-loader-advanced";
 import OrderCancel from "./components/OrderCancel";
 import { useParams } from "react-router-dom";
+import orderApi from "../../../../../../services/api/orderApi";
 
 const OrderDetail = (props) => {
     const [order, setOrder] = useState(null);
@@ -22,17 +22,15 @@ const OrderDetail = (props) => {
     }, []);
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/orders/${orderId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const order = await response.json();
+        try {
+            const response = await orderApi.getById(orderId);
+            const order = response.data;
             setOrder(order);
             setDetails(order["details"]);
             setDeliveryDate(order["delivery_date"]);
             setLoading(false);
+        } catch (err) {
+            console.log(err);
         }
     };
 

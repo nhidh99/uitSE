@@ -19,6 +19,7 @@ import ThicknessInput from "./components/ThicknessInput";
 import WeightInput from "./components/WeightInput";
 import laptopApi from "../../../../../../services/api/laptopApi";
 import tagApi from "../../../../../../services/api/tagApi";
+import promotionApi from "../../../../../../services/api/promotionApi";
 
 const ProductForm = ({ toggle, product }) => {
     const [loading, setLoading] = useState(true);
@@ -56,8 +57,13 @@ const ProductForm = ({ toggle, product }) => {
     };
 
     const loadPromotions = async () => {
-        const response = await fetch("/cxf/api/promotions");
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await promotionApi.getAll();
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return [];
+        }
     };
 
     const loadProductTags = async () => {

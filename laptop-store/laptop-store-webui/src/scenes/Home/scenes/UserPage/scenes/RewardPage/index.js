@@ -60,15 +60,13 @@ const RewardPage = () => {
     const ItemBlock = ({ item, userReward }) => {
         const reward = userReward["reward"];
         const level = userReward["level"];
-        const nextValues = {
+        const color = colors[level];
+        const nextValue = {
             NONE: reward["bronze_value"],
             BRONZE: reward["silver_value"],
             SILVER: reward["gold_value"],
             GOLD: reward["gold_value"],
-        };
-
-        const nextValue = nextValues[level];
-        const color = colors[level];
+        }[level];
 
         return (
             <div className={styles.itemBlock}>

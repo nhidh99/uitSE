@@ -102,7 +102,7 @@ const laptopApi = {
             },
         };
         return axiosClient.put(url, data, config);
-    }
+    },
 };
 
 export default laptopApi;

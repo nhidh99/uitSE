@@ -23,5 +23,7 @@ public interface CommentDAO {
 
     void approve(Integer id, CommentReply commentReply);
 
+    void deny(Integer id);
+
     void delete(Integer id);
 }

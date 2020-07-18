@@ -2,36 +2,27 @@ import React, { Fragment } from "react";
 import { Table, Label, Button, UncontrolledCollapse } from "reactstrap";
 import { FaPaperPlane } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../../../services/helper/cookie";
+import ratingApi from "../../../../../../../../services/api/ratingApi";
+import store from "../../../../../../../../services/redux/store";
+import { buildErrorModal } from "../../../../../../../../services/redux/actions";
 
-const ReplyBlock = (props) => {
+const ReplyBlock = ({ ratingId, replies }) => {
     const postReply = async () => {
-        const url = `/cxf/api/ratings/${props.rating["id"]}/replies`;
-        const reply = document.getElementById(`reply-${props.rating["id"]}`).value;
-        const body = { reply: reply };
-
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify(body),
-        });
-
-        if (response.ok) {
+        try {
+            const reply = document.getElementById(`reply-${ratingId}`).value.trim();
+            await ratingApi.postReply(ratingId, reply);
             window.location.reload();
-        } else {
-            // handle error here
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 
     return (
         <Fragment>
-            <UncontrolledCollapse toggler={"#toggler-" + props.rating["id"]}>
+            <UncontrolledCollapse toggler={"#toggler-" + ratingId}>
                 <textarea
                     className={styles.replyInput}
-                    id={"reply-" + props.rating["id"]}
+                    id={"reply-" + ratingId}
                     rows="5"
                     maxLength="500"
                     placeholder="Gửi trả lời của bạn (tối đa 500 từ)"
@@ -47,7 +38,7 @@ const ReplyBlock = (props) => {
 
             <Table hover borderless striped className={styles.replyTable}>
                 <tbody>
-                    {props.replies.map((reply) => {
+                    {replies.map((reply) => {
                         const replyDate = reply
                             ? new Date(
                                   reply["reply_date"]["year"],

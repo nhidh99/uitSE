@@ -61,11 +61,12 @@ public class RatingServiceImpl implements RatingService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findRatingsByProductId(@QueryParam("product-id") Integer productId, @QueryParam("page") @DefaultValue("1") Integer page) {
+    public Response findRatingsByProductId(@QueryParam("product-id") Integer productId,
+                                           @QueryParam("page") @DefaultValue("1") Integer page) {
         try {
             List<Rating> ratings;
             Long ratingCount;
-            if(productId != null) {
+            if (productId != null) {
                 ratings = ratingDAO.findByProductId(productId);
                 ratingCount = ratingDAO.findTotalRatingByProductId(productId);
             } else {
@@ -82,7 +83,9 @@ public class RatingServiceImpl implements RatingService {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findRatingsByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+    public Response findRatingsByFilter(@QueryParam("id") String id,
+                                        @QueryParam("status") String status,
+                                        @QueryParam("page") Integer page) {
         try {
             List<Rating> ratings = ratingDAO.findByFilter(id, status, page);
             Long ratingCount = ratingDAO.findTotalRatingByFilter(id, status);
@@ -97,7 +100,7 @@ public class RatingServiceImpl implements RatingService {
     @DELETE
     @Path("/{id}")
     @Secured({RoleType.ADMIN})
-    public Response deleteRatingById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
+    public Response deleteRating(@PathParam("id") Integer id) {
         try {
             ratingDAO.delete(id);
             return Response.noContent().build();
@@ -109,17 +112,27 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    @PUT
-    @Path("/{id}")
-    @Secured({RoleType.ADMIN})
-    public Response approveRatingById(@PathParam("id") Integer id, @Context SecurityContext securityContext) {
+    @POST
+    @Path("/{id}/approve")
+    @Secured(RoleType.ADMIN)
+    public Response approveRating(@PathParam("id") Integer id) {
         try {
             ratingDAO.approve(id);
-            return Response.ok().build();
-        } catch (BadRequestException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.noContent().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @POST
+    @Path("/{id}/deny")
+    @Secured(RoleType.ADMIN)
+    public Response denyRating(@PathParam("id") Integer id) {
+        try {
+            ratingDAO.deny(id);
+            return Response.noContent().build();
+        } catch (Exception e) {
             return Response.serverError().build();
         }
     }

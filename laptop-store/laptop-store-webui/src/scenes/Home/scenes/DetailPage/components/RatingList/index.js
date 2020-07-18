@@ -46,7 +46,7 @@ const RatingList = ({ ratings }) => {
                                 </Link>
                                 <br />
                                 <br />
-                                <ReplyBlock rating={rating} replies={replies} />
+                                <ReplyBlock ratingId={rating["id"]} replies={replies} />
                             </Col>
                         </Row>
                     </ListGroupItem>

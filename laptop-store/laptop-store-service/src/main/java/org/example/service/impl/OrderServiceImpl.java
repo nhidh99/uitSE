@@ -193,13 +193,14 @@ public class OrderServiceImpl implements OrderService {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findOrdersByFilter(@QueryParam("id") String id, @QueryParam("status") String status ,@QueryParam("page") Integer page) {
+    public Response findOrdersByFilter(@QueryParam("id") String id,
+                                       @QueryParam("status") String status,
+                                       @QueryParam("page") Integer page) {
         try {
             List<OrderOverview> orderOverviews = orderDAO.findByFilter(id, status, page);
             Long orderCount = orderDAO.findTotalOrder(id, status);
             return Response.ok(orderOverviews).header("X-Total-Count", orderCount).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.serverError().build();
         }
     }
@@ -222,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PUT
+    @POST
     @Path("/{id}/cancel")
     @Secured({RoleType.ADMIN, RoleType.USER})
     public Response cancelOrder(@PathParam("id") Integer orderId, @Context SecurityContext securityContext) {

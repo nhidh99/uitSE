@@ -2,13 +2,15 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Table, ButtonGroup, Spinner } from "reactstrap";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import Loader from "react-loader-advanced";
 import Pagination from "react-js-pagination";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
 import RatingDelete from "../RatingDelete";
 import RatingDetail from "../RatingDetail";
+import store from "../../../../../../services/redux/store";
+import { buildErrorModal } from "../../../../../../services/redux/actions";
+import ratingApi from "../../../../../../services/api/ratingApi";
 
 const RatingList = (props) => {
     const [loading, setLoading] = useState(true);
@@ -36,30 +38,27 @@ const RatingList = (props) => {
     }, [page]);
 
     const search = async (id, status) => {
-        const response = await fetch(`/cxf/api/ratings/search?id=${id}&status=${status}&page=${page}`, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") }
-        });
-        if (response.ok) {
+        try {
+            const response = await ratingApi.searchRatings(id, status, page);
             const ratings = await response.json();
             setRatings(ratings);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
-    }
+    };
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/ratings?page=${page}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const ratings = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await ratingApi.getByPage(page);
+            const ratings = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setRatings(ratings);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 
@@ -71,7 +70,9 @@ const RatingList = (props) => {
         if (id === null) {
             props.history.push("/admin/ratings?page=" + pageNumber);
         } else {
-            props.history.push("/admin/ratings/search?id=" + id + "&status=" + status + "&page=" + pageNumber);
+            props.history.push(
+                "/admin/ratings/search?id=" + id + "&status=" + status + "&page=" + pageNumber
+            );
         }
         setPage(pageNumber);
     };
@@ -82,16 +83,20 @@ const RatingList = (props) => {
             <td className={styles.nameCol}>{rating["laptop"]["name"]}</td>
             <td>{rating["rating"]}</td>
             <td className={styles.titleCol}>
-                {rating["comment_title"] === null ? '' : rating["comment_title"].length > 30 ?
-                    rating["comment_title"].substring(0, 30) + '...' :
-                    rating["comment_title"]}
+                {rating["comment_title"] === null
+                    ? ""
+                    : rating["comment_title"].length > 30
+                    ? rating["comment_title"].substring(0, 30) + "..."
+                    : rating["comment_title"]}
             </td>
             <td className={styles.detailCol}>
-                {rating["comment_detail"] === null ? '' : rating["comment_detail"].length > 30 ?
-                    rating["comment_detail"].substring(0, 30) + '...' :
-                    rating["comment_detail"]}
+                {rating["comment_detail"] === null
+                    ? ""
+                    : rating["comment_detail"].length > 30
+                    ? rating["comment_detail"].substring(0, 30) + "..."
+                    : rating["comment_detail"]}
             </td>
-            <td>{rating["approve_status"] ? 'Đã duyệt' : 'Chưa duyệt'}</td>
+            <td>{rating["approve_status"] ? "Đã duyệt" : "Chưa duyệt"}</td>
             <td className={styles.actionCol}>
                 <ButtonGroup>
                     <ButtonGroup>

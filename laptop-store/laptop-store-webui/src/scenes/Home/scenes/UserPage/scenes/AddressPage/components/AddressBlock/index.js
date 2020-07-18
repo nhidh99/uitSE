@@ -6,11 +6,11 @@ import AddressDelete from "../AddressDelete";
 import { withRouter } from "react-router-dom";
 
 const AddressBlock = (props) => {
-    const { address, isDefault } = props;
+    const { address, isDefault, history } = props;
 
     const redirectToEdit = (addressId) => {
-        props.history.push(`/user/address/${addressId}`);
-    };
+        history.push(`/user/address/${addressId}`);
+    }
 
     return (
         <div className={styles.addressBlock}>

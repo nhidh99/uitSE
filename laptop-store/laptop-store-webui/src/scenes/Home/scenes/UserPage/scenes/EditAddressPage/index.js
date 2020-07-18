@@ -51,10 +51,8 @@ const EditAddressPage = () => {
         const [address, cities] = await Promise.all([loadAddress(), loadCities()]);
         if (address) {
             const cityId = cities.find((c) => c["name"] === address["city"])?.id;
-
             const districts = await loadDistrictsByCity(cityId);
             const districtId = districts.find((d) => d["name"] === address["district"])?.id;
-
             const wards = await loadWardsByDistrict(districtId);
             const wardId = wards.find((w) => w["name"] === address["ward"])?.id;
 

@@ -14,6 +14,8 @@ import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
 import { Link, withRouter, useParams } from "react-router-dom";
 import laptopApi from "../../../../services/api/laptopApi";
+import commentApi from "../../../../services/api/commentApi";
+import ratingApi from "../../../../services/api/ratingApi";
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
@@ -58,8 +60,13 @@ const DetailPage = (props) => {
     };
 
     const loadComments = async () => {
-        const response = await fetch(`/cxf/api/comments?product-id=${productId}`);
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await commentApi.getByProductId(productId);
+            return response.data;
+        } catch (err) {
+            console.log("Cannot get product comments");
+            return [];
+        }
     };
 
     const loadProduct = async () => {
@@ -83,8 +90,13 @@ const DetailPage = (props) => {
     };
 
     const loadRatings = async () => {
-        const response = await fetch(`/cxf/api/ratings?product-id=${productId}`);
-        return response.ok ? await response.json() : [];
+        try {
+            const response = await ratingApi.getByProductId(productId);
+            return response.data;
+        } catch (err) {
+            console.log("Fail to get product ratings");
+            return [];
+        }
     };
 
     const loadPromotions = async () => {
@@ -166,10 +178,7 @@ const DetailPage = (props) => {
                 component={<SuggestBlock suggestions={suggestions} />}
             />
 
-            <ContentBlock
-                title="Hỏi, đáp về sản phẩm"
-                component={<QuestionBlock comments={comments} product={product} />}
-            />
+            <ContentBlock title="Hỏi, đáp về sản phẩm" component={<QuestionBlock />} />
 
             <ContentBlock
                 hide={comments.length === 0}
@@ -179,7 +188,9 @@ const DetailPage = (props) => {
 
             <ContentBlock
                 title="Đánh giá sản phẩm"
-                component={<RatingBlock ratings={ratings} product={product} />}
+                component={
+                    <RatingBlock ratingAvg={product["avg_rating"]} ratings={ratings} />
+                }
             />
 
             <ContentBlock

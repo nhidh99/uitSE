@@ -27,7 +27,8 @@ public class CommentServiceImpl implements CommentService {
     @POST
     @Path("/")
     @Secured({RoleType.ADMIN, RoleType.USER})
-    public Response createComment(@QueryParam("product-id") Integer productId, CommentInput commentInput,
+    public Response createComment(@QueryParam("product-id") Integer productId,
+                                  CommentInput commentInput,
                                   @Context SecurityContext securityContext) {
         try {
             Comment comment = buildCommentFromRequestBody(productId, commentInput, securityContext);
@@ -102,15 +103,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @PUT
-    @Path("/{id}")
-    @Secured({RoleType.ADMIN})
+    @POST
+    @Path("/{id}/approve")
+    @Secured(RoleType.ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response approveCommentById(@PathParam("id") Integer id,
-                                       ReplyInput replyInput,
-                                       @Context SecurityContext securityContext) {
+    public Response approveComment(@PathParam("id") Integer id,
+                                   ReplyInput replyInput,
+                                   @Context SecurityContext securityContext) {
         try {
-            if (replyInput.getReply().isEmpty()) {
+            if (replyInput.getReply().trim().isEmpty()) {
                 throw new BadRequestException();
             }
             CommentReply commentReply = buildReplyFromRequestBody(id, replyInput, securityContext);
@@ -118,6 +119,19 @@ public class CommentServiceImpl implements CommentService {
             return Response.ok().build();
         } catch (BadRequestException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @POST
+    @Path("/{id}/deny")
+    @Secured(RoleType.ADMIN)
+    public Response denyComment(@PathParam("id") Integer id) {
+        try {
+            commentDAO.deny(id);
+            return Response.noContent().build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

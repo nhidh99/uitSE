@@ -1,35 +1,30 @@
 import React from "react";
 import { Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import { FaPaperPlane } from "react-icons/fa";
 import store from "../../../../../../services/redux/store";
-import { buildModal } from "../../../../../../services/redux/actions";
-const QuestionBlock = (props) => {
-    const postQuestion = async () => {
-        const url = "/cxf/api/comments?product-id=" + props.product["id"];
-        const input = document.getElementById("question");
-        const question = input.value;
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({
-                question: question,
-            }),
-        });
+import { buildModal, buildErrorModal } from "../../../../../../services/redux/actions";
+import commentApi from "../../../../../../services/api/commentApi";
+import { useParams } from "react-router-dom";
 
-        if (response.ok) {
+const QuestionBlock = () => {
+    const { productId } = useParams();
+    const postQuestion = async () => {
+        try {
+            const input = document.getElementById("question");
+            const data = { question: input.value };
+            await commentApi.postComment(productId, data);
             input.value = "";
             const modal = {
                 title: "Đã gửi câu hỏi",
                 message:
-                    "Cảm ơn bạn đã gửi câu hỏi về sản phẩm, Laptop Store sẽ xem xét duyệt và phản hồi bạn trong thời gian sớm nhất.",
+                    "Cảm ơn bạn đã gửi câu hỏi về sản phẩm, " +
+                    "Laptop Store sẽ xem xét duyệt và phản hồi bạn trong thời gian sớm nhất.",
                 confirm: () => null,
             };
             store.dispatch(buildModal(modal));
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 
@@ -41,6 +36,7 @@ const QuestionBlock = (props) => {
                 type="text"
                 placeholder="Hãy đặt câu hỏi liên quan đến sản phẩm"
             />
+
             <Button color="success" className={styles.btn} onClick={postQuestion}>
                 <FaPaperPlane />
                 &nbsp;&nbsp;Gửi câu hỏi

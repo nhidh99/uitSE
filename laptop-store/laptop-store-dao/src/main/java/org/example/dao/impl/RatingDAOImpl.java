@@ -99,16 +99,6 @@ public class RatingDAOImpl implements RatingDAO {
     }
 
     @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public Float findAvgRatingByProductId(Integer laptopId) {
-        String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
-        Double result = em.createQuery(query, Double.class)
-                .setParameter("laptopId", laptopId)
-                .getSingleResult();
-        return result == null ? 5.0f : result.floatValue();
-    }
-
-    @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void delete(Integer id) {
         Rating rating = em.find(Rating.class, id);
@@ -121,7 +111,7 @@ public class RatingDAOImpl implements RatingDAO {
     public void approve(Integer id) {
         Rating rating = em.find(Rating.class, id);
         if (rating == null) throw new BadRequestException();
-        rating.setApproveStatus(!rating.isApproveStatus());
+        rating.setApproveStatus(true);
         em.merge(rating);
 
         Integer laptopId = rating.getLaptop().getId();
@@ -129,5 +119,26 @@ public class RatingDAOImpl implements RatingDAO {
         Float avgRating = findAvgRatingByProductId(laptopId);
         laptop.setAvgRating(avgRating);
         em.merge(laptop);
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void deny(Integer id) {
+        Rating rating = em.find(Rating.class, id);
+        if (rating == null) throw new BadRequestException();
+        rating.setApproveStatus(false);
+        em.merge(rating);
+
+        Integer laptopId = rating.getLaptop().getId();
+        Laptop laptop = em.find(Laptop.class, laptopId);
+        Float avgRating = findAvgRatingByProductId(laptopId);
+        laptop.setAvgRating(avgRating);
+        em.merge(laptop);
+    }
+
+    private Float findAvgRatingByProductId(Integer laptopId) {
+        String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
+        Double result = em.createQuery(query, Double.class).setParameter("laptopId", laptopId).getSingleResult();
+        return result == null ? 5.0f : result.floatValue();
     }
 }

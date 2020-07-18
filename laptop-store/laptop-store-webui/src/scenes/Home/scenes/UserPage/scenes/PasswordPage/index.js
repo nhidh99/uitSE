@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Label, Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
 import { FaLock } from "react-icons/fa";
@@ -6,12 +6,10 @@ import userApi from "../../../../../../services/api/userApi";
 import store from "../../../../../../services/redux/store";
 import { buildModal } from "../../../../../../services/redux/actions";
 
-class PasswordPage extends Component {
-    state = {
-        errors: [],
-    };
+const PasswordPage = () => {
+    const [errors, setErrors] = useState([]);
 
-    buildRequestBody = () => {
+    const buildRequestBody = () => {
         const oldPassword = document.getElementById("oldPassword").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
@@ -23,7 +21,7 @@ class PasswordPage extends Component {
         };
     };
 
-    validateInputs = (inputs) => {
+    const validateInputs = (inputs) => {
         const errors = [];
         const validate = (message, condition) => (condition() ? null : errors.push(message));
         validate("Mật khẩu cũ không được để trống", () => inputs["old_password"].length > 0);
@@ -36,12 +34,13 @@ class PasswordPage extends Component {
         return errors;
     };
 
-    updatePassword = async () => {
-        const body = this.buildRequestBody();
-        const errors = this.validateInputs(body);
+    const updatePassword = async () => {
+        setErrors([]);
+        const body = buildRequestBody();
+        const errors = validateInputs(body);
 
         if (errors.length > 0) {
-            this.setState({ errors: errors });
+            setErrors(errors);
             return;
         }
 
@@ -71,85 +70,83 @@ class PasswordPage extends Component {
         }
     };
 
-    render() {
-        const { errors } = this.state;
-        return (
-            <Fragment>
-                <div className={styles.title}>
-                    <label className={styles.header}>
-                        <FaLock />
-                        &nbsp;&nbsp;ĐỔI MẬT KHẨU
-                    </label>
-                    <Button
-                        type="submit"
-                        className={styles.submit}
-                        color="primary"
-                        onClick={this.updatePassword}
-                    >
-                        Đổi mật khẩu
-                    </Button>
-                </div>
-                {errors.length > 0 ? (
-                    <p>
-                        {errors.map((error) => (
-                            <label className={styles.error}>{error}.</label>
-                        ))}
-                    </p>
-                ) : null}
-                <table className={styles.table}>
-                    <tr>
-                        <td className={styles.labelCol}>
-                            <Label className={styles.label} for="oldPassword">
-                                Nhập mật khẩu:
-                            </Label>
-                        </td>
-                        <td className={styles.inputCol}>
-                            <Input
-                                type="password"
-                                name="oldPassword"
-                                id="oldPassword"
-                                placeholder="Mật khẩu hiện tại"
-                                className={styles.input}
-                            />
-                        </td>
-                    </tr>
+    return (
+        <Fragment>
+            <div className={styles.title}>
+                <label className={styles.header}>
+                    <FaLock />
+                    &nbsp;&nbsp;ĐỔI MẬT KHẨU
+                </label>
+                <Button
+                    type="submit"
+                    className={styles.submit}
+                    color="primary"
+                    onClick={updatePassword}
+                >
+                    Đổi mật khẩu
+                </Button>
+            </div>
+            {errors.length > 0 ? (
+                <p>
+                    {errors.map((error) => (
+                        <label className={styles.error}>{error}.</label>
+                    ))}
+                </p>
+            ) : null}
+            <table className={styles.table}>
+                <tr>
+                    <td className={styles.labelCol}>
+                        <Label className={styles.label} for="oldPassword">
+                            Nhập mật khẩu:
+                        </Label>
+                    </td>
+                    <td className={styles.inputCol}>
+                        <Input
+                            type="password"
+                            name="oldPassword"
+                            id="oldPassword"
+                            placeholder="Mật khẩu hiện tại"
+                            className={styles.input}
+                        />
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.label} for="newPassword">
-                                Mật khẩu mới:
-                            </Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="password"
-                                name="newPassword"
-                                id="newPassword"
-                                placeholder="Mật khẩu mới"
-                                className={styles.input}
-                            />
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        <Label className={styles.label} for="newPassword">
+                            Mật khẩu mới:
+                        </Label>
+                    </td>
+                    <td>
+                        <Input
+                            type="password"
+                            name="newPassword"
+                            id="newPassword"
+                            placeholder="Mật khẩu mới"
+                            className={styles.input}
+                        />
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.label} for="confirmPassword">
-                                Xác nhận MK:
-                            </Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="password"
-                                name="confirmPassword"
-                                id="confirmPassword"
-                                placeholder="Nhập lại mật khẩu mới"
-                                className={styles.input}
-                            />
-                        </td>
-                    </tr>
-                </table>
-            </Fragment>
-        );
-    }
-}
+                <tr>
+                    <td>
+                        <Label className={styles.label} for="confirmPassword">
+                            Xác nhận MK:
+                        </Label>
+                    </td>
+                    <td>
+                        <Input
+                            type="password"
+                            name="confirmPassword"
+                            id="confirmPassword"
+                            placeholder="Nhập lại mật khẩu mới"
+                            className={styles.input}
+                        />
+                    </td>
+                </tr>
+            </table>
+        </Fragment>
+    );
+};
+
 export default PasswordPage;
