@@ -32,8 +32,7 @@ public class ImageUtilsImpl implements ImageUtils {
 
     @Override
     public byte[] buildBinaryImage(BufferedImage image, ImageType type) throws IOException {
-        int width = 0;
-        int height = 0;
+        int width, height;
         switch (type) {
             case LAPTOP_IMAGE:
                 width = LAPTOP_IMAGE_WIDTH;

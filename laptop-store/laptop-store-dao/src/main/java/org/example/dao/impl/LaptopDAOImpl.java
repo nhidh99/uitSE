@@ -166,7 +166,7 @@ public class LaptopDAOImpl implements LaptopDAO {
         }
 
         if (laptopSearchFilter.getPrice() != null) {
-            Long minPrice = null, maxPrice = null;
+            Long minPrice, maxPrice;
             switch (laptopSearchFilter.getPrice()) {
                 case 1:
                     minPrice = 0L;
@@ -183,6 +183,10 @@ public class LaptopDAOImpl implements LaptopDAO {
                 case 4:
                     minPrice = 25_000_000L;
                     maxPrice = Long.MAX_VALUE;
+                    break;
+                default:
+                    minPrice = null;
+                    maxPrice = null;
                     break;
             }
             query += " AND l.unitPrice >= :minPrice AND l.unitPrice < :maxPrice";

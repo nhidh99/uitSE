@@ -99,16 +99,17 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                         )
                     </Label>
                 </Link>
-
                 <br />
+
                 <Label className={styles.priceLabel}>
                     {(product["unit_price"] - product["discount_price"]).toLocaleString()}đ
                 </Label>
+
                 <Label className={styles.pricePromotion}>
                     <s>{product["unit_price"].toLocaleString()}đ</s>
                 </Label>
-
                 <br />
+
                 {promotions.length === 0 ? null : (
                     <Label>
                         <b>

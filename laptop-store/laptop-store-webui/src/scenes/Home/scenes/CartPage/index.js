@@ -83,6 +83,7 @@ const CartPage = (props) => {
                 </b>
                 {Object.values(cart).reduce((a, b) => a + b, 0)}
             </span>
+
             <span>
                 <b>
                     <FaGift />
@@ -91,6 +92,7 @@ const CartPage = (props) => {
                 {totalDiscount.toLocaleString()}
                 <sup>đ</sup>
             </span>
+            
             <span>
                 <b>
                     <FaMoneyBillWave />

@@ -2,7 +2,6 @@ package org.example.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.model.CPU;
 import org.example.model.HardDrive;
 import org.example.model.Monitor;

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import AddressBlock from "./components/AddressBlock";
 import ProductsBlock from "./components/ProductsBlock";
@@ -13,6 +13,8 @@ import { withRouter } from "react-router-dom";
 import store from "../../../../services/redux/store";
 import userApi from "../../../../services/api/userApi";
 import laptopApi from "../../../../services/api/laptopApi";
+import EmptyBlock from "../../../../components/EmptyBlock";
+import { MAXIMUM_QUANTITY_IN_CART } from "../../../../constants";
 
 const PaymentPage = (props) => {
     const defaultAddressId = store.getState()["address"]["default-id"];
@@ -60,6 +62,7 @@ const PaymentPage = (props) => {
         const ids = Object.keys(cart);
         if (ids.length === 0) {
             setProducts([]);
+            return;
         }
 
         try {
@@ -123,45 +126,54 @@ const PaymentPage = (props) => {
         props.history.push("/user/address/create");
     };
 
+    const PaymentDetail = () => {
+        const totalQty = Object.values(cart).reduce((a, b) => a + b, 0);
+        return totalQty <= MAXIMUM_QUANTITY_IN_CART ? (
+            <div className={styles.container}>
+                <div className={styles.address}>
+                    <header className={styles.header}>A. ĐỊA CHỈ GIAO HÀNG</header>
+                    <Button onClick={redirectToCreateAddress} color="primary">
+                        Tạo địa chỉ mới
+                    </Button>
+                </div>
+                <AddressBlock addresses={addresses} />
+
+                <header className={styles.header}>B. DANH SÁCH SẢN PHẨM</header>
+                <ProductsBlock products={products} cart={cart} />
+
+                <header className={styles.header}>C. DANH SÁCH KHUYẾN MÃI</header>
+                <PromotionsBlock promotions={promotions} quantities={promotionQties} />
+
+                <SummaryBlock
+                    productsPrice={productPrice}
+                    toggleSubmit={toggleSubmit}
+                    cart={cart}
+                />
+            </div>
+        ) : (
+            <EmptyBlock
+                loading={false}
+                icon={<FaBoxOpen />}
+                backToHome={true}
+                emptyText={`Tối đa ${MAXIMUM_QUANTITY_IN_CART} sản phẩm trong giỏ hàng`}
+                borderless
+            />
+        );
+    };
+
     return (
-        <Loader show={loading || isSubmitted} message={<Spinner />}>
+        <Loader show={isSubmitted} message={<Spinner />} className={styles.loader}>
             {products.length === 0 ? (
-                <div className={styles.emptyCart}>
-                    <FaBoxOpen size={80} />
-                    <br />
-                    {loading ? (
-                        <h5>Đang tải giỏ hàng...</h5>
-                    ) : (
-                        <Fragment>
-                            <h4>Giỏ hàng trống</h4>
-                            <Button size="lg" color="warning" type="a" href="/">
-                                Quay lại trang mua sắm
-                            </Button>
-                        </Fragment>
-                    )}
-                </div>
+                <EmptyBlock
+                    loading={loading}
+                    backToHome={!loading}
+                    icon={<FaBoxOpen />}
+                    loadingText="Đang tải giỏ hàng..."
+                    emptyText="Giỏ hàng trống"
+                    borderless
+                />
             ) : (
-                <div className={styles.container}>
-                    <div className={styles.address}>
-                        <header className={styles.header}>A. ĐỊA CHỈ GIAO HÀNG</header>
-                        <Button onClick={redirectToCreateAddress} color="primary">
-                            Tạo địa chỉ mới
-                        </Button>
-                    </div>
-                    <AddressBlock addresses={addresses} />
-
-                    <header className={styles.header}>B. DANH SÁCH SẢN PHẨM</header>
-                    <ProductsBlock products={products} cart={cart} />
-
-                    <header className={styles.header}>C. DANH SÁCH KHUYẾN MÃI</header>
-                    <PromotionsBlock promotions={promotions} quantities={promotionQties} />
-
-                    <SummaryBlock
-                        productsPrice={productPrice}
-                        toggleSubmit={toggleSubmit}
-                        cart={cart}
-                    />
-                </div>
+                <PaymentDetail />
             )}
         </Loader>
     );
