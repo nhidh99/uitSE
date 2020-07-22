@@ -9,14 +9,18 @@ import { addToCart } from "../../../../../../services/helper/cart";
 import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/scss/image-gallery.scss";
-import { addToWishList, getWishList, removeFromWishList } from "../../../../../../services/helper/wish-list";
+import {
+    addToWishList,
+    getWishList,
+    removeFromWishList,
+} from "../../../../../../services/helper/wish-list";
 
 const OverviewBlock = ({ product, promotions, imageIds }) => {
     const [wishList, setWishList] = useState(getWishList());
     const [isInWishList, setIsInWishList] = useState(false);
 
     useEffect(() => {
-        const isInWishList = wishList.includes(product['id']);
+        const isInWishList = wishList.includes(product["id"]);
         setIsInWishList(isInWishList);
     }, [wishList]);
 
@@ -41,7 +45,7 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
             <ImageGallery
                 items={images}
                 showPlayButton={false}
-                showFullscreenButton={false}
+                showFullscreenButton={true}
                 showNav={false}
                 slideDuration={0}
             />
@@ -151,11 +155,14 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
                         <FaShoppingCart />
                         &nbsp;&nbsp;Thêm vào giỏ hàng
                     </Button>
-                    <Button className={styles.wishlistBtn} color="danger" onClick={() => postWishlist(product["id"])}>
+                    <Button
+                        className={styles.wishlistBtn}
+                        color="danger"
+                        onClick={() => postWishlist(product["id"])}
+                    >
                         <FaHeart />
-                        &nbsp;&nbsp;{isInWishList ? 'Bỏ xem sau' : 'Xem sau'}
+                        &nbsp;&nbsp;{isInWishList ? "Bỏ xem sau" : "Xem sau"}
                     </Button>
-
                 </Col>
             </Row>
             <Label className={styles.quantityError} id="quantity-error">
@@ -165,14 +172,14 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
     );
 
     const postWishlist = (productId) => {
-        if(isInWishList) {
+        if (isInWishList) {
             removeFromWishList(productId);
-        }
-        else {
+        } else {
             addToWishList(productId);
         }
         setWishList(getWishList());
-    }
+    };
+
     const addQuantityToCart = (productId) => {
         const quantity = parseInt(document.getElementById("quantity").value);
         const success = addToCart(productId, quantity);
