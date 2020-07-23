@@ -96,6 +96,12 @@ public class Laptop {
     private Monitor monitor;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "big_image")
+    @JsonIgnore
+    private byte[] bigImage;
+
+    @Lob
     @Column(name = "image")
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)

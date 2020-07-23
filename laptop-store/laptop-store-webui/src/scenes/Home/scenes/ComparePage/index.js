@@ -53,7 +53,7 @@ const ComparePage = () => {
                             <td>
                                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                                     <img
-                                        src={`/cxf/api/images/600/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                                        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                                         alt={product["name"]}
                                         width={200}
                                         height={200}

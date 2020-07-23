@@ -35,7 +35,7 @@ const ItemBlock = ({ product, toggleLoading }) => {
             <Col xs="2" className={styles.blockLeft}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                     <img
-                        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                        src={`/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
                         width={135}
                         height={135}
                         alt={product["name"]}

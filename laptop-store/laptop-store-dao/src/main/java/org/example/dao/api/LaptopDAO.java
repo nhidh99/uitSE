@@ -2,6 +2,7 @@ package org.example.dao.api;
 
 import org.example.filter.LaptopSearchFilter;
 import org.example.model.Laptop;
+import org.example.type.ImageType;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,5 @@ public interface LaptopDAO {
 
     Optional<Laptop> findById(Integer id);
 
-    byte[] findImageById(Integer id);
-
-    byte[] findThumbnailById(Integer id);
+    byte[] findImageById(Integer id, ImageType type);
 }

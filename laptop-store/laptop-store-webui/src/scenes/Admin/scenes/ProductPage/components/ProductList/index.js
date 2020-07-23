@@ -9,7 +9,7 @@ import Loader from "react-loader-advanced";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
 import { FaImages } from "react-icons/fa";
-import ImageUpload from "../ImageUpload";
+import ProductUploader from "../ProductUploader";
 import store from "../../../../../../services/redux/store";
 import { buildModal } from "../../../../../../services/redux/actions";
 import laptopApi from "../../../../../../services/api/laptopApi";
@@ -100,11 +100,11 @@ const ProductList = (props) => {
     const toggleImageUploader = async (productId) => {
         const imageDetailIds = await loadImageDetailIds(productId);
         const defaultURLs = imageDetailIds.map(
-            (id) => `/cxf/api/images/600/details/${id}/images-${id}.jpg`
+            (id) => `/cxf/api/images/400/details/${id}/images-${id}.jpg`
         );
         const modal = {
             title: "Thêm hình ảnh giới thiệu sản phẩm",
-            message: <ImageUpload defaultURLs={defaultURLs} />,
+            message: <ProductUploader defaultURLs={defaultURLs} />,
             confirm: () => () => updateDetailImages(productId),
         };
         store.dispatch(buildModal(modal));
@@ -126,7 +126,7 @@ const ProductList = (props) => {
             <td className={styles.nameCol}>{product["name"]}</td>
             <td>
                 <img
-                    src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                    src={`/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
                     alt={product["name"]}
                     title={product["name"]}
                     width={60}

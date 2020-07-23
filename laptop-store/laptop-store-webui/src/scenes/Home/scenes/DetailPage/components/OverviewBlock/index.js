@@ -26,15 +26,17 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
 
     const images = [
         {
-            original: `/cxf/api/images/600/laptops/${product["id"]}/${product["alt"]}.jpg`,
-            thumbnail: `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`,
+            fullscreen: `/cxf/api/images/1000/laptops/${product["id"]}/${product["alt"]}.jpg`,
+            original: `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`,
+            thumbnail: `/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`,
             thumbnailClass: styles.thumbnail,
         },
     ].concat(
         imageIds.map((id) => {
             return {
-                original: `/cxf/api/images/600/details/${id}/${product["alt"]}.jpg`,
-                thumbnail: `/cxf/api/images/600/details/${id}/${product["alt"]}.jpg`,
+                fullscreen: `/cxf/api/images/1000/details/${id}/${product["alt"]}.jpg`,
+                original: `/cxf/api/images/400/details/${id}/${product["alt"]}.jpg`,
+                thumbnail: `/cxf/api/images/150/details/${id}/${product["alt"]}.jpg`,
                 thumbnailClass: styles.thumbnail,
             };
         })

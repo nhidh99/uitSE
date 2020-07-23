@@ -169,8 +169,6 @@ public class LaptopServiceImpl implements LaptopService {
             Laptop laptop = buildLaptopFromLaptopRequestBody(laptopInput, attachment);
             laptop.setId(laptopId);
             laptopDAO.save(laptop);
-            System.out.println(laptopInput.getName());
-            System.out.println(laptop.getName());
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.serverError().build();
@@ -179,12 +177,13 @@ public class LaptopServiceImpl implements LaptopService {
 
     private Laptop buildLaptopFromLaptopRequestBody(LaptopInput laptopInput, Attachment attachment) throws IOException {
         String alt = imageUtils.buildSEOImageName(laptopInput.getName());
-        byte[] imageBlob = null, thumbnailBlob = null;
+        byte[] bigImageBlob = null, imageBlob = null, thumbnailBlob = null;
         boolean isEmptyUploadedImages = attachment.getDataHandler().getName().equals("empty.jpg");
 
         if (!isEmptyUploadedImages) {
             InputStream is = attachment.getDataHandler().getInputStream();
             BufferedImage image = ImageIO.read(is);
+            bigImageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_BIG_IMAGE);
             imageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_IMAGE);
             thumbnailBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_THUMBNAIL);
         }
@@ -207,9 +206,9 @@ public class LaptopServiceImpl implements LaptopService {
                 .cpu(laptopInput.extractCPU())
                 .monitor(laptopInput.extractMonitor())
                 .hardDrive(laptopInput.extractHardDrive())
-                .ram(laptopInput.extractRAM())
-                .tags(tags).promotions(promotions).recordStatus(true)
-                .alt(alt).image(imageBlob).thumbnail(thumbnailBlob).build();
+                .ram(laptopInput.extractRAM()).tags(tags).promotions(promotions)
+                .recordStatus(true).alt(alt).bigImage(bigImageBlob)
+                .image(imageBlob).thumbnail(thumbnailBlob).build();
     }
 
     @Override
@@ -235,17 +234,20 @@ public class LaptopServiceImpl implements LaptopService {
 
     private List<LaptopImage> buildUploadedImagesFromRequestBody(Integer laptopId, List<Attachment> attachments) throws Exception {
         Laptop laptop = laptopDAO.findById(laptopId).orElseThrow(Exception::new);
-        List<LaptopImage> uploadedImages = new LinkedList<>();
         boolean isEmptyUploadedImages = attachments.size() == 1 && attachments.get(0).getDataHandler().getName().equals("empty.jpg");
+        if (isEmptyUploadedImages) return new LinkedList<>();
 
-        if (!isEmptyUploadedImages) {
-            for (Attachment attachment : attachments) {
-                InputStream is = attachment.getDataHandler().getInputStream();
-                BufferedImage image = ImageIO.read(is);
-                byte[] imageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_IMAGE);
-                LaptopImage laptopImage = LaptopImage.builder().id(null).image(imageBlob).laptop(laptop).build();
-                uploadedImages.add(laptopImage);
-            }
+        List<LaptopImage> uploadedImages = new LinkedList<>();
+        for (Attachment attachment : attachments) {
+            InputStream is = attachment.getDataHandler().getInputStream();
+            BufferedImage image = ImageIO.read(is);
+            byte[] bigImageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_BIG_IMAGE);
+            byte[] imageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_IMAGE);
+            byte[] thumbnailBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_THUMBNAIL);
+            LaptopImage laptopImage = LaptopImage.builder().id(null)
+                    .bigImage(bigImageBlob).image(imageBlob)
+                    .thumbnail(thumbnailBlob).laptop(laptop).build();
+            uploadedImages.add(laptopImage);
         }
         return uploadedImages;
     }

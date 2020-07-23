@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.example.dao.api.LaptopDAO;
 import org.example.filter.LaptopSearchFilter;
 import org.example.model.Laptop;
+import org.example.type.ImageType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -243,17 +244,18 @@ public class LaptopDAOImpl implements LaptopDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public byte[] findImageById(Integer id) {
+    public byte[] findImageById(Integer id, ImageType type) {
         Laptop laptop = em.find(Laptop.class, id);
         if (laptop == null) return null;
-        return laptop.getImage();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public byte[] findThumbnailById(Integer id) {
-        Laptop laptop = em.find(Laptop.class, id);
-        if (laptop == null) return null;
-        return laptop.getThumbnail();
+        switch (type) {
+            case LAPTOP_BIG_IMAGE:
+                return laptop.getBigImage();
+            case LAPTOP_IMAGE:
+                return laptop.getImage();
+            case LAPTOP_THUMBNAIL:
+                return laptop.getThumbnail();
+            default:
+                return null;
+        }
     }
 }
