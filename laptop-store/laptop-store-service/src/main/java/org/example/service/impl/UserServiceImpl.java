@@ -201,7 +201,6 @@ public class UserServiceImpl implements UserService {
             }
             return Response.ok(rewards).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.serverError().build();
         }
     }

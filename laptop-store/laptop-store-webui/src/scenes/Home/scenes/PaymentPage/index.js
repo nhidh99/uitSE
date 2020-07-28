@@ -7,7 +7,7 @@ import PromotionsBlock from "./components/PromotionsBlock";
 import SummaryBlock from "./components/SummaryBlock";
 import { Button, Spinner } from "reactstrap";
 import { removeFromCart } from "../../../../services/helper/cart";
-import { FaBoxOpen } from "react-icons/fa";
+import { FaBoxOpen, FaAddressBook } from "react-icons/fa";
 import Loader from "react-loader-advanced";
 import { withRouter } from "react-router-dom";
 import store from "../../../../services/redux/store";
@@ -80,10 +80,12 @@ const PaymentPage = (props) => {
         try {
             const response = await userApi.getCurrentUserAddresses();
             const data = response.data;
-            const defaultAddress = data.find((address) => address.id === defaultAddressId);
-            const addresses = data.filter((address) => address !== defaultAddress);
-            addresses.unshift(defaultAddress);
-            setAddresses(addresses);
+            if (data.length !== 0) {
+                const defaultAddress = data.find((address) => address.id === defaultAddressId);
+                const addresses = data.filter((address) => address !== defaultAddress);
+                addresses.unshift(defaultAddress);
+                setAddresses(addresses);
+            }
         } catch (err) {
             console.log("fail");
         }
@@ -170,6 +172,14 @@ const PaymentPage = (props) => {
                     icon={<FaBoxOpen />}
                     loadingText="Đang tải giỏ hàng..."
                     emptyText="Giỏ hàng trống"
+                    borderless
+                />
+            ) : addresses.length === 0 ? (
+                <EmptyBlock
+                    loading={false}
+                    backToHome={!loading}
+                    icon={<FaAddressBook />}
+                    emptyText="Sổ địa chỉ trống"
                     borderless
                 />
             ) : (

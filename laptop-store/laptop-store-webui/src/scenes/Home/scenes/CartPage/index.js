@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
 import { FaShoppingCart, FaBoxOpen, FaGift, FaMoneyBillWave } from "react-icons/fa";
@@ -10,29 +10,48 @@ import { getCookie } from "../../../../services/helper/cookie";
 import EmptyBlock from "../../../../components/EmptyBlock";
 import Loader from "react-loader-advanced";
 import laptopApi from "../../../../services/api/laptopApi";
+import store from "../../../../services/redux/store";
+import { CartStatus } from "../../../../constants";
+import { setCartStatus, buildErrorModal } from "../../../../services/redux/actions";
 
 const CartPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalDiscount, setTotalDiscount] = useState(0);
-    const cart = getCart();
+    const isFirstRun = useRef(true);
 
     useEffect(() => {
-        loadData();
-    }, [loading]);
+        store.subscribe(() => {
+            const status = store.getState()["cart"];
+            switch (status) {
+                case CartStatus.SYNCING:
+                    loadData();
+                    break;
+                case CartStatus.LOADING:
+                    setLoading(true);
+                    break;
+                default:
+                    setLoading(false);
+                    break;
+            }
+        });
+    }, []);
 
-    const toggleLoading = () => setLoading(true);
+    useEffect(() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            store.dispatch(setCartStatus(CartStatus.SYNCING));
+            return;
+        }
+        store.dispatch(setCartStatus(CartStatus.IDLE));
+    }, [products]);
 
     const loadData = async () => {
-        if (!loading) return;
-        const ids = Object.keys(cart);
+        const ids = Object.keys(getCart());
 
         if (ids.length === 0) {
-            setProducts([]);
-            setTotalPrice(0);
-            setTotalDiscount(0);
-            setLoading(false);
+            loadCart([]);
             return;
         }
 
@@ -41,7 +60,7 @@ const CartPage = (props) => {
             const products = response.data;
             loadCart(products);
         } catch (err) {
-            console.log("fail");
+            store.dispatch(buildErrorModal());
         }
     };
 
@@ -50,7 +69,7 @@ const CartPage = (props) => {
         let totalDiscount = 0;
 
         products.forEach((product) => {
-            const quantity = cart[[product["id"]]];
+            const quantity = getCart()[[product["id"]]];
             const discount = product["discount_price"] * quantity;
             const price = (product["unit_price"] - product["discount_price"]) * quantity;
             totalPrice += price;
@@ -58,14 +77,13 @@ const CartPage = (props) => {
         });
 
         const productIds = products.map((product) => product["id"].toString());
-        Object.keys(cart)
+        Object.keys(getCart())
             .filter((id) => !productIds.includes(id))
             .forEach((id) => removeFromCart(id));
 
         setProducts(products);
         setTotalPrice(totalPrice);
         setTotalDiscount(totalDiscount);
-        setLoading(false);
     };
 
     const redirectToPayment = () => {
@@ -81,7 +99,7 @@ const CartPage = (props) => {
                     <FaBoxOpen />
                     &nbsp; Số lượng:&nbsp;&nbsp;
                 </b>
-                {Object.values(cart).reduce((a, b) => a + b, 0)}
+                {Object.values(getCart()).reduce((a, b) => a + b, 0)}
             </span>
 
             <span>
@@ -92,7 +110,7 @@ const CartPage = (props) => {
                 {totalDiscount.toLocaleString()}
                 <sup>đ</sup>
             </span>
-            
+
             <span>
                 <b>
                     <FaMoneyBillWave />
@@ -133,11 +151,7 @@ const CartPage = (props) => {
                         <Fragment>
                             <SummaryBlock />
                             {products.map((product) => (
-                                <ItemBlock
-                                    product={product}
-                                    quantity={cart[product["id"]]}
-                                    toggleLoading={toggleLoading}
-                                />
+                                <ItemBlock product={product} quantity={getCart()[product["id"]]} />
                             ))}
                         </Fragment>
                     )}

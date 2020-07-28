@@ -5,7 +5,6 @@ import styles from "./styles.module.scss";
 import Rating from "react-rating";
 import { FaStar, FaShoppingCart, FaHeart } from "react-icons/fa";
 import { convertCPUType, convertResolutionType } from "../../../../../../services/helper/converter";
-import { addToCart } from "../../../../../../services/helper/cart";
 import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/scss/image-gallery.scss";
@@ -14,6 +13,7 @@ import {
     getWishList,
     removeFromWishList,
 } from "../../../../../../services/helper/wish-list";
+import cartService from "../../../../../../services/helper/cartService";
 
 const OverviewBlock = ({ product, promotions, imageIds }) => {
     const [wishList, setWishList] = useState(getWishList());
@@ -122,7 +122,7 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
     const ProductPromotions = () => (
         <div className={styles.blockChild}>
             <Label className={styles.promotionLabel}>Quà khuyến mãi</Label>
-            {promotions.map((promotion) => (
+            {/* {promotions.map((promotion) => (
                 <div className={styles.promotionItem}>
                     <img
                         src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
@@ -134,7 +134,7 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
                         {promotion["name"]} <i>({promotion["price"].toLocaleString()}đ)</i>
                     </Label>
                 </div>
-            ))}
+            ))} */}
         </div>
     );
 
@@ -153,7 +153,7 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
                     />
                 </Col>
                 <Col sm="8" className={styles.quantityCol}>
-                    <Button color="success" onClick={() => addQuantityToCart(product["id"])}>
+                    <Button color="success" onClick={addToCart}>
                         <FaShoppingCart />
                         &nbsp;&nbsp;Thêm vào giỏ hàng
                     </Button>
@@ -182,15 +182,11 @@ const OverviewBlock = ({ product, promotions, imageIds }) => {
         setWishList(getWishList());
     };
 
-    const addQuantityToCart = (productId) => {
+    const addToCart = async () => {
         const quantity = parseInt(document.getElementById("quantity").value);
-        const success = addToCart(productId, quantity);
-        const quantityError = document.getElementById("quantity-error");
-        if (!success) {
-            quantityError.style.display = "inline-block";
-        } else {
-            quantityError.style.display = "none";
-        }
+        const error = document.getElementById("quantity-error");
+        const success = await cartService.addProduct(product["id"], quantity);
+        error.style.display = success === false ? "inline-block" : "none";
     };
 
     return (

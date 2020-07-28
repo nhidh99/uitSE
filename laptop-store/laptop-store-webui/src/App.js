@@ -23,13 +23,6 @@ const App = (props) => {
 
     useEffect(() => loadData(), []);
 
-    useEffect(() => {
-        if (role === ROLE_GUEST) {
-            localStorage.setItem("cart", null);
-            localStorage.setItem("wish-list", null);
-        }
-    }, [role]);
-
     const fetchToken = async () => {
         try {
             const response = await authApi.refreshToken();

@@ -91,7 +91,6 @@ public class RatingServiceImpl implements RatingService {
             Long ratingCount = ratingDAO.findTotalRatingByFilter(id, status);
             return Response.ok(ratings).header("X-Total-Count", ratingCount).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.serverError().build();
         }
     }

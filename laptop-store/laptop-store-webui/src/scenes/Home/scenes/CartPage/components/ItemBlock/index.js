@@ -4,11 +4,13 @@ import { Col, Row, Label, Button, Input, InputGroup } from "reactstrap";
 import { FaTrashAlt } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { convertCPUType } from "../../../../../../services/helper/converter";
-import { getCart, removeFromCart, updateCart } from "../../../../../../services/helper/cart";
 import { Link } from "react-router-dom";
 import NumberFormat from "react-number-format";
-import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../constants";
+import { MAXIMUM_QUANTITY_PER_PRODUCT, CartStatus } from "../../../../../../constants";
 import laptopApi from "../../../../../../services/api/laptopApi";
+import cartService from "../../../../../../services/helper/cartService";
+import { setCartStatus } from "../../../../../../services/redux/actions";
+import store from "../../../../../../services/redux/store";
 
 const ItemBlock = ({ product, quantity, toggleLoading }) => {
     const [promotions, setPromotions] = useState([]);
@@ -20,7 +22,9 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
     }, []);
 
     useEffect(() => {
-        toggleLoading();
+        if (qty !== quantity) {
+            toggleLoading();
+        }
     }, [qty]);
 
     useEffect(() => {
@@ -36,39 +40,34 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
         }
     };
 
-    const minusQuantity = (productId) => {
-        const cart = getCart();
-        if (qty > 1 && productId in cart) {
-            cart[productId] = qty - 1;
-            updateCart(cart);
-            setQty(qty - 1);
-        }
+    const minusQuantity = async () => {
+        store.dispatch(setCartStatus(CartStatus.LOADING));
+        const success = await cartService.minusProduct(product["id"]);
+        const nextCartStatus = success ? CartStatus.SYNCING : CartStatus.IDLE;
+        store.dispatch(setCartStatus(nextCartStatus));
     };
 
-    const addQuantity = async (productId) => {
-        const cart = getCart();
-        if (qty < MAXIMUM_QUANTITY_PER_PRODUCT && productId in cart) {
-            cart[productId] = qty + 1;
-            updateCart(cart);
-            setQty(qty + 1);
-        }
+    const addQuantity = async () => {
+        store.dispatch(setCartStatus(CartStatus.LOADING));
+        const success = await cartService.addProduct(product["id"]);
+        const nextCartStatus = success ? CartStatus.SYNCING : CartStatus.IDLE;
+        store.dispatch(setCartStatus(nextCartStatus));
     };
 
-    const updateQuantity = (productId) => {
-        const input = document.getElementById("quantity-" + productId);
+    const updateQuantity = async () => {
+        store.dispatch(setCartStatus(CartStatus.LOADING));
+        const input = document.getElementById("quantity-" + product["id"]);
         const quantity = parseInt(input.value);
-        const cart = getCart();
-
-        if (productId in cart && cart[productId] !== quantity) {
-            cart[productId] = quantity;
-            updateCart(cart);
-            setQty(quantity);
-        }
+        const success = await cartService.updateProduct(product["id"], quantity);
+        const nextCartStatus = success ? CartStatus.SYNCING : CartStatus.IDLE;
+        store.dispatch(setCartStatus(nextCartStatus));
     };
 
-    const removeProduct = async (productId) => {
-        removeFromCart(productId);
-        toggleLoading();
+    const removeProduct = async () => {
+        store.dispatch(setCartStatus(CartStatus.LOADING));
+        const success = await cartService.removeProduct(product["id"]);
+        const nextCartStatus = success ? CartStatus.SYNCING : CartStatus.IDLE;
+        store.dispatch(setCartStatus(nextCartStatus));
     };
 
     return qty === 0 ? null : (
@@ -129,7 +128,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                 <InputGroup>
                     <Input
                         className={styles.updateQuantity}
-                        onClick={() => minusQuantity(product["id"])}
+                        onClick={minusQuantity}
                         value="-"
                         type="button"
                     />
@@ -140,7 +139,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                         decimalSeparator={false}
                         allowNegative={false}
                         value={qty}
-                        onBlur={() => updateQuantity(product["id"])}
+                        onBlur={updateQuantity}
                         isAllowed={(values) => {
                             const { formattedValue, floatValue } = values;
                             return (
@@ -151,15 +150,11 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                     />
                     <Input
                         className={styles.updateQuantity}
-                        onClick={() => addQuantity(product["id"])}
+                        onClick={addQuantity}
                         value="+"
                         type="button"
                     />
-                    <Button
-                        className={styles.remove}
-                        color="transparent"
-                        onClick={() => removeProduct(product["id"])}
-                    >
+                    <Button className={styles.remove} color="transparent" onClick={removeProduct}>
                         <FaTrashAlt className={styles.trashIcon} />
                     </Button>
                 </InputGroup>

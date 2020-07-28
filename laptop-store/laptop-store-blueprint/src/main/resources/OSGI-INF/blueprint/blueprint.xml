@@ -61,6 +61,7 @@
     <!-- Auth Filters -->
     <bean id="authorizationFilter" class="org.example.security.AuthorizationFilter">
         <property name="userDAO" ref="userDAO"/>
+        <property name="jwtUtils" ref="jwtUtils"/>
     </bean>
 
     <!-- Address Service -->

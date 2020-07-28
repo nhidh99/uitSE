@@ -67,7 +67,6 @@ public class AuthServiceImpl implements AuthService {
             }
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.serverError().build();
         }
     }

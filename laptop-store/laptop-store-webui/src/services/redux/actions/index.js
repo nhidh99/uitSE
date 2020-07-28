@@ -13,6 +13,8 @@ export const setDefaultAddressId = (addressId) => ({
     payload: addressId,
 });
 
+export const setCartStatus = (status) => ({ type: SET_CART_STATUS, payload: status });
+
 export const TOGGLE_FILTER = "toggle_filter";
 export const CLOSE_FILTER = "close_filter";
 
@@ -24,3 +26,4 @@ export const CLEAR_IMAGES = "clear_images";
 export const SET_IMAGES = "set_images";
 
 export const SET_DEFAULT_ADDRESS_ID = "set_default";
+export const SET_CART_STATUS = "set_cart";
