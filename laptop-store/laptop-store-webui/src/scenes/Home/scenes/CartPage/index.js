@@ -11,10 +11,12 @@ import EmptyBlock from "../../../../components/EmptyBlock";
 import Loader from "react-loader-advanced";
 import laptopApi from "../../../../services/api/laptopApi";
 import store from "../../../../services/redux/store";
+import { useSelector } from "react-redux";
 import { CartStatus } from "../../../../constants";
 import { setCartStatus, buildErrorModal } from "../../../../services/redux/actions";
 
 const CartPage = (props) => {
+    const status = useSelector((state) => state.cartStatus);
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -22,21 +24,18 @@ const CartPage = (props) => {
     const isFirstRun = useRef(true);
 
     useEffect(() => {
-        store.subscribe(() => {
-            const status = store.getState()["cart"];
-            switch (status) {
-                case CartStatus.SYNCING:
-                    loadData();
-                    break;
-                case CartStatus.LOADING:
-                    setLoading(true);
-                    break;
-                default:
-                    setLoading(false);
-                    break;
-            }
-        });
-    }, []);
+        switch (status) {
+            case CartStatus.SYNCING:
+                loadData();
+                break;
+            case CartStatus.LOADING:
+                setLoading(true);
+                break;
+            default:
+                setLoading(false);
+                break;
+        }
+    }, [status]);
 
     useEffect(() => {
         if (isFirstRun.current) {

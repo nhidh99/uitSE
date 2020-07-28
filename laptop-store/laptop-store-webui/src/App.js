@@ -16,6 +16,7 @@ import store from "./services/redux/store";
 import { setDefaultAddressId } from "./services/redux/actions";
 import userApi from "./services/api/userApi";
 import authApi from "./services/api/authApi";
+import { Provider } from "react-redux";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -179,14 +180,14 @@ const App = (props) => {
     );
 
     return loading ? null : (
-        <Fragment>
+        <Provider store={store}>
             <Banner role={role} />
             <ConfirmModal />
             <Filter />
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>
             </div>
-        </Fragment>
+        </Provider>
     );
 };
 

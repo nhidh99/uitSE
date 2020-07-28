@@ -10,5 +10,5 @@ export default combineReducers({
     modal: modalReducer,
     images: imageReducer,
     address: addressReducer,
-    cart: cartReducer,
+    cartStatus: cartReducer,
 });
