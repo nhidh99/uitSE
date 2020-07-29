@@ -1,8 +1,9 @@
 .container {
     min-width: 1200px !important;
     max-width: 1200px !important;
-    margin: 0 auto !important;
     padding: 0 !important;
+    min-height: calc(100vh - 242px);
+    margin: 20px auto 50px auto !important;
 }
 
 .uploadPictureContainer {

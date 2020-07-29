@@ -17,6 +17,7 @@ import { setDefaultAddressId } from "./services/redux/actions";
 import userApi from "./services/api/userApi";
 import authApi from "./services/api/authApi";
 import { Provider } from "react-redux";
+import Footer from "./components/Footer";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -187,6 +188,7 @@ const App = (props) => {
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>
             </div>
+            <Footer/>
         </Provider>
     );
 };

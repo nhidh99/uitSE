@@ -1,8 +1,4 @@
 .form {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -100%);
     background-color: white;
     width: 500px;
     margin: 0 auto;
@@ -11,7 +7,6 @@
     text-align: center;
     font-size: 14px;
     color: #454545;
-    box-shadow: 0 0 20px 20px #cfcfcf;
 
     > *:not(:first-child) {
         margin-top: 15px;
