@@ -1,4 +1,4 @@
-import { TOGGLE_MODAL, BUILD_MODAL, BUILD_ERROR_MODAL } from "../actions";
+import { ActionType } from "../actions";
 
 const initState = {
     title: "",
@@ -16,16 +16,16 @@ const errorState = {
 
 const modalReducer = (state = initState, action) => {
     switch (action.type) {
-        case TOGGLE_MODAL:
+        case ActionType.TOGGLE_MODAL:
             state["open"] = !state["open"];
             break;
 
-        case BUILD_MODAL:
+        case ActionType.BUILD_MODAL:
             state = action.payload;
             state["open"] = true;
             break;
 
-        case BUILD_ERROR_MODAL:
+        case ActionType.BUILD_ERROR_MODAL:
             state = errorState;
             state["open"] = true;
             break;

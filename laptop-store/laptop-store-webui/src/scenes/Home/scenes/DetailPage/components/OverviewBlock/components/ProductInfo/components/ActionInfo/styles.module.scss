@@ -1,0 +1,33 @@
+.quantityCol {
+    display: flex;
+    align-items: center;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.input {
+    text-align: center;
+    width: 150px !important;
+}
+
+.error {
+    font-weight: 600;
+    margin-left: 15px;
+    margin-bottom: 0;
+    margin-top: 15px;
+    color: red;
+    font-size: 14px;
+    display: none;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+
+    > button, input {
+        margin-left: 15px;
+    }
+    
+}

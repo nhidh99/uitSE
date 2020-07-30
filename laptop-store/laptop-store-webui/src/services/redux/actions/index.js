@@ -1,29 +1,40 @@
-export const toggleFilter = () => ({ type: TOGGLE_FILTER });
-export const closeFilter = () => ({ type: CLOSE_FILTER });
+// filter actions
+export const toggleFilter = () => ({ type: ActionType.TOGGLE_FILTER });
+export const closeFilter = () => ({ type: ActionType.CLOSE_FILTER });
 
-export const toggleModal = () => ({ type: TOGGLE_MODAL });
-export const buildModal = (modal) => ({ type: BUILD_MODAL, payload: modal });
-export const buildErrorModal = () => ({ type: BUILD_ERROR_MODAL });
+// modal actions
+export const toggleModal = () => ({ type: ActionType.TOGGLE_MODAL });
+export const buildModal = (modal) => ({ type: ActionType.BUILD_MODAL, payload: modal });
+export const buildErrorModal = () => ({ type: ActionType.BUILD_ERROR_MODAL });
 
-export const clearImages = () => ({ type: CLEAR_IMAGES });
-export const setImages = (images) => ({ type: SET_IMAGES, payload: images });
+// images actions
+export const clearImages = () => ({ type: ActionType.CLEAR_IMAGES });
+export const setImages = (images) => ({ type: ActionType.SET_IMAGES, payload: images });
 
+// default-address actions
 export const setDefaultAddressId = (addressId) => ({
-    type: SET_DEFAULT_ADDRESS_ID,
+    type: ActionType.SET_DEFAULT_ADDRESS_ID,
     payload: addressId,
 });
 
-export const setCartStatus = (status) => ({ type: SET_CART_STATUS, payload: status });
+// cart actions
+export const setCartStatus = (status) => ({ type: ActionType.SET_CART_STATUS, payload: status });
 
-export const TOGGLE_FILTER = "toggle_filter";
-export const CLOSE_FILTER = "close_filter";
+// product-detail actions
+export const setProductDetail = (detail) => ({
+    type: ActionType.SET_PRODUCT_DETAIL,
+    payload: detail,
+});
 
-export const TOGGLE_MODAL = "toggle_modal";
-export const BUILD_MODAL = "build_modal";
-export const BUILD_ERROR_MODAL = "build_error_modal";
-
-export const CLEAR_IMAGES = "clear_images";
-export const SET_IMAGES = "set_images";
-
-export const SET_DEFAULT_ADDRESS_ID = "set_default";
-export const SET_CART_STATUS = "set_cart";
+export const ActionType = {
+    TOGGLE_FILTER: "toggle_filter",
+    CLOSE_FILTER: "close_filter",
+    TOGGLE_MODAL: "toggle_modal",
+    BUILD_MODAL: "build_modal",
+    BUILD_ERROR_MODAL: "build_error_modal",
+    CLEAR_IMAGES: "clear_images",
+    SET_IMAGES: "set_images",
+    SET_DEFAULT_ADDRESS_ID: "set_default_address_id",
+    SET_CART_STATUS: "set_cart_status",
+    SET_PRODUCT_DETAIL: "set_product_details",
+};

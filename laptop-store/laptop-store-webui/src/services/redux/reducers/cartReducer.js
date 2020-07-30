@@ -1,9 +1,9 @@
-import { SET_CART_STATUS } from "../actions";
+import { ActionType } from "../actions";
 import { CartStatus } from "../../../constants";
 
 const cartReducer = (state = CartStatus.LOADING, action) => {
     switch (action.type) {
-        case SET_CART_STATUS:
+        case ActionType.SET_CART_STATUS:
             state = action.payload;
             break;
         default:

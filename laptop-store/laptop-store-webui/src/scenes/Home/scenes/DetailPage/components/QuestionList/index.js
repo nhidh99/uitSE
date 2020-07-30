@@ -3,8 +3,10 @@ import { Label, Col, Row, ListGroup, ListGroupItem } from "reactstrap";
 import styles from "./styles.module.scss";
 import { Link } from "react-router-dom";
 import ReplyBlock from "./components/ReplyBlock";
+import { useSelector } from "react-redux";
 
-const QuestionList = ({ comments }) => {
+const QuestionList = () => {
+    const comments = useSelector((state) => state.productDetail.comments);
     return (
         <ListGroup className={styles.listGroup}>
             {comments.map((comment) => {

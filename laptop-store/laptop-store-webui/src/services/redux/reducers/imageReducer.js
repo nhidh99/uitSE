@@ -1,4 +1,4 @@
-const { CLEAR_IMAGES, SET_IMAGES } = require("../actions");
+import { ActionType } from "../actions";
 
 const initState = {
     deleteIds: [],
@@ -7,10 +7,10 @@ const initState = {
 
 const imageReducer = (state = [], action) => {
     switch (action.type) {
-        case CLEAR_IMAGES:
+        case ActionType.CLEAR_IMAGES:
             state = initState;
             break;
-        case SET_IMAGES:
+        case ActionType.SET_IMAGES:
             state = action.payload;
             break;
         default:

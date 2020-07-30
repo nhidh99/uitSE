@@ -1,12 +1,8 @@
 import { ActionType } from "../actions";
 
-const initState = {
-    "default-id": null,
-};
-
-const addressReducer = (state = initState, action) => {
+const productDetailReducer = (state = null, action) => {
     switch (action.type) {
-        case ActionType.SET_DEFAULT_ADDRESS_ID:
+        case ActionType.SET_PRODUCT_DETAIL:
             state = action.payload;
             break;
         default:
@@ -15,4 +11,4 @@ const addressReducer = (state = initState, action) => {
     return state;
 };
 
-export default addressReducer;
+export default productDetailReducer;

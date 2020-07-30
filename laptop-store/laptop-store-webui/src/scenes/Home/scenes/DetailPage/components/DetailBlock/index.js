@@ -6,9 +6,12 @@ import {
     convertCPUType,
     convertResolutionType,
 } from "../../../../../../services/helper/converter";
+import { useSelector } from "react-redux";
 
-const DetailBlock = ({ product }) => {
+const DetailBlock = () => {
+    const product = useSelector((state) => state.productDetail.product);
     const { cpu, ram, hard_drive, monitor } = product;
+
     return (
         <Table bordered className={styles.table}>
             <tbody>

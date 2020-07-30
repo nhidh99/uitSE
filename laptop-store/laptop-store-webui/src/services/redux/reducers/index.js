@@ -4,6 +4,7 @@ import modalReducer from "./modalReducer";
 import imageReducer from "./imageReducer";
 import addressReducer from "./addressReducer";
 import cartReducer from "./cartReducer";
+import productDetailReducer from "./productDetailReducer";
 
 export default combineReducers({
     filter: filterReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
     images: imageReducer,
     address: addressReducer,
     cartStatus: cartReducer,
+    productDetail: productDetailReducer,
 });
