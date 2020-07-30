@@ -3,7 +3,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
 import { Table, Spinner } from "reactstrap";
-import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
+import { ITEM_COUNT_PER_PAGE, LOADING_DELAY } from "../../../../../../constants";
 import Pagination from "react-js-pagination";
 import { convertOrderStatus } from "../../../../../../services/helper/converter";
 import { withRouter } from "react-router-dom";
@@ -16,6 +16,8 @@ const OrderPage = (props) => {
     const [page, setPage] = useState(null);
     const [orders, setOrders] = useState([]);
     const [orderCount, setOrderCount] = useState(1);
+    const [isDone, setIsDone] = useState(false);
+    const [timer, setTimer] = useState(null);
 
     useEffect(() => {
         const params = new URLSearchParams(props.location.search);
@@ -26,9 +28,23 @@ const OrderPage = (props) => {
     useEffect(() => {
         if (!page) return;
         props.history.push("/user/order?page=" + page);
-        setLoading(true);
-        loadData();
+        setIsDone(false);
     }, [page]);
+
+    useEffect(() => {
+        if (isDone) {
+            loading ? setLoading(false) : clearTimeout(timer);
+        } else {
+            loadData();
+            setTimer(
+                setTimeout(() => {
+                    if (!isDone && !loading) {
+                        setLoading(true);
+                    }
+                }, LOADING_DELAY)
+            );
+        }
+    }, [isDone]);
 
     const loadData = async () => {
         try {
@@ -37,9 +53,9 @@ const OrderPage = (props) => {
             const orderCount = response.headers["x-total-count"];
             setOrders(orders);
             setOrderCount(orderCount);
-            setLoading(false);
+            setIsDone(true);
         } catch (err) {
-            console.log("fail");
+            setLoading(true);
         }
     };
 
@@ -59,20 +75,6 @@ const OrderPage = (props) => {
                     <FaBoxes />
                     &nbsp;&nbsp;ĐƠN HÀNG CỦA TÔI
                 </label>
-
-                {orders.length === 0 ? null : (
-                    <div className={styles.pagination}>
-                        <Pagination
-                            activePage={page}
-                            itemsCountPerPage={ITEM_COUNT_PER_PAGE}
-                            totalItemsCount={orderCount}
-                            pageRangeDisplayed={5}
-                            onChange={pageChange}
-                            itemClass="page-item"
-                            linkClass="page-link"
-                        />
-                    </div>
-                )}
             </div>
 
             {orders.length === 0 ? (
@@ -84,8 +86,8 @@ const OrderPage = (props) => {
                     emptyText="Danh sách trống"
                 />
             ) : (
-                <Loader show={loading} message={<Spinner />}>
-                    <Table className={styles.table} hover bordered>
+                <Loader show={loading && timer === null} message={<Spinner />}>
+                    <Table className={styles.table} hover bordered striped>
                         <tbody>
                             <tr>
                                 <th className={styles.idCol}>Mã đơn</th>
@@ -132,6 +134,20 @@ const OrderPage = (props) => {
                         </tbody>
                     </Table>
                 </Loader>
+            )}
+
+            {orders.length === 0 ? null : (
+                <div className={styles.pagination}>
+                    <Pagination
+                        activePage={page}
+                        itemsCountPerPage={ITEM_COUNT_PER_PAGE}
+                        totalItemsCount={orderCount}
+                        pageRangeDisplayed={5}
+                        onChange={pageChange}
+                        itemClass="page-item"
+                        linkClass="page-link"
+                    />
+                </div>
             )}
         </Fragment>
     );

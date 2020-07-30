@@ -137,15 +137,6 @@ const InfoPage = () => {
                 <div className={styles.buttons}>
                     <FacebookSync auth={fbAuth} />
                     <GoogleSync auth={googleAuth} />
-                    <Button
-                        type="submit"
-                        className={styles.submit}
-                        color="success"
-                        onClick={submit}
-                        disabled={loading}
-                    >
-                        Lưu
-                    </Button>
                 </div>
             </div>
 
@@ -250,6 +241,21 @@ const InfoPage = () => {
                                 placeholder="Nhập ngày sinh"
                                 className={styles.input}
                             />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td />
+                        <td>
+                            <Button
+                                type="submit"
+                                className={styles.submit}
+                                color="success"
+                                onClick={submit}
+                                disabled={loading}
+                            >
+                                Lưu
+                            </Button>
                         </td>
                     </tr>
                 </table>

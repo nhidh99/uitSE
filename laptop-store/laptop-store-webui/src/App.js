@@ -9,7 +9,7 @@ import Admin from "./scenes/Admin";
 import Banner from "./components/Banner";
 import { getCookie, createCookie, removeCookie } from "./services/helper/cookie";
 import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./constants";
-import { getCart, updateCartDatabase } from "./services/helper/cart";
+import { getCart } from "./services/helper/cart";
 import Filter from "./components/Filter";
 import ConfirmModal from "./components/ConfirmModal";
 import store from "./services/redux/store";
@@ -18,6 +18,7 @@ import userApi from "./services/api/userApi";
 import authApi from "./services/api/authApi";
 import { Provider } from "react-redux";
 import Footer from "./components/Footer";
+import cartService from "./services/helper/cartService";
 
 const App = (props) => {
     const [loading, setLoading] = useState(true);
@@ -40,7 +41,7 @@ const App = (props) => {
         if (JSON.stringify(cart) === userCart) return;
         Object.keys(cart).length === 0
             ? localStorage.setItem("cart", userCart)
-            : updateCartDatabase(cart);
+            : cartService.syncWithDatabase(cart);
     };
 
     const syncUserWishList = (userWishList) => {
@@ -188,7 +189,7 @@ const App = (props) => {
             <div className="container">
                 <Switch>{buildRoutes(role)}</Switch>
             </div>
-            <Footer/>
+            <Footer />
         </Provider>
     );
 };

@@ -15,12 +15,16 @@ import laptopApi from "../../../../services/api/laptopApi";
 import commentApi from "../../../../services/api/commentApi";
 import ratingApi from "../../../../services/api/ratingApi";
 import store from "../../../../services/redux/store";
-import { setProductDetail } from "../../../../services/redux/actions";
+import { setProductDetail, buildErrorModal } from "../../../../services/redux/actions";
 import ProductTitle from "./components/ProductTitle";
 import { useSelector } from "react-redux";
+import { LOADING_DELAY } from "../../../../constants";
 
 const DetailPage = (props) => {
     const [loading, setLoading] = useState(true);
+    const [isDone, setIsDone] = useState(false);
+    const [timer, setTimer] = useState(null);
+
     const { productId } = useParams();
     const { commentLength, ratingLength } = useSelector((state) => {
         const productDetail = state.productDetail;
@@ -32,88 +36,91 @@ const DetailPage = (props) => {
 
     useEffect(() => {
         window.scroll(0, 0);
-        setLoading(true);
         if (isNaN(parseInt(productId))) {
             window.location.href = "/";
-        } else {
-            loadData();
+            return;
         }
+        setIsDone(false);
     }, [props.location]);
 
+    useEffect(() => {
+        if (isDone) {
+            loading ? setLoading(false) : clearTimeout(timer);
+        } else {
+            loadData();
+            setTimer(
+                setTimeout(() => {
+                    if (!isDone && !loading) {
+                        setLoading(true);
+                    }
+                }, LOADING_DELAY)
+            );
+        }
+    }, [isDone]);
+
     const loadData = async () => {
-        const [product, imageIds, ratings, promotions, comments, suggestions] = await Promise.all([
-            loadProduct(),
-            loadImages(),
-            loadRatings(),
-            loadPromotions(),
-            loadComments(),
-            loadSuggestions(),
-        ]);
-        store.dispatch(
-            setProductDetail({
-                product: product,
-                imageIds: imageIds,
-                ratings: ratings,
-                promotions: promotions,
-                comments: comments,
-                suggestions: suggestions,
-            })
-        );
-        setLoading(false);
+        try {
+            const [
+                product,
+                imageIds,
+                ratings,
+                promotions,
+                comments,
+                suggestions,
+            ] = await Promise.all([
+                loadProduct(),
+                loadImages(),
+                loadRatings(),
+                loadPromotions(),
+                loadComments(),
+                loadSuggestions(),
+            ]);
+
+            store.dispatch(
+                setProductDetail({
+                    product: product,
+                    imageIds: imageIds,
+                    ratings: ratings,
+                    promotions: promotions,
+                    comments: comments,
+                    suggestions: suggestions,
+                })
+            );
+            setIsDone(true);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
+            setLoading(true);
+        }
     };
 
     const loadComments = async () => {
-        try {
-            const response = await commentApi.getByProductId(productId);
-            return response.data;
-        } catch (err) {
-            return [];
-        }
+        const response = await commentApi.getByProductId(productId);
+        return response.data;
     };
 
     const loadProduct = async () => {
-        try {
-            const response = await laptopApi.getById(productId);
-            return response.data;
-        } catch (err) {
-            return null;
-        }
+        const response = await laptopApi.getById(productId);
+        return response.data;
     };
 
     const loadImages = async () => {
-        try {
-            const response = await laptopApi.getLaptopImageIds(productId);
-            return response.data;
-        } catch (err) {
-            return null;
-        }
+        const response = await laptopApi.getLaptopImageIds(productId);
+        return response.data;
     };
 
     const loadRatings = async () => {
-        try {
-            const response = await ratingApi.getByProductId(productId);
-            return response.data;
-        } catch (err) {
-            return [];
-        }
+        const response = await ratingApi.getByProductId(productId);
+        return response.data;
     };
 
     const loadPromotions = async () => {
-        try {
-            const response = await laptopApi.getLaptopPromotions(productId);
-            return response.data;
-        } catch (err) {
-            return [];
-        }
+        const response = await laptopApi.getLaptopPromotions(productId);
+        return response.data;
     };
 
     const loadSuggestions = async () => {
-        try {
-            const response = await laptopApi.getLaptopSuggestions(productId);
-            return response.data;
-        } catch (err) {
-            return [];
-        }
+        const response = await laptopApi.getLaptopSuggestions(productId);
+        return response.data;
     };
 
     const ContentBlock = ({ title, component }) => {

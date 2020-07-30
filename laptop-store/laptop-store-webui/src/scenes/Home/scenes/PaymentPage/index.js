@@ -6,7 +6,6 @@ import ProductsBlock from "./components/ProductsBlock";
 import PromotionsBlock from "./components/PromotionsBlock";
 import SummaryBlock from "./components/SummaryBlock";
 import { Button, Spinner } from "reactstrap";
-import { removeFromCart } from "../../../../services/helper/cart";
 import { FaBoxOpen, FaAddressBook } from "react-icons/fa";
 import Loader from "react-loader-advanced";
 import { withRouter } from "react-router-dom";
@@ -15,6 +14,7 @@ import userApi from "../../../../services/api/userApi";
 import laptopApi from "../../../../services/api/laptopApi";
 import EmptyBlock from "../../../../components/EmptyBlock";
 import { MAXIMUM_QUANTITY_IN_CART } from "../../../../constants";
+import cartService from "../../../../services/helper/cartService";
 
 const PaymentPage = (props) => {
     const defaultAddressId = store.getState()["address"]["default-id"];
@@ -69,7 +69,9 @@ const PaymentPage = (props) => {
             const response = await laptopApi.getByIds(ids);
             const products = response.data;
             const productIds = products.map((product) => product["id"].toString());
-            ids.filter((id) => !productIds.includes(id)).forEach((id) => removeFromCart(id));
+            ids.filter((id) => !productIds.includes(id)).forEach((id) =>
+                cartService.removeProduct(id)
+            );
             setProducts(products);
         } catch (err) {
             console.log("fail");
@@ -158,7 +160,6 @@ const PaymentPage = (props) => {
                 icon={<FaBoxOpen />}
                 backToHome={true}
                 emptyText={`Tối đa ${MAXIMUM_QUANTITY_IN_CART} sản phẩm trong giỏ hàng`}
-                borderless
             />
         );
     };
@@ -172,7 +173,7 @@ const PaymentPage = (props) => {
                     icon={<FaBoxOpen />}
                     loadingText="Đang tải giỏ hàng..."
                     emptyText="Giỏ hàng trống"
-                    borderless
+                    noDelay
                 />
             ) : addresses.length === 0 ? (
                 <EmptyBlock
@@ -180,7 +181,6 @@ const PaymentPage = (props) => {
                     backToHome={!loading}
                     icon={<FaAddressBook />}
                     emptyText="Sổ địa chỉ trống"
-                    borderless
                 />
             ) : (
                 <PaymentDetail />

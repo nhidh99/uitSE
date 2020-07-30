@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { Label, Input, Button, Spinner } from "reactstrap";
-import { FaBook, FaAddressBook, FaSave } from "react-icons/fa";
+import { FaBook, FaAddressBook } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { useParams } from "react-router-dom";
 import store from "../../../../../../services/redux/store";
@@ -221,11 +221,6 @@ const EditAddressPage = () => {
                             &nbsp;&nbsp;Đặt làm địa chỉ mặc định
                         </Button>
                     )}
-
-                    <Button color="success" onClick={createAddress}>
-                        <FaSave />
-                        &nbsp;&nbsp;Lưu địa chỉ
-                    </Button>
                 </div>
             </header>
             {errors.length > 0 ? (
@@ -370,6 +365,19 @@ const EditAddressPage = () => {
                                 placeholder="Nhập địa chỉ (hẻm, số nhà)"
                                 defaultValue={address != null ? address["address_num"] : null}
                             />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td />
+                        <td>
+                            <Button
+                                className={styles.submit}
+                                color="success"
+                                onClick={createAddress}
+                            >
+                                Lưu địa chỉ
+                            </Button>
                         </td>
                     </tr>
                 </tbody>

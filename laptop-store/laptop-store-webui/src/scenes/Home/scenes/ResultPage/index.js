@@ -91,6 +91,7 @@ const ResultPage = (props) => {
                         icon={<FaSearch />}
                         loadingText="Đang tìm kiếm laptop"
                         emptyText="Không tìm thấy sản phẩm phù hợp"
+                        noDelay
                         borderless
                     />
                 ) : (

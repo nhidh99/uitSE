@@ -1,7 +1,6 @@
 import { ActionType } from "../actions";
-import { CartStatus } from "../../../constants";
 
-const cartReducer = (state = CartStatus.LOADING, action) => {
+const cartReducer = (state = null, action) => {
     switch (action.type) {
         case ActionType.SET_CART_STATUS:
             state = action.payload;

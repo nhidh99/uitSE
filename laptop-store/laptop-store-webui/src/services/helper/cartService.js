@@ -15,7 +15,6 @@ const sync = async (cart) => {
             await userApi.putCurrentUserCart(cart);
             return true;
         } catch (err) {
-            console.log("err");
             return null;
         }
     };
@@ -35,6 +34,16 @@ const sync = async (cart) => {
 };
 
 const cartService = {
+    syncWithDatabase: async (cart) => {
+        const token = getCookie("access_token");
+        if (!token) return;
+        try {
+            await userApi.putCurrentUserCart(cart);
+        } catch (err) {
+            console.log("err");
+        }
+    },
+
     addProduct: async (productId, quantity = 1) => {
         const cart = getCart();
         const newQty = productId in cart ? cart[productId] + quantity : quantity;

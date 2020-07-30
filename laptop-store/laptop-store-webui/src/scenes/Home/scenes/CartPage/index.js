@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
 import { FaShoppingCart, FaBoxOpen, FaGift, FaMoneyBillWave } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { getCart, removeFromCart } from "../../../../services/helper/cart";
+import { getCart } from "../../../../services/helper/cart";
 import { withRouter } from "react-router-dom";
 import { getCookie } from "../../../../services/helper/cookie";
 import EmptyBlock from "../../../../components/EmptyBlock";
@@ -14,56 +14,45 @@ import store from "../../../../services/redux/store";
 import { useSelector } from "react-redux";
 import { CartStatus } from "../../../../constants";
 import { setCartStatus, buildErrorModal } from "../../../../services/redux/actions";
+import cartService from "../../../../services/helper/cartService";
 
 const CartPage = (props) => {
-    const status = useSelector((state) => state.cartStatus);
-    const [loading, setLoading] = useState(true);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [products, setProducts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalDiscount, setTotalDiscount] = useState(0);
-    const isFirstRun = useRef(true);
+
+    const status = useSelector((state) => state.cartStatus);
+    const loading = [CartStatus.SYNCING, CartStatus.LOADING].includes(status) || isFirstLoad;
 
     useEffect(() => {
-        switch (status) {
-            case CartStatus.SYNCING:
-                loadData();
-                break;
-            case CartStatus.LOADING:
-                setLoading(true);
-                break;
-            default:
-                setLoading(false);
-                break;
+        if (status === CartStatus.SYNCING) {
+            loadData();
         }
     }, [status]);
 
     useEffect(() => {
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            store.dispatch(setCartStatus(CartStatus.SYNCING));
-            return;
-        }
-        store.dispatch(setCartStatus(CartStatus.IDLE));
+        const nextStatus = isFirstLoad ? CartStatus.SYNCING : CartStatus.IDLE;
+        store.dispatch(setCartStatus(nextStatus));
     }, [products]);
 
     const loadData = async () => {
         const ids = Object.keys(getCart());
-
         if (ids.length === 0) {
-            loadCart([]);
-            return;
-        }
-
-        try {
-            const response = await laptopApi.getByIds(ids);
-            const products = response.data;
-            loadCart(products);
-        } catch (err) {
-            store.dispatch(buildErrorModal());
+            setIsFirstLoad(false);
+            setProducts([]);
+        } else {
+            try {
+                const response = await laptopApi.getByIds(ids);
+                const products = response.data;
+                loadCart(products);
+            } catch (err) {
+                store.dispatch(buildErrorModal());
+            }
         }
     };
 
-    const loadCart = (products) => {
+    const loadCart = async (products) => {
         let totalPrice = 0;
         let totalDiscount = 0;
 
@@ -76,13 +65,15 @@ const CartPage = (props) => {
         });
 
         const productIds = products.map((product) => product["id"].toString());
-        Object.keys(getCart())
+        const deletePromises = Object.keys(getCart())
             .filter((id) => !productIds.includes(id))
-            .forEach((id) => removeFromCart(id));
+            .map(async (id) => await cartService.removeProduct(id));
+        await Promise.all(deletePromises);
 
-        setProducts(products);
         setTotalPrice(totalPrice);
         setTotalDiscount(totalDiscount);
+        setIsFirstLoad(false);
+        setProducts(products);
     };
 
     const redirectToPayment = () => {
@@ -135,7 +126,7 @@ const CartPage = (props) => {
                 </Button>
             </div>
 
-            <Loader show={loading && products.length !== 0} message={<Spinner />}>
+            <Loader show={loading && !isFirstLoad} message={<Spinner />}>
                 <div className={styles.list}>
                     {products.length === 0 ? (
                         <EmptyBlock
@@ -144,7 +135,7 @@ const CartPage = (props) => {
                             icon={<FaBoxOpen />}
                             loadingText="Đang tải giỏ hàng..."
                             emptyText="Giỏ hàng trống"
-                            borderless
+                            noDelay
                         />
                     ) : (
                         <Fragment>

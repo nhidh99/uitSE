@@ -52,6 +52,7 @@ const RatingBox = () => {
                 <br />
 
                 <Rating
+                    quiet
                     onChange={handleRatingChange}
                     initialRating={rating}
                     fullSymbol={<FaStar color="#ffc120" className={styles.ratingIcon} />}

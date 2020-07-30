@@ -22,7 +22,7 @@
     border-spacing: 10px;
     border-collapse: separate;
     padding: 15px 10px;
-    border: 1.5px dashed darkgray;
+    border: 1px dashed darkgray;
 }
 
 .header {
@@ -43,25 +43,6 @@
 
 .buttons {
     float: right;
-
-    button {
-        font-size: 14px;
-    }
-}
-
-.syncFacebook {
-    margin-right: 10px;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    background-color: #3b5998 !important;
-}
-
-.syncGoogle {
-    margin-right: 10px;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    background-color: #db4a39 !important;
-    border: none !important;
 }
 
 .icon {
@@ -71,7 +52,8 @@
 }
 
 .submit {
-    width: 100px;
+    margin-bottom: -10px;
+    width: 100%;
 }
 
 .err {
