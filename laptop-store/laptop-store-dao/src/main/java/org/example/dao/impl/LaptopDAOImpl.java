@@ -134,7 +134,7 @@ public class LaptopDAOImpl implements LaptopDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Laptop> findByFilter(String filter, Integer page) {
-        String query = "SELECT * FROM Laptop l WHERE l.id = ? OR l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+        String query = "SELECT * FROM laptop l WHERE l.id = ? OR l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
         return em.createNativeQuery(query, Laptop.class)
                 .setParameter(1, filter)
                 .setParameter(2, filter)
@@ -152,7 +152,7 @@ public class LaptopDAOImpl implements LaptopDAO {
     }
 
     private List<Laptop> findByNameQuery(String nameQuery) {
-        String query = "SELECT * FROM Laptop l WHERE l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+        String query = "SELECT * FROM laptop l WHERE l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
         return em.createNativeQuery(query, Laptop.class).setParameter(1, nameQuery).getResultList();
     }
 
