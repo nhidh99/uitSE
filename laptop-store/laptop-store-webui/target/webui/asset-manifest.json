@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "http://localhost:8181/static/css/main.38f4a233.chunk.css",
+    "main.js": "http://localhost:8181/static/js/main.8c6a98d5.chunk.js",
+    "main.js.map": "http://localhost:8181/static/js/main.8c6a98d5.chunk.js.map",
+    "runtime-main.js": "http://localhost:8181/static/js/runtime-main.1631ecb2.js",
+    "runtime-main.js.map": "http://localhost:8181/static/js/runtime-main.1631ecb2.js.map",
+    "static/css/2.a4626165.chunk.css": "http://localhost:8181/static/css/2.a4626165.chunk.css",
+    "static/js/2.07190698.chunk.js": "http://localhost:8181/static/js/2.07190698.chunk.js",
+    "static/js/2.07190698.chunk.js.map": "http://localhost:8181/static/js/2.07190698.chunk.js.map",
+    "index.html": "http://localhost:8181/index.html",
+    "precache-manifest.4e71e0912f07b713eebbe88d67b658a5.js": "http://localhost:8181/precache-manifest.4e71e0912f07b713eebbe88d67b658a5.js",
+    "service-worker.js": "http://localhost:8181/service-worker.js",
+    "static/css/2.a4626165.chunk.css.map": "http://localhost:8181/static/css/2.a4626165.chunk.css.map",
+    "static/css/main.38f4a233.chunk.css.map": "http://localhost:8181/static/css/main.38f4a233.chunk.css.map",
+    "static/js/2.07190698.chunk.js.LICENSE.txt": "http://localhost:8181/static/js/2.07190698.chunk.js.LICENSE.txt",
+    "static/media/UploadIcon.svg": "http://localhost:8181/static/media/UploadIcon.1cedb6e9.svg",
+    "static/media/acer-ad.png": "http://localhost:8181/static/media/acer-ad.a96f7ee7.png",
+    "static/media/acer.png": "http://localhost:8181/static/media/acer.cc81d80b.png",
+    "static/media/asus.png": "http://localhost:8181/static/media/asus.33f9cf66.png",
+    "static/media/dell.png": "http://localhost:8181/static/media/dell.6dda7bfd.png",
+    "static/media/hp-ad.png": "http://localhost:8181/static/media/hp-ad.bc045018.png",
+    "static/media/hp.png": "http://localhost:8181/static/media/hp.94e775bb.png",
+    "static/media/lenovo-ad.png": "http://localhost:8181/static/media/lenovo-ad.850a8ac1.png",
+    "static/media/lenovo.png": "http://localhost:8181/static/media/lenovo.1b90ada9.png",
+    "static/media/mac-ad.png": "http://localhost:8181/static/media/mac-ad.42e3c416.png",
+    "static/media/mac.png": "http://localhost:8181/static/media/mac.16cb69b3.png",
+    "static/media/msi.png": "http://localhost:8181/static/media/msi.3fa5bfcb.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1631ecb2.js",
+    "static/css/2.a4626165.chunk.css",
+    "static/js/2.07190698.chunk.js",
+    "static/css/main.38f4a233.chunk.css",
+    "static/js/main.8c6a98d5.chunk.js"
+  ]
+}
