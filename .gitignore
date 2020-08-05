@@ -31,4 +31,4 @@ hs_err_pid*
 target/
 
 #images
-laptop-store-crawl/laptops/
+laptop-store/laptop-store-crawl/laptops/
