@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 def slugify(value):
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = re.sub('[^\w\s-]', '', value).strip().lower()
-    return re.sub('[-\s]+', '-', value)
+    return re.sub('[-\s]+', '-', value).replace(' ', '-')
 
 
 def get_params(product_id):

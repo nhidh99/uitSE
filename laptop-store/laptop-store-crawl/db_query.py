@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 import random
 import re
+import os
 
 
 def config():
@@ -22,6 +23,10 @@ def config():
 
 
 conn, cursor = config()
+primary_image_path = 'laptops/edited/primary'
+secondary_image_path = 'laptops/edited/secondary'
+resolutions = [1000, 400, 150]
+image_types = ['large_image', 'image', 'thumbnail']
 
 
 def get_data():
@@ -34,15 +39,20 @@ def get_data():
 def insert_laptop(laptop):
     quantity = random.randint(0, 20)
     brand = laptop['Tên sản phẩm'].split()[0].upper()
+    sd_card = laptop['Khe đọc thẻ nhớ']
+    specials = laptop['Tính năng khác']
+    webcam = laptop['Webcam']
+
     sql = "INSERT INTO laptop (id, name, brand, alt, avg_rating, " \
           "unit_price, discount_price, design, os, ports, sound_tech, size, weight, " \
-          "wireless, webcam, sd_card, specials, quantity, record_status) VALUES " \
+          "wireless, webcam, sd_cards, specials, quantity, record_status) VALUES " \
           "(%s, %s, %s, %s, 5.0, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)"
     val = (laptop['Mã sản phẩm'], laptop['Tên sản phẩm'], brand, laptop['Tên SEO'],
            laptop['Đơn giá'], laptop['Giảm giá'], laptop['Chất liệu'], laptop['Hệ điều hành'],
            laptop['Cổng giao tiếp'], laptop['Công nghệ âm thanh'], laptop['Kích thước'],
-           float(laptop['Trọng lượng'].split()[0]), laptop['Kết nối không dây'], laptop['Webcam'],
-           laptop['Khe đọc thẻ nhớ'], laptop['Tính năng khác'], quantity)
+           float(laptop['Trọng lượng'].split()[0]), laptop['Kết nối không dây'],
+           webcam if webcam != 'Không tích hợp' else None, sd_card if sd_card != 'Không' else None,
+           specials if specials != 'Không' else None, quantity)
     cursor.execute(sql, val)
 
 
@@ -111,16 +121,60 @@ def insert_monitor(laptop):
     res_width = res_size[0]
     res_height = res_size[1]
     technology = laptop['Công nghệ màn hình']
+    card_design = 'DISCRETE' if laptop['Thiết kế card'] == 'Card đồ họa rời' else 'INTEGRATED'
+    graphics_card = laptop['Card đồ họa']
 
-    sql = 'INSERT INTO monitor (size, resolution_type, resolution_width, resolution_height, technology)  ' \
-          'VALUES (%s, %s, %s, %s, %s)'
-    val = (size, res_type, res_width, res_height, technology)
+    sql = 'INSERT INTO monitor (size, resolution_type, resolution_width, ' \
+          'resolution_height, technology, card_design, graphics_card)  ' \
+          'VALUES (%s, %s, %s, %s, %s, %s, %s)'
+    val = (size, res_type, res_width, res_height, technology, card_design, graphics_card)
     cursor.execute(sql, val)
 
     monitor_id = cursor.lastrowid
     sql = 'UPDATE laptop SET monitor_id = %s WHERE id = %s'
     val = (monitor_id, laptop['Mã sản phẩm'])
     cursor.execute(sql, val)
+
+
+def insert_battery(laptop):
+    battery_type = 'REMOVABLE' if laptop['Loại PIN'] == 'PIN rời' else 'NON_REMOVABLE'
+    detail = laptop['Thông tin Pin']
+    adapter = laptop['Model Adapter sạc']
+    sql = 'INSERT INTO battery (type, detail, adapter) VALUES (%s, %s, %s)'
+    val = (battery_type, detail, None if isinstance(adapter, float) else adapter)
+    cursor.execute(sql, val)
+
+    battery_id = cursor.lastrowid
+    sql = 'UPDATE laptop SET battery_id = %s WHERE id = %s'
+    val = (battery_id, laptop['Mã sản phẩm'])
+    cursor.execute(sql, val)
+
+
+def insert_primary_images(laptop):
+    laptop_id = laptop['Mã sản phẩm']
+    for res, img_type in zip(resolutions, image_types):
+        dir_path = '%s/%s-%s/%d' % (primary_image_path, laptop['Mã sản phẩm'], laptop['Tên SEO'], res)
+        file_path = os.path.join(dir_path, os.listdir(dir_path)[0])
+        blob_value = open(file_path, 'rb').read()
+        sql = 'UPDATE laptop SET ' + img_type + ' = %s WHERE id = %s'
+        val = (blob_value, laptop_id)
+        cursor.execute(sql, val)
+
+
+def insert_secondary_images(laptop):
+    laptop_id = laptop['Mã sản phẩm']
+    dir_path = '%s/%s-%s' % (secondary_image_path, laptop['Mã sản phẩm'], laptop['Tên SEO'])
+    files = os.listdir(dir_path + '/150')
+
+    for file_name in files:
+        blobs = []  # array follow by index: large, medium, thumbnail
+        for res in resolutions:
+            file_path = '%s/%d/%s' % (dir_path, res, file_name)
+            blob_value = open(file_path, 'rb').read()
+            blobs.append(blob_value)
+        sql = 'INSERT INTO laptop_image (large_image, image, thumbnail, laptop_id) VALUES (%s, %s, %s, %s)'
+        val = (blobs[0], blobs[1], blobs[2], laptop_id)
+        cursor.execute(sql, val)
 
 
 def insert_db():
@@ -131,11 +185,14 @@ def insert_db():
             brand = laptop['Tên sản phẩm'].split()[0].upper()
             allowed_brands = ['ACER', 'ASUS', 'DELL', 'HP', 'LENOVO', 'MACBOOK', 'MSI']
             if brand in allowed_brands:
-                insert_laptop(laptop)
-                insert_cpu(laptop)
-                insert_ram(laptop)
-                insert_hard_drive(laptop)
-                insert_monitor(laptop)
+                # insert_laptop(laptop)
+                # insert_cpu(laptop)
+                # insert_ram(laptop)
+                # insert_hard_drive(laptop)
+                # insert_monitor(laptop)
+                # insert_primary_images(laptop)
+                # insert_secondary_images(laptop)
+                insert_battery(laptop)
                 print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
             else:
                 print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))
