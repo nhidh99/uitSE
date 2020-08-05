@@ -26,3 +26,9 @@ hs_err_pid*
 .idea/
 *.lst
 *.MF
+
+#build
+target/
+
+#images
+laptop-store-crawl/laptops/
