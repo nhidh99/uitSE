@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.type.CardDesignType;
 import org.example.type.ResolutionType;
 
 import javax.persistence.*;
@@ -39,4 +40,17 @@ public class Monitor {
     @Column(name = "resolution_height")
     @JsonProperty("resolution_height")
     private Integer resolutionHeight;
+
+    @Column(name = "technology")
+    @JsonProperty("technology")
+    private String technology;
+
+    @Column(name = "card_design")
+    @JsonProperty("card_design")
+    @Enumerated(EnumType.STRING)
+    private CardDesignType cardDesign;
+
+    @Column(name = "graphics_card")
+    @JsonProperty("graphics_card")
+    private String graphicsCard;
 }

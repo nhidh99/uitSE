@@ -2,41 +2,33 @@ package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.type.CPUType;
+import org.example.type.BatterType;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "cpu")
+@Table(name = "battery")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CPU {
+public class Battery {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "type")
     @JsonProperty("type")
     @Enumerated(EnumType.STRING)
-    private CPUType type;
+    private BatterType type;
 
     @Column(name = "detail")
     @JsonProperty("detail")
     private String detail;
 
-    @Column(name = "speed")
-    @JsonProperty("speed")
-    private Float speed;
-
-    @Column(name = "max_speed")
-    @JsonProperty("max_speed")
-    private String maxSpeed;
+    @Column(name = "adapter")
+    @JsonProperty("adapter")
+    private String adapter;
 }
-

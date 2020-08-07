@@ -6,7 +6,7 @@ const FilterClear = () => {
         document.querySelectorAll("input[type=checkbox]").forEach((item) => (item.checked = false));
         document.querySelector("input[name='price']").checked = true;
         document.querySelectorAll("[id^='brand-']").forEach((label) => {
-            label.style.border = "1px solid lightgray";
+            label.style.border = "1px solid #ddd";
             label.removeAttribute("checked");
         });
     };

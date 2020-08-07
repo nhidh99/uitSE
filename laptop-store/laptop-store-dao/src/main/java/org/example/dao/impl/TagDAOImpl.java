@@ -3,14 +3,12 @@ package org.example.dao.impl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.dao.api.TagDAO;
-import org.example.model.Tag;
+import org.example.type.LaptopTagType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @NoArgsConstructor
@@ -22,32 +20,8 @@ public class TagDAOImpl implements TagDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Tag> findAll() {
-        String query = "SELECT t FROM Tag t";
-        return em.createQuery(query, Tag.class).getResultList();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Tag> findByIds(List<Integer> ids) {
-        if (ids.isEmpty()) return new ArrayList<>();
-        String query = "SELECT t FROM Tag t WHERE t.id IN :ids";
-        return em.createQuery(query, Tag.class)
-                .setParameter("ids", ids)
-                .getResultList();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public List<Tag> findByLaptopId(Integer laptopId) {
-        String query = "SELECT t FROM Tag t JOIN t.laptops l WHERE l.id = :laptopId";
-        return em.createQuery(query, Tag.class).setParameter("laptopId", laptopId).getResultList();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public Optional<Tag> findById(Integer id) {
-        Tag tag = em.find(Tag.class, id);
-        return Optional.ofNullable(tag);
+    public List<LaptopTagType> findByLaptopId(Integer laptopId) {
+        String query = "SELECT t.tag FROM LaptopTag t WHERE t.laptop.id = :laptopId";
+        return em.createQuery(query, LaptopTagType.class).setParameter("laptopId", laptopId).getResultList();
     }
 }

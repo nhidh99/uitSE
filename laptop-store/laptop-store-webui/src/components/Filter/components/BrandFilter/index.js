@@ -3,12 +3,12 @@ import { Label } from "reactstrap";
 import styles from "./styles.module.scss";
 
 const BrandFilter = () => {
-    const options = ["ACER", "ASUS", "DELL", "HP", "LENOVO", "MAC", "MSI"];
+    const options = ["ACER", "ASUS", "DELL", "HP", "LENOVO", "MACBOOK", "MSI"];
 
     const toggleselected = (brand) => {
         const label = document.getElementById("brand-" + brand);
         if (label.hasAttribute("checked")) {
-            label.style.border = "1px solid lightgray";
+            label.style.border = "1px solid #ddd";
             label.removeAttribute("checked");
         } else {
             label.style.border = "5px solid #52a2e1";

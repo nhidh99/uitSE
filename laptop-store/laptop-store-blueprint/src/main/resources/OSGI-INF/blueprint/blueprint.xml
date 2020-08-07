@@ -136,11 +136,6 @@
         <property name="ratingReplyDAO" ref="ratingReplyDAO"/>
     </bean>
 
-    <!-- Tag Service -->
-    <bean id="tagService" class="org.example.service.impl.TagServiceImpl">
-        <property name="tagDAO" ref="tagDAO"/>
-    </bean>
-
     <!-- User Service -->
     <bean id="userService" class="org.example.service.impl.UserServiceImpl">
         <property name="userDAO" ref="userDAO"/>
@@ -257,18 +252,6 @@
     <jaxrs:server id="ratingServer" address="/api/ratings">
         <jaxrs:serviceBeans>
             <ref component-id="ratingService"/>
-        </jaxrs:serviceBeans>
-
-        <jaxrs:providers>
-            <ref component-id="authorizationFilter"/>
-            <ref component-id="jsonProvider"/>
-        </jaxrs:providers>
-    </jaxrs:server>
-
-    <!-- Tag Server -->
-    <jaxrs:server id="tagServer" address="/api/tags">
-        <jaxrs:serviceBeans>
-            <ref component-id="tagService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:providers>

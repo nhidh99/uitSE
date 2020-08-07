@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.type.RewardType;
 
 import javax.persistence.*;
 
@@ -19,7 +20,8 @@ public class Reward {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
-    private String id;
+    @Enumerated(EnumType.STRING)
+    private RewardType id;
 
     @Column(name = "description")
     @Basic(fetch = FetchType.LAZY)

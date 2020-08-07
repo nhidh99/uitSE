@@ -22,7 +22,7 @@ public class LaptopImage {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "big_image")
+    @Column(name = "large_image")
     @JsonIgnore
     private byte[] bigImage;
 

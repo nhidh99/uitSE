@@ -15,7 +15,7 @@ const OverviewInfo = () => {
                     initialRating={product["avg_rating"]}
                     readonly
                     fullSymbol={<FaStar color="#ffc120" className={styles.ratingIcon} />}
-                    emptySymbol={<FaStar color="lightgray" className={styles.ratingIcon} />}
+                    emptySymbol={<FaStar color="#ddd" className={styles.ratingIcon} />}
                 />
             </div>
 

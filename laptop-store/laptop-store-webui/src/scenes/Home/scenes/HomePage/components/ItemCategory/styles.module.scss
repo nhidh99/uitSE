@@ -4,7 +4,6 @@
 
 .categoryHeader {
     font-size: 18px;
-    font-weight: 600;
     margin-bottom: 8px;
 }
 
@@ -12,28 +11,25 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding-top: 1px;
-    padding-left: 1px;
     box-sizing: border-box;
     background-color: white;
-    padding-top: 1px;
-    padding-left: 1px;
-    border-left: none;
-    box-shadow: inset 0 0 0 1px lightgray;
+    box-shadow: inset 0 0 0 1px #ddd;
 }
 
 .itemBlock {
-    width: calc(20% + 1px);
-    margin-top: -1px;
-    margin-left: -1px;
+    width: 20%;
     padding: 20px;
-    border: 1px solid lightgray;
-    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 13px;
     cursor: pointer;
 }
 
 .itemBlock:hover {
-    box-shadow: 0 0 5px 5px lightgray;
+    box-shadow: 0 0 5px 5px #ddd;
+    .itemName {
+        color: #007bff !important;
+    }
 
     img {
         transform: translateY(-12px);
@@ -55,16 +51,17 @@
 
 .itemInfo {
     color: #007bff;
-    font-weight: 600;
     margin-bottom: -2px;
     cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    font-weight: 550;
 }
 
 .itemName {
-    font-size: 16px;
-    font-weight: 550;
+    font-size: 14px;
     cursor: pointer;
-    color: black !important;
+    color: #333 !important;
 }
 
 .itemImg {
@@ -74,24 +71,25 @@
 }
 
 .itemUnitPrice {
-    color: red;
+    color: #bf081f;
     font-weight: bold;
     margin-right: 10px;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .itemOriginPrice {
     text-decoration: line-through;
     font-size: 13px;
     cursor: pointer;
-    color: gray;
+    color: #777;
 }
 
 .moreBtn {
     width: 100%;
     color: #52a2e1;
     background-color: white;
-    border: 1px solid lightgray;
+    border: 1px solid #ddd;
     padding: 10px 0;
     font-size: 16px;
     font-weight: 600;

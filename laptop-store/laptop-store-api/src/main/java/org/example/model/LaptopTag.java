@@ -4,29 +4,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
+import org.example.type.LaptopTagType;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "tag")
-public class Tag {
+@Table(name = "laptop_tag")
+public class LaptopTag {
     @Id
     @Column(name = "id")
     @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
-    @JsonProperty("name")
-    private String name;
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "laptop_tag",
-            joinColumns = @JoinColumn(name = "tag_id"),
-            inverseJoinColumns = @JoinColumn(name = "laptop_id"))
-    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "laptop_id")
     @JsonIgnore
-    private List<Laptop> laptops;
+    private Laptop laptop;
+
+    @Column(name = "tag")
+    @JsonProperty("tag")
+    @Enumerated(EnumType.STRING)
+    private LaptopTagType tag;
 }

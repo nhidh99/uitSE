@@ -9,7 +9,8 @@ public enum ResolutionType {
     FULL_HD,        // FULL HD
     QHD,            // 2K
     QHD_PLUS,       // 3K
-    UHD;            // 4K
+    UHD,            // 4K
+    RETINA;
 
     @Override
     public String toString() {

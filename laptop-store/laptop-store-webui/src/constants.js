@@ -27,3 +27,13 @@ export const CartStatus = {
     LOADING: "LOADING",
     SYNCING: "SYNCING",
 };
+
+export const PINType = {
+    REMOVABLE: 'PIN liền',
+    NON_REMOVABLE: 'PIN rời'
+}
+
+export const CardDesignType = {
+    INTEGRATED: "Card liền",
+    DISCRETE: "Card rời"
+}

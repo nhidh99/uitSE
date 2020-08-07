@@ -50,13 +50,28 @@ public class Laptop {
     @JsonProperty("avg_rating")
     private Float avgRating;
 
-    @Column(name = "graphics_card")
-    @JsonProperty("graphics_card")
-    private String graphisCard;
-
     @Column(name = "ports")
     @JsonProperty("ports")
     private String ports;
+
+    @Column(name = "sound_tech")
+    @JsonProperty("sound_tech")
+    private String soundTech;
+
+    @Column(name = "wireless")
+    @JsonProperty("wireless")
+    private String wireless;
+
+    @Column(name = "sd_cards")
+    @JsonProperty("sd_cards")
+    private String sdCards;
+
+    @Column(name = "webcam")
+    @JsonProperty("webcam")
+    private String webcam;
+
+    @Column(name = "specials")
+    private String specials;
 
     @Column(name = "os")
     @JsonProperty("os")
@@ -66,9 +81,9 @@ public class Laptop {
     @JsonProperty("design")
     private String design;
 
-    @Column(name = "thickness")
-    @JsonProperty("thickness")
-    private Float thickness;
+    @Column(name = "size")
+    @JsonProperty("size")
+    private String size;
 
     @Column(name = "weight")
     @JsonProperty("weight")
@@ -94,11 +109,16 @@ public class Laptop {
     @JsonProperty("monitor")
     private Monitor monitor;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "battery_id")
+    @JsonProperty("battery")
+    private Battery battery;
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "big_image")
+    @Column(name = "large_image")
     @JsonIgnore
-    private byte[] bigImage;
+    private byte[] largeImage;
 
     @Lob
     @Column(name = "image")
@@ -116,13 +136,13 @@ public class Laptop {
     @JsonIgnore
     private boolean recordStatus;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "laptop_tag",
             joinColumns = @JoinColumn(name = "laptop_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @ToString.Exclude
     @JsonIgnore
-    private List<Tag> tags;
+    private List<LaptopTag> tags;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "laptop_promotion",

@@ -4,23 +4,23 @@ import CheckboxesFilter from "../CheckboxesFilter";
 const TagFilter = () => {
     const options = [
         {
-            value: 100003,
+            value: "OFFICE",
             name: "Học tập, văn phòng",
         },
         {
-            value: 100004,
+            value: "TECHNICAL",
             name: "Đồ họa - Kỹ thuật",
         },
         {
-            value: 100005,
+            value: "GAMING",
             name: "Laptop Gaming",
         },
         {
-            value: 100006,
+            value: "LUXURY",
             name: "Cao cấp sang trọng",
         },
         {
-            value: 100007,
+            value: "LIGHTWEIGHT",
             name: "Mỏng nhẹ",
         },
     ];

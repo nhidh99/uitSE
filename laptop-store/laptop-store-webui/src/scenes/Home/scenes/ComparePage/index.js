@@ -100,7 +100,7 @@ const ComparePage = () => {
                     <tr>
                         <th>Tốc độ tối đa</th>
                         {products.map((product) => (
-                            <td>{product["cpu"]["max_speed"].toFixed(1)} GHz</td>
+                            <td>{product["cpu"]["max_speed"]}</td>
                         ))}
                     </tr>
 

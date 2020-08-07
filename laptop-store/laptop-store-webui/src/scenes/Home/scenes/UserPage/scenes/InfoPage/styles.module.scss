@@ -1,14 +1,3 @@
-.radioInput {
-    margin: 0 15px;
-    align-items: center;
-    width: fit-content;
-    font-size: 16px;
-
-    input {
-        margin-top: 6px;
-    }
-}
-
 .labelCol {
     width: 90px;
 }
@@ -32,13 +21,14 @@
 }
 
 .label {
-    font-size: 16px !important;
+    font-size: 14px !important;
     font-weight: 600;
+    margin-bottom: 0 !important;
 }
 
 .input {
     width: 100%;
-    font-size: 16px !important;
+    font-size: 14px !important;
 }
 
 .buttons {

@@ -160,9 +160,11 @@ public class LaptopDAOImpl implements LaptopDAO {
         String query;
         Map<String, Object> params = new HashMap<>();
         if (laptopSearchFilter.getTags().isEmpty()) {
-            query = "SELECT DISTINCT(l) FROM Laptop l WHERE l.recordStatus = true";
+            query = "SELECT l FROM Laptop l WHERE l.recordStatus = true";
         } else {
-            query = "SELECT DISTINCT(l) FROM Laptop l, IN (l.tags) t WHERE t.id in :tags AND l.recordStatus = true";
+            query = "SELECT l FROM Laptop l WHERE l.id " +
+                    "IN (SELECT DISTINCT(t.laptop.id) FROM LaptopTag t " +
+                    "WHERE t.tag IN :tags) AND l.recordStatus = true";
             params.put("tags", laptopSearchFilter.getTags());
         }
 
@@ -249,7 +251,7 @@ public class LaptopDAOImpl implements LaptopDAO {
         if (laptop == null) return null;
         switch (type) {
             case LAPTOP_BIG_IMAGE:
-                return laptop.getBigImage();
+                return laptop.getLargeImage();
             case LAPTOP_IMAGE:
                 return laptop.getImage();
             case LAPTOP_THUMBNAIL:

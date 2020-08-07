@@ -17,11 +17,11 @@ const ProductTitle = () => {
             <FaCaretRight color="#007bff" />
             &nbsp;
             <Link to={`/search?brands=${product["brand"]}`} className={styles.redirect}>
-                {convertBrandType(product?.["brand"])}
+                {convertBrandType(product["brand"])}
             </Link>
             &nbsp;
             <FaCaretRight color="#007bff" />
-            &nbsp;Laptop {product?.["name"]}
+            &nbsp;Laptop {product["name"]}
         </Label>
     );
 };

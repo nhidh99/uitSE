@@ -14,7 +14,6 @@ public class RewardDAOImpl implements RewardDAO {
 
     @Override
     public Reward findByType(RewardType rewardType) {
-        String id = rewardType.name();
-        return em.find(Reward.class, id);
+        return em.find(Reward.class, rewardType);
     }
 }

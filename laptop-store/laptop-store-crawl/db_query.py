@@ -177,6 +177,27 @@ def insert_secondary_images(laptop):
         cursor.execute(sql, val)
 
 
+def insert_promotions(laptop):
+    cursor.execute("SELECT id FROM promotion")
+    result = [i[0] for i in cursor.fetchall()]
+    num = random.choice(range(2, 4))
+    promotion_ids = random.sample(result, num)
+    for promotion_id in promotion_ids:
+        sql = 'INSERT INTO laptop_promotion (laptop_id, promotion_id) VALUES (?, ?)'
+        val = (laptop['Mã sản phẩm'], promotion_id)
+        cursor.execute(sql, val)
+
+
+def insert_tags(laptop):
+    tags = ['OFFICE', 'TECHNICAL', 'LIGHTWEIGHT', 'GAMING', 'LUXURY']
+    num = random.choice(range(2,6))
+    selected_tags = random.sample(tags, num)
+    for tag in selected_tags:
+        sql = 'INSERT INTO laptop_tag (laptop_id, tag) VALUES (?, ?)'
+        val = (laptop['Mã sản phẩm'], tag)
+        cursor.execute(sql, val)
+
+
 def insert_db():
     laptops = get_data()
     try:
@@ -192,7 +213,9 @@ def insert_db():
                 # insert_monitor(laptop)
                 # insert_primary_images(laptop)
                 # insert_secondary_images(laptop)
-                insert_battery(laptop)
+                # insert_battery(laptop)
+                # insert_promotions(laptop)
+                insert_tags(laptop)
                 print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
             else:
                 print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))

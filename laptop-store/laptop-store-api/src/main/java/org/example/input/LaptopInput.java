@@ -51,11 +51,14 @@ public class LaptopInput {
     @JsonProperty("ram-size")
     private Integer ramSize;
 
+    @JsonProperty("ram-max-size")
+    private Integer ramMaxSize;
+
     @JsonProperty("ram-bus")
     private Integer ramBus;
 
-    @JsonProperty("ram-extra-slot")
-    private Integer ramExtraSlot;
+    @JsonProperty("ram-detail")
+    private String ramDetail;
 
     @JsonProperty("hd-type")
     private HardDriveType hardDriveType;
@@ -79,7 +82,7 @@ public class LaptopInput {
     private Float cpuSpeed;
 
     @JsonProperty("cpu-max-speed")
-    private Float cpuMaxSpeed;
+    private String cpuMaxSpeed;
 
     @JsonProperty("monitor-size")
     private Float monitorSize;
@@ -109,7 +112,7 @@ public class LaptopInput {
     private List<Integer> tagIds;
 
     public RAM extractRAM() {
-        return RAM.builder().id(ramId).size(ramSize).type(ramType).bus(ramBus).extraSlot(ramExtraSlot).build();
+        return RAM.builder().id(ramId).size(ramSize).maxSize(ramMaxSize).type(ramType).bus(ramBus).detail(ramDetail).build();
     }
 
     public CPU extractCPU() {

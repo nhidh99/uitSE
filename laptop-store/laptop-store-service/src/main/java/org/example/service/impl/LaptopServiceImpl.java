@@ -177,37 +177,37 @@ public class LaptopServiceImpl implements LaptopService {
 
     private Laptop buildLaptopFromLaptopRequestBody(LaptopInput laptopInput, Attachment attachment) throws IOException {
         String alt = imageUtils.buildSEOImageName(laptopInput.getName());
-        byte[] bigImageBlob = null, imageBlob = null, thumbnailBlob = null;
+        byte[] largeImageBlob = null, imageBlob = null, thumbnailBlob = null;
         boolean isEmptyUploadedImages = attachment.getDataHandler().getName().equals("empty.jpg");
 
         if (!isEmptyUploadedImages) {
             InputStream is = attachment.getDataHandler().getInputStream();
             BufferedImage image = ImageIO.read(is);
-            bigImageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_BIG_IMAGE);
+            largeImageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_BIG_IMAGE);
             imageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_IMAGE);
             thumbnailBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_THUMBNAIL);
         }
 
         List<Promotion> promotions = promotionDAO.findByIds(laptopInput.getPromotionIds());
-        List<Tag> tags = tagDAO.findByIds(laptopInput.getTagIds());
+//        List<Tag> tags = tagDAO.findByIds(laptopInput.getTagIds());
 
         return Laptop.builder()
                 .brand(laptopInput.getBrand())
                 .design(laptopInput.getDesign())
                 .discountPrice(laptopInput.getDiscountPrice())
-                .graphisCard(laptopInput.getGraphicsCard())
+//                .graphisCard(laptopInput.getGraphicsCard())
                 .os(laptopInput.getOs())
                 .ports(laptopInput.getPorts())
                 .quantity(laptopInput.getQuatity())
                 .name(laptopInput.getName())
-                .thickness(laptopInput.getThickness())
+//                .thickness(laptopInput.getThickness())
                 .unitPrice(laptopInput.getUnitPrice())
                 .weight(laptopInput.getWeight())
                 .cpu(laptopInput.extractCPU())
                 .monitor(laptopInput.extractMonitor())
                 .hardDrive(laptopInput.extractHardDrive())
-                .ram(laptopInput.extractRAM()).tags(tags).promotions(promotions)
-                .recordStatus(true).alt(alt).bigImage(bigImageBlob)
+                .ram(laptopInput.extractRAM()).promotions(promotions)
+                .recordStatus(true).alt(alt).largeImage(largeImageBlob)
                 .image(imageBlob).thumbnail(thumbnailBlob).build();
     }
 
@@ -241,11 +241,11 @@ public class LaptopServiceImpl implements LaptopService {
         for (Attachment attachment : attachments) {
             InputStream is = attachment.getDataHandler().getInputStream();
             BufferedImage image = ImageIO.read(is);
-            byte[] bigImageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_BIG_IMAGE);
+            byte[] largeImageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_BIG_IMAGE);
             byte[] imageBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_IMAGE);
             byte[] thumbnailBlob = imageUtils.buildBinaryImage(image, ImageType.LAPTOP_THUMBNAIL);
             LaptopImage laptopImage = LaptopImage.builder().id(null)
-                    .bigImage(bigImageBlob).image(imageBlob)
+                    .bigImage(largeImageBlob).image(imageBlob)
                     .thumbnail(thumbnailBlob).laptop(laptop).build();
             uploadedImages.add(laptopImage);
         }
@@ -299,10 +299,8 @@ public class LaptopServiceImpl implements LaptopService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findTagsById(@PathParam("id") Integer id) {
         try {
-            List<Tag> tags = tagDAO.findByLaptopId(id);
-            return tags == null
-                    ? Response.status(Response.Status.BAD_REQUEST).build()
-                    : Response.ok(tags).build();
+            List<LaptopTagType> tags = tagDAO.findByLaptopId(id);
+            return Response.ok(tags).build();
         } catch (Exception e) {
             return Response.serverError().build();
         }

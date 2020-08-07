@@ -3,6 +3,7 @@ package org.example.filter;
 import lombok.Data;
 import org.example.type.BrandType;
 import org.example.type.CPUType;
+import org.example.type.LaptopTagType;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -19,7 +20,7 @@ public class LaptopSearchFilter {
     private List<BrandType> brands;
 
     @QueryParam("tags")
-    private List<Integer> tags;
+    private List<LaptopTagType> tags;
 
     @QueryParam("cpus")
     private List<CPUType> cpus;
