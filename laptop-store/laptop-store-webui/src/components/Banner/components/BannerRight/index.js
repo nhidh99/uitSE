@@ -1,12 +1,12 @@
 import React, { Fragment } from "react";
 import styles from "./styles.module.scss";
 import { Label, Badge } from "reactstrap";
-import store from "../../../services/redux/store";
-import { closeFilter, toggleFilter } from "../../../services/redux/actions";
+import store from "../../../../services/redux/store";
+import { closeFilter, toggleFilter } from "../../../../services/redux/actions";
 import { withRouter } from "react-router-dom";
 import { FaSearch, FaEdit, FaBoxes, FaShoppingCart, FaUser } from "react-icons/fa";
-import { ROLE_ADMIN, ROLE_USER, ROLE_GUEST } from "../../../constants";
-import { getCart } from "../../../services/helper/cart";
+import { ROLE_ADMIN, ROLE_USER, ROLE_GUEST } from "../../../../constants";
+import { getCart } from "../../../../services/helper/cart";
 
 const BannerRight = (props) => {
     const CartIcon = () => (

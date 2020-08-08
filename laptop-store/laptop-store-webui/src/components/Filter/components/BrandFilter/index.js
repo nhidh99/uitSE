@@ -11,7 +11,7 @@ const BrandFilter = () => {
             label.style.border = "1px solid #ddd";
             label.removeAttribute("checked");
         } else {
-            label.style.border = "5px solid #52a2e1";
+            label.style.border = "3px solid #52a2e1";
             label.setAttribute("checked", "");
         }
     };

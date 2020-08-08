@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./styles.module.scss";
-import BannerLeft from "./BannerLeft";
-import BannerRight from "./BannerRight";
+import BannerLeft from "./components/BannerLeft";
+import BannerRight from "./components/BannerRight";
 
-const Banner = ({role}) => (
+const Banner = ({ role }) => (
     <div className={styles.container}>
         <div className={styles.banner}>
             <BannerLeft />

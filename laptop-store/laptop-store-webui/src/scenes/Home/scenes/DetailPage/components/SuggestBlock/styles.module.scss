@@ -12,6 +12,9 @@
     * {
         cursor: pointer;
     }
+    .name {
+        color: #007bff;
+    }
     text-decoration: none;
     box-shadow: 0 0 5px 5px #ccc;
 }
@@ -47,6 +50,7 @@
 
 .suggest {
     font-size: 14px;
+    z-index: 2;
 }
 
 .icon {

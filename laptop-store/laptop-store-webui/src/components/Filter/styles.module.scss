@@ -1,23 +1,14 @@
 .collapse {
-    padding: 10px 20px 5px 20px;
     background-color: white;
-    width: 1200px;
     margin: 0 auto !important;
+    width: 1200px;
     z-index: 15;
     left: 0;
     right: 0;
-    border: 1px solid #ddd;
+    transition: none !important;
+    -webkit-transition: none !important;
 }
 
-.absoluteCollapse {
-    @extend .collapse;
-    position: absolute !important;
-    border-radius: 5px;
-    box-shadow: 0 0 3px 3px #ddd;
-}
-
-.relativeCollapse {
-    @extend .collapse;
-    position: relative !important;
-    margin-bottom: 15px !important;
+.container {
+    padding: 10px 20px 5px 20px;
 }

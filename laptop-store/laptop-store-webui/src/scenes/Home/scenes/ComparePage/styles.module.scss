@@ -1,5 +1,5 @@
 .header {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 10px;
 }
 
@@ -17,8 +17,7 @@
 
         td {
             text-align: center;
-            font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         td:hover {
@@ -52,12 +51,14 @@
 }
 
 .price {
-    color: red;
+    color: #bf081f;
+    font-weight: 600;
 }
 
 .rating {
     margin-left: 5px;
     color: darkorange;
+    font-weight: 600;
 }
 
 .icon {

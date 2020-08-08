@@ -29,11 +29,12 @@ export const CartStatus = {
 };
 
 export const PINType = {
-    REMOVABLE: 'PIN liền',
-    NON_REMOVABLE: 'PIN rời'
+    REMOVABLE: 'PIN rời',
+    NON_REMOVABLE: 'PIN liền'
 }
 
 export const CardDesignType = {
-    INTEGRATED: "Card liền",
-    DISCRETE: "Card rời"
+    INTEGRATED: "Card đồ họa tích hợp",
+    DISCRETE: "Card đồ họa rời"
 }
+

@@ -49,7 +49,7 @@ const DetailBlock = () => {
                                     ? `${hard_drive["size"] / 1024} TB`
                                     : `${hard_drive["size"]} GB`
                             } 
-                            ${hard_drive["detail"]}`}
+                            ${product["hard_drive"]?.["detail"] ?? ""}`}
                     </td>
                 </tr>
                 <tr>
@@ -86,6 +86,10 @@ const DetailBlock = () => {
 				<tr>
                     <th>Thông tin PIN</th>
                     <td>{battery["detail"]} ({PINType[battery['type']]})</td>
+                </tr>
+                <tr>
+                    <th>Webcam</th>
+                    <td>{product?.["webcam"] ?? " Không hỗ trợ"}</td>
                 </tr>
                 <tr>
                     <th>Công nghệ âm thanh</th>
