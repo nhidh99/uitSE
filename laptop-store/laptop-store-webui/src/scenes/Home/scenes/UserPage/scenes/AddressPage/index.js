@@ -12,7 +12,7 @@ import userApi from "../../../../../../services/api/userApi";
 const AddressPage = () => {
     const [addresses, setAddresses] = useState([]);
     const [loading, setLoading] = useState(true);
-    const defaultAddressId = store.getState()["address"]["default-id"];
+    const defaultAddressId = store.getState()["user"]["default_address"]?.["id"];
 
     useEffect(() => {
         fetchData();
@@ -22,8 +22,12 @@ const AddressPage = () => {
         try {
             const response = await userApi.getCurrentUserAddresses();
             const data = response.data;
-            const defaultAddress = data.find((address) => address.id === defaultAddressId);
-            const addresses = data.filter((address) => address !== defaultAddress);
+            const defaultAddress = data.find(
+                (address) => address.id === defaultAddressId
+            );
+            const addresses = data.filter(
+                (address) => address !== defaultAddress
+            );
             if (defaultAddress) {
                 addresses.unshift(defaultAddress);
             }
@@ -58,7 +62,10 @@ const AddressPage = () => {
                 />
             ) : (
                 addresses.map((address) => (
-                    <AddressBlock address={address} isDefault={defaultAddressId === address.id} />
+                    <AddressBlock
+                        address={address}
+                        isDefault={defaultAddressId === address.id}
+                    />
                 ))
             )}
         </Fragment>

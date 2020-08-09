@@ -15,16 +15,15 @@ import laptopApi from "../../../../services/api/laptopApi";
 import commentApi from "../../../../services/api/commentApi";
 import ratingApi from "../../../../services/api/ratingApi";
 import store from "../../../../services/redux/store";
-import { setProductDetail, buildErrorModal } from "../../../../services/redux/actions";
+import {
+    setProductDetail,
+    buildErrorModal,
+} from "../../../../services/redux/actions";
 import ProductTitle from "./components/ProductTitle";
 import { useSelector } from "react-redux";
-import { LOADING_DELAY } from "../../../../constants";
 
 const DetailPage = (props) => {
-    const [loading, setLoading] = useState(true);
-    const [isDone, setIsDone] = useState(false);
-    const [timer, setTimer] = useState(null);
-
+    const [loading, setLoading] = useState(props.location.state?.loading ?? true);
     const { productId } = useParams();
     const { commentLength, ratingLength } = useSelector((state) => {
         const productDetail = state.productDetail;
@@ -36,27 +35,13 @@ const DetailPage = (props) => {
 
     useEffect(() => {
         window.scroll(0, 0);
+        window.history.replaceState(null, '')
         if (isNaN(parseInt(productId))) {
-            window.location.href = "/";
-            return;
-        }
-        setIsDone(false);
-    }, [props.location]);
-
-    useEffect(() => {
-        if (isDone) {
-            loading ? setLoading(false) : clearTimeout(timer);
+            props.history.push("/");
         } else {
             loadData();
-            setTimer(
-                setTimeout(() => {
-                    if (!isDone && !loading) {
-                        setLoading(true);
-                    }
-                }, LOADING_DELAY)
-            );
         }
-    }, [isDone]);
+    }, []);
 
     const loadData = async () => {
         try {
@@ -75,7 +60,6 @@ const DetailPage = (props) => {
                 loadComments(),
                 loadSuggestions(),
             ]);
-
             store.dispatch(
                 setProductDetail({
                     product: product,
@@ -86,10 +70,10 @@ const DetailPage = (props) => {
                     suggestions: suggestions,
                 })
             );
-            setIsDone(true);
+            setLoading(false);
         } catch (err) {
-            store.dispatch(buildErrorModal());
             setLoading(true);
+            store.dispatch(buildErrorModal());
         }
     };
 
@@ -140,7 +124,11 @@ const DetailPage = (props) => {
                     className={styles.textHolder}
                     showLoadingAnimation
                 />
-                <ReactPlaceholder type="rect" className={styles.rectHolder} showLoadingAnimation />
+                <ReactPlaceholder
+                    type="rect"
+                    className={styles.rectHolder}
+                    showLoadingAnimation
+                />
             </Fragment>
         ));
 
@@ -148,20 +136,35 @@ const DetailPage = (props) => {
         <DetailLoading />
     ) : (
         <Fragment>
-            <ContentBlock title={<ProductTitle />} component={<OverviewBlock />} />
+            <ContentBlock
+                title={<ProductTitle />}
+                component={<OverviewBlock />}
+            />
 
-            <ContentBlock title="Thông tin chi tiết" component={<DetailBlock />} />
+            <ContentBlock
+                title="Thông tin chi tiết"
+                component={<DetailBlock />}
+            />
 
-            <ContentBlock title="Sản phẩm tương tự" component={<SuggestBlock />} />
+            <ContentBlock
+                title="Sản phẩm tương tự"
+                component={<SuggestBlock />}
+            />
 
-            <ContentBlock title="Hỏi, đáp về sản phẩm" component={<QuestionBlock />} />
+            <ContentBlock
+                title="Hỏi, đáp về sản phẩm"
+                component={<QuestionBlock />}
+            />
 
             <ContentBlock
                 title="Khách hàng hỏi đáp"
                 component={commentLength > 0 ? <QuestionList /> : null}
             />
 
-            <ContentBlock title="Đánh giá sản phẩm" component={<RatingBlock />} />
+            <ContentBlock
+                title="Đánh giá sản phẩm"
+                component={<RatingBlock />}
+            />
 
             <ContentBlock
                 title="Khách hàng đánh giá"

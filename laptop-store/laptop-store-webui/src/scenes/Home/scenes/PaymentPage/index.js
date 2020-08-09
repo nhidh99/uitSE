@@ -17,7 +17,7 @@ import { MAXIMUM_QUANTITY_IN_CART } from "../../../../constants";
 import cartService from "../../../../services/helper/cartService";
 
 const PaymentPage = (props) => {
-    const defaultAddressId = store.getState()["address"]["default-id"];
+    const defaultAddressId = store.getState()["user"]["default_address"]?.["id"];
     const [addresses, setAddresses] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [products, setProducts] = useState([]);
@@ -68,7 +68,9 @@ const PaymentPage = (props) => {
         try {
             const response = await laptopApi.getByIds(ids);
             const products = response.data;
-            const productIds = products.map((product) => product["id"].toString());
+            const productIds = products.map((product) =>
+                product["id"].toString()
+            );
             ids.filter((id) => !productIds.includes(id)).forEach((id) =>
                 cartService.removeProduct(id)
             );
@@ -83,8 +85,12 @@ const PaymentPage = (props) => {
             const response = await userApi.getCurrentUserAddresses();
             const data = response.data;
             if (data.length !== 0) {
-                const defaultAddress = data.find((address) => address.id === defaultAddressId);
-                const addresses = data.filter((address) => address !== defaultAddress);
+                const defaultAddress = data.find(
+                    (address) => address.id === defaultAddressId
+                );
+                const addresses = data.filter(
+                    (address) => address !== defaultAddress
+                );
                 addresses.unshift(defaultAddress);
                 setAddresses(addresses);
             }
@@ -135,7 +141,9 @@ const PaymentPage = (props) => {
         return totalQty <= MAXIMUM_QUANTITY_IN_CART ? (
             <div className={styles.container}>
                 <div className={styles.address}>
-                    <header className={styles.header}>A. ĐỊA CHỈ GIAO HÀNG</header>
+                    <header className={styles.header}>
+                        A. ĐỊA CHỈ GIAO HÀNG
+                    </header>
                     <Button onClick={redirectToCreateAddress} color="primary">
                         Tạo địa chỉ mới
                     </Button>
@@ -145,8 +153,13 @@ const PaymentPage = (props) => {
                 <header className={styles.header}>B. DANH SÁCH SẢN PHẨM</header>
                 <ProductsBlock products={products} cart={cart} />
 
-                <header className={styles.header}>C. DANH SÁCH KHUYẾN MÃI</header>
-                <PromotionsBlock promotions={promotions} quantities={promotionQties} />
+                <header className={styles.header}>
+                    C. DANH SÁCH KHUYẾN MÃI
+                </header>
+                <PromotionsBlock
+                    promotions={promotions}
+                    quantities={promotionQties}
+                />
 
                 <SummaryBlock
                     productsPrice={productPrice}
@@ -165,7 +178,11 @@ const PaymentPage = (props) => {
     };
 
     return (
-        <Loader show={isSubmitted} message={<Spinner />} className={styles.loader}>
+        <Loader
+            show={isSubmitted}
+            message={<Spinner />}
+            className={styles.loader}
+        >
             {products.length === 0 ? (
                 <EmptyBlock
                     loading={loading}

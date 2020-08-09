@@ -7,22 +7,31 @@ import Home from "./scenes/Home";
 import Auth from "./scenes/Auth";
 import Admin from "./scenes/Admin";
 import Banner from "./components/Banner";
-import { getCookie, createCookie, removeCookie } from "./services/helper/cookie";
-import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./constants";
+import {
+    getCookie,
+    createCookie,
+    removeCookie,
+} from "./services/helper/cookie";
+import {
+    ROLE_GUEST,
+    ROLE_USER,
+    ROLE_ADMIN,
+    REFRESH_TOKENS_TIMESPAN,
+} from "./constants";
 import { getCart } from "./services/helper/cart";
 import Filter from "./components/Filter";
 import ConfirmModal from "./components/ConfirmModal";
 import store from "./services/redux/store";
-import { setDefaultAddressId } from "./services/redux/actions";
+import { setCurrentUser } from "./services/redux/actions";
 import userApi from "./services/api/userApi";
 import authApi from "./services/api/authApi";
-import { Provider } from "react-redux";
+import { useSelector } from "react-redux";
 import Footer from "./components/Footer";
 import cartService from "./services/helper/cartService";
 
-const App = (props) => {
+const App = () => {
     const [loading, setLoading] = useState(true);
-    const [role, setRole] = useState(null);
+    const role = useSelector((state) => state.user?.role ?? ROLE_GUEST);
 
     useEffect(() => loadData(), []);
 
@@ -31,7 +40,6 @@ const App = (props) => {
             const response = await authApi.refreshToken();
             return response.data;
         } catch (err) {
-            console.log("fail");
             return null;
         }
     };
@@ -64,10 +72,8 @@ const App = (props) => {
 
     const loadData = async () => {
         if (getCookie("access_token") === null) {
-            setRole(ROLE_GUEST);
             setLoading(true);
         }
-
         const token = await fetchToken();
         if (token) {
             createCookie("access_token", token);
@@ -77,25 +83,18 @@ const App = (props) => {
                 const user = response.data;
                 syncUserCart(user["cart"]);
                 syncUserWishList(user["wish_list"]);
-                setRole(user["role"]);
-
-                store.dispatch(
-                    setDefaultAddressId({
-                        "default-id": user["default_address"]?.["id"],
-                    })
-                );
+                store.dispatch(setCurrentUser(user));
             } catch (err) {
                 console.log("fail");
             }
         } else {
             removeCookie("access_token");
             killHeart("refresh_token");
-            setRole(ROLE_GUEST);
         }
         setLoading(false);
     };
 
-    const buildRoutes = (role) => {
+    const AppRoutes = () => {
         switch (role) {
             case ROLE_GUEST:
                 return guestRoutes();
@@ -123,7 +122,11 @@ const App = (props) => {
                     "/product/compare/:alt/:id1/:id2",
                 ]}
             />
-            <Route exact component={Auth} path="/auth/(forgot|login|register)" />
+            <Route
+                exact
+                component={Auth}
+                path="/auth/(forgot|login|register)"
+            />
         </Fragment>
     );
 
@@ -182,15 +185,17 @@ const App = (props) => {
     );
 
     return loading ? null : (
-        <Provider store={store}>
-            <Banner role={role} />
+        <Fragment>
+            <Banner/>
             <ConfirmModal />
             <Filter />
             <div className="container">
-                <Switch>{buildRoutes(role)}</Switch>
+                <Switch>
+                    <AppRoutes />
+                </Switch>
             </div>
             <Footer />
-        </Provider>
+        </Fragment>
     );
 };
 

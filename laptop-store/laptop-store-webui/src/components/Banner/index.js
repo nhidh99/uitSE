@@ -3,11 +3,11 @@ import styles from "./styles.module.scss";
 import BannerLeft from "./components/BannerLeft";
 import BannerRight from "./components/BannerRight";
 
-const Banner = ({ role }) => (
+const Banner = () => (
     <div className={styles.container}>
         <div className={styles.banner}>
             <BannerLeft />
-            <BannerRight role={role} />
+            <BannerRight />
         </div>
     </div>
 );

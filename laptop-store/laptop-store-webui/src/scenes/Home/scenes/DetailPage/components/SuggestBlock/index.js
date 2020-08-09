@@ -10,7 +10,9 @@ const SuggestBlock = (props) => {
     const { alt, productId } = useParams();
 
     const redirectToProduct = (product) => {
-        props.history.push(`/product/${product["alt"]}/${product["id"]}`);
+        props.history.push(`/product/${product["alt"]}/${product["id"]}`, {
+            loading: false,
+        });
     };
 
     return suggestions.map((product) => (
@@ -37,13 +39,11 @@ const SuggestBlock = (props) => {
                 <Label className={styles.name}>{product["name"]}</Label>
                 <br />
             </div>
-            
             <Label className={styles.unitPrice}>
                 {product["unit_price"].toLocaleString()}
                 <sup>đ</sup>
             </Label>
             &nbsp;&nbsp;
-
             <Label className={styles.originPrice}>
                 {(
                     product["unit_price"] + product["discount_price"]
@@ -51,7 +51,6 @@ const SuggestBlock = (props) => {
                 <sup>đ</sup>
             </Label>
             <br />
-
             <a
                 href={`/product/compare/${alt}-vs-${product["alt"]}/${productId}/${product["id"]}`}
                 className={styles.suggest}

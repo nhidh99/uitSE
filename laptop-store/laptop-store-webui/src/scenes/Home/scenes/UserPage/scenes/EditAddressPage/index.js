@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Label, Input, Button, Spinner } from "reactstrap";
 import { FaBook, FaAddressBook } from "react-icons/fa";
 import styles from "./styles.module.scss";
@@ -38,33 +38,45 @@ const EditAddressPage = () => {
     }, []);
 
     useEffect(() => {
-        if (!cityId) return;
+        if (!cityId || loading) return;
         loadDistricts();
     }, [cityId]);
 
     useEffect(() => {
-        if (!districtId) return;
+        if (!districtId || loading) return;
         loadWards();
     }, [districtId]);
 
     const loadData = async () => {
-        const [address, cities] = await Promise.all([loadAddress(), loadCities()]);
-        if (address) {
-            const cityId = cities.find((c) => c["name"] === address["city"])?.id;
-            const districts = await loadDistrictsByCity(cityId);
-            const districtId = districts.find((d) => d["name"] === address["district"])?.id;
-            const wards = await loadWardsByDistrict(districtId);
-            const wardId = wards.find((w) => w["name"] === address["ward"])?.id;
-
-            setCityId(cityId);
-            setDistrictId(districtId);
-            setWardId(wardId);
-        } else {
-            setDistrictId("");
+        try {
+            const [address, cities] = await Promise.all([
+                loadAddress(),
+                loadCities(),
+            ]);
+            if (address) {
+                const cityId = cities.find((c) => c["name"] === address["city"])
+                    ?.id;
+                const districts = await loadDistrictsByCity(cityId);
+                const districtId = districts.find(
+                    (d) => d["name"] === address["district"]
+                )?.id;
+                const wards = await loadWardsByDistrict(districtId);
+                const wardId = wards.find((w) => w["name"] === address["ward"])
+                    ?.id;
+                setAddress(address);
+                setDistricts(districts);
+                setWards(wards);
+                setCityId(cityId);
+                setDistrictId(districtId);
+                setWardId(wardId);
+            } else {
+                setDistrictId("");
+            }
+            setCities(cities);
+            setLoading(false);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
-        setAddress(address);
-        setCities(cities);
-        setLoading(false);
     };
 
     const loadCities = async () => {
@@ -129,7 +141,8 @@ const EditAddressPage = () => {
         const receiverName = document.getElementById("receiver-name").value;
         const receiverPhone = document.getElementById("receiver-phone").value;
         const city = document.getElementById(`city-${cityId}`)?.text;
-        const district = document.getElementById(`district-${districtId}`)?.text;
+        const district = document.getElementById(`district-${districtId}`)
+            ?.text;
         const ward = document.getElementById(`ward-${wardId}`)?.text;
         const street = document.getElementById("street").value;
         const addressNum = document.getElementById("address-num").value;
@@ -147,18 +160,34 @@ const EditAddressPage = () => {
 
     const validateInputs = (inputs) => {
         const errors = [];
-        const validate = (message, condition) => (condition() ? null : errors.push(message));
+        const validate = (message, condition) =>
+            condition() ? null : errors.push(message);
         validate("Họ và tên không được để trống hoặc chứa chữ số", () =>
             inputs["receiver_name"].match(/^[a-zA-Z\s\p{L}]{3,30}$/gu)
         );
         validate("Số điện thoại từ 6 - 12 chữ số", () =>
             inputs["receiver_phone"].match(/^\d{6,12}$/)
         );
-        validate("Tỉnh/Thành phố không được để trống", () => inputs["city"]?.length > 0);
-        validate("Quận huyện không được để trống", () => inputs["district"]?.length > 0);
-        validate("Phường xã không được để trống", () => inputs["ward"]?.length > 0);
-        validate("Đường không được để trống", () => inputs["street"].length > 0);
-        validate("Số nhà không được để trống", () => inputs["address_num"].length > 0);
+        validate(
+            "Tỉnh/Thành phố không được để trống",
+            () => inputs["city"]?.length > 0
+        );
+        validate(
+            "Quận huyện không được để trống",
+            () => inputs["district"]?.length > 0
+        );
+        validate(
+            "Phường xã không được để trống",
+            () => inputs["ward"]?.length > 0
+        );
+        validate(
+            "Đường không được để trống",
+            () => inputs["street"].length > 0
+        );
+        validate(
+            "Số nhà không được để trống",
+            () => inputs["address_num"].length > 0
+        );
         return errors;
     };
 
@@ -210,7 +239,7 @@ const EditAddressPage = () => {
     };
 
     return (
-        <Loader show={loading || reloading} message={<Spinner />}>
+        <Fragment>
             <header className={styles.header}>
                 <FaBook />
                 &nbsp;&nbsp;{id === "create" ? "THÊM ĐỊA CHỈ" : "SỬA ĐỊA CHỈ"}
@@ -230,159 +259,200 @@ const EditAddressPage = () => {
                     ))}
                 </p>
             ) : null}
-            <table className={styles.form}>
-                <tbody>
-                    <tr>
-                        <td className={styles.labelCol}>
-                            <Label>Họ và tên:</Label>
-                        </td>
-                        <td className={styles.inputCol}>
-                            <Input
-                                type="text"
-                                name="receiver-name"
-                                id="receiver-name"
-                                placeholder="Nhập họ và tên"
-                                defaultValue={address != null ? address["receiver_name"] : null}
-                            />
-                        </td>
-                    </tr>
+            <Loader show={loading || reloading} message={<Spinner />}>
+                <table className={styles.form}>
+                    <tbody>
+                        <tr>
+                            <td className={styles.labelCol}>
+                                <Label>Họ và tên:</Label>
+                            </td>
+                            <td className={styles.inputCol}>
+                                <Input
+                                    type="text"
+                                    name="receiver-name"
+                                    id="receiver-name"
+                                    placeholder="Nhập họ và tên"
+                                    defaultValue={
+                                        address != null
+                                            ? address["receiver_name"]
+                                            : null
+                                    }
+                                />
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.labelCol}>Điện thoại:</Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="text"
-                                name="receiver-phone"
-                                id="receiver-phone"
-                                placeholder="Nhập số điện thoại"
-                                defaultValue={address != null ? address["receiver_phone"] : null}
-                            />
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <Label className={styles.labelCol}>
+                                    Điện thoại:
+                                </Label>
+                            </td>
+                            <td>
+                                <Input
+                                    type="text"
+                                    name="receiver-phone"
+                                    id="receiver-phone"
+                                    placeholder="Nhập số điện thoại"
+                                    defaultValue={
+                                        address != null
+                                            ? address["receiver_phone"]
+                                            : null
+                                    }
+                                />
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.labelCol}>Tỉnh/Thành:</Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="select"
-                                name="city"
-                                id="city"
-                                onChange={(e) => setCityId(e.target.value)}
-                                value={cityId}
-                            >
-                                <option value="" hidden>
-                                    Chọn Tỉnh/Thành
-                                </option>
-                                {cities.map((city) => (
-                                    <option value={city["id"]} id={`city-${city["id"]}`}>
-                                        {city["name"]}
+                        <tr>
+                            <td>
+                                <Label className={styles.labelCol}>
+                                    Tỉnh/Thành:
+                                </Label>
+                            </td>
+                            <td>
+                                <Input
+                                    type="select"
+                                    name="city"
+                                    id="city"
+                                    onChange={(e) => setCityId(e.target.value)}
+                                    value={cityId}
+                                    disabled={loading || reloading}
+                                >
+                                    <option value="" hidden>
+                                        Chọn Tỉnh/Thành
                                     </option>
-                                ))}
-                            </Input>
-                        </td>
-                    </tr>
+                                    {cities.map((city) => (
+                                        <option
+                                            value={city["id"]}
+                                            id={`city-${city["id"]}`}
+                                        >
+                                            {city["name"]}
+                                        </option>
+                                    ))}
+                                </Input>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.labelCol}>Quận/Huyện:</Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="select"
-                                name="district"
-                                id="district"
-                                onChange={(e) => setDistrictId(e.target.value)}
-                                value={districtId}
-                            >
-                                <option value="" hidden>
-                                    Chọn Quận/Huyện
-                                </option>
-                                {districts.map((district) => (
-                                    <option
-                                        value={district["id"]}
-                                        id={`district-${district["id"]}`}
-                                    >
-                                        {district["name"]}
+                        <tr>
+                            <td>
+                                <Label className={styles.labelCol}>
+                                    Quận/Huyện:
+                                </Label>
+                            </td>
+                            <td>
+                                <Input
+                                    type="select"
+                                    name="district"
+                                    id="district"
+                                    onChange={(e) =>
+                                        setDistrictId(e.target.value)
+                                    }
+                                    value={districtId}
+                                    disabled={loading || reloading}
+                                >
+                                    <option value="" hidden>
+                                        Chọn Quận/Huyện
                                     </option>
-                                ))}
-                            </Input>
-                        </td>
-                    </tr>
+                                    {districts.map((district) => (
+                                        <option
+                                            value={district["id"]}
+                                            id={`district-${district["id"]}`}
+                                        >
+                                            {district["name"]}
+                                        </option>
+                                    ))}
+                                </Input>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.labelCol}>Phường/Xã:</Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="select"
-                                name="ward"
-                                id="ward"
-                                onChange={(e) => setWardId(e.target.value)}
-                                value={wardId}
-                            >
-                                <option value="" hidden>
-                                    Chọn Phường/Xã
-                                </option>
-                                {wards.map((ward) => (
-                                    <option value={ward["id"]} id={`ward-${ward["id"]}`}>
-                                        {ward["name"]}
+                        <tr>
+                            <td>
+                                <Label className={styles.labelCol}>
+                                    Phường/Xã:
+                                </Label>
+                            </td>
+                            <td>
+                                <Input
+                                    type="select"
+                                    name="ward"
+                                    id="ward"
+                                    onChange={(e) => setWardId(e.target.value)}
+                                    value={wardId}
+                                    disabled={loading || reloading}
+                                >
+                                    <option value="" hidden>
+                                        Chọn Phường/Xã
                                     </option>
-                                ))}
-                            </Input>
-                        </td>
-                    </tr>
+                                    {wards.map((ward) => (
+                                        <option
+                                            value={ward["id"]}
+                                            id={`ward-${ward["id"]}`}
+                                        >
+                                            {ward["name"]}
+                                        </option>
+                                    ))}
+                                </Input>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.labelCol}>Đường:</Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="text"
-                                name="street"
-                                id="street"
-                                placeholder="Nhập tên đường"
-                                defaultValue={address != null ? address["street"] : null}
-                            />
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <Label className={styles.labelCol}>
+                                    Đường:
+                                </Label>
+                            </td>
+                            <td>
+                                <Input
+                                    type="text"
+                                    name="street"
+                                    id="street"
+                                    placeholder="Nhập tên đường"
+                                    defaultValue={
+                                        address != null
+                                            ? address["street"]
+                                            : null
+                                    }
+                                />
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>
-                            <Label className={styles.labelCol}>Địa chỉ:</Label>
-                        </td>
-                        <td>
-                            <Input
-                                type="text"
-                                name="address-num"
-                                id="address-num"
-                                rows="3"
-                                placeholder="Nhập địa chỉ (hẻm, số nhà)"
-                                defaultValue={address != null ? address["address_num"] : null}
-                            />
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <Label className={styles.labelCol}>
+                                    Địa chỉ:
+                                </Label>
+                            </td>
+                            <td>
+                                <Input
+                                    type="text"
+                                    name="address-num"
+                                    id="address-num"
+                                    rows="3"
+                                    placeholder="Nhập địa chỉ (hẻm, số nhà)"
+                                    defaultValue={
+                                        address != null
+                                            ? address["address_num"]
+                                            : null
+                                    }
+                                />
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td />
-                        <td>
-                            <Button
-                                className={styles.submit}
-                                color="success"
-                                onClick={createAddress}
-                            >
-                                Lưu địa chỉ
-                            </Button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </Loader>
+                        <tr>
+                            <td />
+                            <td>
+                                <Button
+                                    className={styles.submit}
+                                    color="success"
+                                    onClick={createAddress}
+                                >
+                                    Lưu địa chỉ
+                                </Button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Loader>
+        </Fragment>
     );
 };
 

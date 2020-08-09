@@ -4,11 +4,20 @@ import { Label, Badge } from "reactstrap";
 import store from "../../../../services/redux/store";
 import { closeFilter, toggleFilter } from "../../../../services/redux/actions";
 import { withRouter } from "react-router-dom";
-import { FaSearch, FaEdit, FaBoxes, FaShoppingCart, FaUser } from "react-icons/fa";
+import {
+    FaSearch,
+    FaEdit,
+    FaBoxes,
+    FaShoppingCart,
+    FaUser,
+} from "react-icons/fa";
 import { ROLE_ADMIN, ROLE_USER, ROLE_GUEST } from "../../../../constants";
 import { getCart } from "../../../../services/helper/cart";
+import { useSelector } from "react-redux";
 
 const BannerRight = (props) => {
+    const role = useSelector((state) => state.user?.role ?? ROLE_GUEST);
+
     const CartIcon = () => (
         <Fragment>
             <FaShoppingCart />
@@ -70,8 +79,12 @@ const BannerRight = (props) => {
         ];
 
         return categoryItems.map((item) =>
-            item.roles.includes(props.role) ? (
-                <BannerCategory href={item.href} icon={item.icon} title={item.title} />
+            item.roles.includes(role) ? (
+                <BannerCategory
+                    href={item.href}
+                    icon={item.icon}
+                    title={item.title}
+                />
             ) : null
         );
     };

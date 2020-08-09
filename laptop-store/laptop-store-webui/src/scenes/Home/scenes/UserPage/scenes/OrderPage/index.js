@@ -3,7 +3,9 @@ import React, { Fragment, useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
 import { Table, Spinner } from "reactstrap";
-import { ITEM_COUNT_PER_PAGE, LOADING_DELAY } from "../../../../../../constants";
+import {
+    ITEM_COUNT_PER_PAGE,
+} from "../../../../../../constants";
 import Pagination from "react-js-pagination";
 import { convertOrderStatus } from "../../../../../../services/helper/converter";
 import { withRouter } from "react-router-dom";
@@ -15,9 +17,7 @@ const OrderPage = (props) => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(null);
     const [orders, setOrders] = useState([]);
-    const [orderCount, setOrderCount] = useState(1);
-    const [isDone, setIsDone] = useState(false);
-    const [timer, setTimer] = useState(null);
+    const [orderCount, setOrderCount] = useState(0);
 
     useEffect(() => {
         const params = new URLSearchParams(props.location.search);
@@ -27,24 +27,9 @@ const OrderPage = (props) => {
 
     useEffect(() => {
         if (!page) return;
-        props.history.push("/user/order?page=" + page);
-        setIsDone(false);
+        window.history.pushState(null, null, `/user/order?page=${page}`);
+        loadData();
     }, [page]);
-
-    useEffect(() => {
-        if (isDone) {
-            loading ? setLoading(false) : clearTimeout(timer);
-        } else {
-            loadData();
-            setTimer(
-                setTimeout(() => {
-                    if (!isDone && !loading) {
-                        setLoading(true);
-                    }
-                }, LOADING_DELAY)
-            );
-        }
-    }, [isDone]);
 
     const loadData = async () => {
         try {
@@ -53,7 +38,7 @@ const OrderPage = (props) => {
             const orderCount = response.headers["x-total-count"];
             setOrders(orders);
             setOrderCount(orderCount);
-            setIsDone(true);
+            setLoading(false);
         } catch (err) {
             setLoading(true);
         }
@@ -86,7 +71,7 @@ const OrderPage = (props) => {
                     emptyText="Danh sách trống"
                 />
             ) : (
-                <Loader show={loading && timer === null} message={<Spinner />}>
+                <Loader show={loading} message={<Spinner />}>
                     <Table className={styles.table} hover bordered striped>
                         <tbody>
                             <tr>
@@ -98,14 +83,22 @@ const OrderPage = (props) => {
                             </tr>
 
                             {orders.map((orderOverview) => {
-                                const { order, first_product, product_count } = orderOverview;
+                                const {
+                                    order,
+                                    first_product,
+                                    product_count,
+                                } = orderOverview;
                                 const { order_date } = order;
                                 return (
                                     <tr
-                                        onClick={() => redirectToOrderDetail(order["id"])}
+                                        onClick={() =>
+                                            redirectToOrderDetail(order["id"])
+                                        }
                                         className={styles.orderRow}
                                     >
-                                        <td className={styles.idCol}>{order["id"]}</td>
+                                        <td className={styles.idCol}>
+                                            {order["id"]}
+                                        </td>
 
                                         <td className={styles.dateCol}>
                                             {`${order_date["dayOfMonth"]}/${order_date["monthValue"]}/${order_date["year"]}`}
@@ -113,20 +106,26 @@ const OrderPage = (props) => {
 
                                         <td className={styles.productsCol}>
                                             {`${first_product["quantity"]} Laptop ${first_product["product_name"]}`}
-                                            {product_count === first_product["quantity"]
+                                            {product_count ===
+                                            first_product["quantity"]
                                                 ? null
                                                 : ` và ${
-                                                      product_count - first_product["quantity"]
+                                                      product_count -
+                                                      first_product["quantity"]
                                                   } sản phẩm khác`}
                                         </td>
 
                                         <td className={styles.priceCol}>
-                                            {order["total_price"].toLocaleString()}
+                                            {order[
+                                                "total_price"
+                                            ].toLocaleString()}
                                             <sup>đ</sup>
                                         </td>
 
                                         <td className={styles.statusCol}>
-                                            {convertOrderStatus(order["status"])}
+                                            {convertOrderStatus(
+                                                order["status"]
+                                            )}
                                         </td>
                                     </tr>
                                 );

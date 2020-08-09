@@ -48,7 +48,7 @@ const LoginPage = () => {
             window.location.href = "/";
         } catch (err) {
             let error = "";
-            switch (err.reseponse.status) {
+            switch (err.response.status) {
                 case 404:
                     error = "Không tìm thấy tài khoản liên kết";
                     break;

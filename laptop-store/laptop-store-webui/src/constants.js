@@ -20,7 +20,7 @@ export const NUMBER_OF_DELIVERY_DAYS = 3;
 export const DELIVERY_FEE = 45_000;
 
 export const ITEM_COUNT_PER_PAGE = 5;
-export const LOADING_DELAY = 500;
+export const LOADING_DELAY = 300;
 
 export const CartStatus = {
     IDLE: "IDLE",
