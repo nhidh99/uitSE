@@ -1,0 +1,104 @@
+.form {
+    width: 500px;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+.loginForm {
+    text-align: center;
+    background-color: white;
+    font-size: 16px;
+    padding: 30px 50px !important;
+    color: #454545;
+    margin-bottom: 25px;
+    box-shadow: 0 0 1px 1px #ddd;
+
+    > *:not(:first-child) {
+        margin-top: 15px;
+    }
+
+    header {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    a {
+        font-weight: bold;
+    }
+
+    p {
+        margin-bottom: 0;
+        font-size: 16px;
+    }
+
+    input {
+        font-size: 16px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        font-size: 15px;
+        border-radius: 20px;
+    }
+}
+
+.altLogin {
+    font-size: 14px;
+    margin-top: 20px;
+    padding: 15px 0;
+}
+
+.altBtn {
+    width: 500px !important;
+    display: block;
+    color: #333;
+    border: none;
+    width: 125px;
+    height: 40px;
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 0;
+    color: white;
+    font-weight: 600;
+}
+
+.altBtn:focus {
+    outline: none;
+}
+
+.facebookBtn {
+    background-color: #3b5998;
+}
+
+.googleBtn {
+    background-color: #db4a39;
+}
+
+.iconLogin {
+    float: left;
+    border-right: 1px solid #bbb;
+    padding: 0 10px;
+    margin: auto 0;
+}
+
+.borderInputLeft {
+    border-top-left-radius: 20px !important;
+    border-bottom-left-radius: 20px !important;
+
+    svg {
+        margin-left: 5px;
+    }
+}
+
+.borderInputRight {
+    border-top-right-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+}
+
+.error {
+    color: red;
+    display: block;
+    font-size: 15px !important;
+    font-weight: 600;
+}

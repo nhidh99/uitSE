@@ -1,0 +1,48 @@
+.itemBlock {
+    border: 1px dashed darkgray;
+    font-size: 14px;
+}
+
+.itemBlock:not(:last-of-type) {
+    margin-bottom: 15px;
+}
+
+.blockLeft {
+    img {
+        padding: 2px; 
+    }
+}
+
+.blockCenter {
+    margin-top: 25px;
+    padding: 0 20px 0 35px !important;
+}
+
+.blockRight {
+    margin-top: 20px;
+}
+
+.name {
+    font-size: 15px;
+    margin-bottom: 2px !important;
+    color:#0000FF;
+    font-weight: 500;
+}
+
+.name:hover {
+    cursor: pointer;
+}
+
+.priceLabel {
+    margin-top: 3px;
+    font-weight: bold;
+    font-size: 15px;
+    color: #bf081f;
+}
+
+.pricePromotion {
+    text-decoration: line-through;
+    color: grey;
+    margin-left: 10px;
+    font-size: 13px;
+}

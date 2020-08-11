@@ -1,0 +1,202 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useState, useEffect } from "react";
+import "./App.scss";
+import { createHeart, killHeart } from "heartbeats";
+import { Switch, Route } from "react-router-dom";
+import Home from "./scenes/Home";
+import Auth from "./scenes/Auth";
+import Admin from "./scenes/Admin";
+import Banner from "./components/Banner";
+import {
+    getCookie,
+    createCookie,
+    removeCookie,
+} from "./services/helper/cookie";
+import {
+    ROLE_GUEST,
+    ROLE_USER,
+    ROLE_ADMIN,
+    REFRESH_TOKENS_TIMESPAN,
+} from "./constants";
+import { getCart } from "./services/helper/cart";
+import Filter from "./components/Filter";
+import ConfirmModal from "./components/ConfirmModal";
+import store from "./services/redux/store";
+import { setCurrentUser } from "./services/redux/actions";
+import userApi from "./services/api/userApi";
+import authApi from "./services/api/authApi";
+import { useSelector } from "react-redux";
+import Footer from "./components/Footer";
+import cartService from "./services/helper/cartService";
+
+const App = () => {
+    const [loading, setLoading] = useState(true);
+    const role = useSelector((state) => state.user?.role ?? ROLE_GUEST);
+
+    useEffect(() => loadData(), []);
+
+    const fetchToken = async () => {
+        try {
+            const response = await authApi.refreshToken();
+            return response.data;
+        } catch (err) {
+            return null;
+        }
+    };
+
+    const syncUserCart = (userCart) => {
+        const cart = getCart();
+        if (JSON.stringify(cart) === userCart) return;
+        Object.keys(cart).length === 0
+            ? localStorage.setItem("cart", userCart)
+            : cartService.syncWithDatabase(cart);
+    };
+
+    const syncUserWishList = (userWishList) => {
+        localStorage.setItem("wish-list", userWishList);
+    };
+
+    const createRefreshTokenHeart = () => {
+        const heart = createHeart(REFRESH_TOKENS_TIMESPAN, "refresh_token");
+        heart.createEvent(1, async () => {
+            const token = await fetchToken();
+            if (token) {
+                createCookie("access_token", token);
+            } else {
+                removeCookie("access_token");
+                killHeart("refresh_token");
+                window.location.href = "/";
+            }
+        });
+    };
+
+    const loadData = async () => {
+        if (getCookie("access_token") === null) {
+            setLoading(true);
+        }
+        const token = await fetchToken();
+        if (token) {
+            createCookie("access_token", token);
+            createRefreshTokenHeart();
+            try {
+                const response = await userApi.getCurrentUser();
+                const user = response.data;
+                syncUserCart(user["cart"]);
+                syncUserWishList(user["wish_list"]);
+                store.dispatch(setCurrentUser(user));
+            } catch (err) {
+                console.log("fail");
+            }
+        } else {
+            removeCookie("access_token");
+            killHeart("refresh_token");
+        }
+        setLoading(false);
+    };
+
+    const AppRoutes = () => {
+        switch (role) {
+            case ROLE_GUEST:
+                return guestRoutes();
+            case ROLE_USER:
+                return userRoutes();
+            case ROLE_ADMIN:
+                return adminRoutes();
+            default:
+                return null;
+        }
+    };
+
+    const guestRoutes = () => (
+        <Fragment>
+            <Route
+                exact
+                component={Home}
+                path={[
+                    "/",
+                    "/search",
+                    "/user",
+                    "/cart",
+                    "/product/:id",
+                    "/product/:alt/:id",
+                    "/product/compare/:alt/:id1/:id2",
+                ]}
+            />
+            <Route
+                exact
+                component={Auth}
+                path="/auth/(forgot|login|register)"
+            />
+        </Fragment>
+    );
+
+    const userRoutes = () => (
+        <Route
+            exact
+            component={Home}
+            path={[
+                "/",
+                "/search",
+                "/user",
+                "/cart",
+                "/payment",
+                "/product/:id",
+                "/product/:alt/:id",
+                "/product/compare/:alt/:id1/:id2",
+                "/user/(info|password|address|order|wish-list|reward)",
+                "/user/address/:id",
+                "/user/order/:orderId",
+            ]}
+        />
+    );
+
+    const adminRoutes = () => (
+        <Fragment>
+            <Route
+                exact
+                component={Home}
+                path={[
+                    "/",
+                    "/search",
+                    "/user",
+                    "/cart",
+                    "/payment",
+                    "/product/:id",
+                    "/product/:alt/:id",
+                    "/product/compare/:alt/:id1/:id2",
+                    "/user/(info|password|address|order|wish-list|reward)",
+                    "/user/address/:id",
+                    "/user/order/:orderId",
+                ]}
+            />
+            <Route
+                exact
+                component={Admin}
+                path={[
+                    "/admin/(|products|orders|promotions|ratings|comments)",
+                    "/admin/products/search",
+                    "/admin/orders/search",
+                    "/admin/promotions/search",
+                    "/admin/ratings/search",
+                    "/admin/comments/search",
+                ]}
+            />
+        </Fragment>
+    );
+
+    return loading ? null : (
+        <Fragment>
+            <Banner/>
+            <ConfirmModal />
+            <Filter />
+            <div className="container">
+                <Switch>
+                    <AppRoutes />
+                </Switch>
+            </div>
+            <Footer />
+        </Fragment>
+    );
+};
+
+export default App;

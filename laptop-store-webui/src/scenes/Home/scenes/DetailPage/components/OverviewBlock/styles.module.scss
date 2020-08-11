@@ -1,0 +1,10 @@
+.blockLeft {
+    align-items: center;
+    flex: 1;
+    max-width: calc(100% / 3);
+}
+
+.blockRight {
+    border-left: 1px solid #efefef;
+    flex: 2;
+}

@@ -1,7 +1,4 @@
 version: '3.4'
-networks:
-    ls_net:
-        external: true
 
 services:
     mariadb:
@@ -19,8 +16,6 @@ services:
             test: ["CMD", "mysqladmin", "ping", "--silent"]
         ports:
             - "3308:3306"
-        networks:
-            - ls_net
 
     karaf:
         tty: true
@@ -31,7 +26,4 @@ services:
         depends_on:
             - mariadb
         ports:
-            #- "8181:8181"
-            - "8181:8080"
-        networks:
-            - ls_net
+            - "8181:8080" #port 80 for deploy?

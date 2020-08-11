@@ -15,15 +15,15 @@
         <module>laptop-store-util</module>
         <module>laptop-store-blueprint</module>
         <module>laptop-store-feature</module>
-<!--        <module>laptop-store-webui</module>-->
+        <module>laptop-store-webui</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bundle.plugin.version>3.0.1</bundle.plugin.version>
-        <hibernate.version>5.4.2.Final</hibernate.version>
+        <hibernate.version>5.4.19.Final</hibernate.version>
         <jackson.version>2.10.3</jackson.version>
-        <cxf.version>3.3.5</cxf.version>
+        <cxf.version>3.3.7</cxf.version>
     </properties>
 
     <build>

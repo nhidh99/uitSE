@@ -1,0 +1,16 @@
+.block {
+    width: 100%;
+    padding: 20px;
+}
+
+.input {
+    font-size: 14px !important;
+    width: calc(100% - 170px) !important;
+    display: inline-block !important;
+}
+
+.btn {
+    font-size: 14px !important;
+    float: right;
+    width: 150px;
+}

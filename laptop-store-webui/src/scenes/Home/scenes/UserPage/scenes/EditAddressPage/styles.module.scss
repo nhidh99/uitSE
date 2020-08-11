@@ -1,0 +1,51 @@
+.form {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: separate;
+    border-spacing: 10px;
+    border: 1px dashed darkgray;
+    margin-top: 20px;
+    padding: 10px;
+
+    input,
+    select,
+    textarea {
+        font-size: 14px !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+}
+
+.header {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.labelCol {
+    width: 100px;
+    font-weight: 600;
+}
+
+.buttons {
+    float: right;
+
+    button {
+        font-size: 14px !important;
+        margin-left: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.error {
+    color: red;
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.submit {
+    width: 100%;
+    font-size: 14px;
+    margin-bottom: -5px;
+}
