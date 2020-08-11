@@ -82,7 +82,7 @@ public class CommentDAOImpl implements CommentDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Comment> findByPage(Integer page) {
-        String query = "SELECT c FROM Comment c";
+        String query = "SELECT c FROM Comment c ORDER BY c.id DESC";
         return em.createQuery(query, Comment.class)
                 .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
@@ -97,7 +97,15 @@ public class CommentDAOImpl implements CommentDAO {
         }
         Comment comment = em.find(Comment.class, id);
         if (comment == null) throw new BadRequestException();
-        comment.setApproveStatus(!comment.isApproveStatus());
+        comment.setApproveStatus(true);
+        em.merge(comment);
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void deny(Integer id) {
+        Comment comment = em.find(Comment.class, id);
+        comment.setApproveStatus(false);
         em.merge(comment);
     }
 

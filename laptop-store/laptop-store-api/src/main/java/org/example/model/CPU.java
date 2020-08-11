@@ -37,6 +37,6 @@ public class CPU {
 
     @Column(name = "max_speed")
     @JsonProperty("max_speed")
-    private Float maxSpeed;
+    private String maxSpeed;
 }
 

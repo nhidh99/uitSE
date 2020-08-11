@@ -9,6 +9,7 @@ import Loader from "react-loader-advanced";
 import Pagination from "react-js-pagination";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
+import promotionApi from "../../../../../../services/api/promotionApi";
 
 const PromotionList = (props) => {
     const [loading, setLoading] = useState(true);
@@ -37,7 +38,7 @@ const PromotionList = (props) => {
     const search = async (query) => {
         const response = await fetch(`/cxf/api/promotions/search?q=${query}&page=${page}`, {
             method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") }
+            headers: { Authorization: "Bearer " + getCookie("access_token") },
         });
         if (response.ok) {
             const promotions = await response.json();
@@ -46,23 +47,18 @@ const PromotionList = (props) => {
             setCount(count);
             setLoading(false);
         }
-    }
+    };
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/promotions?page=${page}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + getCookie("access_token"),
-            },
-        });
-
-        if (response.ok) {
-            const promotions = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await promotionApi.getByPage(page);
+            const promotions = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setPromotions(promotions);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 

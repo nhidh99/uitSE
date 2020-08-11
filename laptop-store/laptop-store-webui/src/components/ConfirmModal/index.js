@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import store from "../../services/redux/store";
-import { toggleModal } from "../../services/redux/actions";
+import { toggleModal, buildErrorModal } from "../../services/redux/actions";
 import styles from "./styles.module.scss";
 
 const ConfirmModal = () => {
@@ -24,8 +24,12 @@ const ConfirmModal = () => {
     }, []);
 
     const confirmAction = async () => {
-        await confirm();
-        toggle();
+        try {
+            await confirm();
+            toggle();
+        } catch (err) {
+            store.dispatch(buildErrorModal());
+        }
     };
 
     return (

@@ -1,28 +1,26 @@
-.block {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
 .cell {
-    flex: 1 1 0px;
+    flex: 1;
     text-align: left;
     padding: 10px 20px 15px 20px;
+    cursor: pointer;
 }
 
 .cell:hover {
     img {
         transform: translateY(-15px);
     }
+    * {
+        cursor: pointer;
+    }
+    .name {
+        color: #007bff;
+    }
     text-decoration: none;
     box-shadow: 0 0 5px 5px #ccc;
 }
 
 .cell:not(:first-of-type) {
-    border-left: 1px solid lightgray;
+    border-left: 1px solid #efefef;
 }
 
 .cell:not(:last-of-type) {
@@ -30,10 +28,8 @@
 }
 
 .name {
-    font-size: 16px;
-    font-weight: 600;
-    color: black;
-    cursor: pointer;
+    font-size: 14px;
+    color: #333;
 }
 
 .img {
@@ -43,7 +39,7 @@
 
 .unitPrice {
     font-size: 14px;
-    color:red;
+    color: #bf081f;
     font-weight: 600;
 }
 
@@ -53,7 +49,8 @@
 }
 
 .suggest {
-    font-size: 16px;
+    font-size: 14px;
+    z-index: 2;
 }
 
 .icon {
@@ -65,11 +62,10 @@
 }
 
 .itemInfo {
-    color: #007bff;
-    font-size: 14px;
+    color: #333;
+    font-size: 13px;
     font-weight: 600;
     margin-bottom: -2px;
-    cursor: pointer;
 }
 
 .redirect {

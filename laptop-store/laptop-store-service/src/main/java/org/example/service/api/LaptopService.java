@@ -2,11 +2,11 @@ package org.example.service.api;
 
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.filter.LaptopFilter;
+import org.example.filter.LaptopSearchFilter;
+import org.example.input.LaptopInput;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -27,9 +27,9 @@ public interface LaptopService {
 
     Response findLaptopsByFilter(String queryParam, Integer page);
 
-    Response createLaptop(MultipartBody body);
+    Response createLaptop(LaptopInput laptopInput, Attachment attachment);
 
-    Response updateLaptop(Integer id, MultipartBody body);
+    Response updateLaptop(Integer id, LaptopInput laptopInput, Attachment attachment);
 
     Response updateLaptopDetailImages(Integer id, Integer[] deleteIds, List<Attachment> attachments);
 
@@ -40,4 +40,6 @@ public interface LaptopService {
     Response findTagsById(Integer id);
 
     Response findDetailImageIdsById(Integer id);
+
+    Response searchLaptop(LaptopSearchFilter laptopSearchFilter);
 }

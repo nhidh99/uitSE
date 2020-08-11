@@ -13,10 +13,11 @@ public interface CommentService {
 
     Response deleteCommentById(Integer commentId, SecurityContext securityContext);
 
-    Response approveCommentById(Integer commentId, ReplyInput replyInput, SecurityContext securityContext);
+    Response approveComment(Integer commentId, ReplyInput replyInput, SecurityContext securityContext);
+
+    Response denyComment(Integer commentId);
 
     Response findCommentsByFilter(String id, String status, Integer page);
 
     Response createReply(Integer commentId, ReplyInput replyInput, SecurityContext securityContext);
-
 }

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1592724672052
+Bnd-LastModified: 1597142035188
 Build-Jdk: 1.8.0_241
 Built-By: vuong
 Bundle-ManifestVersion: 2
@@ -7,12 +7,13 @@ Bundle-Name: laptop-store-api
 Bundle-SymbolicName: org.example.laptop-store-api
 Bundle-Version: 1.0.0.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
-Export-Package: org.example.filter;version="1.0.0",org.example.input;use
- s:="com.fasterxml.jackson.annotation";version="1.0.0",org.example.model
- ;uses:="com.fasterxml.jackson.annotation,javax.persistence,org.example.
- type";version="1.0.0",org.example.type;version="1.0.0"
+Export-Package: org.example.filter;uses:="org.example.type";version="1.0
+ .0",org.example.input;uses:="com.fasterxml.jackson.annotation,org.examp
+ le.model,org.example.type";version="1.0.0",org.example.model;uses:="com
+ .fasterxml.jackson.annotation,javax.persistence,org.example.type";versi
+ on="1.0.0",org.example.type;version="1.0.0"
 Import-Package: com.fasterxml.jackson.annotation;version="[2.10,3)",java
  x.persistence;version="[2.2,3)",javax.ws.rs;version="[2.0,3)",org.examp
- le.type,org.hibernate.proxy,javassist.util.proxy
+ le.model,org.example.type,org.hibernate.proxy,javassist.util.proxy
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Tool: Bnd-3.0.0.201509101326

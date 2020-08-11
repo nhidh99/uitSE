@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { Label, Input, Button, Spinner } from "reactstrap";
+import React, { useState, useEffect, Fragment } from "react";
+import { Label, Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
-import { FaInfoCircle } from "react-icons/fa";
-import { getCookie } from "../../../../../../services/helper/cookie";
-import Loader from "react-loader-advanced";
+import { FaInfoCircle, FaUserCircle } from "react-icons/fa";
 import FacebookSync from "./components/FacebookSync";
 import GoogleSync from "./components/GoogleSync";
+import EmptyBlock from "../../../../../../components/EmptyBlock";
+import userApi from "../../../../../../services/api/userApi";
 
 const InfoPage = () => {
     const [loading, setLoading] = useState(true);
@@ -41,19 +41,23 @@ const InfoPage = () => {
     };
 
     const loadUser = async () => {
-        const response = await fetch("/cxf/api/users/me", {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") },
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await userApi.getCurrentUser();
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const loadSocialMediaAuth = async () => {
-        const response = await fetch("/cxf/api/users/me/social-auth", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await userApi.getCurrentUserSocialAuth();
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const validateInputs = () => {
@@ -107,39 +111,23 @@ const InfoPage = () => {
     };
 
     const updateUser = async () => {
-        const name = document.getElementById("fullName").value;
-        const telephone = document.getElementById("telephone").value;
-        const email = document.getElementById("email").value;
-        const gender = document.getElementById("gender").value;
-        const birthday = document.getElementById("birthday").value;
-
-        const response = await fetch("/cxf/api/users/me", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + getCookie("access_token"),
-            },
-            body: JSON.stringify({
-                name: name,
-                phone: telephone,
-                email: email,
-                gender: gender,
-                birthday: new Date(birthday).getTime(),
-            }),
-        });
-
-        if (response.ok) {
+        try {
+            const data = {
+                name: document.getElementById("fullName").value,
+                phone: document.getElementById("telephone").value,
+                email: document.getElementById("email").value,
+                gender: document.getElementById("gender").value,
+                birthday: new Date(document.getElementById("birthday").value).getTime(),
+            };
+            await userApi.putCurrentUser(data);
             alert("Đã lưu thông tin mới thành công");
+        } catch (err) {
+            console.log("fail");
         }
     };
 
     return (
-        <Loader
-            show={loading}
-            message={<Spinner color="primary" />}
-            className={styles.loader}
-            backgroundStyle={{ backgroundColor: "transparent" }}
-        >
+        <Fragment>
             <div className={styles.title}>
                 <label className={styles.header}>
                     <FaInfoCircle />
@@ -149,14 +137,6 @@ const InfoPage = () => {
                 <div className={styles.buttons}>
                     <FacebookSync auth={fbAuth} />
                     <GoogleSync auth={googleAuth} />
-                    <Button
-                        type="submit"
-                        className={styles.submit}
-                        color="success"
-                        onClick={submit}
-                    >
-                        Lưu
-                    </Button>
                 </div>
             </div>
 
@@ -166,7 +146,14 @@ const InfoPage = () => {
                     : null}
             </div>
 
-            {loading ? null : (
+            {loading ? (
+                <EmptyBlock
+                    loading={loading}
+                    backToHome={!loading}
+                    icon={<FaUserCircle />}
+                    loadingText="Đang tải thông tin"
+                />
+            ) : (
                 <table className={styles.table}>
                     <tr>
                         <td className={styles.labelCol}>
@@ -256,9 +243,24 @@ const InfoPage = () => {
                             />
                         </td>
                     </tr>
+
+                    <tr>
+                        <td />
+                        <td>
+                            <Button
+                                type="submit"
+                                className={styles.submit}
+                                color="success"
+                                onClick={submit}
+                                disabled={loading}
+                            >
+                                Lưu
+                            </Button>
+                        </td>
+                    </tr>
                 </table>
             )}
-        </Loader>
+        </Fragment>
     );
 };
 

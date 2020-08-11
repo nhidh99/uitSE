@@ -6,7 +6,6 @@ import org.example.input.RegisterInput;
 import org.example.model.User;
 import org.example.security.Secured;
 import org.example.service.api.AuthService;
-import org.example.type.GenderType;
 import org.example.type.RoleType;
 import org.example.util.api.JwtUtils;
 
@@ -50,19 +49,19 @@ public class AuthServiceImpl implements AuthService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response register(RegisterInput registerInput) {
         try {
-            GenderType gender = GenderType.valueOf(registerInput.getGender());
-            LocalDate birthday = Instant.ofEpochMilli(registerInput.getBirthday())
-                    .atZone(ZoneId.systemDefault()).toLocalDate();
+            boolean isValidRegister = registerInput.getPassword().equals(registerInput.getConfirm())
+                    && userDAO.checkRegister(registerInput.getUsername(), registerInput.getEmail());
 
-            if (userDAO.checkRegister(registerInput.getUsername(), registerInput.getEmail())) {
+            if (isValidRegister) {
+                LocalDate birthday = Instant.ofEpochMilli(registerInput.getBirthday()).atZone(ZoneId.systemDefault()).toLocalDate();
                 User user = User.builder()
                         .username(registerInput.getUsername())
                         .password(registerInput.getPassword())
                         .email(registerInput.getEmail())
                         .name(registerInput.getName())
                         .phone(registerInput.getPhone())
-                        .gender(gender).birthday(birthday)
-                        .role(RoleType.USER).facebookId(null).build();
+                        .gender(registerInput.getGender()).birthday(birthday)
+                        .role(RoleType.USER).build();
                 userDAO.register(user);
                 return Response.ok().build();
             }
@@ -81,7 +80,6 @@ public class AuthServiceImpl implements AuthService {
         try {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
-            userDAO.findById(userId).orElseThrow(Exception::new);
             String token = jwtUtils.issueToken(userId);
             return Response.ok(token).build();
         } catch (Exception e) {

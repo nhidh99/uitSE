@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { createCookie } from "../../../../services/helper/cookie";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import { GoogleLogin } from "react-google-login";
+import authApi from "../../../../services/api/authApi";
 
 const LoginPage = () => {
     const [error, setError] = useState(null);
@@ -17,22 +18,15 @@ const LoginPage = () => {
 
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        const response = await fetch("/cxf/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            }),
-        });
 
-        if (response.ok) {
-            const token = await response.text();
+        try {
+            const response = await authApi.login(username, password);
+            const token = response.data;
             createCookie("access_token", token, 1);
             window.location.href = "/";
-        } else {
+        } catch (err) {
             let error = null;
-            switch (response.status) {
+            switch (err.response.status) {
                 case 401:
                     error = "Tài khoản hoặc mật khẩu không chính xác";
                     break;
@@ -46,19 +40,15 @@ const LoginPage = () => {
     };
 
     const responseFacebook = async (res) => {
-        const facebookId = res["id"];
-        const response = await fetch("/cxf/api/auth/facebook/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: facebookId }),
-        });
-        if (response.ok) {
-            const token = await response.text();
+        try {
+            const facebookId = res["id"];
+            const response = await authApi.loginFacebook(facebookId);
+            const token = response.data;
             createCookie("access_token", token, 1);
             window.location.href = "/";
-        } else {
+        } catch (err) {
             let error = "";
-            switch (response.status) {
+            switch (err.response.status) {
                 case 404:
                     error = "Không tìm thấy tài khoản liên kết";
                     break;
@@ -72,20 +62,16 @@ const LoginPage = () => {
     };
 
     const responseGoogle = async (res) => {
-        const googleId = res["googleId"];
-        const response = await fetch("/cxf/api/auth/google/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: googleId }),
-        });
-        if (response.ok) {
-            const token = await response.text();
+        try {
+            const googleId = res["googleId"];
+            const response = await authApi.loginGoogle(googleId);
+            const token = response.data;
             createCookie("access_token", token, 1);
             window.location.href = "/";
-        } else {
+        } catch (err) {
             let error = "";
-            switch (response.status) {
-                case 400:
+            switch (err.response.status) {
+                case 404:
                     error = "Không tìm thấy tài khoản liên kết";
                     break;
                 default:

@@ -12,10 +12,12 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 public class ImageUtilsImpl implements ImageUtils {
-    private static final int LAPTOP_IMAGE_WIDTH = 600;
-    private static final int LAPTOP_IMAGE_HEIGHT = 600;
-    private static final int LAPTOP_THUMBNAIL_WIDTH = 400;
-    private static final int LAPTOP_THUMBNAIL_HEIGHT = 400;
+    private static final int LAPTOP_BIG_IMAGE_WIDTH = 1000;
+    private static final int LAPTOP_BIG_IMAGE_HEIGHT = 1000;
+    private static final int LAPTOP_IMAGE_WIDTH = 400;
+    private static final int LAPTOP_IMAGE_HEIGHT = 400;
+    private static final int LAPTOP_THUMBNAIL_WIDTH = 150;
+    private static final int LAPTOP_THUMBNAIL_HEIGHT = 150;
     private static final int PROMOTION_WIDTH = 200;
     private static final int PROMOTION_HEIGHT = 200;
 
@@ -32,9 +34,12 @@ public class ImageUtilsImpl implements ImageUtils {
 
     @Override
     public byte[] buildBinaryImage(BufferedImage image, ImageType type) throws IOException {
-        int width = 0;
-        int height = 0;
+        int width, height;
         switch (type) {
+            case LAPTOP_BIG_IMAGE:
+                width = LAPTOP_BIG_IMAGE_WIDTH;
+                height = LAPTOP_BIG_IMAGE_HEIGHT;
+                break;
             case LAPTOP_IMAGE:
                 width = LAPTOP_IMAGE_WIDTH;
                 height = LAPTOP_IMAGE_HEIGHT;

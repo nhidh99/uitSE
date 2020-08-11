@@ -1,0 +1,8 @@
+.blockChild {
+    padding: 20px 20px 15px 20px;
+    font-size: 14px;
+}
+
+.blockChild:not(:first-of-type) {
+    border-top: 1px solid #efefef;
+}

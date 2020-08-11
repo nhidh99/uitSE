@@ -15,6 +15,7 @@
         <module>laptop-store-util</module>
         <module>laptop-store-blueprint</module>
         <module>laptop-store-feature</module>
+<!--        <module>laptop-store-webui</module>-->
     </modules>
 
     <properties>

@@ -1,6 +1,5 @@
 .itemBlock {
-    padding: 20px;
-    border: 1.5px dashed darkgray;
+    border: 1px dashed darkgray;
     font-size: 14px;
 }
 
@@ -9,16 +8,18 @@
 }
 
 .blockLeft {
-    padding: 5px 0px;
+    img {
+        padding: 2px; 
+    }
 }
 
 .blockCenter {
-    margin-top: 20px;
+    margin-top: 25px;
+    padding: 0 20px 0 35px !important;
 }
 
 .blockRight {
     margin-top: 20px;
-    padding: 0 !important;
 }
 
 .name {
@@ -36,7 +37,7 @@
     margin-top: 3px;
     font-weight: bold;
     font-size: 15px;
-    color: red;
+    color: #bf081f;
 }
 
 .pricePromotion {

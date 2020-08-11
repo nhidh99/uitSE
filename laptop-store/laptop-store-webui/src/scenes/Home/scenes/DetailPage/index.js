@@ -6,108 +6,115 @@ import SuggestBlock from "./components/SuggestBlock";
 import RatingBlock from "./components/RatingBlock";
 import QuestionBlock from "./components/QuestionBlock";
 import RatingList from "./components/RatingList";
-import { Row, Label } from "reactstrap";
+import { Label } from "reactstrap";
 import styles from "./styles.module.scss";
-import { FaCaretRight } from "react-icons/fa";
-import { convertBrandType } from "../../../../services/helper/converter";
 import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
-
+import { withRouter, useParams } from "react-router-dom";
+import laptopApi from "../../../../services/api/laptopApi";
+import commentApi from "../../../../services/api/commentApi";
+import ratingApi from "../../../../services/api/ratingApi";
+import store from "../../../../services/redux/store";
+import {
+    setProductDetail,
+    buildErrorModal,
+} from "../../../../services/redux/actions";
+import ProductTitle from "./components/ProductTitle";
+import { useSelector } from "react-redux";
 
 const DetailPage = (props) => {
-    const [loading, setLoading] = useState(true);
-    const [product, setProduct] = useState(null);
-    const [imageIds, setImageIds] = useState([]);
-    const [ratings, setRatings] = useState([]);
-    const [comments, setComments] = useState([]);
-    const [promotions, setPromotions] = useState([]);
-    const [suggestions, setSuggestions] = useState([]);
+    const [loading, setLoading] = useState(props.location.state?.loading ?? true);
+    const { productId } = useParams();
+    const { commentLength, ratingLength } = useSelector((state) => {
+        const productDetail = state.productDetail;
+        return {
+            commentLength: productDetail?.comments?.length,
+            ratingLength: productDetail?.ratings?.length,
+        };
+    });
 
     useEffect(() => {
         window.scroll(0, 0);
-        const path = window.location.pathname;
-        const productId = path.split("/").slice(-1).pop();
+        window.history.replaceState(null, '')
         if (isNaN(parseInt(productId))) {
-            window.location.href = "/";
+            props.history.push("/");
         } else {
-            loadData(productId);
+            loadData();
         }
     }, []);
 
-    const loadData = async (productId) => {
-        const [product, imageIds, ratings, promotions, comments, suggestions] = await Promise.all([
-            loadProduct(productId),
-            loadImages(productId),
-            loadRatings(productId),
-            loadPromotions(productId),
-            loadComments(productId),
-            loadSuggestions(productId),
-        ]);
-        setProduct(product);
-        setImageIds(imageIds);
-        setRatings(ratings);
-        setComments(comments);
-        setPromotions(promotions);
-        setSuggestions(suggestions);
-        setLoading(false);
+    const loadData = async () => {
+        try {
+            const [
+                product,
+                imageIds,
+                ratings,
+                promotions,
+                comments,
+                suggestions,
+            ] = await Promise.all([
+                loadProduct(),
+                loadImages(),
+                loadRatings(),
+                loadPromotions(),
+                loadComments(),
+                loadSuggestions(),
+            ]);
+            store.dispatch(
+                setProductDetail({
+                    product: product,
+                    imageIds: imageIds,
+                    ratings: ratings,
+                    promotions: promotions,
+                    comments: comments,
+                    suggestions: suggestions,
+                })
+            );
+            setLoading(false);
+        } catch (err) {
+            setLoading(true);
+            store.dispatch(buildErrorModal());
+        }
     };
 
-    const loadComments = async (productId) => {
-        const response = await fetch(`/cxf/api/comments?product-id=${productId}`);
-        return response.ok ? await response.json() : [];
-    }
-
-    const loadProduct = async (productId) => {
-        const response = await fetch(`/cxf/api/laptops/${productId}`);
-        return response.ok ? await response.json() : null;
+    const loadComments = async () => {
+        const response = await commentApi.getByProductId(productId);
+        return response.data;
     };
 
-    const loadImages = async (productId) => {
-        const response = await fetch(`/cxf/api/laptops/${productId}/image-ids`);
-        return response.ok ? await response.json() : null;
+    const loadProduct = async () => {
+        const response = await laptopApi.getById(productId);
+        return response.data;
     };
 
-    const loadRatings = async (productId) => {
-        const response = await fetch(`/cxf/api/ratings?product-id=${productId}`);
-        return response.ok ? await response.json() : [];
+    const loadImages = async () => {
+        const response = await laptopApi.getLaptopImageIds(productId);
+        return response.data;
     };
 
-    const loadPromotions = async (productId) => {
-        const response = await fetch(`/cxf/api/laptops/${productId}/promotions`);
-        return response.ok ? await response.json() : [];
+    const loadRatings = async () => {
+        const response = await ratingApi.getByProductId(productId);
+        return response.data;
     };
 
-    const loadSuggestions = async (productId) => {
-        const response = await fetch(`/cxf/api/laptops/${productId}/suggestions`);
-        return response.ok ? await response.json() : [];
+    const loadPromotions = async () => {
+        const response = await laptopApi.getLaptopPromotions(productId);
+        return response.data;
     };
 
-    const ContentBlock = (props) => {
-        const { title, component } = props;
-        return (
+    const loadSuggestions = async () => {
+        const response = await laptopApi.getLaptopSuggestions(productId);
+        return response.data;
+    };
+
+    const ContentBlock = ({ title, component }) => {
+        return component ? (
             <section className={styles.section}>
                 <Label className={styles.title}>{title}</Label>
-                <Row className={styles.info}>{component}</Row>
+                <div className={styles.info}>{component}</div>
             </section>
-        );
+        ) : null;
     };
-
-    const ProductTitle = ({ product }) => (
-        <Label className={styles.title}>
-            <a href="/" className={styles.productRedirect}>
-                Trang chủ
-            </a>
-            &nbsp;
-            <FaCaretRight color="#007bff" />
-            &nbsp;
-            <a href="/" className={styles.productRedirect}>
-                {convertBrandType(product?.["brand"])}
-            </a>
-            &nbsp;
-            <FaCaretRight color="#007bff" />
-            &nbsp;Laptop {product?.["name"]}
-        </Label>
-    );
 
     const DetailLoading = () =>
         [...Array(5)].map((_) => (
@@ -117,7 +124,11 @@ const DetailPage = (props) => {
                     className={styles.textHolder}
                     showLoadingAnimation
                 />
-                <ReactPlaceholder type="rect" className={styles.rectHolder} showLoadingAnimation />
+                <ReactPlaceholder
+                    type="rect"
+                    className={styles.rectHolder}
+                    showLoadingAnimation
+                />
             </Fragment>
         ));
 
@@ -126,41 +137,41 @@ const DetailPage = (props) => {
     ) : (
         <Fragment>
             <ContentBlock
-                title={<ProductTitle product={product} />}
-                component={
-                    <OverviewBlock product={product} promotions={promotions} imageIds={imageIds} />
-                }
+                title={<ProductTitle />}
+                component={<OverviewBlock />}
             />
 
-                <ContentBlock
-                    title="Thông tin chi tiết"
-                    component={<DetailBlock product={product} />}
-                />
+            <ContentBlock
+                title="Thông tin chi tiết"
+                component={<DetailBlock />}
+            />
 
             <ContentBlock
                 title="Sản phẩm tương tự"
-                component={<SuggestBlock suggestions={suggestions} />}
+                component={<SuggestBlock />}
             />
 
-                <ContentBlock
-                    title="Hỏi, đáp về sản phẩm"
-                    component={<QuestionBlock comments={comments} product={product} />} />
+            <ContentBlock
+                title="Hỏi, đáp về sản phẩm"
+                component={<QuestionBlock />}
+            />
 
-                <ContentBlock title="Khách hàng hỏi đáp" component={<QuestionList comments={comments}/>} />
+            <ContentBlock
+                title="Khách hàng hỏi đáp"
+                component={commentLength > 0 ? <QuestionList /> : null}
+            />
 
-                <ContentBlock
-                    title="Đánh giá sản phẩm"
-                    component={<RatingBlock ratings={ratings} product={product} />}
-                />
+            <ContentBlock
+                title="Đánh giá sản phẩm"
+                component={<RatingBlock />}
+            />
 
-                {
-                    ratings.length > 0 ? <ContentBlock
-                        title="Khách hàng đánh giá"
-                        component={<RatingList ratings={ratings} />}
-                    /> : null
-                }
-            </Fragment>
-        );
+            <ContentBlock
+                title="Khách hàng đánh giá"
+                component={ratingLength > 0 ? <RatingList /> : null}
+            />
+        </Fragment>
+    );
 };
 
-export default DetailPage;
+export default withRouter(DetailPage);

@@ -1,0 +1,14 @@
+.block {
+    margin-bottom: 0 !important;
+}
+
+.label{
+    color: #454545;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.item:not(:last-of-type) {
+    margin-bottom: 10px;
+}

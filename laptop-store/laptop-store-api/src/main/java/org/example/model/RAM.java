@@ -35,11 +35,11 @@ public class RAM {
     @JsonProperty("bus")
     private Integer bus;
 
-    @Column(name="extra_slot")
-    @JsonProperty("extra_slot")
-    private Integer extraSlot;
+    @Column(name="max_size")
+    @JsonProperty("max_size")
+    private Integer maxSize;
 
-//    @OneToOne(mappedBy = "ram", fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private Laptop laptop;
+    @Column(name = "detail")
+    @JsonProperty("detail")
+    private String detail;
 }

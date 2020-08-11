@@ -1,13 +1,13 @@
 package org.example.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.example.dao.api.PromotionDAO;
 import org.example.filter.PromotionFilter;
+import org.example.security.Secured;
 import org.example.type.ImageType;
 import org.example.model.Promotion;
 import org.example.service.api.PromotionService;
+import org.example.type.RoleType;
 import org.example.util.api.ImageUtils;
 
 import javax.imageio.ImageIO;
@@ -28,6 +28,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Path("/")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured(RoleType.ADMIN)
     public Response findPromotions(@BeanParam PromotionFilter promotionFilter) {
         try {
             return promotionFilter.getIds().isEmpty()

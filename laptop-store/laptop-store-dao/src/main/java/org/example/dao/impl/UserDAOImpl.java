@@ -121,22 +121,23 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void saveWishList(Integer userId, String wishlistJSON) {
+    public void saveWishList(Integer userId, String wishListJSON) {
         User user = em.find(User.class, userId);
         if (user == null) throw new NoResultException();
-        user.setWishlist(wishlistJSON);
+        user.setWishList(wishListJSON);
         em.merge(user);
     }
 
     @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
         User user = em.find(User.class, userId);
         boolean isValidCredential = user != null && BCrypt.checkpw(oldPassword, user.getPassword());
         if (isValidCredential) {
             String newHashedPassword = hashPassword(newPassword);
             user.setPassword(newHashedPassword);
-            return em.merge(user) != null;
+            em.merge(user);
+            return true;
         }
         return false;
     }

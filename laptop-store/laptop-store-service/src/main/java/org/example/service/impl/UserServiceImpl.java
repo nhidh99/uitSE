@@ -1,17 +1,12 @@
 package org.example.service.impl;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.example.dao.api.AddressDAO;
-import org.example.dao.api.OrderDAO;
-import org.example.dao.api.UserDAO;
+import org.example.dao.api.*;
 import org.example.input.PasswordInput;
 import org.example.input.UserInput;
 import org.example.model.*;
 import org.example.security.Secured;
 import org.example.service.api.UserService;
-import org.example.type.GenderType;
-import org.example.type.RoleType;
-import org.example.type.SocialMediaType;
+import org.example.type.*;
 
 import javax.persistence.NoResultException;
 import javax.ws.rs.*;
@@ -21,6 +16,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
     private AddressDAO addressDAO;
     private OrderDAO orderDAO;
+    private RewardDAO rewardDAO;
+    private StatisticDAO statisticDAO;
 
     @Override
     @GET
@@ -47,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @POST
+    @PUT
     @Path("/me/carts")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response updateCart(String cartJSON, @Context SecurityContext securityContext) {
@@ -64,14 +62,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @POST
+    @PUT
     @Path("/me/wish-list")
     @Consumes(MediaType.TEXT_PLAIN)
-    public Response updateWishlist(String wishlistJSON, @Context SecurityContext securityContext) {
+    public Response updateWishlist(String wishListJSON, @Context SecurityContext securityContext) {
         try {
             Principal principal = securityContext.getUserPrincipal();
             Integer userId = Integer.parseInt(principal.getName());
-            userDAO.saveWishList(userId, wishlistJSON);
+            userDAO.saveWishList(userId, wishListJSON);
             return Response.noContent().build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -154,7 +152,6 @@ public class UserServiceImpl implements UserService {
     @GET
     @Path("/me/orders")
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured({RoleType.ADMIN, RoleType.USER})
     public Response findUserOrderOverviews(@QueryParam("page") @DefaultValue("1") Integer page,
                                            @Context SecurityContext securityContext) {
         try {
@@ -171,7 +168,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @GET
     @Path("/me/social-auth")
-    @Secured({RoleType.ADMIN, RoleType.USER})
     @Produces(MediaType.APPLICATION_JSON)
     public Response checkUserSocialMediaAuth(@Context SecurityContext securityContext) {
         try {
@@ -184,6 +180,58 @@ public class UserServiceImpl implements UserService {
             return Response.ok(socialMediaAuth).build();
         } catch (Exception e) {
             return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @GET
+    @Path("/me/rewards")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findUserRewards(@Context SecurityContext securityContext) {
+        try {
+            Principal principal = securityContext.getUserPrincipal();
+            Integer userId = Integer.parseInt(principal.getName());
+            List<UserReward> rewards = new LinkedList<>();
+            for (RewardType type : RewardType.values()) {
+                Reward reward = rewardDAO.findByType(type);
+                Long curValue = buildStatisticValue(type, userId);
+                RewardLevelType level = buildRewardLevelType(curValue, reward);
+                UserReward userReward = UserReward.builder().type(type).level(level).curValue(curValue).reward(reward).build();
+                rewards.add(userReward);
+            }
+            return Response.ok(rewards).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
+    private Long buildStatisticValue(RewardType rewardType, Integer userId) {
+        switch (rewardType) {
+            case ORDER:
+                return statisticDAO.countTotalDeliveredOrdersByUserId(userId);
+            case MONEY:
+                return statisticDAO.getTotalPriceOfDeliveredOrdersByUserId(userId);
+            case PROMOTION:
+                return statisticDAO.getTotalDiscountOfDeliveredOrdersByUserId(userId);
+            case RATING:
+                return statisticDAO.countTotalAcceptedRatingsByUserId(userId);
+            case QUESTION:
+                return statisticDAO.countTotalAcceptedQuestionsByUserId(userId);
+            default:
+                return null;
+        }
+    }
+
+    private RewardLevelType buildRewardLevelType(Long curValue, Reward reward) {
+        if (curValue >= reward.getGoldValue()) {
+            return RewardLevelType.GOLD;
+        } else if (curValue >= reward.getSilverValue()) {
+            return RewardLevelType.SILVER;
+        } else if (curValue >= reward.getBronzeValue()) {
+            return RewardLevelType.BRONZE;
+        } else {
+            return RewardLevelType.NONE;
         }
     }
 }

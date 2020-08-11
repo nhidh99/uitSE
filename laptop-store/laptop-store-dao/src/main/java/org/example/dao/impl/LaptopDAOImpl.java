@@ -3,23 +3,25 @@ package org.example.dao.impl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.dao.api.LaptopDAO;
+import org.example.filter.LaptopSearchFilter;
 import org.example.model.Laptop;
+import org.example.type.ImageType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class LaptopDAOImpl implements LaptopDAO {
     private static final Integer ELEMENT_PER_ADMIN_BLOCK = 5;
-    private static final Integer ELEMENT_PER_FILTER_BLOCK = 8;
-    private static final Integer ELEMENT_PER_SUGGEST = 4;
+    private static final Integer ELEMENT_PER_FILTER_BLOCK = 10;
+    private static final Integer ELEMENT_PER_SUGGEST = 5;
 
     @PersistenceContext(unitName = "laptop-store")
     private EntityManager em;
@@ -132,13 +134,89 @@ public class LaptopDAOImpl implements LaptopDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Laptop> findByFilter(String filter, Integer page) {
-        String query = "SELECT * FROM Laptop l WHERE l.id = ? OR l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+        String query = "SELECT * FROM laptop l WHERE l.id = ? OR l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
         return em.createNativeQuery(query, Laptop.class)
                 .setParameter(1, filter)
                 .setParameter(2, filter)
                 .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<Laptop> findByFilter(LaptopSearchFilter laptopSearchFilter) {
+        return laptopSearchFilter.getName() != null
+                ? findByNameQuery(laptopSearchFilter.getName())
+                : findBySearchFilter(laptopSearchFilter);
+    }
+
+    private List<Laptop> findByNameQuery(String nameQuery) {
+        String query = "SELECT * FROM laptop l WHERE l.name LIKE CONCAT('%',?,'%') AND l.record_status = true";
+        return em.createNativeQuery(query, Laptop.class).setParameter(1, nameQuery).getResultList();
+    }
+
+    private List<Laptop> findBySearchFilter(LaptopSearchFilter laptopSearchFilter) {
+        String query;
+        Map<String, Object> params = new HashMap<>();
+        if (laptopSearchFilter.getTags().isEmpty()) {
+            query = "SELECT l FROM Laptop l WHERE l.recordStatus = true";
+        } else {
+            query = "SELECT l FROM Laptop l WHERE l.id " +
+                    "IN (SELECT DISTINCT(t.laptop.id) FROM LaptopTag t " +
+                    "WHERE t.tag IN :tags) AND l.recordStatus = true";
+            params.put("tags", laptopSearchFilter.getTags());
+        }
+
+        if (laptopSearchFilter.getPrice() != null) {
+            Long minPrice, maxPrice;
+            switch (laptopSearchFilter.getPrice()) {
+                case 1:
+                    minPrice = 0L;
+                    maxPrice = 15_000_000L;
+                    break;
+                case 2:
+                    minPrice = 15_000_000L;
+                    maxPrice = 20_000_000L;
+                    break;
+                case 3:
+                    minPrice = 20_000_000L;
+                    maxPrice = 25_000_000L;
+                    break;
+                case 4:
+                    minPrice = 25_000_000L;
+                    maxPrice = Long.MAX_VALUE;
+                    break;
+                default:
+                    minPrice = null;
+                    maxPrice = null;
+                    break;
+            }
+            query += " AND l.unitPrice >= :minPrice AND l.unitPrice < :maxPrice";
+            params.put("minPrice", minPrice);
+            params.put("maxPrice", maxPrice);
+        }
+
+        if (!laptopSearchFilter.getBrands().isEmpty()) {
+            query += " AND l.brand IN :brands";
+            params.put("brands", laptopSearchFilter.getBrands());
+        }
+
+        if (!laptopSearchFilter.getCpus().isEmpty()) {
+            query += " AND l.cpu.type IN :cpus";
+            params.put("cpus", laptopSearchFilter.getCpus());
+        }
+
+        if (!laptopSearchFilter.getRams().isEmpty()) {
+            query += " AND l.ram.size IN :rams";
+            params.put("rams", laptopSearchFilter.getRams());
+        }
+
+        TypedQuery<Laptop> typedQuery = em.createQuery(query, Laptop.class);
+        for (String key : params.keySet()) {
+            typedQuery.setParameter(key, params.get(key));
+        }
+        return typedQuery.getResultList();
     }
 
     @Override
@@ -168,17 +246,18 @@ public class LaptopDAOImpl implements LaptopDAO {
 
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
-    public byte[] findImageById(Integer id) {
+    public byte[] findImageById(Integer id, ImageType type) {
         Laptop laptop = em.find(Laptop.class, id);
         if (laptop == null) return null;
-        return laptop.getImage();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public byte[] findThumbnailById(Integer id) {
-        Laptop laptop = em.find(Laptop.class, id);
-        if (laptop == null) return null;
-        return laptop.getThumbnail();
+        switch (type) {
+            case LAPTOP_BIG_IMAGE:
+                return laptop.getLargeImage();
+            case LAPTOP_IMAGE:
+                return laptop.getImage();
+            case LAPTOP_THUMBNAIL:
+                return laptop.getThumbnail();
+            default:
+                return null;
+        }
     }
 }

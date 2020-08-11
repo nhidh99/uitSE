@@ -45,7 +45,7 @@ public class Comment {
     @JsonProperty("approve_status")
     private boolean approveStatus;
 
-    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonProperty("replies")
     private List<CommentReply> replies;
 }

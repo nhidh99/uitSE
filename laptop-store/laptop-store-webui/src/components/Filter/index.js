@@ -1,156 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Button, Collapse, Table, Label, Input } from "reactstrap";
+import React from "react";
+import { Collapse } from "reactstrap";
 import styles from "./styles.module.scss";
-import store from "../../services/redux/store";
+import { useSelector } from "react-redux";
+import FilterButton from "./components/FilterButton";
+import FilterClear from "./components/FilterClear";
+import FilterTable from "./components/FilterTable";
 
-const Filter = (props) => {
-    const brands = ["ACER", "ASUS", "DELL", "HP", "LENOVO", "MAC", "MSI"];
-
-    const [isOpen, setIsOpen] = useState(false);
-    const selectedBrands = [];
-
-    useState(() => {
-        store.subscribe(() => {
-            const isOpen = store.getState()["filter"];
-            setIsOpen(isOpen);
-        });
-    }, []);
-
-    useEffect(() => {}, []);
-
-    const toggleSelectedBrands = (brand) => {
-        const index = selectedBrands.indexOf(brand);
-        const label = document.getElementById("brand-" + brand);
-
-        if (index === -1) {
-            selectedBrands.push(brand);
-            label.style.border = "5px solid #52a2e1";
-        } else {
-            selectedBrands.splice(index, 1);
-            label.style.border = "1px solid lightgray";
-        }
-    };
-
+const Filter = () => {
+    const isOpen = useSelector((state) => state.filter);
     return (
         <Collapse isOpen={isOpen} className={styles.collapse}>
-            <Table borderless className={styles.table}>
-                <tr>
-                    <td colSpan={4}>
-                        <b>Nhãn hiệu</b>
-                        <div className={styles.logosRow}>
-                            {brands.map((brand) => (
-                                <Label
-                                    id={`brand-${brand}`}
-                                    onClick={() => toggleSelectedBrands(brand)}
-                                    className={styles.logoLabel}
-                                >
-                                    <img
-                                        className={styles.logo}
-                                        src={require(`../../images/logos/${brand.toLowerCase()}.png`)}
-                                        alt="logo"
-                                    />
-                                </Label>
-                            ))}
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Mức giá</b> <br />
-                        <Label>
-                            <Input type="radio" className={styles.checkbox} defaultChecked name="price" />{" "}
-                            Tất cả mức giá
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Dưới 15
-                            triệu
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 15 -
-                            20 triệu
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Từ 20 -
-                            25 triệu
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="radio" className={styles.checkbox} name="price" /> Trên 25
-                            triệu
-                        </Label>
-                    </td>
-
-                    <td>
-                        <b>Nhu cầu</b> <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Học tập - Văn
-                            phòng
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Đồ họa - Kỹ thuật
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Laptop Gaming
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Cao cấp sang trọng
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Mỏng nhẹ
-                        </Label>
-                    </td>
-
-                    <td>
-                        <b>CPU</b> <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i7
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i5
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core i3
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> Intel Core
-                            Celeron/Pentium
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> AMD
-                        </Label>
-                    </td>
-
-                    <td>
-                        <b>RAM</b> <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> 16 GB
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> 8 GB
-                        </Label>
-                        <br />
-                        <Label>
-                            <Input type="checkbox" className={styles.checkbox} /> 4 GB
-                        </Label>
-                    </td>
-                </tr>
-            </Table>
-
-            <Button color="secondary" className={styles.button}>
-                Tìm kiếm
-            </Button>
+            <div className={styles.container}>
+                <FilterTable />
+                <FilterButton />
+                <FilterClear />
+            </div>
         </Collapse>
     );
 };

@@ -6,5 +6,9 @@ public enum CPUType {
     INTEL_CORE_I3,
     INTEL_CELERON,
     INTEL_PENTIUM,
-    AMD
+    AMD;
+
+    public static CPUType fromString(final String s) {
+        return CPUType.valueOf(s);
+    }
 }

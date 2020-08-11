@@ -1,6 +1,8 @@
 package org.example.dao.api;
 
+import org.example.filter.LaptopSearchFilter;
 import org.example.model.Laptop;
+import org.example.type.ImageType;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +26,13 @@ public interface LaptopDAO {
 
     List<Laptop> findByFilter(String filter, Integer page);
 
+    List<Laptop> findByFilter(LaptopSearchFilter laptopSearchFilter);
+
     Long findTotalLaptops(String filter);
 
     List<Laptop> findByIds(List<Integer> ids);
 
     Optional<Laptop> findById(Integer id);
 
-    byte[] findImageById(Integer id);
-
-    byte[] findThumbnailById(Integer id);
+    byte[] findImageById(Integer id, ImageType type);
 }

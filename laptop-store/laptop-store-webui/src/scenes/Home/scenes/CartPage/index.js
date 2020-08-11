@@ -4,51 +4,60 @@ import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
 import { FaShoppingCart, FaBoxOpen, FaGift, FaMoneyBillWave } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { getCart, removeFromCart } from "../../../../services/helper/cart";
-import Loader from "react-loader-advanced";
+import { getCart } from "../../../../services/helper/cart";
 import { withRouter } from "react-router-dom";
 import { getCookie } from "../../../../services/helper/cookie";
+import EmptyBlock from "../../../../components/EmptyBlock";
+import Loader from "react-loader-advanced";
+import laptopApi from "../../../../services/api/laptopApi";
+import store from "../../../../services/redux/store";
+import { useSelector } from "react-redux";
+import { CartStatus } from "../../../../constants";
+import { setCartStatus, buildErrorModal } from "../../../../services/redux/actions";
+import cartService from "../../../../services/helper/cartService";
 
 const CartPage = (props) => {
-    const [loading, setLoading] = useState(true);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [products, setProducts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalDiscount, setTotalDiscount] = useState(0);
-    const cart = getCart();
+
+    const status = useSelector((state) => state.cartStatus);
+    const loading = [CartStatus.SYNCING, CartStatus.LOADING].includes(status) || isFirstLoad;
 
     useEffect(() => {
-        loadData();
-    }, [loading]);
+        if (status === CartStatus.SYNCING) {
+            loadData();
+        }
+    }, [status]);
 
-    const toggleLoading = () => setLoading(true);
+    useEffect(() => {
+        const nextStatus = isFirstLoad ? CartStatus.SYNCING : CartStatus.IDLE;
+        store.dispatch(setCartStatus(nextStatus));
+    }, [products]);
 
     const loadData = async () => {
-        if (!loading) return;
-
-        if (Object.keys(cart).length === 0) {
+        const ids = Object.keys(getCart());
+        if (ids.length === 0) {
+            setIsFirstLoad(false);
             setProducts([]);
-            setTotalPrice(0);
-            setTotalDiscount(0);
-            setLoading(false);
-            return;
-        }
-
-        const params = new URLSearchParams();
-        Object.keys(cart).forEach((id) => params.append("ids", id));
-        const response = await fetch("/cxf/api/laptops?" + params.toString());
-
-        if (response.ok) {
-            const products = await response.json();
-            loadCart(products);
+        } else {
+            try {
+                const response = await laptopApi.getByIds(ids);
+                const products = response.data;
+                loadCart(products);
+            } catch (err) {
+                store.dispatch(buildErrorModal());
+            }
         }
     };
 
-    const loadCart = (products) => {
+    const loadCart = async (products) => {
         let totalPrice = 0;
         let totalDiscount = 0;
 
         products.forEach((product) => {
-            const quantity = cart[[product["id"]]];
+            const quantity = getCart()[[product["id"]]];
             const discount = product["discount_price"] * quantity;
             const price = (product["unit_price"] - product["discount_price"]) * quantity;
             totalPrice += price;
@@ -56,14 +65,15 @@ const CartPage = (props) => {
         });
 
         const productIds = products.map((product) => product["id"].toString());
-        Object.keys(cart)
+        const deletePromises = Object.keys(getCart())
             .filter((id) => !productIds.includes(id))
-            .forEach((id) => removeFromCart(id));
+            .map(async (id) => await cartService.removeProduct(id));
+        await Promise.all(deletePromises);
 
-        setProducts(products);
         setTotalPrice(totalPrice);
         setTotalDiscount(totalDiscount);
-        setLoading(false);
+        setIsFirstLoad(false);
+        setProducts(products);
     };
 
     const redirectToPayment = () => {
@@ -71,6 +81,36 @@ const CartPage = (props) => {
         props.history.push(url);
         window.scroll(0, 0);
     };
+
+    const SummaryBlock = () => (
+        <div className={styles.summary}>
+            <span>
+                <b>
+                    <FaBoxOpen />
+                    &nbsp; Số lượng:&nbsp;&nbsp;
+                </b>
+                {Object.values(getCart()).reduce((a, b) => a + b, 0)}
+            </span>
+
+            <span>
+                <b>
+                    <FaGift />
+                    &nbsp; Tổng giảm giá:&nbsp;&nbsp;
+                </b>
+                {totalDiscount.toLocaleString()}
+                <sup>đ</sup>
+            </span>
+
+            <span>
+                <b>
+                    <FaMoneyBillWave />
+                    &nbsp; Tạm tính:&nbsp;&nbsp;
+                </b>
+                {totalPrice.toLocaleString()}
+                <sup>đ</sup>
+            </span>
+        </div>
+    );
 
     return (
         <Fragment>
@@ -86,57 +126,24 @@ const CartPage = (props) => {
                 </Button>
             </div>
 
-            <Loader show={loading} message={<Spinner />}>
-                <div className={styles.total}>
-                    <span>
-                        <b>
-                            <FaBoxOpen />
-                            &nbsp; Số lượng:&nbsp;&nbsp;
-                        </b>
-                        {Object.values(cart).reduce((a, b) => a + b, 0)}
-                    </span>
-                    <span>
-                        <b>
-                            <FaGift />
-                            &nbsp; Tổng giảm giá:&nbsp;&nbsp;
-                        </b>
-                        {totalDiscount.toLocaleString()}
-                        <sup>đ</sup>
-                    </span>
-                    <span>
-                        <b>
-                            <FaMoneyBillWave />
-                            &nbsp; Tạm tính:&nbsp;&nbsp;
-                        </b>
-                        {totalPrice.toLocaleString()}
-                        <sup>đ</sup>
-                    </span>
-                </div>
-
+            <Loader show={loading && !isFirstLoad} message={<Spinner />}>
                 <div className={styles.list}>
                     {products.length === 0 ? (
-                        <div className={styles.emptyCart}>
-                            <FaBoxOpen size={80} />
-                            <br />
-                            {loading ? (
-                                <h5>Đang tải giỏ hàng...</h5>
-                            ) : (
-                                <Fragment>
-                                    <h4>Giỏ hàng trống</h4>
-                                    <Button size="lg" color="warning" type="a" href="/">
-                                        Quay lại trang mua sắm
-                                    </Button>
-                                </Fragment>
-                            )}
-                        </div>
+                        <EmptyBlock
+                            loading={loading}
+                            backToHome={!loading}
+                            icon={<FaBoxOpen />}
+                            loadingText="Đang tải giỏ hàng..."
+                            emptyText="Giỏ hàng trống"
+                            noDelay
+                        />
                     ) : (
-                        products.map((product) => (
-                            <ItemBlock
-                                product={product}
-                                quantity={cart[product["id"]]}
-                                toggleLoading={toggleLoading}
-                            />
-                        ))
+                        <Fragment>
+                            <SummaryBlock />
+                            {products.map((product) => (
+                                <ItemBlock product={product} quantity={getCart()[product["id"]]} />
+                            ))}
+                        </Fragment>
                     )}
                 </div>
             </Loader>

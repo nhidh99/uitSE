@@ -2,13 +2,15 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Table, ButtonGroup, Spinner } from "reactstrap";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import Loader from "react-loader-advanced";
 import Pagination from "react-js-pagination";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
 import CommentDelete from "../CommentDelete";
 import CommentDetail from "../CommentDetail";
+import store from "../../../../../../services/redux/store";
+import { buildErrorModal } from "../../../../../../services/redux/actions";
+import commentApi from "../../../../../../services/api/commentApi";
 
 const CommentList = (props) => {
     const [loading, setLoading] = useState(true);
@@ -36,29 +38,28 @@ const CommentList = (props) => {
     }, [page]);
 
     const search = async (id, status) => {
-        const response = await fetch(`/cxf/api/comments/search?id=${id}&status=${status}&page=${page}`, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") }
-        });
-        if (response.ok) {
-            const comments = await response.json();
-            setComments(comments);
-            setLoading(false);
-        }
-    }
-
-    const loadData = async () => {
-        const response = await fetch(`/cxf/api/comments?page=${page}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-
-        if (response.ok) {
-            const comments = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await commentApi.searchComments(id, status, page);
+            const comments = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setComments(comments);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
+        }
+    };
+
+    const loadData = async () => {
+        try {
+            const response = await commentApi.getByPage(page);
+            const comments = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
+            setComments(comments);
+            setCount(count);
+            setLoading(false);
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 
@@ -70,7 +71,9 @@ const CommentList = (props) => {
         if (id === null) {
             props.history.push("/admin/comments?page=" + pageNumber);
         } else {
-            props.history.push("/admin/comments/search?id=" + id + "&status=" + status + "&page=" + pageNumber);
+            props.history.push(
+                "/admin/comments/search?id=" + id + "&status=" + status + "&page=" + pageNumber
+            );
         }
         setPage(pageNumber);
     };
@@ -80,11 +83,11 @@ const CommentList = (props) => {
             <td className={styles.idCol}>{comment["id"]}</td>
             <td className={styles.nameCol}>{comment["laptop"]["name"]}</td>
             <td className={styles.detailCol}>
-                {comment["question"].length > 30 ?
-                    comment["question"].substring(0, 30) + '...' :
-                    comment["question"]}
+                {comment["question"].length > 30
+                    ? comment["question"].substring(0, 30) + "..."
+                    : comment["question"]}
             </td>
-            <td>{comment["approve_status"] ? 'Đã duyệt' : 'Chưa duyệt'}</td>
+            <td>{comment["approve_status"] ? "Đã duyệt" : "Chưa duyệt"}</td>
             <td className={styles.actionCol}>
                 <ButtonGroup>
                     <ButtonGroup>

@@ -7,26 +7,41 @@ import Home from "./scenes/Home";
 import Auth from "./scenes/Auth";
 import Admin from "./scenes/Admin";
 import Banner from "./components/Banner";
-import { getCookie, createCookie, removeCookie } from "./services/helper/cookie";
-import { ROLE_GUEST, ROLE_USER, ROLE_ADMIN, REFRESH_TOKENS_TIMESPAN } from "./constants";
-import { getCart, updateCartDatabase } from "./services/helper/cart";
+import {
+    getCookie,
+    createCookie,
+    removeCookie,
+} from "./services/helper/cookie";
+import {
+    ROLE_GUEST,
+    ROLE_USER,
+    ROLE_ADMIN,
+    REFRESH_TOKENS_TIMESPAN,
+} from "./constants";
+import { getCart } from "./services/helper/cart";
 import Filter from "./components/Filter";
 import ConfirmModal from "./components/ConfirmModal";
+import store from "./services/redux/store";
+import { setCurrentUser } from "./services/redux/actions";
+import userApi from "./services/api/userApi";
+import authApi from "./services/api/authApi";
+import { useSelector } from "react-redux";
 import Footer from "./components/Footer";
+import cartService from "./services/helper/cartService";
 
-const App = (props) => {
+const App = () => {
     const [loading, setLoading] = useState(true);
-    const [role, setRole] = useState(null);
+    const role = useSelector((state) => state.user?.role ?? ROLE_GUEST);
 
     useEffect(() => loadData(), []);
 
     const fetchToken = async () => {
-        const token = getCookie("access_token");
-        const response = await fetch("/cxf/api/auth/token", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.ok ? await response.text() : null;
+        try {
+            const response = await authApi.refreshToken();
+            return response.data;
+        } catch (err) {
+            return null;
+        }
     };
 
     const syncUserCart = (userCart) => {
@@ -34,7 +49,11 @@ const App = (props) => {
         if (JSON.stringify(cart) === userCart) return;
         Object.keys(cart).length === 0
             ? localStorage.setItem("cart", userCart)
-            : updateCartDatabase(cart);
+            : cartService.syncWithDatabase(cart);
+    };
+
+    const syncUserWishList = (userWishList) => {
+        localStorage.setItem("wish-list", userWishList);
     };
 
     const createRefreshTokenHeart = () => {
@@ -53,32 +72,29 @@ const App = (props) => {
 
     const loadData = async () => {
         if (getCookie("access_token") === null) {
-            setRole(ROLE_GUEST);
             setLoading(true);
         }
-
         const token = await fetchToken();
         if (token) {
             createCookie("access_token", token);
-            const response = await fetch("/cxf/api/users/me", {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (response.ok) {
-                const user = await response.json();
-                createRefreshTokenHeart();
+            createRefreshTokenHeart();
+            try {
+                const response = await userApi.getCurrentUser();
+                const user = response.data;
                 syncUserCart(user["cart"]);
-                setRole(user["role"]);
+                syncUserWishList(user["wish_list"]);
+                store.dispatch(setCurrentUser(user));
+            } catch (err) {
+                console.log("fail");
             }
         } else {
             removeCookie("access_token");
             killHeart("refresh_token");
-            setRole(ROLE_GUEST);
         }
         setLoading(false);
     };
 
-    const buildRoutes = (role) => {
+    const AppRoutes = () => {
         switch (role) {
             case ROLE_GUEST:
                 return guestRoutes();
@@ -106,7 +122,11 @@ const App = (props) => {
                     "/product/compare/:alt/:id1/:id2",
                 ]}
             />
-            <Route exact component={Auth} path="/auth/(forgot|login|register)" />
+            <Route
+                exact
+                component={Auth}
+                path="/auth/(forgot|login|register)"
+            />
         </Fragment>
     );
 
@@ -123,8 +143,8 @@ const App = (props) => {
                 "/product/:id",
                 "/product/:alt/:id",
                 "/product/compare/:alt/:id1/:id2",
-                "/user/(info|password|address|order|wish-list)",
-                "/user/address/:id",    
+                "/user/(info|password|address|order|wish-list|reward)",
+                "/user/address/:id",
                 "/user/order/:orderId",
             ]}
         />
@@ -144,31 +164,37 @@ const App = (props) => {
                     "/product/:id",
                     "/product/:alt/:id",
                     "/product/compare/:alt/:id1/:id2",
-                    "/user/(info|password|address|order|wish-list)",
-                    "/user/address/:id",    
+                    "/user/(info|password|address|order|wish-list|reward)",
+                    "/user/address/:id",
                     "/user/order/:orderId",
                 ]}
             />
-            <Route exact component={Admin} path={[
-                "/admin/(|products|orders|promotions|ratings|comments)",
-                "/admin/products/search",
-                "/admin/orders/search",
-                "/admin/promotions/search",
-                "/admin/ratings/search",
-                "/admin/comments/search",
-                ]} />
+            <Route
+                exact
+                component={Admin}
+                path={[
+                    "/admin/(|products|orders|promotions|ratings|comments)",
+                    "/admin/products/search",
+                    "/admin/orders/search",
+                    "/admin/promotions/search",
+                    "/admin/ratings/search",
+                    "/admin/comments/search",
+                ]}
+            />
         </Fragment>
     );
 
     return loading ? null : (
         <Fragment>
-            <Banner role={role} />
+            <Banner/>
             <ConfirmModal />
             <Filter />
             <div className="container">
-                <Switch>{buildRoutes(role)}</Switch>
+                <Switch>
+                    <AppRoutes />
+                </Switch>
             </div>
-            <Footer/>
+            <Footer />
         </Fragment>
     );
 };

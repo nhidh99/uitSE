@@ -1,5 +1,10 @@
-.replyInput, .submitButton {
+.replyInput {
     display: block;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.submitButton {
     width: 100%;
 }
 

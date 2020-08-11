@@ -22,9 +22,21 @@ public class LaptopImage {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
+    @Column(name = "large_image")
+    @JsonIgnore
+    private byte[] bigImage;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "image")
     @JsonIgnore
     private byte[] image;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "thumbnail")
+    @JsonIgnore
+    private byte[] thumbnail;
 
     @ManyToOne
     @JoinColumn(name = "laptop_id")

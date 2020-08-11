@@ -23,5 +23,5 @@ public interface RatingDAO {
 
     void approve(Integer id);
 
-    Float findAvgRatingByProductId(Integer laptopId);
+    void deny(Integer id);
 }

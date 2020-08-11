@@ -4,9 +4,10 @@ import styles from "./styles.module.scss";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ReplyBlock from "./components/ReplyBlock";
+import { useSelector } from "react-redux";
 
-const RatingList = (props) => {
-    const ratings = props.ratings;
+const RatingList = () => {
+    const ratings = useSelector((state) => state.productDetail.ratings);
     return (
         <ListGroup className={styles.listGroup}>
             {ratings.map((rating) => {
@@ -47,7 +48,7 @@ const RatingList = (props) => {
                                 </Link>
                                 <br />
                                 <br />
-                                <ReplyBlock rating={rating} replies={replies} />
+                                <ReplyBlock ratingId={rating["id"]} replies={replies} />
                             </Col>
                         </Row>
                     </ListGroupItem>

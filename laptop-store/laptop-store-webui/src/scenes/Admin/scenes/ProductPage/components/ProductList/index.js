@@ -5,14 +5,14 @@ import styles from "./styles.module.scss";
 import ProductDelete from "../ProductDelete";
 import ProductEdit from "../ProductEdit";
 import Pagination from "react-js-pagination";
-import { getCookie } from "../../../../../../services/helper/cookie";
 import Loader from "react-loader-advanced";
 import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
 import { FaImages } from "react-icons/fa";
-import ImageUpload from "../ImageUpload";
+import ProductUploader from "../ProductUploader";
 import store from "../../../../../../services/redux/store";
 import { buildModal } from "../../../../../../services/redux/actions";
+import laptopApi from "../../../../../../services/api/laptopApi";
 
 const ProductList = (props) => {
     const [loading, setLoading] = useState(true);
@@ -38,33 +38,29 @@ const ProductList = (props) => {
         }
     }, [page]);
 
-    
     const search = async (query) => {
-        const response = await fetch(`/cxf/api/laptops/search?q=${query}&page=${page}`, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") }
-        });
-        if (response.ok) {
-            const products = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await laptopApi.getByQuery(query, page);
+            const products = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setProducts(products);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
-    }
+    };
 
     const loadData = async () => {
-        const response = await fetch(`/cxf/api/laptops?page=${page}`, {
-            method: "GET",
-            headers: { Authorization: "Bearer " + getCookie("access_token") },
-        });
-
-        if (response.ok) {
-            const products = await response.json();
-            const count = parseInt(response.headers.get("X-Total-Count"));
+        try {
+            const response = await laptopApi.getByPage(page);
+            const products = response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setProducts(products);
             setCount(count);
             setLoading(false);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -85,7 +81,6 @@ const ProductList = (props) => {
         const images = store.getState()["images"];
         const deleteIds = images["deleteIds"];
         const uploads = images["uploads"];
-
         data.append("del-ids", new Blob([JSON.stringify(deleteIds)], { type: "application/json" }));
 
         if (uploads.length === 0) {
@@ -95,37 +90,34 @@ const ProductList = (props) => {
             uploads.forEach((upload) => data.append("uploads", upload));
         }
 
-        const url = `/cxf/api/laptops/${productId}/detail-images`;
-        const response = await fetch(url, {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${getCookie("access_token")}`,
-                "Content-Type": "multipart/form-data",
-            },
-            body: data,
-        });
+        try {
+            await laptopApi.putLaptopImages(productId, data);
+        } catch (err) {
+            console.log("fail");
+        }
     };
 
     const toggleImageUploader = async (productId) => {
         const imageDetailIds = await loadImageDetailIds(productId);
         const defaultURLs = imageDetailIds.map(
-            (id) => `/cxf/api/images/600/details/${id}/images-${id}.jpg`
+            (id) => `/cxf/api/images/400/details/${id}/images-${id}.jpg`
         );
         const modal = {
             title: "Thêm hình ảnh giới thiệu sản phẩm",
-            message: <ImageUpload defaultURLs={defaultURLs} />,
+            message: <ProductUploader defaultURLs={defaultURLs} />,
             confirm: () => () => updateDetailImages(productId),
         };
         store.dispatch(buildModal(modal));
     };
 
     const loadImageDetailIds = async (productId) => {
-        const url = `/cxf/api/laptops/${productId}/image-ids`;
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await laptopApi.getLaptopImageIds(productId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const buildRowFromProduct = (product) => (
@@ -134,7 +126,7 @@ const ProductList = (props) => {
             <td className={styles.nameCol}>{product["name"]}</td>
             <td>
                 <img
-                    src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                    src={`/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
                     alt={product["name"]}
                     title={product["name"]}
                     width={60}

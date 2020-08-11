@@ -1,102 +1,97 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Input, Button } from "reactstrap";
 import styles from "./styles.module.scss";
-import { getCookie } from "../../../../../../services/helper/cookie";
-class CommentForm extends Component {
-    state = {
-        submitted: false,
+import commentApi from "../../../../../../services/api/commentApi";
+import store from "../../../../../../services/redux/store";
+import { buildErrorModal } from "../../../../../../services/redux/actions";
+
+const CommentForm = ({ comment, toggle }) => {
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const submit = () => {
+        setIsSubmitted(false);
+        comment["approve_status"] ? postDeny() : postApprove();
     };
 
-    submit = () => {
-        this.setState({ submitted: true });
-        this.postApprove();
-    }
-
-    postApprove = async () => {
-        const comment = this.props.comment;
-        const reply = comment.approve_status ? '' : document.getElementById(`reply`).value;
-        const body =  { reply: reply };
-
-        const response = await fetch(`/cxf/api/comments/${comment["id"]}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify(body),
-        });
-        if (response.ok) {
+    const postApprove = async () => {
+        try {
+            const reply = document.getElementById(`reply`).value;
+            await commentApi.postApprove(comment["id"], reply);
             window.location.reload();
+        } catch (err) {
+            store.dispatch(buildErrorModal());
         }
     };
 
-    render() {
-        const { submitted } = this.state;
-        const { comment } = this.props;
+    const postDeny = async () => {
+        try {
+            await commentApi.postDeny(comment["id"]);
+            window.location.reload();
+        } catch (err) {
+            store.dispatch(buildErrorModal());
+        }
+    };
 
-        return (
-            <Fragment>
-                <table borderless className={styles.table}>
-                    <tbody>
+    return (
+        <Fragment>
+            <table borderless className={styles.table}>
+                <tbody>
+                    <tr>
+                        <td className={styles.labelCol}>Tên sản phẩm:</td>
+                        <td>
+                            <Input
+                                type="text"
+                                id="name"
+                                placeholder="Tên sản phẩm"
+                                maxLength={80}
+                                defaultValue={comment?.laptop.name ?? null}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className={styles.labelCol}>Câu hỏi:</td>
+                        <td>
+                            <Input
+                                type="text"
+                                className={"form-control"}
+                                id="question"
+                                disabled
+                                defaultValue={comment?.question ?? null}
+                            />
+                        </td>
+                    </tr>
+                    {comment?.approve_status ? null : (
                         <tr>
-                            <td className={styles.labelCol}>Tên sản phẩm:</td>
+                            <td className={styles.imageLabel}>Trả lời:</td>
                             <td>
                                 <Input
-                                    type="text"
-                                    id="name"
-                                    placeholder="Tên sản phẩm"
-                                    maxLength={80}
-                                    defaultValue={comment?.laptop.name ?? null}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className={styles.labelCol}>Câu hỏi:</td>
-                            <td>
-                                <Input
-                                    type="text"
+                                    type="textarea"
+                                    rows="5"
                                     className={"form-control"}
-                                    id="question"
-                                    disabled
-                                    defaultValue={comment?.question ?? null}
+                                    id="reply"
                                 />
                             </td>
                         </tr>
-                        {comment?.approve_status ? null :
-                            <tr>
-                                <td className={styles.imageLabel}>Trả lời:</td>
-                                <td>
-                                    <Input
-                                        type="textarea"
-                                        rows="5"
-                                        className={"form-control"}
-                                        id="reply"
-                                    // disabled
-                                    // defaultValue={comment.replies[0]?.reply ?? null}
-                                    />
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                    )}
+                </tbody>
+            </table>
 
-                <div className={styles.buttons}>
-                    <Button
-                        color={comment?.approve_status ? "danger" : "success"}
-                        onClick={this.submit}
-                        className={styles.button}
-                        disabled={submitted}
-                    >
-                        {comment?.approve_status ? "Bỏ duyệt" : "Duyệt"}
-                    </Button>
+            <div className={styles.buttons}>
+                <Button
+                    color={comment?.approve_status ? "danger" : "success"}
+                    onClick={submit}
+                    className={styles.button}
+                    disabled={isSubmitted}
+                >
+                    {comment?.approve_status ? "Bỏ duyệt" : "Duyệt"}
+                </Button>
 
-                    <Button color="secondary" onClick={this.props.toggle} className={styles.button}>
-                        Đóng
-                    </Button>
-                </div>
-            </Fragment>
-        );
-    }
-}
+                <Button color="secondary" onClick={toggle} className={styles.button}>
+                    Đóng
+                </Button>
+            </div>
+        </Fragment>
+    );
+};
 
 export default CommentForm;

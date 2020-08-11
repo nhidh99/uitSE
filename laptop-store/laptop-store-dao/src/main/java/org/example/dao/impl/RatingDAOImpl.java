@@ -40,7 +40,7 @@ public class RatingDAOImpl implements RatingDAO {
         String query = "SELECT r FROM Rating r " +
                 "WHERE r.laptop.id = :laptopId " +
                 "AND r.approveStatus = true " +
-                "AND (r.commentTitle is not null OR r.commentDetail is not null)";
+                "AND (r.commentTitle IS NOT NULL OR r.commentDetail IS NOT NULL)";
         return em.createQuery(query, Rating.class)
                 .setParameter("laptopId", laptopId)
                 .getResultList();
@@ -65,7 +65,7 @@ public class RatingDAOImpl implements RatingDAO {
         String query = "SELECT COUNT(r) FROM Rating r " +
                 "WHERE r.laptop.id = :laptopId " +
                 "AND r.approveStatus = true " +
-                "AND (r.commentTitle is not null OR r.commentDetail is not null)";
+                "AND (r.commentTitle IS NOT NULL OR r.commentDetail IS NOT NULL)";
         return em.createQuery(query, Long.class)
                 .setParameter("laptopId", laptopId)
                 .getSingleResult();
@@ -79,8 +79,8 @@ public class RatingDAOImpl implements RatingDAO {
             return em.createQuery(query, Long.class).getSingleResult();
         } else {
             String query = "SELECT Count(r) FROM Rating r " +
-                    "WHERE (r.id is NULL OR cast(r.id as string) = '' OR cast(r.id as string) LIKE CONCAT('%', :id, '%')) " +
-                    "AND (r.approveStatus is NULL OR cast(r.approveStatus as string) LIKE CONCAT('%', :status, '%'))";
+                    "WHERE (r.id IS NULL OR cast(r.id as string) = '' OR cast(r.id as string) LIKE CONCAT('%', :id, '%')) " +
+                    "AND (r.approveStatus IS NULL OR cast(r.approveStatus as string) LIKE CONCAT('%', :status, '%'))";
             return em.createQuery(query, Long.class)
                     .setParameter("id", id)
                     .setParameter("status", status)
@@ -91,21 +91,11 @@ public class RatingDAOImpl implements RatingDAO {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public List<Rating> findByPage(Integer page) {
-        String query = "SELECT r FROM Rating r";
+        String query = "SELECT r FROM Rating r ORDER BY r.id DESC";
         return em.createQuery(query, Rating.class)
                 .setFirstResult(ELEMENT_PER_ADMIN_BLOCK * (page - 1))
                 .setMaxResults(ELEMENT_PER_ADMIN_BLOCK)
                 .getResultList();
-    }
-
-    @Override
-    @Transactional(Transactional.TxType.SUPPORTS)
-    public Float findAvgRatingByProductId(Integer laptopId) {
-        String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
-        Double result = em.createQuery(query, Double.class)
-                .setParameter("laptopId", laptopId)
-                .getSingleResult();
-        return result == null ? 5.0f : result.floatValue();
     }
 
     @Override
@@ -121,7 +111,7 @@ public class RatingDAOImpl implements RatingDAO {
     public void approve(Integer id) {
         Rating rating = em.find(Rating.class, id);
         if (rating == null) throw new BadRequestException();
-        rating.setApproveStatus(!rating.isApproveStatus());
+        rating.setApproveStatus(true);
         em.merge(rating);
 
         Integer laptopId = rating.getLaptop().getId();
@@ -129,5 +119,26 @@ public class RatingDAOImpl implements RatingDAO {
         Float avgRating = findAvgRatingByProductId(laptopId);
         laptop.setAvgRating(avgRating);
         em.merge(laptop);
+    }
+
+    @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void deny(Integer id) {
+        Rating rating = em.find(Rating.class, id);
+        if (rating == null) throw new BadRequestException();
+        rating.setApproveStatus(false);
+        em.merge(rating);
+
+        Integer laptopId = rating.getLaptop().getId();
+        Laptop laptop = em.find(Laptop.class, laptopId);
+        Float avgRating = findAvgRatingByProductId(laptopId);
+        laptop.setAvgRating(avgRating);
+        em.merge(laptop);
+    }
+
+    private Float findAvgRatingByProductId(Integer laptopId) {
+        String query = "SELECT AVG(r.rating) FROM Rating r WHERE r.laptop.id = :laptopId AND r.approveStatus = true";
+        Double result = em.createQuery(query, Double.class).setParameter("laptopId", laptopId).getSingleResult();
+        return result == null ? 5.0f : result.floatValue();
     }
 }

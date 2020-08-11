@@ -12,7 +12,7 @@ public interface UserService {
 
     Response updateCart(String cartJSON, SecurityContext securityContext);
 
-    Response updateWishlist(String wishlistJSON, SecurityContext securityContext);
+    Response updateWishlist(String wishListJSON, SecurityContext securityContext);
 
     Response updateUser(UserInput userInput, @Context SecurityContext securityContext);
 
@@ -23,4 +23,6 @@ public interface UserService {
     Response findUserOrderOverviews(Integer page, SecurityContext securityContext);
 
     Response checkUserSocialMediaAuth(SecurityContext securityContext);
+
+    Response findUserRewards(SecurityContext securityContext);
 }

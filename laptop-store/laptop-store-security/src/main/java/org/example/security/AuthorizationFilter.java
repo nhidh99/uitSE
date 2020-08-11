@@ -2,9 +2,9 @@ package org.example.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import org.example.dao.api.UserDAO;
 import org.example.type.RoleType;
+import org.example.util.api.JwtUtils;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
@@ -12,7 +12,6 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -39,7 +38,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
     private UserDAO userDAO;
 
-    private static final String JWT_SECRET = "LAPTOP_STORE";
+    private JwtUtils jwtUtils;
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -51,7 +50,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
         String token = authorizationHeader.substring("Bearer".length()).trim();
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
+            Jws<Claims> claimsJws = jwtUtils.claimsJwsFromToken(token);
             this.userId = Integer.parseInt(claimsJws.getBody().getSubject());
 
             requestContext.setSecurityContext(new SecurityContext() {
@@ -76,7 +75,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         Class<?> resourceClass = resourceInfo.getResourceClass();

@@ -71,7 +71,7 @@ public class AddressServiceImpl implements AddressService {
         }
     }
 
-    private Address buildAddressFromRequestBody(AddressInput addressInput, @Context SecurityContext securityContext) {
+    private Address buildAddressFromRequestBody(AddressInput addressInput, SecurityContext securityContext) {
         Principal principal = securityContext.getUserPrincipal();
         Integer userId = Integer.parseInt(principal.getName());
         User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
@@ -93,6 +93,27 @@ public class AddressServiceImpl implements AddressService {
     public Response deleteAddress(@PathParam("id") Integer id) {
         try {
             addressDAO.delete(id);
+            return Response.noContent().build();
+        } catch (BadRequestException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
+    @Override
+    @PUT
+    @Path("/default")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response updateDefaultAddress(Integer addressId,
+                                         @Context SecurityContext securityContext) {
+        try {
+            Principal principal = securityContext.getUserPrincipal();
+            Integer userId = Integer.parseInt(principal.getName());
+            User user = userDAO.findById(userId).orElseThrow(BadRequestException::new);
+            Address address = addressDAO.findById(addressId).orElseThrow(BadRequestException::new);
+            user.setDefaultAddress(address);
+            userDAO.update(user);
             return Response.noContent().build();
         } catch (BadRequestException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getCookie } from "../../../../../../../../services/helper/cookie";
-import { buildModal } from "../../../../../../../../services/redux/actions";
+import { buildModal, buildErrorModal } from "../../../../../../../../services/redux/actions";
 import store from "../../../../../../../../services/redux/store";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import { Button } from "reactstrap";
 import { FaFacebookF } from "react-icons/fa";
 import styles from "./styles.module.scss";
+import authApi from "../../../../../../../../services/api/authApi";
 
 const FacebookSync = (props) => {
     const [fbAuth, setFbAuth] = useState(props.auth);
@@ -19,70 +19,37 @@ const FacebookSync = (props) => {
         const isExistedSync = await checkFacebookSync(facebookId);
 
         if (isExistedSync === null) {
-            const modal = {
-                title: "Lỗi hệ thống",
-                message: "Không thể xử lí yêu cầu",
-                confirm: null,
-            };
-            store.dispatch(buildModal(modal));
-            return;
-        }
-
-        if (isExistedSync === true) {
+            store.dispatch(buildErrorModal());
+        } else if (isExistedSync === true) {
             const modal = {
                 title: "Đã tồn tại liên kết",
                 message: "Tài khoản Facebook đã được liên kết với người dùng khác",
                 confirm: null,
             };
             store.dispatch(buildModal(modal));
-            return;
+        } else {
+            syncFacebook(facebookId);
         }
-
-        syncFacebook(facebookId);
     };
 
     const checkFacebookSync = async (facebookId) => {
-        const response = await fetch("/cxf/api/auth/facebook", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({ id: facebookId }),
-        });
-        return response.ok ? await response.json() : null;
+        try {
+            const response = await authApi.checkFacebookSync(facebookId);
+            return response.data;
+        } catch (err) {
+            console.log("fail");
+            return null;
+        }
     };
 
     const syncFacebook = async (facebookId) => {
-        const response = await fetch("/cxf/api/auth/facebook/sync", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getCookie("access_token")}`,
-            },
-            body: JSON.stringify({ id: facebookId }),
-        });
-
-        if (response.ok) {
-            setFbAuth(true);
-        } else {
-            const modal = {
-                title: "Lỗi hệ thống",
-                message: "Không thể xử lí yêu cầu",
-                confirm: null,
-            };
-            store.dispatch(buildModal(modal));
-        }
+        await authApi.syncFacebook(facebookId);
+        setFbAuth(true);
     };
 
     const cancelFacebookSync = async () => {
-        const response = await fetch("/cxf/api/auth/facebook/sync", {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
-        });
-        if (response.ok) {
-            setFbAuth(false);
-        }
+        await authApi.cancelFacebookSync();
+        setFbAuth(false);
     };
 
     const showCancelSyncModal = () => {

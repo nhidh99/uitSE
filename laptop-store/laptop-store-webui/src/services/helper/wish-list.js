@@ -1,12 +1,13 @@
 import { getCookie } from "./cookie";
+import userApi from "../api/userApi";
 
 export const getWishList = () => {
-    const wishList = JSON.parse(localStorage.getItem("wishlist"));
+    const wishList = JSON.parse(localStorage.getItem("wish-list"));
     return wishList ? wishList : [];
 };
 
 export const addToWishList = (productId) => {
-    let wishList = JSON.parse(localStorage.getItem("wishlist"));
+    let wishList = JSON.parse(localStorage.getItem("wish-list"));
     if (!wishList) wishList = [];
     if((wishList.indexOf(productId) === -1)) {
         wishList[wishList.length] = productId;
@@ -15,7 +16,7 @@ export const addToWishList = (productId) => {
 };
 
 export const removeFromWishList = async (productId) => {
-    let wishList = JSON.parse(localStorage.getItem("wishlist"));
+    let wishList = JSON.parse(localStorage.getItem("wish-list"));
     let index = wishList.indexOf(productId);
     if (wishList && index !== -1) {
         wishList.splice(index, 1);
@@ -24,14 +25,8 @@ export const removeFromWishList = async (productId) => {
 };
 
 export const updateWishListDatabase = async (wishList) => {
-    localStorage.setItem("wishlist", JSON.stringify(wishList));
-
+    localStorage.setItem("wish-list", JSON.stringify(wishList));
     const token = getCookie("access_token");
     if (!token) return;
-
-    await fetch("/cxf/api/users/me/wish-list", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify(wishList),
-    });
+    await userApi.putCurrentUserWishList(wishList);
 };

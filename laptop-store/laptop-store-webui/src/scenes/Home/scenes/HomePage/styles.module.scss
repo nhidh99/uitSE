@@ -8,24 +8,6 @@
     margin-bottom: 8px;
 }
 
-.itemList {
-    display: table;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.itemRow {
-    display: table-row;
-}
-
-.itemBlock {
-    width: 25%;
-    display: table-cell;
-    background-color: white;
-    padding: 20px;
-    border: 1px solid lightgrey;
-}
-
 .icon {
     margin-bottom: 3px;
 }
@@ -66,7 +48,7 @@
     width: 100%;
     color: #52a2e1;
     background-color: white;
-    border: 1px solid lightgray;
+    border: 1px solid #ddd;
     border-top: none;
     padding: 5px 0;
     font-size: 16px;

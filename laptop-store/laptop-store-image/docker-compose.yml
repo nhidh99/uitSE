@@ -1,0 +1,37 @@
+version: '3.4'
+networks:
+    ls_net:
+        external: true
+
+services:
+    mariadb:
+        image: mariadb
+        container_name: mariadb
+        restart: on-failure
+        volumes:
+            - ./init.sql:/opt/init.sql
+        command: --init-file /opt/init.sql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "--silent"]
+        ports:
+            - "3308:3306"
+        networks:
+            - ls_net
+
+    karaf:
+        tty: true
+        image: karafimage
+        build: .
+        container_name: karaf
+        restart: on-failure
+        depends_on:
+            - mariadb
+        ports:
+            #- "8181:8181"
+            - "8181:8080"
+        networks:
+            - ls_net

@@ -82,8 +82,7 @@ public class FacebookAuthServiceImpl implements SocialMediaAuthService {
     @Secured({RoleType.ADMIN, RoleType.USER})
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response checkSocialMediaAuth(SocialMediaInput facebookInput,
-                                         @Context SecurityContext securityContext) {
+    public Response checkSocialMediaAuth(SocialMediaInput facebookInput) {
         try {
             String facebookId = facebookInput.getId();
             Optional<User> optUser = userDAO.findByFacebookId(facebookId);

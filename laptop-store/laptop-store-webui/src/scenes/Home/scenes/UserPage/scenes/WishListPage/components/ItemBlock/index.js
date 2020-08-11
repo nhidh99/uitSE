@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row, Label, Button } from "reactstrap";
 import { FaTrashAlt } from "react-icons/fa";
-import styles from './styles.module.scss';
+import styles from "./styles.module.scss";
 import { removeFromWishList } from "../../../../../../../../services/helper/wish-list";
 import { Link } from "react-router-dom";
 import { convertCPUType } from "../../../../../../../../services/helper/converter";
+import laptopApi from "../../../../../../../../services/api/laptopApi";
 
 const ItemBlock = ({ product, toggleLoading }) => {
     const [promotions, setPromotions] = useState([]);
@@ -16,10 +17,11 @@ const ItemBlock = ({ product, toggleLoading }) => {
     }, []);
 
     const loadPromotions = async () => {
-        const response = await fetch(`/cxf/api/laptops/${product["id"]}/promotions`);
-        if (response.ok) {
-            const promotions = await response.json();
-            setPromotions(promotions);
+        try {
+            const response = await laptopApi.getLaptopPromotions(product["id"]);
+            setPromotions(response.data);
+        } catch (err) {
+            console.log("fail");
         }
     };
 
@@ -30,10 +32,10 @@ const ItemBlock = ({ product, toggleLoading }) => {
 
     return (
         <Row className={styles.itemBlock}>
-            <Col xs="3" className={styles.blockLeft}>
+            <Col xs="2" className={styles.blockLeft}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                     <img
-                        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                        src={`/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
                         width={135}
                         height={135}
                         alt={product["name"]}
@@ -42,7 +44,7 @@ const ItemBlock = ({ product, toggleLoading }) => {
                 </Link>
             </Col>
 
-            <Col xs="8" className={styles.blockCenter}>
+            <Col sm="9" className={styles.blockCenter}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                     <Label className={styles.name}>
                         {product["name"]} (
@@ -69,26 +71,21 @@ const ItemBlock = ({ product, toggleLoading }) => {
                 {promotions.length === 0 ? null : (
                     <Label>
                         <b>
-                            <i>Quà khuyến mãi:&nbsp;&nbsp;</i>
+                            <i>Khuyến mãi:&nbsp;&nbsp;</i>
                         </b>
-                        {promotions
-                            .map(
-                                (promotion) =>
-                                    `${promotion["name"]} (${promotion["price"].toLocaleString()}đ)`
-                            )
-                            .join(", ")}
+                        {promotions.map((promotion) => promotion["name"]).join(", ")}
                     </Label>
                 )}
             </Col>
 
-            <Col xs="1" className={styles.blockRight}>
-                    <Button
-                        className={styles.remove}
-                        color="transparent"
-                        onClick={() => removeProduct(product["id"])}
-                    >
-                        <FaTrashAlt />
-                    </Button>
+            <Col sm="1" className={styles.blockRight}>
+                <Button
+                    className={styles.remove}
+                    color="transparent"
+                    onClick={() => removeProduct(product["id"])}
+                >
+                    <FaTrashAlt />
+                </Button>
             </Col>
         </Row>
     );

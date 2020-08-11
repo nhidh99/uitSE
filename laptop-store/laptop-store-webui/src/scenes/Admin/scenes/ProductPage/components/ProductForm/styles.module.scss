@@ -36,22 +36,9 @@
     }
 }
 
-.cpuSpeed {
-    width: 100px !important;
-}
-
-.resolutionSize {
-    text-align: center;
-}
-
 .buttons {
     float: right;
     > button:not(:last-of-type) {
         margin-right: 10px;
     }
-}
-
-.error {
-    color: red;
-    font-size: 13px;
 }

@@ -1,12 +1,12 @@
-import { TOGGLE_FILTER, CLOSE_FILTER } from "../actions";
+import { ActionType } from "../actions";
 
 const filterReducer = (state = false, action) => {
     switch (action.type) {
-        case TOGGLE_FILTER:
+        case ActionType.TOGGLE_FILTER:
             state = !state;
             return state;
 
-        case CLOSE_FILTER:
+        case ActionType.CLOSE_FILTER:
             state = false;
             return state;
 

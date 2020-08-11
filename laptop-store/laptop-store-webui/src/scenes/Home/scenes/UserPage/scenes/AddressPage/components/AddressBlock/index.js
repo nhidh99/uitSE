@@ -1,16 +1,16 @@
 import React from "react";
 import { Button, ButtonGroup } from "reactstrap";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaCheckCircle } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import AddressDelete from "../AddressDelete";
 import { withRouter } from "react-router-dom";
 
 const AddressBlock = (props) => {
-    const address = props.address;
+    const { address, isDefault, history } = props;
 
     const redirectToEdit = (addressId) => {
-        props.history.push(`/user/address/${addressId}`);
-    };
+        history.push(`/user/address/${addressId}`);
+    }
 
     return (
         <div className={styles.addressBlock}>
@@ -24,6 +24,12 @@ const AddressBlock = (props) => {
             <label>
                 <b>Người nhận: </b>
                 {address["receiver_name"]}
+                {isDefault ? (
+                    <span className={styles.default}>
+                        <FaCheckCircle className={styles.logo} />
+                        Địa chỉ mặc định
+                    </span>
+                ) : null}
             </label>
             <br />
 
