@@ -1,0 +1,29 @@
+.info {
+    background-color: white;
+    display: flex;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+.title {
+    background-color: #f0f0f0;
+    margin-bottom: 10px !important;
+    font-size: 18px;
+}
+
+.productRedirect:hover {
+    text-decoration: underline !important;
+}
+
+.rectHolder {
+    height: 400px !important;
+    margin-bottom: 30px;
+}
+
+.textHolder {
+    margin-bottom: 15px;
+    width: 50% !important;
+    height: 25px !important;
+}

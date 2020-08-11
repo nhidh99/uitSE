@@ -1,0 +1,27 @@
+.productName {
+    font-size: 18px;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.ratingIcon {
+    margin-bottom: 8px;
+    margin-right: 4px;
+    font-size: 16px;
+}
+
+.currentPrice {
+    color: #bf081f;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.originPrice {
+    margin-left: 5px;
+    text-decoration: line-through;
+}
+
+.discountPrice {
+    margin-left: 5px;
+    font-style: italic;
+}

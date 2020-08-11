@@ -1,0 +1,111 @@
+.category {
+    margin-bottom: 30px;
+}
+
+.categoryHeader {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.itemList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    background-color: white;
+    box-shadow: inset 0 0 0 1px #ddd;
+}
+
+.itemBlock {
+    width: 20%;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.itemBlock:hover {
+    box-shadow: 0 0 5px 5px #ddd;
+    .itemName {
+        color: #007bff !important;
+    }
+
+    img {
+        transform: translateY(-12px);
+        transition-duration: 0s;
+    }
+}
+
+.itemBlock:empty {
+    border: 0;
+}
+
+.icon {
+    margin-bottom: 3px;
+}
+
+.itemRating {
+    color: darkorange;
+}
+
+.itemInfo {
+    color: #007bff;
+    margin-bottom: -2px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    font-weight: 550;
+}
+
+.itemName {
+    font-size: 14px;
+    cursor: pointer;
+    color: #333 !important;
+}
+
+.itemImg {
+    display: block;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.itemUnitPrice {
+    color: #bf081f;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.itemOriginPrice {
+    text-decoration: line-through;
+    font-size: 13px;
+    cursor: pointer;
+    color: #777;
+}
+
+.moreBtn {
+    width: 100%;
+    color: #52a2e1;
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.moreBtn:hover {
+    color: white;
+    background-color: #52a2e1;
+}
+
+.moreBtn:focus {
+    outline: 0;
+}
+
+.imgHolder {
+    height: 200px !important;
+    display: block;
+}

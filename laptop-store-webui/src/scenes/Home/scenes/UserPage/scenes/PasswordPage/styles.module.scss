@@ -1,0 +1,43 @@
+.labelCol {
+    width: 120px;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-spacing: 10px;    
+    border-collapse: separate;
+    padding: 15px 10px;
+    border: 1px dashed darkgray;
+}
+
+.header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 0 !important;
+}
+
+.label {
+    font-size: 14px !important;
+    font-weight: 600;
+}
+
+.input {
+    width: 100%;
+    font-size: 14px !important;
+}
+
+.submit {
+    float: right;
+    width: 100px;
+}
+
+.error {
+    color: red;
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+}

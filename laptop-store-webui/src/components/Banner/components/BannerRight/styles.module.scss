@@ -1,0 +1,30 @@
+.bannerCategory {
+    cursor: pointer;
+}
+
+.bannerCategory:hover {
+    font-weight: bold;
+}
+
+.category {
+    text-align: center;
+    padding: 0 10px;
+}
+
+.cartCount {
+    font-size: 10px !important;
+}
+
+.label {
+    color: white;
+    margin-bottom: 0 !important;
+}
+
+.label:hover {
+    cursor: pointer;
+}
+
+.icon {
+    color: white;
+    font-size: 18px;
+}
