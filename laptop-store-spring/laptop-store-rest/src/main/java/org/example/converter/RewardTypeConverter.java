@@ -1,4 +1,4 @@
-package org.example.component.converter;
+package org.example.converter;
 
 import org.example.type.RewardType;
 import org.springframework.core.convert.converter.Converter;

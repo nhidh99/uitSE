@@ -9,26 +9,21 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>laptop-store-rest</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>laptop-store-org.example.security</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>laptop-store-service</artifactId>
+            <artifactId>laptop-store-repository</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>laptop-store-security</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>laptop-store-org.example.security</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
         </dependency>
     </dependencies>
+
+
 </project>

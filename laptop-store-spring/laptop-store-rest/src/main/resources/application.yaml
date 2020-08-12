@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    password: root
+    url: jdbc:mariadb://localhost:3306/laptop_store
+    username: root
+
+security:
+  jwt:
+    token:
+      secret-key: LAPTOP_STORE
+      expire-length: 900000   # 15 minutes
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
