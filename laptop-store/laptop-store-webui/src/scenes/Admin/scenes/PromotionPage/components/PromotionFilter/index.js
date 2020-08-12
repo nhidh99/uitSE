@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, InputGroup, InputGroupAddon, InputGroupText, Input, Button } from "reactstrap";
 import { FaSearch } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import PromotionEdit from "../PromotionEdit";
 
 const PromotionFilter = () => {
+    const [filter, setFilter] = useState("");
+
+    const getPathName = () => {
+        let query = decodeURIComponent(window.location.search);
+        let filter = query.split('&')[0];
+        return filter.startsWith('?page') ? "" : filter.substring(3, filter.length);
+    }
+
+    useEffect(() => {
+        setFilter(getPathName());
+    }, []);
+
     const search = () => {
         const filter = document.getElementById("filter").value;
         if (filter !== "") {
@@ -21,7 +33,7 @@ const PromotionFilter = () => {
                             <FaSearch />
                         </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" id="filter" placeholder="Tìm kiếm..." />
+                    <Input type="text" id="filter" placeholder="Tìm kiếm..." defaultValue={filter} />
                 </InputGroup>
             </Col>
 
