@@ -11,6 +11,16 @@
         <naming-strategy-map />
       </configuration>
     </facet>
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="laptop-store-api-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.example.laptop-store-api" bundleVersion="1.0.0.SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Import-Package" value="org.hibernate.proxy;version=!,javassist.util.proxy;version=!,*" />
+          <property key="Export-Package" value="org.example.filter,org.example.input,org.example.model,org.example.type" />
+          <property key="Bundle-Name" value="laptop-store-api" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
