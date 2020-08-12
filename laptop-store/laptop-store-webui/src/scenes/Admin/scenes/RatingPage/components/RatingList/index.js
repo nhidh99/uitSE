@@ -40,7 +40,8 @@ const RatingList = (props) => {
     const search = async (id, status) => {
         try {
             const response = await ratingApi.searchRatings(id, status, page);
-            const ratings = await response.json();
+            const ratings = await response.data;
+            const count = parseInt(response.headers["x-total-count"]);
             setRatings(ratings);
             setCount(count);
             setLoading(false);
