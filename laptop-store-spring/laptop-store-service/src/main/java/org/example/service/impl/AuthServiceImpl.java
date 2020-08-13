@@ -30,4 +30,13 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthenticationException("Invalid Credential");
         }
     }
+
+    @Override
+    public String issueToken(String username) throws AuthenticationException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new AuthenticationException();
+        }
+        return jwtProvider.createToken(username, Collections.singletonList(user.getRole()));
+    }
 }

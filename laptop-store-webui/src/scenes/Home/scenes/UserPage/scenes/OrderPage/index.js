@@ -3,9 +3,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
 import { Table, Spinner } from "reactstrap";
-import {
-    ITEM_COUNT_PER_PAGE,
-} from "../../../../../../constants";
+import { ITEM_COUNT_PER_PAGE } from "../../../../../../constants";
 import Pagination from "react-js-pagination";
 import { convertOrderStatus } from "../../../../../../services/helper/converter";
 import { withRouter } from "react-router-dom";
@@ -88,7 +86,6 @@ const OrderPage = (props) => {
                                     first_product,
                                     product_count,
                                 } = orderOverview;
-                                const { order_date } = order;
                                 return (
                                     <tr
                                         onClick={() =>
@@ -101,7 +98,7 @@ const OrderPage = (props) => {
                                         </td>
 
                                         <td className={styles.dateCol}>
-                                            {`${order_date["dayOfMonth"]}/${order_date["monthValue"]}/${order_date["year"]}`}
+                                            {order["order_date"]}
                                         </td>
 
                                         <td className={styles.productsCol}>

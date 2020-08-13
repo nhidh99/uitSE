@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -40,10 +41,12 @@ public class Order {
 
     @Column(name="order_date")
     @JsonProperty("order_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate orderDate;
 
     @Column(name = "delivery_date")
     @JsonProperty("delivery_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate deliveryDate;
 
     @Column(name = "receiver_name")
