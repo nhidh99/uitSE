@@ -23,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
     public String issueToken(LoginInput loginInput) throws AuthenticationException {
         String username = loginInput.getUsername();
         User user = userRepository.findByUsername(username);
-        boolean isValidCredential = BCrypt.checkpw(loginInput.getPassword(), user.getPassword());
+        boolean isValidCredential = user != null && BCrypt.checkpw(loginInput.getPassword(), user.getPassword());
         if (isValidCredential) {
             return jwtProvider.createToken(username, Collections.singletonList(user.getRole()));
         } else {

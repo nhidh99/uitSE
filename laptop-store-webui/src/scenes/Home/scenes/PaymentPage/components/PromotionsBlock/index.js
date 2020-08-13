@@ -18,7 +18,7 @@ const PromotionsBlock = ({ quantities, promotions }) => (
                     <tr>
                         <td className={styles.promotionCol}>
                             <img
-                                src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
+                                src={`/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
                                 width={40}
                                 height={40}
                                 alt={promotion["name"]}

@@ -100,7 +100,7 @@ const ProductList = (props) => {
     const toggleImageUploader = async (productId) => {
         const imageDetailIds = await loadImageDetailIds(productId);
         const defaultURLs = imageDetailIds.map(
-            (id) => `/cxf/api/images/400/details/${id}/images-${id}.jpg`
+            (id) => `/api/images/400/details/${id}/images-${id}.jpg`
         );
         const modal = {
             title: "Thêm hình ảnh giới thiệu sản phẩm",
@@ -126,7 +126,7 @@ const ProductList = (props) => {
             <td className={styles.nameCol}>{product["name"]}</td>
             <td>
                 <img
-                    src={`/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                    src={`/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
                     alt={product["name"]}
                     title={product["name"]}
                     width={60}

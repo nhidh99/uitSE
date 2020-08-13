@@ -28,8 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // No session will be created or used by spring org.example.security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Entry points
-        http.httpBasic();
+        // Remove CacheControlHeadersWriter
+        http.headers().cacheControl().disable();
 
         // Apply JWT
         http.apply(new JwtFilterConfig(jwtProvider));

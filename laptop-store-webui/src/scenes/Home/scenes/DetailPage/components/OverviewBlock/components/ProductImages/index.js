@@ -10,16 +10,16 @@ const ProductImages = () => {
         const { product, imageIds } = state.productDetail;
         return [
             {
-                fullscreen: `/cxf/api/images/1000/laptops/${product["id"]}/${product["alt"]}.jpg`,
-                original: `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`,
-                thumbnail: `/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`,
+                fullscreen: `/api/images/1000/laptops/${product["id"]}/${product["alt"]}.jpg`,
+                original: `/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`,
+                thumbnail: `/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`,
                 thumbnailClass: styles.thumbnail,
             },
         ].concat(
             imageIds.map((id) => ({
-                fullscreen: `/cxf/api/images/1000/details/${id}/${product["alt"]}.jpg`,
-                original: `/cxf/api/images/400/details/${id}/${product["alt"]}.jpg`,
-                thumbnail: `/cxf/api/images/150/details/${id}/${product["alt"]}.jpg`,
+                fullscreen: `/api/images/1000/details/${id}/${product["alt"]}.jpg`,
+                original: `/api/images/400/details/${id}/${product["alt"]}.jpg`,
+                thumbnail: `/api/images/150/details/${id}/${product["alt"]}.jpg`,
                 thumbnailClass: styles.thumbnail,
             }))
         );

@@ -19,7 +19,7 @@ const ProductsBlock = ({ products, cart }) => (
                     <tr>
                         <td className={styles.productCol}>
                             <img
-                                src={`/cxf/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                                src={`/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
                                 width={60}
                                 height={60}
                                 alt={product["name"]}

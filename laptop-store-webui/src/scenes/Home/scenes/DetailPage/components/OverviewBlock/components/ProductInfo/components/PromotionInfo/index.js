@@ -11,7 +11,7 @@ const PromotionInfo = () => {
             {promotions.map((promotion) => (
                 <div className={styles.item}>
                     <img
-                        src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
+                        src={`/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
                         className={styles.img}
                         alt="promotions"
                         title={promotion["name"]}
