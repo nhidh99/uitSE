@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.example.type.BrandType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.List;
@@ -136,19 +138,17 @@ public class Laptop {
     @JsonIgnore
     private boolean recordStatus;
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "laptop_tag",
-            joinColumns = @JoinColumn(name = "laptop_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "laptop")
+    @LazyCollection(LazyCollectionOption.TRUE)
     @ToString.Exclude
     @JsonIgnore
     private List<LaptopTag> tags;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JoinTable(name = "laptop_promotion",
             joinColumns = @JoinColumn(name = "laptop_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
-    @ToString.Exclude
     @JsonIgnore
     private List<Promotion> promotions;
 }

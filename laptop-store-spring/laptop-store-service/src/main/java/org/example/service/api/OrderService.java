@@ -1,6 +1,6 @@
 package org.example.service.api;
 
-import org.example.model.OrderOverview;
+import org.example.projection.OrderOverview;
 
 import java.util.List;
 

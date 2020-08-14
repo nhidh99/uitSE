@@ -3,7 +3,8 @@ import queryString from "query-string";
 
 const axiosClient = axios.create({
     baseURL: "/api",
-    paramsSerializer: (params) => queryString.stringify(params),
+    paramsSerializer: (params) =>
+        queryString.stringify(params, { arrayFormat: "comma" }),
 });
 
 axiosClient.interceptors.request.use(async (config) => {

@@ -4,6 +4,7 @@ import styles from "./styles.module.scss";
 import { useParams, withRouter } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import LazyLoad from "react-lazyload";
 
 const SuggestBlock = (props) => {
     const suggestions = useSelector((state) => state.productDetail.suggestions);
@@ -18,13 +19,15 @@ const SuggestBlock = (props) => {
     return suggestions.map((product) => (
         <div className={styles.cell} onClick={() => redirectToProduct(product)}>
             <div className={styles.redirect}>
-                <img
-                    src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
-                    width={200}
-                    height={200}
-                    alt="suggest"
-                    className={styles.img}
-                />
+                <LazyLoad height={200} once>
+                    <img
+                        src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                        width={200}
+                        height={200}
+                        alt="suggest"
+                        className={styles.img}
+                    />
+                </LazyLoad>
                 <label className={styles.itemInfo}>
                     <label className={styles.itemRating}>
                         {product["avg_rating"].toFixed(1)}{" "}

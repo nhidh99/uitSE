@@ -4,6 +4,8 @@ spring:
     password: root
     url: jdbc:mariadb://localhost:3306/laptop_store
     username: root
+#  jpa:
+#    show-sql: true
 
 security:
   jwt:

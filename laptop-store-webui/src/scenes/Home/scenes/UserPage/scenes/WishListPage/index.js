@@ -6,14 +6,16 @@ import { FaBook, FaBoxOpen } from "react-icons/fa";
 import ItemBlock from "./components/ItemBlock";
 import { getWishList } from "../../../../../../services/helper/wish-list";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
-import laptopApi from "../../../../../../services/api/laptopApi";
+import userApi from "../../../../../../services/api/userApi";
 
 const WishListPage = () => {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        loadData();
+        if (loading) {
+            loadData();
+        }
     }, [loading]);
 
     const toggleLoading = () => setLoading(true);
@@ -27,7 +29,7 @@ const WishListPage = () => {
         }
 
         try {
-            const response = await laptopApi.getByIds(ids);
+            const response = await userApi.getCurrentUserWishList();
             const products = response.data;
             setProducts(products);
             setLoading(false);
@@ -56,7 +58,10 @@ const WishListPage = () => {
             ) : (
                 <div className={styles.list}>
                     {products.map((product) => (
-                        <ItemBlock product={product} toggleLoading={toggleLoading} />
+                        <ItemBlock
+                            product={product}
+                            toggleLoading={toggleLoading}
+                        />
                     ))}
                 </div>
             )}

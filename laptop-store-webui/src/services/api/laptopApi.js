@@ -11,9 +11,13 @@ const laptopApi = {
         return axiosClient.get(url, config);
     },
 
-    getById: (id) => {
+    getById: (id, includes) => {
         const url = `/laptops/${id}`;
-        return axiosClient.get(url);
+        const params = Object.keys(includes).filter((key) => includes[key]);
+        const config = {
+            params: { include: params },
+        };
+        return axiosClient.get(url, config);
     },
 
     getByIds: (ids) => {

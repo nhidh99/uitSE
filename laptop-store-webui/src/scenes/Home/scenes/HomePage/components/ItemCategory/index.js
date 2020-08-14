@@ -98,11 +98,11 @@ const ItemCategory = ({ title, category }) => {
             <header className={styles.categoryHeader}>{title}</header>
             <div className={styles.itemList}>
                 {loading
-                    ? [...Array(10)].map((x) => <EmptyItem />)
+                    ? [...Array(10)].map((_) => <EmptyItem />)
                     : products.map((product) => <Item product={product} />)}
             </div>
             <button className={styles.moreBtn} onClick={toggleMore}>
-                Xem thêm
+                  Xem thêm
             </button>
         </div>
     );

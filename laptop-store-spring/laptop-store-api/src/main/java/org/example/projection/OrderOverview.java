@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.projection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.model.Order;
+import org.example.model.OrderDetail;
 import org.example.type.ProductType;
 
 import java.util.List;
