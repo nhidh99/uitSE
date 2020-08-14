@@ -166,8 +166,8 @@ const OrderDetail = (props) => {
     const buildRowFromProductDetail = (detail) => {
         const imgURL =
             detail["product_type"] === "LAPTOP"
-                ? `/cxf/api/images/400/laptops/${detail["product_id"]}/laptop-${detail["product_id"]}.jpg`
-                : `/cxf/api/images/200/promotions/${detail["product_id"]}/promotion-${detail["product_id"]}.jpg`;
+                ? `/api/images/400/laptops/${detail["product_id"]}/laptop-${detail["product_id"]}.jpg`
+                : `/api/images/200/promotions/${detail["product_id"]}/promotion-${detail["product_id"]}.jpg`;
 
         return (
             <tr>

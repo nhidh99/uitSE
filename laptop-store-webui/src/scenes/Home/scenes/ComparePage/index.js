@@ -63,7 +63,7 @@ const ComparePage = () => {
                                     to={`/product/${product["alt"]}/${product["id"]}`}
                                 >
                                     <img
-                                        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                                        src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                                         alt={product["name"]}
                                         width={200}
                                         height={200}

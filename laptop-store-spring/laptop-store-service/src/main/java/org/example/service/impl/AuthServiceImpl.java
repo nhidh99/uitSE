@@ -23,11 +23,20 @@ public class AuthServiceImpl implements AuthService {
     public String issueToken(LoginInput loginInput) throws AuthenticationException {
         String username = loginInput.getUsername();
         User user = userRepository.findByUsername(username);
-        boolean isValidCredential = BCrypt.checkpw(loginInput.getPassword(), user.getPassword());
+        boolean isValidCredential = user != null && BCrypt.checkpw(loginInput.getPassword(), user.getPassword());
         if (isValidCredential) {
             return jwtProvider.createToken(username, Collections.singletonList(user.getRole()));
         } else {
             throw new AuthenticationException("Invalid Credential");
         }
+    }
+
+    @Override
+    public String issueToken(String username) throws AuthenticationException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new AuthenticationException();
+        }
+        return jwtProvider.createToken(username, Collections.singletonList(user.getRole()));
     }
 }

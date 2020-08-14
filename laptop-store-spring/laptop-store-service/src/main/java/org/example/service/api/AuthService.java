@@ -6,4 +6,6 @@ import javax.naming.AuthenticationException;
 
 public interface AuthService {
     String issueToken(LoginInput loginInput) throws AuthenticationException;
+
+    String issueToken(String username) throws AuthenticationException;
 }

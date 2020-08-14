@@ -36,7 +36,7 @@ const PromotionList = (props) => {
     }, [page]);
 
     const search = async (query) => {
-        const response = await fetch(`/cxf/api/promotions/search?q=${query}&page=${page}`, {
+        const response = await fetch(`/api/promotions/search?q=${query}&page=${page}`, {
             method: "GET",
             headers: { Authorization: "Bearer " + getCookie("access_token") },
         });
@@ -80,7 +80,7 @@ const PromotionList = (props) => {
             <td className={styles.nameCol}>{promotion["name"]}</td>
             <td>
                 <img
-                    src={`/cxf/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
+                    src={`/api/images/200/promotions/${promotion["id"]}/${promotion["alt"]}.jpg`}
                     alt={promotion["name"]}
                     title={promotion["name"]}
                     width={60}

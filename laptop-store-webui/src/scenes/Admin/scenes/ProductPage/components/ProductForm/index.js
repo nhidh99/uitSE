@@ -271,7 +271,7 @@ const ProductForm = ({ toggle, product }) => {
                     <InputImageRow
                         defaultSrc={
                             product
-                                ? `/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`
+                                ? `/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`
                                 : null
                         }
                     />

@@ -197,6 +197,11 @@ def insert_tags(laptop):
         val = (laptop['Mã sản phẩm'], tag)
         cursor.execute(sql, val)
 
+def update_discount(laptop):
+    percent = random.choice([5, 10])
+    sql = 'UPDATE laptop SET discount_price = ? * (unit_price + 10000) / 100 WHERE id = ?';
+    val = (percent if int(laptop['Đơn giá']) + 10000 >= 20_000_000 else percent + 5, laptop['Mã sản phẩm'])
+    cursor.execute(sql, val)
 
 def insert_db():
     laptops = get_data()
@@ -215,7 +220,8 @@ def insert_db():
                 # insert_secondary_images(laptop)
                 # insert_battery(laptop)
                 # insert_promotions(laptop)
-                insert_tags(laptop)
+                # insert_tags(laptop)
+                update_discount(laptop)
                 print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
             else:
                 print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))

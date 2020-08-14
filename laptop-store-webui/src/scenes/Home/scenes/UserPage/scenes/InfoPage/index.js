@@ -7,10 +7,11 @@ import FacebookSync from "./components/FacebookSync";
 import GoogleSync from "./components/GoogleSync";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
 import userApi from "../../../../../../services/api/userApi";
+import store from "../../../../../../services/redux/store";
 
 const InfoPage = () => {
+    const user = store.getState()["user"];
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
     const [errors, setErrors] = useState([]);
     const [fbAuth, setFbAuth] = useState(null);
     const [googleAuth, setGoogleAuth] = useState(null);
@@ -22,42 +23,15 @@ const InfoPage = () => {
     useEffect(() => {
         if (!loading) {
             const date = document.getElementById("birthday");
-            const birthday = user["birthday"];
-            date.valueAsDate = new Date(
-                birthday["year"],
-                birthday["monthValue"] - 1,
-                birthday["dayOfMonth"],
-                -new Date().getTimezoneOffset() / 60
-            );
+            date.value = user["birthday"];
         }
     }, [loading]);
 
     const loadData = async () => {
-        const [user, auth] = await Promise.all([loadUser(), loadSocialMediaAuth()]);
-        setUser(user);
+        const auth = await userApi.getCurrentUserSocialAuth();
         setFbAuth(auth["FACEBOOK"]);
         setGoogleAuth(auth["GOOGLE"]);
         setLoading(false);
-    };
-
-    const loadUser = async () => {
-        try {
-            const response = await userApi.getCurrentUser();
-            return response.data;
-        } catch (err) {
-            console.log("fail");
-            return null;
-        }
-    };
-
-    const loadSocialMediaAuth = async () => {
-        try {
-            const response = await userApi.getCurrentUserSocialAuth();
-            return response.data;
-        } catch (err) {
-            console.log("fail");
-            return null;
-        }
     };
 
     const validateInputs = () => {
@@ -86,20 +60,27 @@ const InfoPage = () => {
 
         validate(
             "Họ tên phải từ 6 - 45 kí tự",
-            () => inputs["fullName"].value.length >= 6 && inputs["fullName"].value.length <= 45
+            () =>
+                inputs["fullName"].value.length >= 6 &&
+                inputs["fullName"].value.length <= 45
         );
 
         validate(
             "Số điện thoại phải để trống hoặc là một dãy số",
-            () => inputs["telephone"].value.length === 0 || !isNaN(inputs["telephone"].value)
+            () =>
+                inputs["telephone"].value.length === 0 ||
+                !isNaN(inputs["telephone"].value)
         );
 
-        validate("Email không hợp lệ (Email phải được để trống hoặc phải có dạng abc@xyz)", () => {
-            return (
-                inputs["email"].value.length === 0 ||
-                inputs["email"].value.trim().match(/\S+@\S+\.\S+/)
-            );
-        });
+        validate(
+            "Email không hợp lệ (Email phải được để trống hoặc phải có dạng abc@xyz)",
+            () => {
+                return (
+                    inputs["email"].value.length === 0 ||
+                    inputs["email"].value.trim().match(/\S+@\S+\.\S+/)
+                );
+            }
+        );
 
         return errors;
     };
@@ -117,7 +98,9 @@ const InfoPage = () => {
                 phone: document.getElementById("telephone").value,
                 email: document.getElementById("email").value,
                 gender: document.getElementById("gender").value,
-                birthday: new Date(document.getElementById("birthday").value).getTime(),
+                birthday: new Date(
+                    document.getElementById("birthday").value
+                ).getTime(),
             };
             await userApi.putCurrentUser(data);
             alert("Đã lưu thông tin mới thành công");
@@ -142,7 +125,9 @@ const InfoPage = () => {
 
             <div>
                 {errors.length !== 0
-                    ? errors.map((err) => <label className={styles.err}>- {err}</label>)
+                    ? errors.map((err) => (
+                          <label className={styles.err}>- {err}</label>
+                      ))
                     : null}
             </div>
 

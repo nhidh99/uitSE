@@ -51,7 +51,7 @@ const ItemCategory = ({ title, category }) => {
                         width={200}
                         height={200}
                         className={styles.itemImg}
-                        src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                        src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                         alt="Laptop"
                     />
                 </LazyLoad>

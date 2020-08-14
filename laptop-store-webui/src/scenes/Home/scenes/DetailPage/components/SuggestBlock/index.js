@@ -19,7 +19,7 @@ const SuggestBlock = (props) => {
         <div className={styles.cell} onClick={() => redirectToProduct(product)}>
             <div className={styles.redirect}>
                 <img
-                    src={`/cxf/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
+                    src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
                     width={200}
                     height={200}
                     alt="suggest"
