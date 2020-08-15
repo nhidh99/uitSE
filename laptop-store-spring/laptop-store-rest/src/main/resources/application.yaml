@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     password: root
-    url: jdbc:mariadb://localhost:3306/laptop_store
+    url: jdbc:mariadb://localhost:3307/laptop_store?allowPublicKeyRetrieval=true&useSSL=false
     username: root
 
 security:
