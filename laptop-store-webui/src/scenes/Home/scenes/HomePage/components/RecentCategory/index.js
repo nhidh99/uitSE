@@ -2,6 +2,6 @@
 import React from "react";
 import ItemCategory from "../ItemCategory";
 
-const RecentCategory = () => <ItemCategory title="LAPTOP MỚI" category="/" />;
+const RecentCategory = () => <ItemCategory title="LAPTOP MỚI" category="" />;
 
 export default RecentCategory;

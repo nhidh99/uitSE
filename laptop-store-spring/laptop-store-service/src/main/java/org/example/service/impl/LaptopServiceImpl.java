@@ -2,6 +2,8 @@ package org.example.service.impl;
 
 import org.example.dao.LaptopRepository;
 import org.example.model.Laptop;
+import org.example.projection.LaptopOverview;
+import org.example.projection.LaptopSummary;
 import org.example.service.api.LaptopService;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class LaptopServiceImpl implements LaptopService {
@@ -20,31 +23,55 @@ public class LaptopServiceImpl implements LaptopService {
     private LaptopRepository laptopRepository;
 
     @Override
-    public List<Laptop> findByPage(int page) {
+    public Optional<Laptop> findById(Integer id) {
+        return laptopRepository.findById(id);
+    }
+
+    @Override
+    public List<LaptopSummary> findSuggestionsById(Integer id) {
+        return laptopRepository.findSuggestionsById(id);
+    }
+
+    @Override
+    public List<LaptopSummary> findByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
-        return laptopRepository.findByRecordStatusTrue(pageable);
+        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<Laptop> findMostDiscountByPage(int page) {
+    public List<LaptopSummary> findMostDiscountByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
-        return laptopRepository.findByRecordStatusTrue(pageable);
+        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<Laptop> findCheapestByPage(int page) {
+    public List<LaptopSummary> findCheapestByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("unitPrice"));
-        return laptopRepository.findByRecordStatusTrue(pageable);
+        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<Laptop> findBestSellingByPage(int page) {
+    public List<LaptopSummary> findBestSellingByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
         return laptopRepository.findBestSelling(pageable);
     }
 
     @Override
-    public byte[] findLaptopImage(Integer id, ImageType type) {
-        return laptopRepository.findImageById(id, type);
+    public byte[] findImageById(Integer id, ImageType type) {
+        switch (type) {
+            case LAPTOP_LARGE_IMAGE:
+                return laptopRepository.findLargeImageById(id);
+            case LAPTOP_IMAGE:
+                return laptopRepository.findImageById(id);
+            case LAPTOP_THUMBNAIL:
+                return laptopRepository.findThumbnailById(id);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public List<LaptopOverview> findOverviewsByIds(List<Integer> ids) {
+        return laptopRepository.findOverviewsByRecordStatusTrueAndIdIn(ids);
     }
 }

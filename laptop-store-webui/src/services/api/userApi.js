@@ -35,6 +35,14 @@ const userApi = {
         return axiosClient.get(url, config);
     },
 
+    getCurrentUserWishList: () => {
+        const url = "/users/me/wish-list";
+        const config = {
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
+        };
+        return axiosClient.get(url, config);
+    },
+
     getCurrentUserRewards: () => {
         const url = "/users/me/rewards";
         const config = {

@@ -1,18 +1,27 @@
 package org.example.service.api;
 
 import org.example.model.Laptop;
+import org.example.projection.LaptopOverview;
+import org.example.projection.LaptopSummary;
 import org.example.type.ImageType;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LaptopService {
-    List<Laptop> findByPage(int page);
+    Optional<Laptop> findById(Integer id);
 
-    List<Laptop> findMostDiscountByPage(int page);
+    List<LaptopSummary> findSuggestionsById(Integer id);
 
-    List<Laptop> findCheapestByPage(int page);
+    List<LaptopSummary> findByPage(int page);
 
-    List<Laptop> findBestSellingByPage(int page);
+    List<LaptopSummary> findMostDiscountByPage(int page);
 
-    byte[] findLaptopImage(Integer id, ImageType type);
+    List<LaptopSummary> findCheapestByPage(int page);
+
+    List<LaptopSummary> findBestSellingByPage(int page);
+
+    List<LaptopOverview> findOverviewsByIds(List<Integer> ids);
+
+    byte[] findImageById(Integer id, ImageType type);
 }

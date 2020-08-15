@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -45,7 +47,8 @@ public class Comment {
     @JsonProperty("approve_status")
     private boolean approveStatus;
 
-    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
     @JsonProperty("replies")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<CommentReply> replies;
 }

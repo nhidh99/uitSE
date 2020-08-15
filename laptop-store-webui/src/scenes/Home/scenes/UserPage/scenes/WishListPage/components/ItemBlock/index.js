@@ -1,32 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Col, Row, Label, Button } from "reactstrap";
 import { FaTrashAlt } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { removeFromWishList } from "../../../../../../../../services/helper/wish-list";
 import { Link } from "react-router-dom";
-import { convertCPUType } from "../../../../../../../../services/helper/converter";
-import laptopApi from "../../../../../../../../services/api/laptopApi";
 
 const ItemBlock = ({ product, toggleLoading }) => {
-    const [promotions, setPromotions] = useState([]);
-    const { cpu, ram, hard_drive, monitor } = product;
-
-    useEffect(() => {
-        loadPromotions();
-    }, []);
-
-    const loadPromotions = async () => {
-        try {
-            const response = await laptopApi.getLaptopPromotions(product["id"]);
-            setPromotions(response.data);
-        } catch (err) {
-            console.log("fail");
-        }
-    };
-
-    const removeProduct = async (productId) => {
-        removeFromWishList(productId);
+    const removeProduct = () => {
+        removeFromWishList(product["id"]);
         toggleLoading();
     };
 
@@ -46,34 +28,29 @@ const ItemBlock = ({ product, toggleLoading }) => {
 
             <Col sm="9" className={styles.blockCenter}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
-                    <Label className={styles.name}>
-                        {product["name"]} (
-                        {`${convertCPUType(cpu["type"])}/${ram["size"]}GB-${ram["bus"]}MHz/${
-                            hard_drive["type"]
-                        }-${
-                            hard_drive["size"] !== 1024
-                                ? hard_drive["size"] + "GB"
-                                : hard_drive["size"] / 1024 + "TB"
-                        }/${monitor["size"]}-inch`}
-                        )
-                    </Label>
+                    <Label className={styles.name}>{product["name"]}</Label>
                 </Link>
 
                 <br />
                 <Label className={styles.priceLabel}>
-                    {(product["unit_price"] - product["discount_price"]).toLocaleString()}đ
+                    {(
+                        product["unit_price"] - product["discount_price"]
+                    ).toLocaleString()}
+                    đ
                 </Label>
                 <Label className={styles.pricePromotion}>
                     <s>{product["unit_price"].toLocaleString()}đ</s>
                 </Label>
 
                 <br />
-                {promotions.length === 0 ? null : (
+                {product["promotions"].length === 0 ? null : (
                     <Label>
                         <b>
                             <i>Khuyến mãi:&nbsp;&nbsp;</i>
                         </b>
-                        {promotions.map((promotion) => promotion["name"]).join(", ")}
+                        {product["promotions"]
+                            .map((promotion) => promotion["name"])
+                            .join(", ")}
                     </Label>
                 )}
             </Col>
@@ -82,7 +59,7 @@ const ItemBlock = ({ product, toggleLoading }) => {
                 <Button
                     className={styles.remove}
                     color="transparent"
-                    onClick={() => removeProduct(product["id"])}
+                    onClick={removeProduct}
                 >
                     <FaTrashAlt />
                 </Button>

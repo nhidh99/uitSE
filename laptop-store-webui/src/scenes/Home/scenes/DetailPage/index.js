@@ -12,8 +12,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import QuestionList from "./components/QuestionList";
 import { withRouter, useParams } from "react-router-dom";
 import laptopApi from "../../../../services/api/laptopApi";
-import commentApi from "../../../../services/api/commentApi";
-import ratingApi from "../../../../services/api/ratingApi";
 import store from "../../../../services/redux/store";
 import {
     setProductDetail,
@@ -23,7 +21,9 @@ import ProductTitle from "./components/ProductTitle";
 import { useSelector } from "react-redux";
 
 const DetailPage = (props) => {
-    const [loading, setLoading] = useState(props.location.state?.loading ?? true);
+    const [loading, setLoading] = useState(
+        props.location.state?.loading ?? true
+    );
     const { productId } = useParams();
     const { commentLength, ratingLength } = useSelector((state) => {
         const productDetail = state.productDetail;
@@ -35,7 +35,7 @@ const DetailPage = (props) => {
 
     useEffect(() => {
         window.scroll(0, 0);
-        window.history.replaceState(null, '')
+        window.history.replaceState(null, "");
         if (isNaN(parseInt(productId))) {
             props.history.push("/");
         } else {
@@ -45,29 +45,22 @@ const DetailPage = (props) => {
 
     const loadData = async () => {
         try {
-            const [
-                product,
-                imageIds,
-                ratings,
-                promotions,
-                comments,
-                suggestions,
-            ] = await Promise.all([
-                loadProduct(),
-                loadImages(),
-                loadRatings(),
-                loadPromotions(),
-                loadComments(),
-                loadSuggestions(),
-            ]);
+            const response = await laptopApi.getById(productId, {
+                images: true,
+                ratings: true,
+                comments: true,
+                promotions: true,
+                suggestions: true,
+            });
+            const product = response.data;
             store.dispatch(
                 setProductDetail({
-                    product: product,
-                    imageIds: imageIds,
-                    ratings: ratings,
-                    promotions: promotions,
-                    comments: comments,
-                    suggestions: suggestions,
+                    product: product["details"],
+                    imageIds: product["image_ids"],
+                    ratings: product["ratings"],
+                    promotions: product["promotions"],
+                    comments: product["comments"],
+                    suggestions: product["suggestions"],
                 })
             );
             setLoading(false);
@@ -75,36 +68,6 @@ const DetailPage = (props) => {
             setLoading(true);
             store.dispatch(buildErrorModal());
         }
-    };
-
-    const loadComments = async () => {
-        const response = await commentApi.getByProductId(productId);
-        return response.data;
-    };
-
-    const loadProduct = async () => {
-        const response = await laptopApi.getById(productId);
-        return response.data;
-    };
-
-    const loadImages = async () => {
-        const response = await laptopApi.getLaptopImageIds(productId);
-        return response.data;
-    };
-
-    const loadRatings = async () => {
-        const response = await ratingApi.getByProductId(productId);
-        return response.data;
-    };
-
-    const loadPromotions = async () => {
-        const response = await laptopApi.getLaptopPromotions(productId);
-        return response.data;
-    };
-
-    const loadSuggestions = async () => {
-        const response = await laptopApi.getLaptopSuggestions(productId);
-        return response.data;
     };
 
     const ContentBlock = ({ title, component }) => {

@@ -2,13 +2,12 @@ package org.example.service.impl;
 
 import org.example.dao.OrderRepository;
 import org.example.model.Order;
-import org.example.model.OrderOverview;
+import org.example.projection.OrderOverview;
 import org.example.service.api.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
