@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
 import { Table, Spinner } from "reactstrap";
@@ -13,43 +13,47 @@ import userApi from "../../../../../../services/api/userApi";
 
 const OrderPage = (props) => {
     const INITIAL_STATE = {
-        page: null,
         orders: [],
         orderCount: 0,
         loading: true,
     };
+    const page = useRef(null);
     const [state, setState] = useState(INITIAL_STATE);
-    const { loading, page, orders, orderCount } = state;
+    const { loading, orders, orderCount } = state;
 
     useEffect(() => {
         const params = new URLSearchParams(props.location.search);
         const pageNumber = parseInt(params.get("page"));
-        setState((prev) => ({ ...prev, page: pageNumber ? pageNumber : 1 }));
+        page.current = pageNumber ? pageNumber : 1;
+        loadData();
     }, []);
 
     useEffect(() => {
-        if (!state.page) return;
-        window.history.pushState(null, null, `/user/order?page=${state.page}`);
-        loadData();
-    }, [state.page]);
+        if (!page.current) return;
+        window.history.pushState(
+            null,
+            null,
+            `/user/order?page=${page.current}`
+        );
+    }, [page.current]);
 
     const loadData = async () => {
         try {
-            const response = await userApi.getCurrentUserOrders(state.page);
-            setState((prev) => ({
-                ...prev,
+            const response = await userApi.getCurrentUserOrders(page.current);
+            setState({
                 orders: response.data,
                 orderCount: response.headers["x-total-count"],
                 loading: false,
-            }));
+            });
         } catch (err) {
             setState((prev) => ({ ...prev, loading: true }));
         }
     };
 
     const pageChange = (pageNumber) => {
-        if (pageNumber === state.page) return;
-        setState((prev) => ({ ...prev, page: pageNumber }));
+        if (pageNumber === page.current) return;
+        page.current = pageNumber;
+        loadData();
     };
 
     const redirectToOrderDetail = (orderId) => {
@@ -140,7 +144,7 @@ const OrderPage = (props) => {
             {orders.length === 0 ? null : (
                 <div className={styles.pagination}>
                     <Pagination
-                        activePage={page}
+                        activePage={page.current}
                         itemsCountPerPage={ITEM_COUNT_PER_PAGE}
                         totalItemsCount={orderCount}
                         pageRangeDisplayed={5}
