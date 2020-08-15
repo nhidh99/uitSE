@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { buildModal, buildErrorModal } from "../../../../../../../../services/redux/actions";
-import store from "../../../../../../../../services/redux/store";
 import { Button } from "reactstrap";
 import { FaGoogle } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import GoogleLogin from "react-google-login";
-import authApi from "../../../../../../../../services/api/authApi";
+import authApi from "../../../../../../../../../../services/api/authApi";
+import { buildModal, buildErrorModal } from "../../../../../../../../../../services/redux/actions";
+import store from "../../../../../../../../../../services/redux/store";
 
 const GoogleSync = (props) => {
     const [googleAuth, setGoogleAuth] = useState(props.auth);
@@ -23,7 +23,8 @@ const GoogleSync = (props) => {
         } else if (isExistedSync === true) {
             const modal = {
                 title: "Đã tồn tại liên kết",
-                message: "Tài khoản Google đã được liên kết với người dùng khác",
+                message:
+                    "Tài khoản Google đã được liên kết với người dùng khác",
                 confirm: null,
             };
             store.dispatch(buildModal(modal));
@@ -68,7 +69,9 @@ const GoogleSync = (props) => {
             render={(renderProps) => (
                 <Button
                     className={styles.button}
-                    onClick={googleAuth ? showCancelSyncModal : renderProps.onClick}
+                    onClick={
+                        googleAuth ? showCancelSyncModal : renderProps.onClick
+                    }
                     disabled={renderProps.disabled}
                 >
                     <FaGoogle className={styles.icon} />{" "}

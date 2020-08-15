@@ -29,7 +29,8 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     public List<LaptopSummary> findSuggestionsById(Integer id) {
-        return laptopRepository.findSuggestionsById(id);
+        List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(id);
+        return laptopRepository.findSummariesByRecordStatusTrueAndIdIn(suggestionIds);
     }
 
     @Override

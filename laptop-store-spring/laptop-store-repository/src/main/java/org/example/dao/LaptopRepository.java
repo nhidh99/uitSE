@@ -15,6 +15,8 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
 
     List<LaptopOverview> findOverviewsByRecordStatusTrueAndIdIn(List<Integer> ids);
 
+    List<LaptopSummary> findSummariesByRecordStatusTrueAndIdIn(List<Integer> ids);
+
     @Query("SELECT l.id AS id, l.alt AS alt, l.quantity AS quantity, l.name AS name, l.ram AS ram, l.hardDrive " +
             "AS hardDrive, l.avgRating as avgRating, l.unitPrice as unitPrice, l.discountPrice AS discountPrice " +
             "FROM Laptop l LEFT JOIN OrderDetail d ON d.productId = l.id " +
@@ -36,11 +38,4 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
 
     @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
-
-    List<LaptopSummary> findSummariesByIdIn(List<Integer> ids);
-
-    default List<LaptopSummary> findSuggestionsById(Integer id) {
-        List<Integer> suggestionIds = findSuggestionIdsById(id);
-        return findSummariesByIdIn(suggestionIds);
-    }
 }

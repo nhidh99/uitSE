@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { buildModal, buildErrorModal } from "../../../../../../../../services/redux/actions";
-import store from "../../../../../../../../services/redux/store";
+import { buildModal, buildErrorModal } from "../../../../../../../../../../services/redux/actions";
+import store from "../../../../../../../../../../services/redux/store";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import { Button } from "reactstrap";
 import { FaFacebookF } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import authApi from "../../../../../../../../services/api/authApi";
+import authApi from "../../../../../../../../../../services/api/authApi";
 
 const FacebookSync = (props) => {
     const [fbAuth, setFbAuth] = useState(props.auth);

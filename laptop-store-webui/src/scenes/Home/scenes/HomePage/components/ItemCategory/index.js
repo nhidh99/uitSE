@@ -9,9 +9,9 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import laptopApi from "../../../../../../services/api/laptopApi";
 
 const ItemCategory = ({ title, category }) => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
+    const INITIAL_STATE = { products: [], loading: true, page: 1 };
+    const [state, setState] = useState(INITIAL_STATE);
+    const { products, loading, page } = state;
 
     useEffect(() => {
         loadData();
@@ -21,10 +21,12 @@ const ItemCategory = ({ title, category }) => {
         try {
             const response = await laptopApi.getByCategory(category, page);
             const length = parseInt(response.headers["x-total-count"]);
-            const newProducts = products.concat(response.data);
-            setProducts(newProducts);
-            setLoading(false);
-            setPage(page + 1);
+            const newProducts = [...products, ...response.data];
+            setState({
+                products: newProducts,
+                loading: false,
+                page: page + 1,
+            });
             return newProducts.length !== length;
         } catch (err) {
             console.log("fail");
@@ -45,7 +47,13 @@ const ItemCategory = ({ title, category }) => {
 
     const Item = ({ product }) => {
         return (
-            <Link to={`/product/${product["alt"]}/${product["id"]}`} className={styles.itemBlock}>
+            <Link
+                to={{
+                    pathname: `/product/${product["alt"]}/${product["id"]}`,
+                    state: { loading: true },
+                }}
+                className={styles.itemBlock}
+            >
                 <LazyLoad height={200} offset={100} once>
                     <img
                         width={200}
@@ -61,7 +69,8 @@ const ItemCategory = ({ title, category }) => {
                         {product["avg_rating"].toFixed(1)}{" "}
                         <FaStar className={styles.icon} size={10} />
                     </label>{" "}
-                    - RAM {product["ram"]["size"]}GB - {product["hard_drive"]["type"]}{" "}
+                    - RAM {product["ram"]["size"]}GB -{" "}
+                    {product["hard_drive"]["type"]}{" "}
                     {product["hard_drive"]["size"] === 1024
                         ? "1TB"
                         : `${product["hard_drive"]["size"]}GB`}
@@ -77,7 +86,9 @@ const ItemCategory = ({ title, category }) => {
                 </label>
 
                 <label className={styles.itemOriginPrice}>
-                    {(product["unit_price"] + product["discount_price"]).toLocaleString()}
+                    {(
+                        product["unit_price"] + product["discount_price"]
+                    ).toLocaleString()}
                     <sup>đ</sup>
                 </label>
             </Link>
@@ -86,7 +97,11 @@ const ItemCategory = ({ title, category }) => {
 
     const EmptyItem = () => (
         <div className={styles.itemBlock}>
-            <ReactPlaceHolder type="rect" className={styles.imgHolder} showLoadingAnimation />
+            <ReactPlaceHolder
+                type="rect"
+                className={styles.imgHolder}
+                showLoadingAnimation
+            />
             {[...Array(4)].map((_) => (
                 <ReactPlaceHolder type="textRow" showLoadingAnimation />
             ))}
@@ -102,7 +117,7 @@ const ItemCategory = ({ title, category }) => {
                     : products.map((product) => <Item product={product} />)}
             </div>
             <button className={styles.moreBtn} onClick={toggleMore}>
-                  Xem thêm
+                Xem thêm
             </button>
         </div>
     );

@@ -21,9 +21,7 @@ import ProductTitle from "./components/ProductTitle";
 import { useSelector } from "react-redux";
 
 const DetailPage = (props) => {
-    const [loading, setLoading] = useState(
-        props.location.state?.loading ?? true
-    );
+    const [loading, setLoading] = useState(props.location.state.loading);
     const { productId } = useParams();
     const { commentLength, ratingLength } = useSelector((state) => {
         const productDetail = state.productDetail;
@@ -52,15 +50,15 @@ const DetailPage = (props) => {
                 promotions: true,
                 suggestions: true,
             });
-            const product = response.data;
+            const data = response.data;
             store.dispatch(
                 setProductDetail({
-                    product: product["details"],
-                    imageIds: product["image_ids"],
-                    ratings: product["ratings"],
-                    promotions: product["promotions"],
-                    comments: product["comments"],
-                    suggestions: product["suggestions"],
+                    product: data["details"],
+                    imageIds: data["image_ids"],
+                    ratings: data["ratings"],
+                    promotions: data["promotions"],
+                    comments: data["comments"],
+                    suggestions: data["suggestions"],
                 })
             );
             setLoading(false);
@@ -95,9 +93,7 @@ const DetailPage = (props) => {
             </Fragment>
         ));
 
-    return loading ? (
-        <DetailLoading />
-    ) : (
+    const DetailLoaded = () => (
         <Fragment>
             <ContentBlock
                 title={<ProductTitle />}
@@ -135,6 +131,8 @@ const DetailPage = (props) => {
             />
         </Fragment>
     );
+
+    return loading ? <DetailLoading /> : <DetailLoaded />;
 };
 
 export default withRouter(DetailPage);

@@ -4,13 +4,13 @@ import { withRouter } from "react-router-dom";
 import styles from "./styles.module.scss";
 import { FaBook, FaBoxOpen } from "react-icons/fa";
 import ItemBlock from "./components/ItemBlock";
-import { getWishList } from "../../../../../../services/helper/wish-list";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
 import userApi from "../../../../../../services/api/userApi";
 
 const WishListPage = () => {
-    const [loading, setLoading] = useState(true);
-    const [products, setProducts] = useState([]);
+    const INITIAL_STATE = { loading: true, products: [] };
+    const [state, setState] = useState(INITIAL_STATE);
+    const { loading, products } = state;
 
     useEffect(() => {
         if (loading) {
@@ -18,21 +18,17 @@ const WishListPage = () => {
         }
     }, [loading]);
 
-    const toggleLoading = () => setLoading(true);
+    const toggleLoading = () => {
+        setState((prev) => ({ ...prev, loading: true }));
+    };
 
     const loadData = async () => {
-        const ids = getWishList();
-        if (ids.length === 0) {
-            setProducts([]);
-            setLoading(false);
-            return;
-        }
-
         try {
             const response = await userApi.getCurrentUserWishList();
-            const products = response.data;
-            setProducts(products);
-            setLoading(false);
+            setState({
+                products: response.data,
+                loading: false,
+            });
         } catch (err) {
             console.log("fail");
         }

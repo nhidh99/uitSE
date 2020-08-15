@@ -12,39 +12,44 @@ import Loader from "react-loader-advanced";
 import userApi from "../../../../../../services/api/userApi";
 
 const OrderPage = (props) => {
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(null);
-    const [orders, setOrders] = useState([]);
-    const [orderCount, setOrderCount] = useState(0);
+    const INITIAL_STATE = {
+        page: null,
+        orders: [],
+        orderCount: 0,
+        loading: true,
+    };
+    const [state, setState] = useState(INITIAL_STATE);
+    const { loading, page, orders, orderCount } = state;
 
     useEffect(() => {
         const params = new URLSearchParams(props.location.search);
-        const page = parseInt(params.get("page"));
-        setPage(page ? page : 1);
+        const pageNumber = parseInt(params.get("page"));
+        setState((prev) => ({ ...prev, page: pageNumber ? pageNumber : 1 }));
     }, []);
 
     useEffect(() => {
-        if (!page) return;
-        window.history.pushState(null, null, `/user/order?page=${page}`);
+        if (!state.page) return;
+        window.history.pushState(null, null, `/user/order?page=${state.page}`);
         loadData();
-    }, [page]);
+    }, [state.page]);
 
     const loadData = async () => {
         try {
-            const response = await userApi.getCurrentUserOrders(page);
-            const orders = response.data;
-            const orderCount = response.headers["x-total-count"];
-            setOrders(orders);
-            setOrderCount(orderCount);
-            setLoading(false);
+            const response = await userApi.getCurrentUserOrders(state.page);
+            setState((prev) => ({
+                ...prev,
+                orders: response.data,
+                orderCount: response.headers["x-total-count"],
+                loading: false,
+            }));
         } catch (err) {
-            setLoading(true);
+            setState((prev) => ({ ...prev, loading: true }));
         }
     };
 
     const pageChange = (pageNumber) => {
-        if (pageNumber === page) return;
-        setPage(pageNumber);
+        if (pageNumber === state.page) return;
+        setState((prev) => ({ ...prev, page: pageNumber }));
     };
 
     const redirectToOrderDetail = (orderId) => {
