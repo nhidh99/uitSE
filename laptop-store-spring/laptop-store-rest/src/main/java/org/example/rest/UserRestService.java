@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.model.*;
-import org.example.projection.LaptopOverview;
-import org.example.projection.OrderOverview;
+import org.example.projection.LaptopBlockData;
+import org.example.projection.OrderRowData;
 import org.example.service.api.AddressService;
 import org.example.service.api.LaptopService;
 import org.example.service.api.OrderService;
@@ -65,7 +65,7 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserOrderOverviews(@AuthenticationPrincipal UserDetails userDetails,
                                                           @RequestParam(value = "page", defaultValue = "1") int page) {
         String username = userDetails.getUsername();
-        List<OrderOverview> orders = orderService.findOverviewsByUsernameAndPage(username, page);
+        List<OrderRowData> orders = orderService.findRowDataByUsernameAndPage(username, page);
         Long totalOrderCount = orderService.countByUsername(username);
         return ResponseEntity.ok().header("X-Total-Count", totalOrderCount.toString()).body(orders);
     }
@@ -82,7 +82,7 @@ public class UserRestService {
             }
             ObjectMapper om = new ObjectMapper();
             List<Integer> laptopIds = om.readValue(user.getWishList(), new TypeReference<List<Integer>>() {});
-            List<LaptopOverview> laptops = laptopService.findOverviewsByIds(laptopIds);
+            List<LaptopBlockData> laptops = laptopService.findBlockDataByIds(laptopIds);
             return ResponseEntity.ok(laptops);
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();

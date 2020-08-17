@@ -89,49 +89,43 @@ const OrderPage = (props) => {
                                 <th className={styles.statusCol}>Trạng thái</th>
                             </tr>
 
-                            {orders.map((orderOverview) => {
-                                const {
-                                    order,
-                                    first_product,
-                                    product_count,
-                                } = orderOverview;
+                            {orders.map((data) => {
+                                const { first_product } = data;
                                 return (
                                     <tr
                                         onClick={() =>
-                                            redirectToOrderDetail(order["id"])
+                                            redirectToOrderDetail(data["id"])
                                         }
                                         className={styles.orderRow}
                                     >
                                         <td className={styles.idCol}>
-                                            {order["id"]}
+                                            {data["id"]}
                                         </td>
 
                                         <td className={styles.dateCol}>
-                                            {order["order_date"]}
+                                            {data["order_date"]}
                                         </td>
 
                                         <td className={styles.productsCol}>
                                             {`${first_product["quantity"]} Laptop ${first_product["product_name"]}`}
-                                            {product_count ===
+                                            {data["product_count"] ===
                                             first_product["quantity"]
                                                 ? null
                                                 : ` và ${
-                                                      product_count -
+                                                      data["product_count"] -
                                                       first_product["quantity"]
                                                   } sản phẩm khác`}
                                         </td>
 
                                         <td className={styles.priceCol}>
-                                            {order[
+                                            {data[
                                                 "total_price"
                                             ].toLocaleString()}
                                             <sup>đ</sup>
                                         </td>
 
                                         <td className={styles.statusCol}>
-                                            {convertOrderStatus(
-                                                order["status"]
-                                            )}
+                                            {convertOrderStatus(data["status"])}
                                         </td>
                                     </tr>
                                 );

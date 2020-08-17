@@ -1,13 +1,10 @@
 package org.example.projection;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.example.model.Promotion;
 
 import java.util.List;
 
-public interface LaptopOverview {
+public interface LaptopBlockData {
     @JsonProperty("id")
     Integer getId();
 
@@ -24,6 +21,10 @@ public interface LaptopOverview {
     Long getDiscountPrice();
 
     @JsonProperty("promotions")
-    @JsonIgnoreProperties({"id", "alt", "price", "quantity"})
-    List<Promotion> getPromotions();
+    List<PromotionData> getPromotions();
+
+    interface PromotionData {
+        @JsonProperty("name")
+        String getName();
+    }
 }

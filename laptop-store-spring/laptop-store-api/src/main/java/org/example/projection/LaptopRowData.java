@@ -1,11 +1,8 @@
 package org.example.projection;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.example.model.HardDrive;
-import org.example.model.RAM;
 
-public interface LaptopSummary {
+public interface LaptopRowData {
     @JsonProperty("id")
     Integer getId();
 
@@ -21,17 +18,28 @@ public interface LaptopSummary {
     @JsonProperty("discount_price")
     Long getDiscountPrice();
 
-    @JsonProperty("ram")
-    @JsonIgnoreProperties({"id", "type", "bus","max_size", "detail"})
-    RAM getRam();
-
-    @JsonProperty("hard_drive")
-    @JsonIgnoreProperties({"id", "detail"})
-    HardDrive getHardDrive();
-
     @JsonProperty("avg_rating")
     Float getAvgRating();
 
     @JsonProperty("quantity")
     Integer getQuantity();
+
+    @JsonProperty("ram")
+    RAMData getRam();
+
+    @JsonProperty("hard_drive")
+    HardDriveData getHardDrive();
+
+    interface RAMData {
+        @JsonProperty("size")
+        Integer getSize();
+    }
+
+    interface HardDriveData {
+        @JsonProperty("type")
+        String getType();
+
+        @JsonProperty("size")
+        Integer getSize();
+    }
 }

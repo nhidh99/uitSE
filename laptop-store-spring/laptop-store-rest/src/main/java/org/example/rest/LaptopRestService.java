@@ -1,7 +1,7 @@
 package org.example.rest;
 
 import org.example.model.*;
-import org.example.projection.LaptopSummary;
+import org.example.projection.LaptopRowData;
 import org.example.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -65,7 +65,7 @@ public class LaptopRestService {
             laptopDetailMap.put("promotions", promotions);
         }
         if (includeList.contains("suggestions")) {
-            List<LaptopSummary> suggestions = laptopService.findSuggestionsById(id);
+            List<LaptopRowData> suggestions = laptopService.findSuggestionsById(id);
             laptopDetailMap.put("suggestions", suggestions);
         }
         return ResponseEntity.ok(laptopDetailMap);
@@ -74,28 +74,28 @@ public class LaptopRestService {
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopSummary> laptops = laptopService.findByPage(page);
+        List<LaptopRowData> laptops = laptopService.findByPage(page);
         return ResponseEntity.ok(laptops);
     }
 
     @GetMapping(value = "/discount", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getMostDiscountByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopSummary> laptops = laptopService.findMostDiscountByPage(page);
+        List<LaptopRowData> laptops = laptopService.findMostDiscountByPage(page);
         return ResponseEntity.ok(laptops);
     }
 
     @GetMapping(value = "/cheap", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getCheapestByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopSummary> laptops = laptopService.findCheapestByPage(page);
+        List<LaptopRowData> laptops = laptopService.findCheapestByPage(page);
         return ResponseEntity.ok(laptops);
     }
 
     @GetMapping(value = "/best-selling", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getBestSellingByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopSummary> laptops = laptopService.findBestSellingByPage(page);
+        List<LaptopRowData> laptops = laptopService.findBestSellingByPage(page);
         return ResponseEntity.ok(laptops);
     }
 }

@@ -21,7 +21,7 @@ import ProductTitle from "./components/ProductTitle";
 import { useSelector } from "react-redux";
 
 const DetailPage = (props) => {
-    const [loading, setLoading] = useState(props.location.state.loading);
+    const [loading, setLoading] = useState(props.location.state?.loading ?? true);
     const { productId } = useParams();
     const { commentLength, ratingLength } = useSelector((state) => {
         const productDetail = state.productDetail;
