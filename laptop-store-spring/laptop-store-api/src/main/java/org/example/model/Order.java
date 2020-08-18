@@ -79,6 +79,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @Basic(fetch = FetchType.LAZY)
     @JsonIgnore
     private User user;
 

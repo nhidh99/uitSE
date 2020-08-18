@@ -2,15 +2,20 @@ import React from "react";
 import { ProgressBar, Step } from "react-step-progress-bar";
 import styles from "./styles.module.scss";
 import { FaSync, FaCheck, FaBox, FaTruck, FaUserCheck } from "react-icons/fa";
+import store from "../../../../../../../../services/redux/store";
 
-const OrderProgress = (props) => {
-    if (props.status === "CANCELED") return null;
+const OrderProgress = () => {
+    const status = store.getState()["orderDetail"]["order"]["status"];
 
     const OrderStep = (props) => {
         const { accomplished, component, title } = props;
         return (
             <div className={styles.step}>
-                <div className={`${styles.icon} ${accomplished ? styles.done : styles.pending}`}>
+                <div
+                    className={`${styles.icon} ${
+                        accomplished ? styles.done : styles.pending
+                    }`}
+                >
                     {component}
                 </div>
                 <p className={styles.title}>{title}</p>
@@ -19,11 +24,22 @@ const OrderProgress = (props) => {
     };
 
     const getPercentFromStatus = (s) =>
-        ["PENDING", "RECEIVED", "PACKAGED", "DELIVERING", "DELIVERED", "CANCELED"].indexOf(s) * 25;
+        [
+            "PENDING",
+            "RECEIVED",
+            "PACKAGED",
+            "DELIVERING",
+            "DELIVERED",
+            "CANCELED",
+        ].indexOf(s) * 25;
 
     return (
         <div className={styles.progress}>
-            <ProgressBar percent={getPercentFromStatus(props.status)} height={5} hasStepZero>
+            <ProgressBar
+                percent={getPercentFromStatus(status)}
+                height={5}
+                hasStepZero
+            >
                 <Step transition="scale">
                     {({ accomplished }) => (
                         <OrderStep

@@ -11,4 +11,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<OrderRowData> findByUserUsername(String username, Pageable pageable);
 
     Long countByUserUsername(String username);
+
+    boolean existsByIdAndUserUsername(Integer id, String username);
 }

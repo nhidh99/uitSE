@@ -7,43 +7,7 @@
 .title {
     font-size: 18px;
     font-weight: 600;
-    margin-top: 20px;
     margin-bottom: 10px;
-}
-
-.infoTable {
-    font-size: 14px;
-}
-
-.productTable {
-    font-size: 14px;
-    border: 1px solid #ddd;
-    th {
-        background-color: #ddd;
-    }
-    td {
-        vertical-align: middle !important;
-    }
-}
-
-.productsCol {
-    width: 50%;
-    text-align: left;
-}
-
-.unitPriceCol {
-    width: 15%;
-    text-align: center;
-}
-
-.quantityCol {
-    width: 15%;
-    text-align: center;
-}
-
-.totalPriceCol {
-    width: 20%;
-    text-align: center;
 }
 
 .progress {
@@ -56,14 +20,10 @@
     margin-top: -15px;
 }
 
-.canceled {
-    font-weight: 600;
-    color: red;
+.block {
+    font-size: 14px;
 }
 
-.productName {
-    width: 100%;
-    td:first-child {
-        width: 20%;
-    }
+.block:not(:last-of-type) {
+    margin-bottom: 25px;
 }

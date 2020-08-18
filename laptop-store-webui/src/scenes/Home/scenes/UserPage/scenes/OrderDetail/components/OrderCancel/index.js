@@ -2,10 +2,21 @@ import React, { Fragment } from "react";
 import { Button } from "reactstrap";
 import styles from "./styles.module.scss";
 import store from "../../../../../../../../services/redux/store";
-import { buildErrorModal, buildModal } from "../../../../../../../../services/redux/actions";
+import {
+    buildErrorModal,
+    buildModal,
+} from "../../../../../../../../services/redux/actions";
 import orderApi from "../../../../../../../../services/api/orderApi";
 
-const OrderCancel = ({ orderId }) => {
+const OrderCancel = () => {
+    const { orderId, orderStatus } = (() => {
+        const state = store.getState()["orderDetail"];
+        return {
+            orderId: state["order"]["id"],
+            orderStatus: state["order"]["status"],
+        };
+    })();
+
     const confirmCancel = () => {
         const modal = {
             title: `Hủy đơn hàng #${orderId}`,
@@ -31,19 +42,17 @@ const OrderCancel = ({ orderId }) => {
         }
     };
 
-    return (
-        <Fragment>
-            <Button
-                id="order-btn"
-                type="submit"
-                className={styles.btn}
-                color="danger"
-                onClick={confirmCancel}
-            >
-                Hủy đơn hàng
-            </Button>
-        </Fragment>
-    );
+    return ["PENDING", "RECEIVED"].includes(orderStatus) ? (
+        <Button
+            id="order-btn"
+            type="submit"
+            className={styles.btn}
+            color="danger"
+            onClick={confirmCancel}
+        >
+            Hủy đơn hàng
+        </Button>
+    ) : null;
 };
 
 export default OrderCancel;

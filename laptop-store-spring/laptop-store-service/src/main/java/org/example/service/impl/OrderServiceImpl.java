@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Component
 public class OrderServiceImpl implements OrderService {
@@ -19,6 +19,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Override
+    public boolean existByIdAndUsername(Integer id, String username) {
+        return orderRepository.existsByIdAndUserUsername(id, username);
+    }
+
+    @Override
+    public Optional<Order> findById(Integer id) {
+        return orderRepository.findById(id);
+    }
 
     @Override
     public List<OrderRowData> findRowDataByUsernameAndPage(String username, int page) {

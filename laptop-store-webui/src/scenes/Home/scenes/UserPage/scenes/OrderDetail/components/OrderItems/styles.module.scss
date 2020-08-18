@@ -1,0 +1,33 @@
+.table {
+    border: 1px solid #ddd;
+    th {
+        background-color: #f3f3f3;
+    }
+    td {
+        vertical-align: middle !important;
+    }
+}
+
+.productsCol {
+    width: 50%;
+    text-align: left;
+}
+
+.unitPriceCol {
+    width: 15%;
+    text-align: center;
+}
+
+.quantityCol {
+    width: 15%;
+    text-align: center;
+}
+
+.totalPriceCol {
+    width: 20%;
+    text-align: center;
+}
+
+.img {
+    margin-right: 15px;
+}
