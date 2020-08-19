@@ -3,7 +3,6 @@ package org.example.service.impl;
 import org.example.dao.LaptopRepository;
 import org.example.model.Laptop;
 import org.example.projection.LaptopBlockData;
-import org.example.projection.LaptopRowData;
 import org.example.service.api.LaptopService;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,31 +27,31 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public List<LaptopRowData> findSuggestionsById(Integer id) {
+    public List<LaptopBlockData> findSuggestionsById(Integer id) {
         List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(id);
-        return laptopRepository.findRowDataByRecordStatusTrueAndIdIn(suggestionIds);
+        return laptopRepository.findBlockDataByRecordStatusTrueAndIdIn(suggestionIds);
     }
 
     @Override
-    public List<LaptopRowData> findByPage(int page) {
+    public List<LaptopBlockData> findByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
-        return laptopRepository.findRowDataByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopRowData> findMostDiscountByPage(int page) {
+    public List<LaptopBlockData> findMostDiscountByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
-        return laptopRepository.findRowDataByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopRowData> findCheapestByPage(int page) {
+    public List<LaptopBlockData> findCheapestByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("unitPrice"));
-        return laptopRepository.findRowDataByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopRowData> findBestSellingByPage(int page) {
+    public List<LaptopBlockData> findBestSellingByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
         return laptopRepository.findBestSelling(pageable);
     }

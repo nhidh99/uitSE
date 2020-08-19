@@ -14,7 +14,7 @@ const OrderItems = ({ type }) => {
             totalPrice: state[fieldName + "_price"],
             totalQuantity: state[fieldName + "_quantity"],
             imageURL: `/api/images/${
-                type === "LAPTOP" ? "/400/laptops" : "/200/promotions"
+                type === "LAPTOP" ? "/150/laptops" : "/200/promotions"
             }`,
         };
     })();

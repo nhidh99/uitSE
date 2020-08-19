@@ -71,8 +71,8 @@ const ItemCategory = ({ title, category }) => {
                     </label>{" "}
                     - RAM {product["ram"]["size"]}GB -{" "}
                     {product["hard_drive"]["type"]}{" "}
-                    {product["hard_drive"]["size"] === 1024
-                        ? "1TB"
+                    {product["hard_drive"]["size"] >= 1024
+                        ? `${product["hard_drive"]["size"] / 1024}TB`
                         : `${product["hard_drive"]["size"]}GB`}
                 </label>
                 <br />

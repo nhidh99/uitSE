@@ -1,10 +1,21 @@
 .itemBlock {
     border: 1px dashed darkgray;
-    font-size: 14px;
 }
 
 .itemBlock:not(:last-of-type) {
     margin-bottom: 15px;
+}
+
+.itemRating {
+    color: darkorange;
+}
+
+.itemInfo {
+    color: #007bff;
+    margin-bottom: -2px;
+    cursor: pointer;
+    color: #666;
+    font-weight: 550;
 }
 
 .blockLeft {

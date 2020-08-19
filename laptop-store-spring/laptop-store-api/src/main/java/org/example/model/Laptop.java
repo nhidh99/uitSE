@@ -1,6 +1,7 @@
 package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.example.type.BrandType;
@@ -149,6 +150,7 @@ public class Laptop {
     @JoinTable(name = "laptop_promotion",
             joinColumns = @JoinColumn(name = "laptop_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
+    @JsonIgnoreProperties({"recordStatus", "image"})
     @JsonIgnore
     private List<Promotion> promotions;
 }

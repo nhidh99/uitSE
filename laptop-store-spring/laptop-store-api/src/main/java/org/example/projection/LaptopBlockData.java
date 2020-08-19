@@ -1,8 +1,7 @@
 package org.example.projection;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 
 public interface LaptopBlockData {
     @JsonProperty("id")
@@ -20,11 +19,25 @@ public interface LaptopBlockData {
     @JsonProperty("discount_price")
     Long getDiscountPrice();
 
-    @JsonProperty("promotions")
-    List<PromotionData> getPromotions();
+    @JsonProperty("avg_rating")
+    Float getAvgRating();
 
-    interface PromotionData {
-        @JsonProperty("name")
-        String getName();
+    @JsonProperty("ram")
+    RAMData getRam();
+
+    @JsonProperty("hard_drive")
+    HardDriveData getHardDrive();
+
+    interface RAMData {
+        @JsonProperty("size")
+        Integer getSize();
+    }
+
+    interface HardDriveData {
+        @JsonProperty("type")
+        String getType();
+
+        @JsonProperty("size")
+        Integer getSize();
     }
 }
