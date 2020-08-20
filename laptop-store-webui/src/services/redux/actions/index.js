@@ -40,6 +40,12 @@ export const setProductDetail = (payload) => ({
     payload,
 });
 
+// order actions
+export const setOrderDetail = (payload) => ({
+    type: ActionType.SET_ORDER_DETAIL,
+    payload,
+});
+
 export const ActionType = {
     TOGGLE_FILTER: "toggle_filter",
     CLOSE_FILTER: "close_filter",
@@ -52,4 +58,5 @@ export const ActionType = {
     SET_DEFAULT_ADDRESS_ID: "set_default_address_id",
     SET_CART_STATUS: "set_cart_status",
     SET_PRODUCT_DETAIL: "set_product_detail",
+    SET_ORDER_DETAIL: "set_order_detail",
 };

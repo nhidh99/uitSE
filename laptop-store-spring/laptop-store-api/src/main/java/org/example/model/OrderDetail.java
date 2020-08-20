@@ -17,7 +17,7 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @JsonProperty("id")
+    @JsonIgnore
     private Integer id;
 
     @Column(name = "product_id")
@@ -29,8 +29,8 @@ public class OrderDetail {
     private String productName;
 
     @Column(name="product_type")
-    @JsonProperty("product_type")
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private ProductType productType;
 
     @Column(name = "quantity")
@@ -45,7 +45,7 @@ public class OrderDetail {
     @JsonProperty("total_price")
     private Long totalPrice;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @JsonIgnore
     @ToString.Exclude

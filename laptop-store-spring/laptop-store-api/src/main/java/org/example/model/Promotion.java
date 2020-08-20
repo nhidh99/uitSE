@@ -3,6 +3,8 @@ package org.example.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.List;
@@ -46,7 +48,8 @@ public class Promotion {
     @JsonIgnore
     private boolean recordStatus;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JoinTable(name = "laptop_promotion",
             joinColumns = @JoinColumn(name = "promotion_id"),
             inverseJoinColumns = @JoinColumn(name = "laptop_id"))

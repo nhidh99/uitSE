@@ -2,8 +2,7 @@ package org.example.service.impl;
 
 import org.example.dao.LaptopRepository;
 import org.example.model.Laptop;
-import org.example.projection.LaptopOverview;
-import org.example.projection.LaptopSummary;
+import org.example.projection.LaptopBlockData;
 import org.example.service.api.LaptopService;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,36 +27,37 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public List<LaptopSummary> findAll(int page) {
+    public List<LaptopBlockData> findAll(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
-        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopSummary> findSuggestionsById(Integer id) {
-        return laptopRepository.findSuggestionsById(id);
+    public List<LaptopBlockData> findSuggestionsById(Integer id) {
+        List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(id);
+        return laptopRepository.findBlockDataByRecordStatusTrueAndIdIn(suggestionIds);
     }
 
     @Override
-    public List<LaptopSummary> findByPage(int page) {
+    public List<LaptopBlockData> findByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
-        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopSummary> findMostDiscountByPage(int page) {
+    public List<LaptopBlockData> findMostDiscountByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
-        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopSummary> findCheapestByPage(int page) {
+    public List<LaptopBlockData> findCheapestByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("unitPrice"));
-        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
+        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
     }
 
     @Override
-    public List<LaptopSummary> findBestSellingByPage(int page) {
+    public List<LaptopBlockData> findBestSellingByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
         return laptopRepository.findBestSelling(pageable);
     }
@@ -77,7 +77,7 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public List<LaptopOverview> findOverviewsByIds(List<Integer> ids) {
-        return laptopRepository.findOverviewsByRecordStatusTrueAndIdIn(ids);
+    public List<LaptopBlockData> findBlockDataByIds(List<Integer> ids) {
+        return laptopRepository.findBlockDataByRecordStatusTrueAndIdIn(ids);
     }
 }

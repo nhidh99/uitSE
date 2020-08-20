@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import styles from "./styles.module.scss";
 import { FaBoxes, FaShoppingBasket } from "react-icons/fa";
 import { Table, Spinner } from "reactstrap";
@@ -12,39 +12,48 @@ import Loader from "react-loader-advanced";
 import userApi from "../../../../../../services/api/userApi";
 
 const OrderPage = (props) => {
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(null);
-    const [orders, setOrders] = useState([]);
-    const [orderCount, setOrderCount] = useState(0);
+    const INITIAL_STATE = {
+        orders: [],
+        orderCount: 0,
+        loading: true,
+    };
+    const page = useRef(null);
+    const [state, setState] = useState(INITIAL_STATE);
+    const { loading, orders, orderCount } = state;
 
     useEffect(() => {
         const params = new URLSearchParams(props.location.search);
-        const page = parseInt(params.get("page"));
-        setPage(page ? page : 1);
+        const pageNumber = parseInt(params.get("page"));
+        page.current = pageNumber ? pageNumber : 1;
+        loadData();
     }, []);
 
     useEffect(() => {
-        if (!page) return;
-        window.history.pushState(null, null, `/user/order?page=${page}`);
-        loadData();
-    }, [page]);
+        if (!page.current) return;
+        window.history.pushState(
+            null,
+            null,
+            `/user/order?page=${page.current}`
+        );
+    }, [page.current]);
 
     const loadData = async () => {
         try {
-            const response = await userApi.getCurrentUserOrders(page);
-            const orders = response.data;
-            const orderCount = response.headers["x-total-count"];
-            setOrders(orders);
-            setOrderCount(orderCount);
-            setLoading(false);
+            const response = await userApi.getCurrentUserOrders(page.current);
+            setState({
+                orders: response.data,
+                orderCount: response.headers["x-total-count"],
+                loading: false,
+            });
         } catch (err) {
-            setLoading(true);
+            setState((prev) => ({ ...prev, loading: true }));
         }
     };
 
     const pageChange = (pageNumber) => {
-        if (pageNumber === page) return;
-        setPage(pageNumber);
+        if (pageNumber === page.current) return;
+        page.current = pageNumber;
+        loadData();
     };
 
     const redirectToOrderDetail = (orderId) => {
@@ -80,49 +89,43 @@ const OrderPage = (props) => {
                                 <th className={styles.statusCol}>Trạng thái</th>
                             </tr>
 
-                            {orders.map((orderOverview) => {
-                                const {
-                                    order,
-                                    first_product,
-                                    product_count,
-                                } = orderOverview;
+                            {orders.map((data) => {
+                                const { first_product } = data;
                                 return (
                                     <tr
                                         onClick={() =>
-                                            redirectToOrderDetail(order["id"])
+                                            redirectToOrderDetail(data["id"])
                                         }
                                         className={styles.orderRow}
                                     >
                                         <td className={styles.idCol}>
-                                            {order["id"]}
+                                            {data["id"]}
                                         </td>
 
                                         <td className={styles.dateCol}>
-                                            {order["order_date"]}
+                                            {data["order_date"]}
                                         </td>
 
                                         <td className={styles.productsCol}>
                                             {`${first_product["quantity"]} Laptop ${first_product["product_name"]}`}
-                                            {product_count ===
+                                            {data["product_count"] ===
                                             first_product["quantity"]
                                                 ? null
                                                 : ` và ${
-                                                      product_count -
+                                                      data["product_count"] -
                                                       first_product["quantity"]
                                                   } sản phẩm khác`}
                                         </td>
 
                                         <td className={styles.priceCol}>
-                                            {order[
+                                            {data[
                                                 "total_price"
                                             ].toLocaleString()}
                                             <sup>đ</sup>
                                         </td>
 
                                         <td className={styles.statusCol}>
-                                            {convertOrderStatus(
-                                                order["status"]
-                                            )}
+                                            {convertOrderStatus(data["status"])}
                                         </td>
                                     </tr>
                                 );
@@ -135,7 +138,7 @@ const OrderPage = (props) => {
             {orders.length === 0 ? null : (
                 <div className={styles.pagination}>
                     <Pagination
-                        activePage={page}
+                        activePage={page.current}
                         itemsCountPerPage={ITEM_COUNT_PER_PAGE}
                         totalItemsCount={orderCount}
                         pageRangeDisplayed={5}

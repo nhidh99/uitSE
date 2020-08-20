@@ -13,6 +13,9 @@ const laptopApi = {
 
     getById: (id, includes) => {
         const url = `/laptops/${id}`;
+        if (!includes) {
+            return axiosClient.get(url);
+        }
         const params = Object.keys(includes).filter((key) => includes[key]);
         const config = {
             params: { include: params },

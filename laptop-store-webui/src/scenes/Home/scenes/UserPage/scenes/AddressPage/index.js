@@ -8,33 +8,30 @@ import AddressBlock from "./components/AddressBlock";
 import store from "../../../../../../services/redux/store";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
 import userApi from "../../../../../../services/api/userApi";
+import { buildErrorModal } from "../../../../../../services/redux/actions";
 
 const AddressPage = () => {
-    const [addresses, setAddresses] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const defaultAddressId = store.getState()["user"]["default_address"]?.["id"];
+    const INITIAL_STATE = { addresses: [], loading: true };
+    const [state, setState] = useState(INITIAL_STATE);
+    const defaultAddressId = store.getState().user.default_address.id;
+    const { addresses, loading } = state;
 
     useEffect(() => {
-        fetchData();
+        loadData();
     }, []);
 
-    const fetchData = async () => {
+    const loadData = async () => {
         try {
             const response = await userApi.getCurrentUserAddresses();
             const data = response.data;
-            const defaultAddress = data.find(
-                (address) => address.id === defaultAddressId
-            );
-            const addresses = data.filter(
-                (address) => address !== defaultAddress
-            );
+            const defaultAddress = data.find((a) => a.id === defaultAddressId);
+            const addresses = data.filter((a) => a !== defaultAddress);
             if (defaultAddress) {
                 addresses.unshift(defaultAddress);
             }
-            setAddresses(addresses);
-            setLoading(false);
+            setState({ addresses: addresses, loading: false });
         } catch (err) {
-            console.log("fail");
+            store.dispatch(buildErrorModal());
         }
     };
 

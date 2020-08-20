@@ -38,3 +38,7 @@ export const CardDesignType = {
     DISCRETE: "Card đồ họa rời"
 }
 
+export const ProductType = {
+    LAPTOP: "Sản phẩm",
+    PROMOTION: "Khuyến mãi"
+}

@@ -2,7 +2,7 @@ package org.example.service.impl;
 
 import org.example.dao.OrderRepository;
 import org.example.model.Order;
-import org.example.projection.OrderOverview;
+import org.example.projection.OrderRowData;
 import org.example.service.api.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Component
 public class OrderServiceImpl implements OrderService {
@@ -21,10 +21,19 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public List<OrderOverview> findOverviewsByUsernameAndPage(String username, int page) {
+    public boolean existByIdAndUsername(Integer id, String username) {
+        return orderRepository.existsByIdAndUserUsername(id, username);
+    }
+
+    @Override
+    public Optional<Order> findById(Integer id) {
+        return orderRepository.findById(id);
+    }
+
+    @Override
+    public List<OrderRowData> findRowDataByUsernameAndPage(String username, int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
-        List<Order> orders = orderRepository.findByUserUsername(username, pageable);
-        return orders.stream().map(OrderOverview::fromOrder).collect(Collectors.toList());
+        return orderRepository.findByUserUsername(username, pageable);
     }
 
     @Override

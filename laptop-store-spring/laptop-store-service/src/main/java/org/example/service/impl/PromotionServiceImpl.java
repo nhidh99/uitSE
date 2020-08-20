@@ -15,7 +15,7 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public List<Promotion> findByLaptopId(Integer laptopId) {
-        return promotionRepository.findSummariesByRecordStatusTrueAndLaptopsId(laptopId);
+        return promotionRepository.findByRecordStatusTrueAndLaptopsId(laptopId);
     }
 
     @Override

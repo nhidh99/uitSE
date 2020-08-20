@@ -15,11 +15,16 @@ import { buildErrorModal } from "../../../../services/redux/actions";
 import { CardDesignType, PINType } from "../../../../constants";
 
 const ComparePage = () => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const INITIAL_STATE = {
+        products: [],
+        loading: true,
+    };
+    const [state, setState] = useState(INITIAL_STATE);
+    const { products, loading } = state;
     const { id1, id2 } = useParams();
 
     useEffect(() => {
+        window.scroll(0, 0);
         loadData();
     }, []);
 
@@ -29,8 +34,10 @@ const ComparePage = () => {
                 fetchProduct(id1),
                 fetchProduct(id2),
             ]);
-            setProducts([product1, product2]);
-            setLoading(false);
+            setState({
+                products: [product1, product2],
+                loading: false,
+            });
         } catch (err) {
             store.dispatch(buildErrorModal());
         }
@@ -60,7 +67,10 @@ const ComparePage = () => {
                         {products.map((product) => (
                             <td>
                                 <Link
-                                    to={`/product/${product["alt"]}/${product["id"]}`}
+                                    to={{
+                                        pathname: `/product/${product["alt"]}/${product["id"]}`,
+                                        state: { loading: true },
+                                    }}
                                 >
                                     <img
                                         src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}

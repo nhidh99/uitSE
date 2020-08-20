@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
-    List<Promotion> findSummariesByRecordStatusTrueAndLaptopsId(Integer laptopId);
+    List<Promotion> findByRecordStatusTrueAndLaptopsId(Integer laptopId);
 
     @Query("SELECT p.image FROM Promotion p WHERE p.id = :id")
     byte[] findImageById(@Param("id") Integer id);
