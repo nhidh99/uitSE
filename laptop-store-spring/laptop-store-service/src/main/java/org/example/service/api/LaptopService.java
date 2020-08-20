@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface LaptopService {
     Optional<Laptop> findById(Integer id);
 
+    List<LaptopSummary> findAll(int page);
+
     List<LaptopSummary> findSuggestionsById(Integer id);
 
     List<LaptopSummary> findByPage(int page);

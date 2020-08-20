@@ -23,4 +23,10 @@ public class RatingServiceImpl implements RatingService {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
         return ratingRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
     }
+
+    @Override
+    public List<Rating> findAll(int page) {
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
+        return ratingRepository.findAll(pageable).getContent();
+    }
 }

@@ -3,6 +3,7 @@ package org.example.dao;
 import org.example.model.Laptop;
 import org.example.projection.LaptopOverview;
 import org.example.projection.LaptopSummary;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,6 +39,8 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
 
     List<LaptopSummary> findSummariesByIdIn(List<Integer> ids);
+
+//    Page<Laptop> findAll(Pageable pageable);
 
     default List<LaptopSummary> findSuggestionsById(Integer id) {
         List<Integer> suggestionIds = findSuggestionIdsById(id);

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface RatingService {
     List<Rating> findByLaptopId(Integer laptopId, int page);
+
+    List<Rating> findAll(int page);
 }

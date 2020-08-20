@@ -28,6 +28,12 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    public List<LaptopSummary> findAll(int page) {
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
+        return laptopRepository.findSummariesByRecordStatusTrue(pageable);
+    }
+
+    @Override
     public List<LaptopSummary> findSuggestionsById(Integer id) {
         return laptopRepository.findSuggestionsById(id);
     }

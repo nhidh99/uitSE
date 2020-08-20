@@ -11,7 +11,7 @@ const commentApi = {
     },
 
     getByPage: (page) => {
-        const url = "/comments";
+        const url = "/comments/";
         const config = {
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
             params: { page: page },

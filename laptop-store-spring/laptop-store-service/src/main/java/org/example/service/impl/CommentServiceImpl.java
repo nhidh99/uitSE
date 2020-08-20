@@ -23,4 +23,16 @@ public class CommentServiceImpl implements CommentService {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
         return commentRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
     }
+
+    @Override
+    public List<Comment> findAll(int page) {
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
+        return commentRepository.findAll(pageable).getContent();
+    }
+
+    @Override
+    public Long countAll() {
+        return commentRepository.countAll();
+    }
+
 }

@@ -11,7 +11,7 @@ const ratingApi = {
     },
 
     getByPage: (page) => {
-        const url = "/ratings";
+        const url = "/ratings/";
         const config = {
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
             params: { page: page },

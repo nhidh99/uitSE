@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CommentService {
     List<Comment> findByLaptopId(Integer laptopId, int page);
+    List<Comment> findAll(int page);
+    Long countAll();
 }

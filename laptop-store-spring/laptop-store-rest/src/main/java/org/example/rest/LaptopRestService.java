@@ -1,6 +1,7 @@
 package org.example.rest;
 
 import org.example.model.*;
+import org.example.projection.LaptopOverview;
 import org.example.projection.LaptopSummary;
 import org.example.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,4 +99,11 @@ public class LaptopRestService {
         List<LaptopSummary> laptops = laptopService.findBestSellingByPage(page);
         return ResponseEntity.ok(laptops);
     }
+
+//    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PreAuthorize("isAuthenticated()")
+//    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") int page) {
+//        List<LaptopSummary> laptops = laptopService.findAll(page);
+//        return ResponseEntity.ok(laptops);
+//    }
 }

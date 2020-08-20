@@ -3,7 +3,7 @@ import { getCookie } from "../helper/cookie";
 
 const laptopApi = {
     getByPage: (page) => {
-        const url = "/laptops";
+        const url = "/laptops/";
         const config = {
             params: { page: page },
             headers: { Authorization: `Bearer ${getCookie("access_token")}` },
