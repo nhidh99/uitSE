@@ -5,7 +5,7 @@ spring:
     url: jdbc:mariadb://localhost:3307/laptop_store?allowPublicKeyRetrieval=true&useSSL=false
     username: root
   jpa:
-    show-sql: true
+    show-sql: false
 
 security:
   jwt:
