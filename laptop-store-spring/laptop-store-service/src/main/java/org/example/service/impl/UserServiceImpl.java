@@ -28,4 +28,9 @@ public class UserServiceImpl implements UserService {
             put(SocialMediaType.GOOGLE, user.getGoogleId() != null);
         }};
     }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
 }

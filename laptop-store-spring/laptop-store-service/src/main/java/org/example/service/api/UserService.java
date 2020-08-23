@@ -9,4 +9,6 @@ public interface UserService {
     User findByUsername(String username);
 
     Map<SocialMediaType, Boolean> findSocialMediaAuthByUsername(String username);
+
+    void save(User user);
 }

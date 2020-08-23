@@ -17,7 +17,7 @@ import { MAXIMUM_QUANTITY_IN_CART } from "../../../../constants";
 import cartService from "../../../../services/helper/cartService";
 
 const PaymentPage = (props) => {
-    const defaultAddressId = store.getState()["user"]["default_address"]?.["id"];
+    const defaultAddressId = store.getState()["user"]["address_id"];
     const [addresses, setAddresses] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [products, setProducts] = useState([]);

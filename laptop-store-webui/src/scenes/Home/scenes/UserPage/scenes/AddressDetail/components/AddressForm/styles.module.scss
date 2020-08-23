@@ -1,0 +1,40 @@
+.form {
+    font-size: 14px;
+    margin-top: 20px;
+    border: 1px dashed #ddd;
+    padding: 20px;
+
+    input, select {
+        font-size: 14px;
+    }
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+.label {
+    margin-top: 5px;
+    width: 100px;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.input {
+    border-radius: 5px;
+}
+
+.submit {
+    width: 100%;
+}
+
+.error {
+    margin-top: 5px;
+    font-size: 12px;
+    color: red;
+}

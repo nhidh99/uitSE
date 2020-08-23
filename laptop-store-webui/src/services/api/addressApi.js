@@ -4,24 +4,23 @@ import queryString from "query-string";
 import { getCookie } from "../helper/cookie";
 
 const addressClient = axios.create({
-    baseURL:
-        "https://raw.githubusercontent.com/nhidh99/uitSE/master/laptop-store/laptop-store-addresses/",
+    baseURL: "/api/locations",
     paramsSerializer: (params) => queryString.stringify(params),
 });
 
 const addressApi = {
     getCities: () => {
-        const url = "/cities.json";
+        const url = "/cities";
         return addressClient.get(url);
     },
 
     getDistricts: (cityId) => {
-        const url = `/districts/${cityId}.json`;
+        const url = `/districts?city_id=${cityId}`;
         return addressClient.get(url);
     },
 
     getWards: (districtId) => {
-        const url = `/wards/${districtId}.json`;
+        const url = `/wards?district_id=${districtId}`;
         return addressClient.get(url);
     },
 
@@ -56,14 +55,12 @@ const addressApi = {
     },
 
     putDefaultAddress: (id) => {
-        const url = "/addresses/default";
+        const url = `/addresses/${id}/default`;
+        const data = { id: id };
         const config = {
-            headers: {
-                Authorization: `Bearer ${getCookie("access_token")}`,
-                "Content-Type": "text/plain",
-            },
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
         };
-        return axiosClient.put(url, id, config);
+        return axiosClient.put(url, data, config);
     },
 
     deleteAddress: (id) => {
