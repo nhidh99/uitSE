@@ -1,5 +1,6 @@
 .row {
     padding: 10px 0px 10px 20px !important;
+    display: flex;
 }
 
 .row:not(:first-of-type) {
@@ -7,16 +8,19 @@
 }
 
 .blockLeft {
+    flex: 1;
     img {
         padding: 5px;
     }
 }
 
 .blockCenter {
+    flex: 4;
     margin-top: 20px;
 }
 
 .blockRight {
+    flex: 1;
     margin-top: 20px;
     padding: 0 !important;
 }
@@ -26,9 +30,6 @@
     margin-bottom: 2px !important;
     color: #0000ff;
     font-weight: 500;
-}
-
-.name:hover {
     cursor: pointer;
 }
 
@@ -59,4 +60,22 @@
 .trashIcon {
     margin-left: 5px;
     margin-bottom: 5px;
+}
+
+.pricePromotion {
+    text-decoration: line-through;
+    color: grey;
+    margin-left: 10px;
+    font-size: 13px;
+}
+
+.itemRating {
+    color: darkorange;
+}
+
+.itemInfo {
+    color: #007bff;
+    margin-bottom: -2px;
+    color: #666;
+    font-weight: 550;
 }

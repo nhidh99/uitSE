@@ -156,8 +156,8 @@ const AddressForm = () => {
             } else {
                 await addressApi.putAddress(id, values);
                 const modal = {
-                    title: "Cap nhat thanh cong",
-                    message: "Cap nhat dia chi thanh cong",
+                    title: "Cập nhật thành công",
+                    message: "Cập nhật địa chỉ thành công",
                     confirm: () => null,
                 };
                 store.dispatch(buildModal(modal));
@@ -170,20 +170,20 @@ const AddressForm = () => {
     const AddressSchema = Yup.object().shape({
         receiver_name: Yup.string()
             .min(1)
-            .max(30, "Ten nguoi nhan toi da 30 ki tu")
-            .required("Ten nguoi nhan khong duoc de trong"),
+            .max(30, "Tên người nhận tối đa 30 kí tự")
+            .required("Tên người nhận không được để trống"),
         receiver_phone: Yup.string()
-            .matches(/^[0-9]{10}$/, "So dien thoai gom 10 chu so")
-            .required("So dien thoai khong duoc de trong"),
-        city_id: Yup.number().required("Chon tinh thanh"),
-        district_id: Yup.number().required("Chon quan huyen"),
-        ward_id: Yup.number().required("Chon phuong xa"),
+            .matches(/^[0-9]{10}$/, "Số điện thoại gồm 10 chữ số")
+            .required("Số điện thoại không được để trống"),
+        city_id: Yup.number().required("Chọn tỉnh thành"),
+        district_id: Yup.number().required("Chọn quận huyện"),
+        ward_id: Yup.number().required("Chọn phường xã"),
         street: Yup.string()
-            .max(30, "Ten duong toi da 30 ki tu")
-            .required("Ten duong khong duoc de trong"),
+            .max(30, "Tên đường tối đa 30 kí tự")
+            .required("Tên đường không được để trống"),
         address_num: Yup.string()
-            .max(30, "Dia chi toi da 30 ki tu")
-            .required("Dia chi khong duoc de trong"),
+            .max(30, "Địa chỉ tối đa 30 kí tự")
+            .required("Địa chỉ không được để trống"),
     });
 
     return (
@@ -198,14 +198,14 @@ const AddressForm = () => {
                 <Form className={styles.form}>
                     <div className={styles.row}>
                         <label className={styles.label} htmlFor="receiver_name">
-                            Nguoi nhan:
+                            Người nhận:
                         </label>
                         <div className={styles.col}>
                             <Field
                                 className={`form-control ${styles.input}`}
                                 type="name"
                                 name="receiver_name"
-                                placeholder="Nhap ten nguoi nhan"
+                                placeholder="Nhập tên người nhận"
                                 maxLength={30}
                             />
                             <ErrorMessage
@@ -221,14 +221,14 @@ const AddressForm = () => {
                             className={styles.label}
                             htmlFor="receiver_phone"
                         >
-                            Dien thoai:
+                            Điện thoại:
                         </label>
                         <div className={styles.col}>
                             <Field
                                 className={`form-control ${styles.input}`}
                                 type="name"
                                 name="receiver_phone"
-                                placeholder="Nhap so dien thoai"
+                                placeholder="Nhập số điện thoại"
                                 maxLength={10}
                             />
                             <ErrorMessage
@@ -241,7 +241,7 @@ const AddressForm = () => {
 
                     <div className={styles.row}>
                         <label className={styles.label} htmlFor="city_id">
-                            Tinh/Thanh:
+                            Tỉnh/Thành:
                         </label>
                         <div className={styles.col}>
                             <Field
@@ -251,7 +251,7 @@ const AddressForm = () => {
                                 onChange={selectCity}
                             >
                                 <option value="" hidden>
-                                    Chon tinh thanh
+                                    Chọn tỉnh thành
                                 </option>
                                 {cities.map((city) => (
                                     <option value={city["id"]}>
@@ -269,7 +269,7 @@ const AddressForm = () => {
 
                     <div className={styles.row}>
                         <label className={styles.label} htmlFor="district_id">
-                            Quan/Huyen:
+                            Quận/Huyện:
                         </label>
                         <div className={styles.col}>
                             <Field
@@ -280,7 +280,7 @@ const AddressForm = () => {
                                 id="district_id"
                             >
                                 <option value="" hidden>
-                                    Chon quan huyen
+                                    Chọn quận huyện
                                 </option>
                                 {districts.map((district) => (
                                     <option value={district["id"]}>
@@ -298,7 +298,7 @@ const AddressForm = () => {
 
                     <div className={styles.row}>
                         <label className={styles.label} htmlFor="ward_id">
-                            Phuong/Xa:
+                            Phường/Xã:
                         </label>
                         <div className={styles.col}>
                             <Field
@@ -309,7 +309,7 @@ const AddressForm = () => {
                                 onChange={selectWard}
                             >
                                 <option value="" hidden>
-                                    Chon phuong xa
+                                    Chọn phường xã
                                 </option>
                                 {wards.map((ward) => (
                                     <option value={ward["id"]}>
@@ -327,13 +327,13 @@ const AddressForm = () => {
 
                     <div className={styles.row}>
                         <label className={styles.label} htmlFor="street">
-                            Duong:
+                            Đường:
                         </label>
                         <div className={styles.col}>
                             <Field
                                 className={`form-control ${styles.input}`}
                                 name="street"
-                                placeholder="Nhap ten duong"
+                                placeholder="Nhập tên đường"
                                 maxLength={30}
                             />
                             <ErrorMessage
@@ -346,13 +346,13 @@ const AddressForm = () => {
 
                     <div className={styles.row}>
                         <label className={styles.label} htmlFor="address-num">
-                            Dia chi:
+                            Địa chỉ:
                         </label>
                         <div className={styles.col}>
                             <Field
                                 className={`form-control ${styles.input}`}
                                 name="address_num"
-                                placeholder="Nhap dia chi"
+                                placeholder="Nhập địa chỉ"
                                 maxLength={30}
                             />
                             <ErrorMessage
@@ -371,7 +371,7 @@ const AddressForm = () => {
                                 color="success"
                                 className={styles.submit}
                             >
-                                Luu
+                                Lưu
                             </Button>
                         </div>
                     </div>

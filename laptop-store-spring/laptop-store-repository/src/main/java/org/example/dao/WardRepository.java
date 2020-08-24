@@ -8,7 +8,7 @@ import java.util.List;
 public interface WardRepository extends JpaRepository<Ward, Integer> {
     boolean existsByIdAndDistrictId(Integer id, Integer districtId);
 
-    Ward findByName(String name);
+    Ward findByNameAndDistrictId(String name, Integer districtId);
 
     List<Ward> findByDistrictId(Integer districtId);
 }

@@ -24,8 +24,8 @@ const AddressDefault = () => {
             const addressId = parseInt(id);
             await addressApi.putDefaultAddress(addressId);
             const modal = {
-                title: "Luu thanh cong",
-                message: "Da luu dia chi mac dinh",
+                title: "Lưu thành công",
+                message: "Đã lưu địa chỉ mặc định",
                 confirm: () => null,
             };
             store.dispatch(setDefaultAddressId(addressId));

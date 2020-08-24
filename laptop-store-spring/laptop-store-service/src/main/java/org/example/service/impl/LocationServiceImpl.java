@@ -50,13 +50,13 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public District findDistrictByName(String name) {
-        return districtRepository.findByName(name);
+    public District findDistrictByNameAndCityId(String name, Integer cityId) {
+        return districtRepository.findByNameAndCityId(name, cityId);
     }
 
     @Override
-    public Ward findWardByName(String name) {
-        return wardRepository.findByName(name);
+    public Ward findWardByNameAndDistrictId(String name, Integer districtId) {
+        return wardRepository.findByNameAndDistrictId(name, districtId);
     }
 
     @Override

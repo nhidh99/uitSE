@@ -42,8 +42,8 @@ public class AddressRestService {
         }
         Address address = addressService.findById(id).get();
         Integer cityId = locationService.findCityByName(address.getCity()).getId();
-        Integer districtId = locationService.findDistrictByName(address.getDistrict()).getId();
-        Integer wardId = locationService.findWardByName(address.getWard()).getId();
+        Integer districtId = locationService.findDistrictByNameAndCityId(address.getDistrict(), cityId).getId();
+        Integer wardId = locationService.findWardByNameAndDistrictId(address.getWard(), districtId).getId();
         Map<?, ?> output = new HashMap<String, Object>() {{
             put("address", address);
             put("city_id", cityId);

@@ -16,9 +16,9 @@ public interface LocationService {
 
     City findCityByName(String name);
 
-    District findDistrictByName(String name);
+    District findDistrictByNameAndCityId(String name, Integer cityId);
 
-    Ward findWardByName(String name);
+    Ward findWardByNameAndDistrictId(String name, Integer districtId);
 
     List<City> findCities();
 
