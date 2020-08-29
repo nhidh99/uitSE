@@ -1,6 +1,7 @@
 package org.example.rest;
 
 import org.example.input.LoginInput;
+import org.example.input.RegisterInput;
 import org.example.service.api.AuthService;
 import org.example.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,21 @@ public class AuthRestService {
             return ResponseEntity.ok(accessToken);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credential");
+        }
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> register(@RequestBody RegisterInput registerInput) {
+        try {
+            authService.register(registerInput);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

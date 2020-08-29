@@ -1,5 +1,6 @@
 package org.example.service.api;
 
+import org.example.input.RegisterInput;
 import org.example.model.User;
 import org.example.type.SocialMediaType;
 

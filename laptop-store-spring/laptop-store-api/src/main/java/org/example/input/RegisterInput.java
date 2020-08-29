@@ -26,7 +26,4 @@ public class RegisterInput {
 
     @JsonProperty("gender")
     private GenderType gender;
-
-    @JsonProperty("birthday")
-    private Long birthday;
 }

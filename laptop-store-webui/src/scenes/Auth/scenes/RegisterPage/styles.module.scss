@@ -3,12 +3,12 @@
     width: 500px;
     margin: 0 auto;
     border-radius: 5px;
-    padding: 30px 50px !important;
+    padding: 30px 50px;
     text-align: center;
     font-size: 14px;
     color: #454545;
 
-    > *:not(:first-child) {
+    > div:not(:first-child), button, .redirect {
         margin-top: 15px;
     }
 
@@ -17,44 +17,25 @@
         font-weight: bold;
     }
 
-    a {
-        font-weight: bold;
-    }
-
-    p {
-        margin-bottom: 0;
-        font-size: 16px;
-    }
-
-    input {
-        font-size: 16px;
+    input, select {
+        font-size: 14px;
     }
 
     button {
-        display: block;
         width: 100%;
-        font-size: 15px;
-        border-radius: 20px;
+        font-size: 14px;
     }
-}
-
-.borderInputLeft {
-    border-top-left-radius: 20px !important;
-    border-bottom-left-radius: 20px !important;
-
-    svg {
-        margin-left: 5px;
-    }
-}
-
-.borderInputRight {
-    border-top-right-radius: 20px !important;
-    border-bottom-right-radius: 20px !important;
 }
 
 .error {
+    margin-top: 5px;
+    margin-bottom: -5px;
+    font-size: 12px;
     color: red;
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
+    text-align: left;
+}
+
+.registerError {
+    margin-bottom: 0;
+    color: red;
 }

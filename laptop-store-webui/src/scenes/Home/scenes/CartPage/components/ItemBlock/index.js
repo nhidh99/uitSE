@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Label, Button, Input, InputGroup } from "reactstrap";
 import { FaTrashAlt, FaStar } from "react-icons/fa";
 import styles from "./styles.module.scss";
@@ -12,14 +12,11 @@ import {
 import cartService from "../../../../../../services/helper/cartService";
 import { setCartStatus } from "../../../../../../services/redux/actions";
 import store from "../../../../../../services/redux/store";
+import { getCart } from "../../../../../../services/helper/cart";
 
-const ItemBlock = ({ product, quantity }) => {
-    const [qty, setQty] = useState(quantity);
+const ItemBlock = ({ product }) => {
+    const quantity = getCart()[product["id"]];
     const { hard_drive, ram } = product;
-
-    useEffect(() => {
-        setQty(quantity);
-    }, [quantity]);
 
     const minusQuantity = async () => {
         store.dispatch(setCartStatus(CartStatus.LOADING));
@@ -54,7 +51,7 @@ const ItemBlock = ({ product, quantity }) => {
         store.dispatch(setCartStatus(nextCartStatus));
     };
 
-    return qty === 0 ? null : (
+    return quantity === 0 ? null : (
         <div className={styles.row}>
             <div className={styles.blockLeft}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
@@ -76,14 +73,16 @@ const ItemBlock = ({ product, quantity }) => {
                 <br />
 
                 <Label className={styles.priceLabel}>
-                    {(
-                        product["unit_price"] - product["discount_price"]
-                    ).toLocaleString()}
-                    đ
+                    {product["unit_price"].toLocaleString()}đ
                 </Label>
 
                 <Label className={styles.pricePromotion}>
-                    <s>{product["unit_price"].toLocaleString()}đ</s>
+                    <s>
+                        {(
+                            product["unit_price"] + product["discount_price"]
+                        ).toLocaleString()}
+                        đ
+                    </s>
                 </Label>
                 <br />
 
@@ -117,7 +116,7 @@ const ItemBlock = ({ product, quantity }) => {
                         thousandSeparator={true}
                         decimalSeparator={false}
                         allowNegative={false}
-                        value={qty}
+                        value={quantity}
                         onBlur={updateQuantity}
                         isAllowed={(values) => {
                             const { formattedValue, floatValue } = values;

@@ -2,12 +2,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
-import {
-    FaShoppingCart,
-    FaBoxOpen,
-    FaGift,
-    FaMoneyBillWave,
-} from "react-icons/fa";
+import { FaShoppingCart, FaBoxOpen } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { getCart } from "../../../../services/helper/cart";
 import { withRouter } from "react-router-dom";
@@ -27,11 +22,13 @@ import cartService from "../../../../services/helper/cartService";
 const CartPage = (props) => {
     const INITIAL_STATE = {
         products: null,
+        totalQuantity: 0,
         totalPrice: 0,
         totalDiscount: 0,
     };
+
     const [state, setState] = useState(INITIAL_STATE);
-    const { products, totalPrice, totalDiscount } = state;
+    const { products, totalPrice, totalDiscount, totalQuantity } = state;
 
     const { status, loading } = useSelector((state) => {
         const status = state.cartStatus;
@@ -63,35 +60,38 @@ const CartPage = (props) => {
 
     const loadCart = async () => {
         try {
-            const ids = Object.keys(getCart());
+            const cart = getCart();
+            const ids = Object.keys(cart);
             const response = await laptopApi.getByIds(ids);
             const products = response.data;
-            let totalPrice = 0;
-            let totalDiscount = 0;
-
-            // Calculate quantity, total discount and total price of all products in cart
-            products.forEach((product) => {
-                const quantity = getCart()[[product["id"]]];
-                const discount = product["discount_price"] * quantity;
-                const price =
-                    (product["unit_price"] - product["discount_price"]) *
-                    quantity;
-                totalPrice += price;
-                totalDiscount += discount;
-            });
 
             // Remove products have been deleted (not for selling)
             const productIds = products.map((p) => p["id"].toString());
-            const deletePromises = Object.keys(getCart())
+            const deletePromises = Object.keys(cart)
                 .filter((id) => !productIds.includes(id))
                 .map(async (id) => await cartService.removeProduct(id));
             await Promise.all(deletePromises);
+
+            // Calculate quantity, total discount and total price of all products in cart
+            let totalPrice = 0;
+            let totalDiscount = 0;
+            let totalQuantity = 0;
+
+            products.forEach((product) => {
+                const quantity = cart[[product["id"]]];
+                const discount = product["discount_price"] * quantity;
+                const price = product["unit_price"] * quantity;
+                totalQuantity += quantity;
+                totalPrice += price;
+                totalDiscount += discount;
+            });
 
             // Set states
             setState({
                 products: products,
                 totalPrice: totalPrice,
                 totalDiscount: totalDiscount,
+                totalQuantity: totalQuantity,
             });
         } catch (err) {
             store.dispatch(buildErrorModal());
@@ -104,35 +104,34 @@ const CartPage = (props) => {
         window.scroll(0, 0);
     };
 
-    const SummaryBlock = () => (
-        <div className={styles.summary}>
+    const SummaryBlock = () => {
+        const SummaryInfo = ({ title, value, suffix }) => (
             <span>
-                <b>
-                    <FaBoxOpen />
-                    &nbsp; Số lượng:&nbsp;&nbsp;
-                </b>
-                {Object.values(getCart()).reduce((a, b) => a + b, 0)}
+                <b>{title}:</b>
+                &nbsp;&nbsp;
+                {value}
+                {suffix ? <sup>{suffix}</sup> : null}
             </span>
-
-            <span>
-                <b>
-                    <FaGift />
-                    &nbsp; Tổng giảm giá:&nbsp;&nbsp;
-                </b>
-                {totalDiscount.toLocaleString()}
-                <sup>đ</sup>
-            </span>
-
-            <span>
-                <b>
-                    <FaMoneyBillWave />
-                    &nbsp; Tạm tính:&nbsp;&nbsp;
-                </b>
-                {totalPrice.toLocaleString()}
-                <sup>đ</sup>
-            </span>
-        </div>
-    );
+        );
+        return (
+            <div className={styles.summary}>
+                <SummaryInfo
+                    title="Số lượng"
+                    value={totalQuantity.toLocaleString()}
+                />
+                <SummaryInfo
+                    title="Tổng giảm giá"
+                    value={totalDiscount.toLocaleString()}
+                    suffix="đ"
+                />
+                <SummaryInfo
+                    title="Tạm tính"
+                    value={totalPrice.toLocaleString()}
+                    suffix="đ"
+                />
+            </div>
+        );
+    };
 
     return (
         <Fragment>
@@ -163,10 +162,7 @@ const CartPage = (props) => {
                         <Fragment>
                             <SummaryBlock />
                             {products.map((product) => (
-                                <ItemBlock
-                                    product={product}
-                                    quantity={getCart()[product["id"]]}
-                                />
+                                <ItemBlock product={product} />
                             ))}
                         </Fragment>
                     )}

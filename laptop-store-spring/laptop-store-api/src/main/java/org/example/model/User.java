@@ -53,10 +53,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
-    @Column(name = "birthday")
-    @JsonProperty("birthday")
-    private LocalDate birthday;
-
     @Column(name = "cart")
     @JsonProperty("cart")
     private String cart;
