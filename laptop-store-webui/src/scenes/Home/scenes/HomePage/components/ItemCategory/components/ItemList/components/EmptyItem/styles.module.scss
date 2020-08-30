@@ -1,0 +1,29 @@
+.itemBlock {
+    width: 20%;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 13px;
+    background-color: white;
+}
+
+.itemBlock:hover {
+    box-shadow: 0 0 5px 5px #ddd;
+    .itemName {
+        color: #007bff !important;
+    }
+
+    img {
+        transform: translateY(-12px);
+        transition-duration: 0s;
+    }
+}
+
+.itemBlock:empty {
+    border: 0;
+}
+
+.imgHolder {
+    height: 200px !important;
+    display: block;
+}

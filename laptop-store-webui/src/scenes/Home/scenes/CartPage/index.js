@@ -162,7 +162,10 @@ const CartPage = (props) => {
                         <Fragment>
                             <SummaryBlock />
                             {products.map((product) => (
-                                <ItemBlock product={product} />
+                                <ItemBlock
+                                    key={product["id"]}
+                                    product={product}
+                                />
                             ))}
                         </Fragment>
                     )}

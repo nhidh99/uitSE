@@ -35,8 +35,7 @@ const PaymentPage = () => {
                 loadPayment(),
                 loadAddresses(),
             ]);
-            console.log(addresses);
-
+            
             if (payment === null) {
                 window.location.href = "/cart";
                 return;
