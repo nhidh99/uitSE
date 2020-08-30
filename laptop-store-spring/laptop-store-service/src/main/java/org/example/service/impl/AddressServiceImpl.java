@@ -6,13 +6,13 @@ import org.example.model.Address;
 import org.example.model.User;
 import org.example.service.api.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class AddressServiceImpl implements AddressService {
     @Autowired
     private AddressRepository addressRepository;
@@ -46,7 +46,7 @@ public class AddressServiceImpl implements AddressService {
     public void deleteById(Integer id) {
         Address address = addressRepository.findById(id).get();
         User user = address.getUser();
-        if (user.getDefaultAddressId().equals(id)) {
+        if (id.equals(user.getDefaultAddressId())) {
             user.setDefaultAddressId(null);
             userRepository.save(user);
         }

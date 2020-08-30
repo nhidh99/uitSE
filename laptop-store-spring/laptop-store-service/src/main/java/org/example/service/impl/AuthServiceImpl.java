@@ -10,12 +10,12 @@ import org.example.type.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import java.util.Collections;
 
-@Component
+@Service
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserRepository userRepository;

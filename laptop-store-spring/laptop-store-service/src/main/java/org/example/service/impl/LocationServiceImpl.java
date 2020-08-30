@@ -8,12 +8,12 @@ import org.example.model.District;
 import org.example.model.Ward;
 import org.example.service.api.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class LocationServiceImpl implements LocationService {
     @Autowired
     private CityRepository cityRepository;

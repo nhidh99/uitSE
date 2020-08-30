@@ -97,6 +97,7 @@ public class AddressRestService {
             addressService.deleteById(addressId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }

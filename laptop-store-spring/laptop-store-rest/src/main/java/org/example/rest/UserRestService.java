@@ -12,6 +12,7 @@ import org.example.service.api.OrderService;
 import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +88,34 @@ public class UserRestService {
             return ResponseEntity.ok(laptops);
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping(value = "/me/cart", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
+                                                @RequestBody Map<String, Integer> cartMap) {
+        try {
+            ObjectMapper om = new ObjectMapper();
+            String cartJSON = om.writeValueAsString(cartMap);
+            User user = userService.findByUsername(userDetails.getUsername());
+            user.setCart(cartJSON);
+            userService.save(user);
+            return ResponseEntity.noContent().build();
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping(value = "/me/payment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCurrentUserPayment(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String username = userDetails.getUsername();
+            Map<String, Object> output = userService.findPaymentByUsername(username);
+            return ResponseEntity.ok(output);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

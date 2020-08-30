@@ -4,11 +4,11 @@ import org.example.dao.LaptopImageRepository;
 import org.example.service.api.LaptopImageService;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class LaptopImageServiceImpl implements LaptopImageService {
     @Autowired
     private LaptopImageRepository laptopImageRepository;

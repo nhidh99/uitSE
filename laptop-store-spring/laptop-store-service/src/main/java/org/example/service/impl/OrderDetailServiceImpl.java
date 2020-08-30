@@ -4,11 +4,11 @@ import org.example.dao.OrderDetailRepository;
 import org.example.model.OrderDetail;
 import org.example.service.api.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class OrderDetailServiceImpl implements OrderDetailService {
     @Autowired
     private OrderDetailRepository orderDetailRepository;

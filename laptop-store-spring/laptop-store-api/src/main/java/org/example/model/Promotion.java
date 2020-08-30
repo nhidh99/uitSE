@@ -13,28 +13,34 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor()
 @Builder
 @Table(name = "promotion")
 public class Promotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @NonNull
     private Integer id;
 
     @Column(name = "name")
     @JsonProperty("name")
+    @NonNull
     private String name;
 
     @Column(name = "price")
     @JsonProperty("price")
+    @NonNull
     private Long price;
 
     @Column(name = "quantity")
     @JsonProperty("quantity")
+    @NonNull
     private Integer quantity;
 
     @Column(name = "alt")
     @JsonProperty("alt")
+    @NonNull
     private String alt;
 
     @Lob
