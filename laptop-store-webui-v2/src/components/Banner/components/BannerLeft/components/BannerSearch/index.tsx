@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { SC } from "./styles";
 
@@ -27,4 +27,4 @@ const BannerSearch = () => {
     );
 };
 
-export default withRouter(BannerSearch);
+export default BannerSearch;

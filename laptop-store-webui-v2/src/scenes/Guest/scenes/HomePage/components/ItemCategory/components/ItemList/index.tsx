@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import laptopApi from "../../../../../../../../services/api/laptopApi";
 import EmptyItem from "./components/EmptyItem";
 import MoreButton from "./components/MoreButton";
@@ -23,6 +23,7 @@ const ItemList = ({ category }: ItemListProps) => {
     const { products, loading, fetching, page, isDone } = state;
 
     useEffect(() => {
+        if (!fetching) return;
         const loadData = async () => {
             try {
                 const response = await laptopApi.getByCategory(category, page);
@@ -32,8 +33,9 @@ const ItemList = ({ category }: ItemListProps) => {
                     ...prev,
                     products: newProducts,
                     fetching: false,
-                    isDone: newProducts.length === length,
                     loading: false,
+                    isDone: newProducts.length === length,
+                    page: page + 1,
                 }));
             } catch (err) {
                 setState((prev) => ({
@@ -45,31 +47,28 @@ const ItemList = ({ category }: ItemListProps) => {
             }
         };
         loadData();
-    }, [page]);
+    }, [fetching]);
+
+    const loadMore = useCallback(() => {
+        setState((prev) => ({
+            ...prev,
+            fetching: true,
+        }));
+    }, []);
 
     return loading ? (
-        <Fragment>
+        <>
             {[...Array(10)].map((_) => (
                 <EmptyItem />
             ))}
-        </Fragment>
+        </>
     ) : (
-        <Fragment>
+        <>
             {products.map((product) => {
                 return <LaptopItem key={product["id"]} product={product} />;
             })}
-            <MoreButton
-                show={!isDone}
-                disabled={fetching}
-                onClick={() =>
-                    setState((prev) => ({
-                        ...prev,
-                        fetching: true,
-                        page: page + 1,
-                    }))
-                }
-            />
-        </Fragment>
+            <MoreButton show={!isDone} disabled={fetching} onClick={loadMore} />
+        </>
     );
 };
 

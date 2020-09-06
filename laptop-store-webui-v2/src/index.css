@@ -19,6 +19,7 @@ a {
     background-color: #f0f0f0;
     min-width: 1200px;
     color: #333;
+    min-height: 100vh !important;
 }
 
 code {

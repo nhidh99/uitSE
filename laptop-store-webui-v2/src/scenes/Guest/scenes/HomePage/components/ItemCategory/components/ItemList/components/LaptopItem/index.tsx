@@ -37,30 +37,33 @@ const ProductItem = ({ product }: ProductItemProps) => (
             />
         </LazyLoad>
 
-        <SC.ItemSpec>
-            <SC.ItemRating>
-                {product["avg_rating"].toFixed(1)} <FaStar size={10} />
-            </SC.ItemRating>{" "}
-            - RAM {product["ram"]["size"]}GB - {product["hard_drive"]["type"]}{" "}
-            {product["hard_drive"]["size"] >= 1024
-                ? `${product["hard_drive"]["size"] / 1024}TB`
-                : `${product["hard_drive"]["size"]}GB`}
-        </SC.ItemSpec>
+        <SC.ItemInfo>
+            <SC.ItemSpec>
+                <SC.ItemRating>
+                    {product["avg_rating"].toFixed(1)} <FaStar size={10} />
+                </SC.ItemRating>{" "}
+                - RAM {product["ram"]["size"]}GB -{" "}
+                {product["hard_drive"]["type"]}{" "}
+                {product["hard_drive"]["size"] >= 1024
+                    ? `${product["hard_drive"]["size"] / 1024}TB`
+                    : `${product["hard_drive"]["size"]}GB`}
+            </SC.ItemSpec>
 
-        <SC.ItemName>{product["name"]}</SC.ItemName>
-        <br />
+            <SC.ItemName>{product["name"]}</SC.ItemName>
+            <br />
 
-        <SC.UnitPrice>
-            {product["unit_price"].toLocaleString()}
-            <sup>đ</sup>
-        </SC.UnitPrice>
+            <SC.UnitPrice>
+                {product["unit_price"].toLocaleString()}
+                <sup>đ</sup>
+            </SC.UnitPrice>
 
-        <SC.OriginPrice>
-            {(
-                product["unit_price"] + product["discount_price"]
-            ).toLocaleString()}
-            <sup>đ</sup>
-        </SC.OriginPrice>
+            <SC.OriginPrice>
+                {(
+                    product["unit_price"] + product["discount_price"]
+                ).toLocaleString()}
+                <sup>đ</sup>
+            </SC.OriginPrice>
+        </SC.ItemInfo>
     </SC.Container>
 );
 

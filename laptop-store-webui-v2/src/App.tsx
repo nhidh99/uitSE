@@ -3,7 +3,7 @@ import Banner from "./components/Banner";
 import { SC } from "./styles";
 import Routes from "./components/Routes";
 import { Switch } from "react-router";
-import { RoleType } from "./constants";
+import { RoleType } from "./global/constants";
 
 const App = () => {
     return (

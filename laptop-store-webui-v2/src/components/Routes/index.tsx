@@ -1,5 +1,5 @@
 import React from "react";
-import { RoleType } from "../../constants";
+import { RoleType } from "../../global/constants";
 import GuestRoutes from "./components/GuestRoutes";
 import UserRoutes from "./components/UserRoutes";
 import AdminRoutes from "./components/AdminRoutes";

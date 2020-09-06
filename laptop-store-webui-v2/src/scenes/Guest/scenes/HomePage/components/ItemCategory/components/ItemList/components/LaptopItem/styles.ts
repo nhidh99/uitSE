@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Container = styled(Link)`
     width: 20%;
-    padding: 20px;
+    padding: 20px 0;
     border-bottom: 1px solid #ddd;
     border-right: 1px solid #ddd;
     background-color: white;
@@ -28,15 +28,19 @@ const Container = styled(Link)`
     }
 `;
 
+const ItemInfo = styled.div`
+    margin: 0 15px;
+`;
+
 const ItemImage = styled.img`
     display: block;
-    padding: 10px;
     margin: 0 auto;
+    padding: 10px;
 `;
 
 const ItemSpec = styled.div`
     color: #007bff;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     font-size: 12px;
     color: #666;
     font-weight: 550;
@@ -50,7 +54,7 @@ const ItemName = styled.label`
     color: #333;
     margin-bottom: 2px;
     line-height: 1.2rem;
-    display:inline-block;
+    display: inline-block;
 `;
 
 const UnitPrice = styled.label`
@@ -67,6 +71,7 @@ const OriginPrice = styled.label`
 
 export const SC = {
     Container,
+    ItemInfo,
     ItemImage,
     ItemSpec,
     ItemRating,
