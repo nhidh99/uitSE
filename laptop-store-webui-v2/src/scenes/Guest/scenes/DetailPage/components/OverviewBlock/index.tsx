@@ -4,7 +4,7 @@ import ProductImages from "./components/ProductImages";
 import { SC } from "./styles";
 
 const OverviewBlock = () => (
-    <>
+    <SC.OuterContainer>
         <SC.LeftContainer>
             <ProductImages />
         </SC.LeftContainer>
@@ -12,7 +12,7 @@ const OverviewBlock = () => (
         <SC.RightContainer>
             <ProductInfo />
         </SC.RightContainer>
-    </>
+    </SC.OuterContainer>
 );
 
 export default OverviewBlock;

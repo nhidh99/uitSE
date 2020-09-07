@@ -9,6 +9,7 @@ const Container = styled(Link)`
     background-color: white;
     font-size: 13px;
     box-sizing: border-box;
+    text-decoration: none;
     cursor: pointer;
 
     * {
@@ -38,15 +39,16 @@ const ItemImage = styled.img`
     padding: 10px;
 `;
 
-const ItemSpec = styled.div`
+const ItemSpec = styled.label`
     color: #007bff;
     margin-bottom: 2px;
     font-size: 12px;
     color: #666;
     font-weight: 550;
+    display: inline-block;
 `;
 
-const ItemRating = styled.label`
+const ItemRating = styled.span`
     color: darkorange;
 `;
 
@@ -69,6 +71,15 @@ const OriginPrice = styled.label`
     color: #777;
 `;
 
+const Compare = styled(Link)`
+    display: block;
+    margin-top: 5px;
+    color: #007bff;
+    :hover {
+        text-decoration: underline;
+    }
+`;
+
 export const SC = {
     Container,
     ItemInfo,
@@ -78,4 +89,5 @@ export const SC = {
     ItemName,
     UnitPrice,
     OriginPrice,
+    Compare,
 };

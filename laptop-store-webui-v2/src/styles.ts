@@ -6,7 +6,8 @@ const Container = styled.div`
     padding: 0;
     min-height: calc(100vh - 242px);
     /* margin: 20px auto 50px auto; */
-    margin: 20px auto 0px auto;
+    margin: 0 auto;
+    padding: 20px 0;
 `;
 
 export const SC = {

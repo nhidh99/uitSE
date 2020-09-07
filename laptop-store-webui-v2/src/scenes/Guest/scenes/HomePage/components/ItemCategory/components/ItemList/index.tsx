@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import laptopApi from "../../../../../../../../services/api/laptopApi";
 import EmptyItem from "./components/EmptyItem";
 import MoreButton from "./components/MoreButton";
-import LaptopItem from "./components/LaptopItem";
+import LaptopItem from "../../../../../../../../components/LaptopItem";
 // import store from "../../../../../../../../services/redux/store";
 // import { buildErrorModal } from "../../../../../../../../services/redux/actions";
 

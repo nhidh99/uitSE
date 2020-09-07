@@ -12,13 +12,7 @@ const Header = styled.header`
     font-size: 18px;
 `;
 
-const Container = styled.div`
-    background-color: white;
-    display: flex;
-`;
-
 export const SC = {
     Section,
     Header,
-    Container,
 };

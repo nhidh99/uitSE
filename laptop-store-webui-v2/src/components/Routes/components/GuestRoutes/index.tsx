@@ -12,7 +12,6 @@ const GuestRoutes = () => (
                 "/",
                 "/search",
                 "/cart",
-                "/products/:id",
                 "/products/:alt/:id",
                 "/compare/:alt/:id1/:id2",
             ]}

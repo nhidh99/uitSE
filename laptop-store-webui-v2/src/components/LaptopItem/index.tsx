@@ -19,9 +19,10 @@ type ProductItemProps = {
             size: number;
         };
     };
+    compareLink?: string | null;
 };
 
-const ProductItem = ({ product }: ProductItemProps) => (
+const ProductItem = ({ product, compareLink = null }: ProductItemProps) => (
     <SC.Container
         to={{
             pathname: `/products/${product["alt"]}/${product["id"]}`,
@@ -63,6 +64,17 @@ const ProductItem = ({ product }: ProductItemProps) => (
                 ).toLocaleString()}
                 <sup>đ</sup>
             </SC.OriginPrice>
+
+            {compareLink ? (
+                <SC.Compare
+                    to={{
+                        pathname: compareLink,
+                        state: { loading: false },
+                    }}
+                >
+                    So sánh sản phẩm
+                </SC.Compare>
+            ) : null}
         </SC.ItemInfo>
     </SC.Container>
 );

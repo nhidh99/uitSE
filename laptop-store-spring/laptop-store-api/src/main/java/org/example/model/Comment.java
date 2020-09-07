@@ -1,9 +1,6 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
@@ -47,6 +44,7 @@ public class Comment {
 
     @Column(name = "comment_date")
     @JsonProperty("comment_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate commentDate;
 
     @Column(name = "approve_status")

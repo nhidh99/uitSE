@@ -6,9 +6,21 @@ body {
     font-size: 14px;
 }
 
-input, button {
+input,
+button {
     font-size: 14px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+input:focus,
+button:focus,
+textarea:focus {
+    outline: none;
+}
+
+textarea {
+    resize: none !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
 a {

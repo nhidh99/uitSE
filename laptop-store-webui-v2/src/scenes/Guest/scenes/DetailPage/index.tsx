@@ -8,6 +8,11 @@ import { setProductDetail } from "../../../../services/redux/slices/productInfoS
 import OverviewBlock from "./components/OverviewBlock";
 import ContentBlock from "./components/ContentBlock";
 import SpecBlock from "./components/SpecBlock";
+import SuggestBlock from "./components/SuggestBlock";
+import QuestionBlock from "./components/QuestionBlock";
+import QuestionList from "./components/QuestionList";
+import RatingBlock from "./components/RatingBlock";
+import RatingList from "./components/RatingList";
 
 type LocationState = {
     loading: boolean;
@@ -18,9 +23,15 @@ const DetailPage = () => {
     const history = useHistory();
     const { productId } = useParams();
 
-    const [loading, setLoading] = useState<boolean>(
-        location.state?.loading ?? true
-    );
+    const INITIAL_STATE = {
+        commentCount: 0,
+        ratingCount: 0,
+        loading:
+            location.state?.loading || store.getState()["productInfo"] === null,
+    };
+
+    const [state, setState] = useState(INITIAL_STATE);
+    const { commentCount, ratingCount, loading } = state;
 
     useEffect(() => {
         const loadData = async () => {
@@ -35,9 +46,13 @@ const DetailPage = () => {
                 const response = await laptopApi.getById(productId, includes);
                 const data = response.data;
                 store.dispatch(setProductDetail(data));
-                setLoading(false);
+                setState({
+                    commentCount: data.comments.length,
+                    ratingCount: data.ratings.length,
+                    loading: false,
+                });
             } catch (err) {
-                setLoading(true);
+                setState((prev) => ({ ...prev, loading: true }));
             }
         };
 
@@ -48,7 +63,7 @@ const DetailPage = () => {
             return;
         }
         loadData();
-    }, []);
+    }, [productId]);
 
     return loading ? (
         <>
@@ -67,6 +82,34 @@ const DetailPage = () => {
                 title="Thông tin chi tiết"
                 component={SpecBlock}
                 show={true}
+            />
+            <ContentBlock
+                title="Sản phẩm tương tự"
+                component={SuggestBlock}
+                show={true}
+            />
+            <ContentBlock
+                title="Hỏi, đáp về sản phẩm"
+                component={QuestionBlock}
+                show={true}
+            />
+
+            <ContentBlock
+                title="Khách hàng hỏi đáp"
+                component={QuestionList}
+                show={commentCount > 0}
+            />
+
+            <ContentBlock
+                title="Đánh giá sản phẩm"
+                component={RatingBlock}
+                show={true}
+            />
+
+            <ContentBlock
+                title="Khách hàng đánh giá"
+                component={RatingList}
+                show={ratingCount > 0}
             />
         </>
     );

@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+const OuterContainer = styled.div`
+    display: flex;
+    background-color: white;
+`;
+
 const LeftContainer = styled.div`
     align-items: center;
     flex: 1;
@@ -12,6 +17,7 @@ const RightContainer = styled.div`
 `;
 
 export const SC = {
+    OuterContainer,
     LeftContainer,
     RightContainer,
 };

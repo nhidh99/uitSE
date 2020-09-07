@@ -8,7 +8,7 @@ const Guest = () => (
         <Route exact component={HomePage} path="/" />
         <Route
             exact
-            path={["/products/:productId", "/products/:alt/:productId"]}
+            path="/products/:productAlt/:productId"
             component={DetailPage}
         />
     </Switch>

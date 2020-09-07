@@ -14,7 +14,6 @@ const UserRoutes = () => (
                 "/cart",
                 "/payment",
                 "/compare/:alt/:id1/:id2",
-                "/products/:id",
                 "/products/:alt/:id",
             ]}
         />

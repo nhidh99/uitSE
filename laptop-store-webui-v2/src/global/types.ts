@@ -48,22 +48,22 @@ type BatteryType = {
     adapter: string;
 };
 
-type ReplyType = {
+export type ReplyType = {
     id: number;
     user: string;
     reply: string;
     reply_date: Date;
 };
 
-type CommentType = {
+export type CommentType = {
     id: number;
     user: string;
     question: string;
-    comment_date: Date;
+    comment_date: string;
     replies: Array<ReplyType>;
 };
 
-type RatingType = {
+export type RatingType = {
     id: number;
     user: string;
     rating: number;

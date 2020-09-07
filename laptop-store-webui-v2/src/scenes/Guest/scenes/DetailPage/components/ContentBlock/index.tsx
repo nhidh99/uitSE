@@ -13,7 +13,7 @@ const ContentBlock = ({ title, component, show = true }: ContentBlockProps) => {
     return (
         <SC.Section>
             <SC.Header>{title}</SC.Header>
-            <SC.Container>{block}</SC.Container>
+            {block}
         </SC.Section>
     );
 };
