@@ -2,8 +2,14 @@ import styled from "styled-components";
 
 const Container = styled.div`
     overflow: auto;
+    padding: 20px;
+
+    :not(:last-of-type) {
+        border-bottom: 1px dashed #ddd;
+    }
+
     > :not(:last-child) {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 `;
 

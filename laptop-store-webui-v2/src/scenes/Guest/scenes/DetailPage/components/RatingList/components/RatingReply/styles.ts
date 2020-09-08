@@ -3,6 +3,7 @@ import styled from "styled-components";
 const ReplySwitch = styled.label`
     display: block;
     color: #007bff;
+    margin-bottom: 10px;
     cursor: pointer;
 
     :hover {
@@ -17,6 +18,7 @@ const ReplyBox = styled.textarea`
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 10px;
 `;
 
 const ReplySubmit = styled.button`
