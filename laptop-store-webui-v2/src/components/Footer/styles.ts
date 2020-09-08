@@ -1,17 +1,18 @@
 import styled from "styled-components";
 
-const OuterContainer = styled.header`
-    background-color: #454545;
+const OuterContainer = styled.footer`
+    background-color: #333;
+    display: block;
     padding: 10px 0;
-    width: 100%;
 `;
 
 const InnerContainer = styled.div`
-    width: 1200px;
     margin: 0 auto;
+    color: white;
     display: flex;
-    align-items: center;
+    width: 1200px;
     justify-content: space-between;
+    align-items: center;
 `;
 
 export const SC = {

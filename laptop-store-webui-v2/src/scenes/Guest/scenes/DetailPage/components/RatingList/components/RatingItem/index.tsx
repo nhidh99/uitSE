@@ -12,7 +12,7 @@ const RatingItem = ({ rating }: RatingItemProps) => (
     <SC.OuterContainer>
         <SC.LeftContainer>
             <SC.RatingStar>
-                {rating.rating} <FaStar />
+                {rating.rating}<FaStar />
             </SC.RatingStar>
             <SC.UserFullName>{rating.user}</SC.UserFullName>
             <SC.RatingDate>{rating.rating_date}</SC.RatingDate>

@@ -60,7 +60,7 @@ const RatingBox = () => {
                     type="text"
                     id="comment-title"
                     maxLength={100}
-                    placeholder="(Không bắt buộc)"
+                    placeholder="Nhận xét tổng quan về sản phẩm"
                 />
             </SC.InputContainer>
 
@@ -68,7 +68,7 @@ const RatingBox = () => {
                 <SC.Label>3. Nội dung nhận xét:</SC.Label>
                 <SC.RatingDetail
                     id="comment-detail"
-                    placeholder="(Không bắt buộc)"
+                    placeholder="Nhận xét chi tiết (không bắt buộc)"
                     rows={3}
                 />
             </SC.InputContainer>

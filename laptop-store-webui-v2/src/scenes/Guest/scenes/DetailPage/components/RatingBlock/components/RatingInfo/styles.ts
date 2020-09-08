@@ -3,7 +3,7 @@ import styled from "styled-components";
 const Container = styled.div`
     flex: 1;
     padding: 20px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px dashed #ddd;
     label {
         display: block;
         text-align: center;

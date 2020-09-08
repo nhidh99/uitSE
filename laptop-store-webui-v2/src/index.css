@@ -32,6 +32,9 @@ a {
     min-width: 1200px;
     color: #333;
     min-height: 100vh !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 code {
