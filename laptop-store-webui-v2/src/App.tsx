@@ -9,13 +9,15 @@ import Footer from "./components/Footer";
 const App = () => {
     return (
         <>
-            <Banner />
-            <SC.Container>
-                <Switch>
-                    <Routes role={RoleType.GUEST} />
-                </Switch>
-            </SC.Container>
-            <Footer/>
+            <div>
+                <Banner />
+                <SC.Container>
+                    <Switch>
+                        <Routes role={RoleType.GUEST} />
+                    </Switch>
+                </SC.Container>
+            </div>
+            <Footer />
         </>
     );
 };

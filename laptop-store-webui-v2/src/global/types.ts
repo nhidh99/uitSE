@@ -89,35 +89,37 @@ export type ProductSummaryType = {
     };
 };
 
+export type ProductSpecType = {
+    specials: string | null;
+    id: number;
+    name: string;
+    brand: string;
+    unit_price: number;
+    discount_price: number;
+    quantity: number;
+    alt: string;
+    avg_rating: number;
+    ports: string;
+    sound_tech: string;
+    wireless: string;
+    sd_cards: string | null;
+    webcam: string | null;
+    os: string;
+    design: string;
+    size: string;
+    weight: number;
+    cpu: CPUType;
+    ram: RAMType;
+    hard_drive: HardDriveType;
+    monitor: MonitorType;
+    battery: BatteryType;
+};
+
 export type ProductDetailType = {
     promotions: Array<PromotionType>;
     suggestions: Array<ProductSummaryType>;
     image_ids: Array<number>;
     comments: Array<CommentType>;
     ratings: Array<RatingType>;
-    details: {
-        specials: string | null;
-        id: number;
-        name: string;
-        brand: string;
-        unit_price: number;
-        discount_price: number;
-        quantity: number;
-        alt: string;
-        avg_rating: number;
-        ports: string;
-        sound_tech: string;
-        wireless: string;
-        sd_cards: string | null;
-        webcam: string | null;
-        os: string;
-        design: string;
-        size: string;
-        weight: number;
-        cpu: CPUType;
-        ram: RAMType;
-        hard_drive: HardDriveType;
-        monitor: MonitorType;
-        battery: BatteryType;
-    };
+    details: ProductSpecType;
 };
