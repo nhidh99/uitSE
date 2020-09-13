@@ -14,6 +14,10 @@ axiosClient.interceptors.request.use(async (config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    const contentType = config.headers["Content-Type"];
+    if (!contentType) {
+        config.headers["Content-Type"] = "application/json";
+    }
     return config;
 });
 

@@ -3,11 +3,11 @@ import { ProductDetailType } from "../../../global/types";
 
 type ProductDetailState = ProductDetailType | null;
 
-const INITIAL_STATE = null as ProductDetailState;
+const initialState = null as ProductDetailState;
 
 const productInfoSlice = createSlice({
     name: "productInfo",
-    initialState: INITIAL_STATE,
+    initialState: initialState,
     reducers: {
         setProductDetail(state, action: PayloadAction<ProductDetailState>) {
             state = action.payload;

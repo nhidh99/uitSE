@@ -38,8 +38,12 @@ export const Converter = {
     } as { [key: string]: string },
 };
 
-export const RoleType = {
+export const RoleConstants = {
     GUEST: "GUEST",
     USER: "USER",
     ADMIN: "ADMIN",
+};
+
+export const NumberConstants = {
+    REFRESH_TOKEN_LIFESPAN: 600_000,
 };

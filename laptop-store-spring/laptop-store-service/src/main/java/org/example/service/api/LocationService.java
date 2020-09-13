@@ -5,6 +5,7 @@ import org.example.model.District;
 import org.example.model.Ward;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface LocationService {
@@ -13,12 +14,6 @@ public interface LocationService {
     Optional<District> findDistrictById(Integer id);
 
     Optional<Ward> findWardById(Integer id);
-
-    City findCityByName(String name);
-
-    District findDistrictByNameAndCityId(String name, Integer cityId);
-
-    Ward findWardByNameAndDistrictId(String name, Integer districtId);
 
     List<City> findCities();
 

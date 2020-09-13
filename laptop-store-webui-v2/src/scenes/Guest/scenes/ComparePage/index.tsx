@@ -14,6 +14,7 @@ type ComparePageState = {
 };
 
 const ComparePage = () => {
+    // @ts-ignore
     const { id1, id2 } = useParams();
     const INITIAL_STATE: ComparePageState = {
         loading: true,

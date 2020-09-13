@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -40,16 +39,7 @@ public class AddressRestService {
         if (!isValidRequest) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        Address address = addressService.findById(id).get();
-        Integer cityId = locationService.findCityByName(address.getCity()).getId();
-        Integer districtId = locationService.findDistrictByNameAndCityId(address.getDistrict(), cityId).getId();
-        Integer wardId = locationService.findWardByNameAndDistrictId(address.getWard(), districtId).getId();
-        Map<?, ?> output = new HashMap<String, Object>() {{
-            put("address", address);
-            put("city_id", cityId);
-            put("district_id", districtId);
-            put("ward_id", wardId);
-        }};
+        Map<String, Object> output = addressService.findDetailById(id);
         return ResponseEntity.ok(output);
     }
 

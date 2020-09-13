@@ -10,5 +10,5 @@ public interface AuthService {
 
     String issueToken(String username) throws AuthenticationException;
 
-    void register(RegisterInput registerInput) throws AuthenticationException;
+    void register(RegisterInput registerInput);
 }

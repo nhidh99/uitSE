@@ -1,20 +1,28 @@
 import React from "react";
-import { RoleType } from "../../global/constants";
+import { RoleConstants } from "../../global/constants";
 import GuestRoutes from "./components/GuestRoutes";
 import UserRoutes from "./components/UserRoutes";
 import AdminRoutes from "./components/AdminRoutes";
+import AuthRoutes from "./components/AuthRoutes";
+import store from "../../services/redux/store";
 
 type RoutesProps = {
     role: string;
 };
 
-const Routes = ({ role }: RoutesProps) => {
+const Routes = () => {
+    const role = store.getState()["user"]?.role ?? RoleConstants.GUEST;
     switch (role) {
-        case RoleType.GUEST:
-            return <GuestRoutes />;
-        case RoleType.USER:
+        case RoleConstants.GUEST:
+            return (
+                <>
+                    <GuestRoutes />
+                    <AuthRoutes />
+                </>
+            );
+        case RoleConstants.USER:
             return <UserRoutes />;
-        case RoleType.ADMIN:
+        case RoleConstants.ADMIN:
             return <AdminRoutes />;
         default:
             return null;

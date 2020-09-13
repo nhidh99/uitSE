@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import org.example.constant.ErrorMessageConstants;
 import org.example.dao.UserRepository;
 import org.example.input.LoginInput;
 import org.example.input.RegisterInput;
@@ -46,18 +47,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void register(RegisterInput registerInput) throws AuthenticationException {
-        // Check for existed username or email
-        if (userRepository.existsByUsernameOrEmail(registerInput.getUsername(), registerInput.getEmail())) {
-            throw new IllegalArgumentException();
+    public void register(RegisterInput registerInput) {
+        if (userRepository.existsByEmail(registerInput.getEmail())) {
+            throw new IllegalArgumentException(ErrorMessageConstants.EXISTED_REGISTRATION_EMAIL);
         }
 
-        // Check for valid password confirmation
+        if (userRepository.existsByUsername(registerInput.getUsername())) {
+            throw new IllegalArgumentException(ErrorMessageConstants.EXISTED_REGISTRATION_USERNAME);
+        }
+
         if (!registerInput.getPassword().equals(registerInput.getConfirm())) {
-            throw new AuthenticationException();
+            throw new IllegalArgumentException(ErrorMessageConstants.MISMATCH_REGISTRATION_PASSWORDS);
         }
 
-        // Register user with hashed password
         String hashedPassword = passwordEncoder.encode(registerInput.getPassword());
         User user = User.builder().role(RoleType.USER)
                 .name(registerInput.getName())

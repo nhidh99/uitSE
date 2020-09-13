@@ -123,3 +123,13 @@ export type ProductDetailType = {
     ratings: Array<RatingType>;
     details: ProductSpecType;
 };
+
+export type UserDetailType = {
+    email: string;
+    name: string;
+    role: string;
+    gender: "MALE" | "FEMALE" | "OTHER";
+    cart: string | null;
+    address_id: number | null;
+    wishlist: Array<number>;
+};

@@ -1,8 +1,10 @@
 package org.example.service.impl;
 
+import org.example.dao.AddressRepository;
 import org.example.dao.CityRepository;
 import org.example.dao.DistrictRepository;
 import org.example.dao.WardRepository;
+import org.example.model.Address;
 import org.example.model.City;
 import org.example.model.District;
 import org.example.model.Ward;
@@ -42,21 +44,6 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<City> findCities() {
         return cityRepository.findAll();
-    }
-
-    @Override
-    public City findCityByName(String name) {
-        return cityRepository.findByName(name);
-    }
-
-    @Override
-    public District findDistrictByNameAndCityId(String name, Integer cityId) {
-        return districtRepository.findByNameAndCityId(name, cityId);
-    }
-
-    @Override
-    public Ward findWardByNameAndDistrictId(String name, Integer districtId) {
-        return wardRepository.findByNameAndDistrictId(name, districtId);
     }
 
     @Override

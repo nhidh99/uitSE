@@ -1,19 +1,69 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import Banner from "./components/Banner";
 import { SC } from "./styles";
 import Routes from "./components/Routes";
 import { Switch } from "react-router";
-import { RoleType } from "./global/constants";
 import Footer from "./components/Footer";
+import { authApi } from "./services/api/authApi";
+import { createCookie, removeCookie } from "./services/helper/cookie";
+import userApi from "./services/api/userApi";
+import store from "./services/redux/store";
+import { setUser } from "./services/redux/slices/userSlice";
+import { NumberConstants } from "./global/constants";
 
 const App = () => {
-    return (
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const refreshToken = async () => {
+            try {
+                const tokenResponse = await authApi.getRefreshToken();
+                createCookie("access_token", tokenResponse.data);
+                return true;
+            } catch (err) {
+                return false;
+            }
+        };
+
+        const loadData = async () => {
+            let isAuthenticated = await refreshToken();
+            try {
+                if (isAuthenticated) {
+                    const userResponse = await userApi.getCurrentUserInfo();
+                    store.dispatch(setUser(userResponse.data));
+                }
+            } catch (err) {
+                store.dispatch(setUser(null));
+                isAuthenticated = false;
+            } finally {
+                if (isAuthenticated) {
+                    const heartbeat = setInterval(async () => {
+                        isAuthenticated = await refreshToken();
+                        if (!isAuthenticated) {
+                            clearInterval(heartbeat);
+                            removeCookie("access_token");
+                            store.dispatch(setUser(null));
+                            window.location.reload();
+                        }
+                    }, NumberConstants.REFRESH_TOKEN_LIFESPAN);
+                } else {
+                    removeCookie("access_token");
+                }
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    return loading ? null : (
         <>
             <div>
                 <Banner />
                 <SC.Container>
                     <Switch>
-                        <Routes role={RoleType.GUEST} />
+                        <Routes />
                     </Switch>
                 </SC.Container>
             </div>
