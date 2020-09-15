@@ -13,7 +13,7 @@ import { buildErrorModal } from "../../../../../../services/redux/actions";
 const AddressPage = () => {
     const INITIAL_STATE = { addresses: [], loading: true };
     const [state, setState] = useState(INITIAL_STATE);
-    const defaultAddressId = store.getState().user.default_address.id;
+    const defaultAddressId = store.getState()["user"]["address_id"];
     const { addresses, loading } = state;
 
     useEffect(() => {

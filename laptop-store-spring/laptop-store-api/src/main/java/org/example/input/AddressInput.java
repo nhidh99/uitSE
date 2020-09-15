@@ -11,14 +11,14 @@ public class AddressInput {
     @JsonProperty("receiver_phone")
     private String receiverPhone;
 
-    @JsonProperty("city")
-    private String city;
+    @JsonProperty("city_id")
+    private Integer cityId;
 
-    @JsonProperty("district")
-    private String district;
+    @JsonProperty("district_id")
+    private Integer districtId;
 
-    @JsonProperty("ward")
-    private String ward;
+    @JsonProperty("ward_id")
+    private Integer wardId;
 
     @JsonProperty("street")
     private String street;

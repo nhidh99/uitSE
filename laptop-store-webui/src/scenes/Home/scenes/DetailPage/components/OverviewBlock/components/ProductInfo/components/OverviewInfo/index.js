@@ -10,21 +10,30 @@ const OverviewInfo = () => {
     return (
         <Fragment>
             <div id="product-name">
-                <Label className={styles.productName}>Laptop {product["name"]}</Label>
+                <Label className={styles.productName}>
+                    Laptop {product["name"]}
+                </Label>
                 <Rating
                     initialRating={product["avg_rating"]}
                     readonly
-                    fullSymbol={<FaStar color="#ffc120" className={styles.ratingIcon} />}
-                    emptySymbol={<FaStar color="#ddd" className={styles.ratingIcon} />}
+                    fullSymbol={
+                        <FaStar color="#ffc120" className={styles.ratingIcon} />
+                    }
+                    emptySymbol={
+                        <FaStar color="#ddd" className={styles.ratingIcon} />
+                    }
                 />
             </div>
 
             <div id="product-price">
                 <Label className={styles.currentPrice}>
-                    {(product["unit_price"] - product["discount_price"]).toLocaleString()}đ
+                    {product["unit_price"].toLocaleString()}đ
                 </Label>
                 <Label className={styles.originPrice}>
-                    {product["unit_price"].toLocaleString()}đ
+                    {(
+                        product["unit_price"] + product["discount_price"]
+                    ).toLocaleString()}
+                    đ
                 </Label>
                 <Label className={styles.discountPrice}>
                     (Giảm {product["discount_price"].toLocaleString()}đ)

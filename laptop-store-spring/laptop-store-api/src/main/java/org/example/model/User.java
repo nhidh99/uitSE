@@ -53,10 +53,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
-    @Column(name = "birthday")
-    @JsonProperty("birthday")
-    private LocalDate birthday;
-
     @Column(name = "cart")
     @JsonProperty("cart")
     private String cart;
@@ -69,10 +65,9 @@ public class User {
     @JsonIgnore
     private String googleId;
 
-    @OneToOne
-    @JsonProperty("default_address")
-    @JoinColumn(name = "address_id")
-    private Address defaultAddress;
+    @Column(name = "address_id")
+    @JsonProperty("address_id")
+    private Integer defaultAddressId;
 
     @Column(name = "wish_list")
     @JsonProperty("wish_list")

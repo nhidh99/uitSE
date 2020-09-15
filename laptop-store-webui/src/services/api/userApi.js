@@ -51,6 +51,14 @@ const userApi = {
         return axiosClient.get(url, config);
     },
 
+    getCurrentUserPayment: () => {
+        const url ="/users/me/payment";
+        const config = {
+            headers: { Authorization: `Bearer ${getCookie("access_token")}` },
+        };
+        return axiosClient.get(url, config);
+    },
+
     putCurrentUser: (data) => {
         const url = "/users/me";
         const config = {
@@ -63,10 +71,10 @@ const userApi = {
     },
 
     putCurrentUserCart: (cart) => {
-        const url = "/users/me/carts";
+        const url = "/users/me/cart";
         const config = {
             headers: {
-                "Content-Type": "text/plain",
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${getCookie("access_token")}`,
             },
         };

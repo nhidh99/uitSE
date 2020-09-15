@@ -1,6 +1,9 @@
 package org.example.rest;
 
+import org.example.constant.ErrorMessageConstants;
+import org.example.constant.SuccessMessageConstants;
 import org.example.input.LoginInput;
+import org.example.input.RegisterInput;
 import org.example.service.api.AuthService;
 import org.example.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +23,6 @@ import javax.naming.AuthenticationException;
 public class AuthRestService {
     @Autowired
     private AuthService authService;
-    @Autowired
-    private UserService userService;
 
     @PostMapping(value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -32,7 +33,22 @@ public class AuthRestService {
             String accessToken = authService.issueToken(loginInput);
             return ResponseEntity.ok(accessToken);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credential");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessageConstants.INVALID_CREDENTIAL);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> register(@RequestBody RegisterInput registerInput) {
+        try {
+            authService.register(registerInput);
+            return ResponseEntity.ok(SuccessMessageConstants.REGISTRATION);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
         }
     }
 

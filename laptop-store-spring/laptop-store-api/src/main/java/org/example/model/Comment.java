@@ -1,10 +1,8 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.*;
+import lombok.*;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -25,14 +23,19 @@ public class Comment {
     @JsonProperty("id")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonProperty("user")
+    @JsonIgnore
+    @ToString.Exclude
     private User user;
 
-    @ManyToOne
+    @Formula("(SELECT u.name FROM user u WHERE u.id = user_id)")
+    @JsonProperty("user")
+    private String userFullName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "laptop_id")
-    @JsonProperty("laptop")
+    @JsonIgnore
     private Laptop laptop;
 
     @Column(name = "question")
@@ -41,6 +44,7 @@ public class Comment {
 
     @Column(name = "comment_date")
     @JsonProperty("comment_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate commentDate;
 
     @Column(name = "approve_status")

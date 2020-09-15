@@ -2,15 +2,13 @@ import React, { Fragment } from "react";
 import styles from "./styles.module.scss";
 import { Table, Button } from "reactstrap";
 import { FaShoppingCart } from "react-icons/fa";
-import { NUMBER_OF_DELIVERY_DAYS, DELIVERY_FEE } from "../../../../../../constants";
+import {
+    NUMBER_OF_DELIVERY_DAYS,
+    DELIVERY_FEE,
+} from "../../../../../../constants";
 import { withRouter } from "react-router-dom";
-import orderApi from "../../../../../../services/api/orderApi";
-import store from "../../../../../../services/redux/store";
-import { buildErrorModal } from "../../../../../../services/redux/actions";
 
-const SummaryBlock = (props) => {
-    const { toggleSubmit, cart, productsPrice, history } = props;
-
+const SummaryBlock = ({ productsPrice }) => {
     const addBusinessDaysToDate = (date, days) => {
         const day = date.getDay();
         date = new Date(date.getTime());
@@ -24,24 +22,27 @@ const SummaryBlock = (props) => {
     };
 
     const createOrder = async () => {
-        try {
-            toggleSubmit();
-            const addressId = parseInt(document.getElementById("address").value);
-            const data = { addressId: addressId, cartJSON: JSON.stringify(cart) };
-            const response = await orderApi.postOrder(data);
-            localStorage.setItem("cart", null);
-            const orderId = response.data;
-            const url = `/user/order/${orderId}`;
-            history.push(url);
-        } catch (err) {
-            toggleSubmit();
-            store.dispatch(buildErrorModal());
-        }
+        // try {
+        //     toggleSubmit();
+        //     const addressId = parseInt(document.getElementById("address").value);
+        //     const data = { addressId: addressId, cartJSON: JSON.stringify(cart) };
+        //     const response = await orderApi.postOrder(data);
+        //     localStorage.setItem("cart", null);
+        //     const orderId = response.data;
+        //     const url = `/user/order/${orderId}`;
+        //     history.push(url);
+        // } catch (err) {
+        //     toggleSubmit();
+        //     store.dispatch(buildErrorModal());
+        // }
     };
 
     return (
         <Fragment>
-            <header className={styles.caution}>Kiểm tra kĩ các thông tin trước khi ĐẶT MUA</header>
+            <header className={styles.caution}>
+                Kiểm tra kĩ các thông tin trước khi ĐẶT MUA
+            </header>
+            
             <Table className={styles.table} borderless>
                 <tbody>
                     <tr>
@@ -74,7 +75,9 @@ const SummaryBlock = (props) => {
                         <th>Thành tiền</th>
                         <td>
                             <b>
-                                {(productsPrice + DELIVERY_FEE).toLocaleString()}
+                                {(
+                                    productsPrice + DELIVERY_FEE
+                                ).toLocaleString()}
                                 <sup>đ</sup>
                             </b>
                         </td>

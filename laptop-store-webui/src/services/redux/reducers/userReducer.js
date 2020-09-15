@@ -5,6 +5,9 @@ const userReducer = (state = null, action) => {
         case ActionType.SET_CURRENT_USER:
             state = action.payload;
             break;
+        case ActionType.SET_DEFAULT_ADDRESS_ID:
+            state["address_id"] = action.payload;
+            break;
         default:
             break;
     }

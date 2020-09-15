@@ -144,7 +144,7 @@ const LoginPage = () => {
                         disabled={renderProps.disabled}
                     >
                         <span className={styles.iconLogin}>
-                            <FaGoogle size={25} color="#white" />
+                            <FaGoogle size={20} color="#white" />
                         </span>
                         Đăng nhập với Google
                     </button>
@@ -161,7 +161,7 @@ const LoginPage = () => {
                         onClick={renderProps.onClick}
                     >
                         <span className={styles.iconLogin}>
-                            <FaFacebookF color="white" size={25} onClick={renderProps.onClick} />
+                            <FaFacebookF color="white" size={20} onClick={renderProps.onClick} />
                         </span>
                         Đăng nhập với Facebook
                     </button>

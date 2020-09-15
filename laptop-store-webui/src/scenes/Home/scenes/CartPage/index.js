@@ -2,7 +2,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Label, Button, Spinner } from "reactstrap";
 import ItemBlock from "./components/ItemBlock";
-import { FaShoppingCart, FaBoxOpen, FaGift, FaMoneyBillWave } from "react-icons/fa";
+import { FaShoppingCart, FaBoxOpen } from "react-icons/fa";
 import styles from "./styles.module.scss";
 import { getCart } from "../../../../services/helper/cart";
 import { withRouter } from "react-router-dom";
@@ -13,17 +13,30 @@ import laptopApi from "../../../../services/api/laptopApi";
 import store from "../../../../services/redux/store";
 import { useSelector } from "react-redux";
 import { CartStatus } from "../../../../constants";
-import { setCartStatus, buildErrorModal } from "../../../../services/redux/actions";
+import {
+    setCartStatus,
+    buildErrorModal,
+} from "../../../../services/redux/actions";
 import cartService from "../../../../services/helper/cartService";
 
 const CartPage = (props) => {
-    const [isFirstLoad, setIsFirstLoad] = useState(true);
-    const [products, setProducts] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [totalDiscount, setTotalDiscount] = useState(0);
+    const INITIAL_STATE = {
+        products: null,
+        totalQuantity: 0,
+        totalPrice: 0,
+        totalDiscount: 0,
+    };
 
-    const status = useSelector((state) => state.cartStatus);
-    const loading = [CartStatus.SYNCING, CartStatus.LOADING].includes(status) || isFirstLoad;
+    const [state, setState] = useState(INITIAL_STATE);
+    const { products, totalPrice, totalDiscount, totalQuantity } = state;
+
+    const { status, loading } = useSelector((state) => {
+        const status = state.cartStatus;
+        return {
+            status: status,
+            loading: [CartStatus.SYNCING, CartStatus.LOADING].includes(status),
+        };
+    });
 
     useEffect(() => {
         if (status === CartStatus.SYNCING) {
@@ -32,48 +45,57 @@ const CartPage = (props) => {
     }, [status]);
 
     useEffect(() => {
-        const nextStatus = isFirstLoad ? CartStatus.SYNCING : CartStatus.IDLE;
+        const nextStatus = CartStatus[products === null ? "SYNCING" : "IDLE"];
         store.dispatch(setCartStatus(nextStatus));
     }, [products]);
 
-    const loadData = async () => {
+    const loadData = () => {
         const ids = Object.keys(getCart());
         if (ids.length === 0) {
-            setIsFirstLoad(false);
-            setProducts([]);
+            setState((prev) => ({ ...prev, products: [] }));
         } else {
-            try {
-                const response = await laptopApi.getByIds(ids);
-                const products = response.data;
-                loadCart(products);
-            } catch (err) {
-                store.dispatch(buildErrorModal());
-            }
+            loadCart();
         }
     };
 
-    const loadCart = async (products) => {
-        let totalPrice = 0;
-        let totalDiscount = 0;
+    const loadCart = async () => {
+        try {
+            const cart = getCart();
+            const ids = Object.keys(cart);
+            const response = await laptopApi.getByIds(ids);
+            const products = response.data;
 
-        products.forEach((product) => {
-            const quantity = getCart()[[product["id"]]];
-            const discount = product["discount_price"] * quantity;
-            const price = (product["unit_price"] - product["discount_price"]) * quantity;
-            totalPrice += price;
-            totalDiscount += discount;
-        });
+            // Remove products have been deleted (not for selling)
+            const productIds = products.map((p) => p["id"].toString());
+            const deletePromises = Object.keys(cart)
+                .filter((id) => !productIds.includes(id))
+                .map(async (id) => await cartService.removeProduct(id));
+            await Promise.all(deletePromises);
 
-        const productIds = products.map((product) => product["id"].toString());
-        const deletePromises = Object.keys(getCart())
-            .filter((id) => !productIds.includes(id))
-            .map(async (id) => await cartService.removeProduct(id));
-        await Promise.all(deletePromises);
+            // Calculate quantity, total discount and total price of all products in cart
+            let totalPrice = 0;
+            let totalDiscount = 0;
+            let totalQuantity = 0;
 
-        setTotalPrice(totalPrice);
-        setTotalDiscount(totalDiscount);
-        setIsFirstLoad(false);
-        setProducts(products);
+            products.forEach((product) => {
+                const quantity = cart[[product["id"]]];
+                const discount = product["discount_price"] * quantity;
+                const price = product["unit_price"] * quantity;
+                totalQuantity += quantity;
+                totalPrice += price;
+                totalDiscount += discount;
+            });
+
+            // Set states
+            setState({
+                products: products,
+                totalPrice: totalPrice,
+                totalDiscount: totalDiscount,
+                totalQuantity: totalQuantity,
+            });
+        } catch (err) {
+            store.dispatch(buildErrorModal());
+        }
     };
 
     const redirectToPayment = () => {
@@ -82,35 +104,34 @@ const CartPage = (props) => {
         window.scroll(0, 0);
     };
 
-    const SummaryBlock = () => (
-        <div className={styles.summary}>
+    const SummaryBlock = () => {
+        const SummaryInfo = ({ title, value, suffix }) => (
             <span>
-                <b>
-                    <FaBoxOpen />
-                    &nbsp; Số lượng:&nbsp;&nbsp;
-                </b>
-                {Object.values(getCart()).reduce((a, b) => a + b, 0)}
+                <b>{title}:</b>
+                &nbsp;&nbsp;
+                {value}
+                {suffix ? <sup>{suffix}</sup> : null}
             </span>
-
-            <span>
-                <b>
-                    <FaGift />
-                    &nbsp; Tổng giảm giá:&nbsp;&nbsp;
-                </b>
-                {totalDiscount.toLocaleString()}
-                <sup>đ</sup>
-            </span>
-
-            <span>
-                <b>
-                    <FaMoneyBillWave />
-                    &nbsp; Tạm tính:&nbsp;&nbsp;
-                </b>
-                {totalPrice.toLocaleString()}
-                <sup>đ</sup>
-            </span>
-        </div>
-    );
+        );
+        return (
+            <div className={styles.summary}>
+                <SummaryInfo
+                    title="Số lượng"
+                    value={totalQuantity.toLocaleString()}
+                />
+                <SummaryInfo
+                    title="Tổng giảm giá"
+                    value={totalDiscount.toLocaleString()}
+                    suffix="đ"
+                />
+                <SummaryInfo
+                    title="Tạm tính"
+                    value={totalPrice.toLocaleString()}
+                    suffix="đ"
+                />
+            </div>
+        );
+    };
 
     return (
         <Fragment>
@@ -120,28 +141,31 @@ const CartPage = (props) => {
                     onClick={redirectToPayment}
                     className={styles.btn}
                     color="success"
-                    disabled={products.length === 0 || loading}
+                    disabled={products?.length === 0 || loading}
                 >
-                    <FaShoppingCart className={styles.icon} /> Tiến hành đặt hàng
+                    <FaShoppingCart className={styles.icon} /> Tiến hành đặt
+                    hàng
                 </Button>
             </div>
 
-            <Loader show={loading && !isFirstLoad} message={<Spinner />}>
+            <Loader show={loading} message={<Spinner />}>
                 <div className={styles.list}>
-                    {products.length === 0 ? (
+                    {products === null || products.length === 0 ? (
                         <EmptyBlock
                             loading={loading}
                             backToHome={!loading}
                             icon={<FaBoxOpen />}
                             loadingText="Đang tải giỏ hàng..."
                             emptyText="Giỏ hàng trống"
-                            noDelay
                         />
                     ) : (
                         <Fragment>
                             <SummaryBlock />
                             {products.map((product) => (
-                                <ItemBlock product={product} quantity={getCart()[product["id"]]} />
+                                <ItemBlock
+                                    key={product["id"]}
+                                    product={product}
+                                />
                             ))}
                         </Fragment>
                     )}

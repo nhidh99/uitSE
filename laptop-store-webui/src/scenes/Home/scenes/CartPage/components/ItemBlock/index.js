@@ -1,44 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { Col, Row, Label, Button, Input, InputGroup } from "reactstrap";
-import { FaTrashAlt } from "react-icons/fa";
+import React from "react";
+import { Label, Button, Input, InputGroup } from "reactstrap";
+import { FaTrashAlt, FaStar } from "react-icons/fa";
 import styles from "./styles.module.scss";
-import { convertCPUType } from "../../../../../../services/helper/converter";
 import { Link } from "react-router-dom";
 import NumberFormat from "react-number-format";
-import { MAXIMUM_QUANTITY_PER_PRODUCT, CartStatus } from "../../../../../../constants";
-import laptopApi from "../../../../../../services/api/laptopApi";
+import {
+    MAXIMUM_QUANTITY_PER_PRODUCT,
+    CartStatus,
+} from "../../../../../../constants";
 import cartService from "../../../../../../services/helper/cartService";
 import { setCartStatus } from "../../../../../../services/redux/actions";
 import store from "../../../../../../services/redux/store";
+import { getCart } from "../../../../../../services/helper/cart";
 
-const ItemBlock = ({ product, quantity, toggleLoading }) => {
-    const [promotions, setPromotions] = useState([]);
-    const [qty, setQty] = useState(quantity);
-    const { cpu, ram, hard_drive, monitor } = product;
-
-    useEffect(() => {
-        loadPromotions();
-    }, []);
-
-    useEffect(() => {
-        if (qty !== quantity) {
-            toggleLoading();
-        }
-    }, [qty]);
-
-    useEffect(() => {
-        setQty(quantity);
-    }, [quantity]);
-
-    const loadPromotions = async () => {
-        try {
-            const response = await laptopApi.getLaptopPromotions(product["id"]);
-            setPromotions(response.data);
-        } catch (err) {
-            console.log("fail");
-        }
-    };
+const ItemBlock = ({ product }) => {
+    const quantity = getCart()[product["id"]];
+    const { hard_drive, ram } = product;
 
     const minusQuantity = async () => {
         store.dispatch(setCartStatus(CartStatus.LOADING));
@@ -58,7 +36,10 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
         store.dispatch(setCartStatus(CartStatus.LOADING));
         const input = document.getElementById("quantity-" + product["id"]);
         const quantity = parseInt(input.value);
-        const success = await cartService.updateProduct(product["id"], quantity);
+        const success = await cartService.updateProduct(
+            product["id"],
+            quantity
+        );
         const nextCartStatus = success ? CartStatus.SYNCING : CartStatus.IDLE;
         store.dispatch(setCartStatus(nextCartStatus));
     };
@@ -70,9 +51,9 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
         store.dispatch(setCartStatus(nextCartStatus));
     };
 
-    return qty === 0 ? null : (
-        <Row className={styles.row}>
-            <Col xs="2" className={styles.blockLeft}>
+    return quantity === 0 ? null : (
+        <div className={styles.row}>
+            <div className={styles.blockLeft}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
                     <img
                         src={`/api/images/150/laptops/${product["id"]}/${product["alt"]}.jpg`}
@@ -82,49 +63,46 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                         title={product["name"]}
                     />
                 </Link>
-            </Col>
+            </div>
 
-            <Col xs="8" className={styles.blockCenter}>
+            <div className={styles.blockCenter}>
                 <Link to={`/product/${product["alt"]}/${product["id"]}`}>
-                    <Label className={styles.name}>
-                        {product["name"]} (
-                        {`${convertCPUType(cpu["type"])}/${ram["size"]}GB-${ram["bus"]}MHz/${
-                            hard_drive["type"]
-                        }-${
-                            hard_drive["size"] !== 1024
-                                ? hard_drive["size"] + "GB"
-                                : hard_drive["size"] / 1024 + "TB"
-                        }/${monitor["size"]}-inch`}
-                        )
-                    </Label>
+                    <Label className={styles.name}>{product["name"]}</Label>
                 </Link>
+
                 <br />
 
                 <Label className={styles.priceLabel}>
-                    {(product["unit_price"] - product["discount_price"]).toLocaleString()}đ
+                    {product["unit_price"].toLocaleString()}đ
                 </Label>
 
                 <Label className={styles.pricePromotion}>
-                    <s>{product["unit_price"].toLocaleString()}đ</s>
+                    <s>
+                        {(
+                            product["unit_price"] + product["discount_price"]
+                        ).toLocaleString()}
+                        đ
+                    </s>
                 </Label>
                 <br />
 
-                {promotions.length === 0 ? null : (
-                    <Label>
-                        <b>
-                            <i>Quà khuyến mãi:&nbsp;&nbsp;</i>
-                        </b>
-                        {promotions
-                            .map(
-                                (promotion) =>
-                                    `${promotion["name"]} (${promotion["price"].toLocaleString()}đ)`
-                            )
-                            .join(", ")}
-                    </Label>
-                )}
-            </Col>
+                <label className={styles.itemInfo}>
+                    <label className={styles.itemRating}>
+                        {product["avg_rating"].toFixed(1)}{" "}
+                        <FaStar
+                            className={styles.icon}
+                            size={12}
+                            style={{ marginTop: "-2px" }}
+                        />
+                    </label>{" "}
+                    - RAM {ram["size"]}GB - {hard_drive["type"]}{" "}
+                    {hard_drive["size"] >= 1024
+                        ? `${hard_drive["size"] / 1024}TB`
+                        : `${hard_drive["size"]}GB`}
+                </label>
+            </div>
 
-            <Col xs="2" className={styles.blockRight}>
+            <div className={styles.blockRight}>
                 <InputGroup>
                     <Input
                         className={styles.updateQuantity}
@@ -138,7 +116,7 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                         thousandSeparator={true}
                         decimalSeparator={false}
                         allowNegative={false}
-                        value={qty}
+                        value={quantity}
                         onBlur={updateQuantity}
                         isAllowed={(values) => {
                             const { formattedValue, floatValue } = values;
@@ -154,12 +132,16 @@ const ItemBlock = ({ product, quantity, toggleLoading }) => {
                         value="+"
                         type="button"
                     />
-                    <Button className={styles.remove} color="transparent" onClick={removeProduct}>
+                    <Button
+                        className={styles.remove}
+                        color="transparent"
+                        onClick={removeProduct}
+                    >
                         <FaTrashAlt className={styles.trashIcon} />
                     </Button>
                 </InputGroup>
-            </Col>
-        </Row>
+            </div>
+        </div>
     );
 };
 

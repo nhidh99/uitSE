@@ -4,6 +4,7 @@ import pandas as pd
 import random
 import re
 import os
+import requests
 
 
 def config():
@@ -190,12 +191,13 @@ def insert_promotions(laptop):
 
 def insert_tags(laptop):
     tags = ['OFFICE', 'TECHNICAL', 'LIGHTWEIGHT', 'GAMING', 'LUXURY']
-    num = random.choice(range(2,6))
+    num = random.choice(range(2, 6))
     selected_tags = random.sample(tags, num)
     for tag in selected_tags:
         sql = 'INSERT INTO laptop_tag (laptop_id, tag) VALUES (?, ?)'
         val = (laptop['Mã sản phẩm'], tag)
         cursor.execute(sql, val)
+
 
 def update_discount(laptop):
     percent = random.choice([5, 10])
@@ -203,28 +205,79 @@ def update_discount(laptop):
     val = (percent if int(laptop['Đơn giá']) + 10000 >= 20_000_000 else percent + 5, laptop['Mã sản phẩm'])
     cursor.execute(sql, val)
 
+
+def insert_laptops(laptops):
+    for i in range(len(laptops)):
+        laptop = laptops[i]
+        brand = laptop['Tên sản phẩm'].split()[0].upper()
+        allowed_brands = ['ACER', 'ASUS', 'DELL', 'HP', 'LENOVO', 'MACBOOK', 'MSI']
+        if brand in allowed_brands:
+            insert_laptop(laptop)
+            insert_cpu(laptop)
+            insert_ram(laptop)
+            insert_hard_drive(laptop)
+            insert_monitor(laptop)
+            insert_primary_images(laptop)
+            insert_secondary_images(laptop)
+            insert_battery(laptop)
+            insert_promotions(laptop)
+            insert_tags(laptop)
+            update_discount(laptop)
+            print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
+        else:
+            print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))
+
+
+def insert_cities():
+    url = 'https://raw.githubusercontent.com/nhidh99/uitSE/master/laptop-store/laptop-store-addresses/cities.json'
+    response = requests.get(url)
+    cities = response.json()['data']
+    for city in cities:
+        sql = 'INSERT INTO city (id, name) VALUES (?, ?)'
+        val = (city['id'], city['name'])
+        cursor.execute(sql, val)
+
+
+def insert_districts():
+    for i in range(278, 342):
+        try:
+            url = 'https://raw.githubusercontent.com/nhidh99/uitSE/master/laptop-store/laptop-store-addresses/districts/%s.json' % i
+            response = requests.get(url)
+            districts = response.json()['data']
+            for district in districts:
+                sql = 'INSERT INTO district (id, name, city_id) VALUES (?, ?, ?)'
+                val = (district['id'], district['name'], i)
+                cursor.execute(sql, val)
+            print('%s. Done' % i)
+        except:
+            print('%s. Not found' % i)
+
+
+def insert_wards():
+    for i in range(1, 734):
+        try:
+            url = 'https://raw.githubusercontent.com/nhidh99/uitSE/master/laptop-store/laptop-store-addresses/wards/%s.json' % i
+            response = requests.get(url)
+            wards = response.json()['data']
+            for ward in wards:
+                sql = 'INSERT INTO ward (id, name, district_id) VALUES (?, ?, ?)'
+                val = (ward['id'], ward['name'], i)
+                cursor.execute(sql, val)
+            print('%s. Done' % i)
+        except:
+            print('%s. Not found' % i)
+
+
+def insert_locations():
+    # insert_cities()
+    # insert_districts()
+    insert_wards()
+
 def insert_db():
-    laptops = get_data()
+    # laptops = get_data()
     try:
-        for i in range(len(laptops)):
-            laptop = laptops[i]
-            brand = laptop['Tên sản phẩm'].split()[0].upper()
-            allowed_brands = ['ACER', 'ASUS', 'DELL', 'HP', 'LENOVO', 'MACBOOK', 'MSI']
-            if brand in allowed_brands:
-                # insert_laptop(laptop)
-                # insert_cpu(laptop)
-                # insert_ram(laptop)
-                # insert_hard_drive(laptop)
-                # insert_monitor(laptop)
-                # insert_primary_images(laptop)
-                # insert_secondary_images(laptop)
-                # insert_battery(laptop)
-                # insert_promotions(laptop)
-                # insert_tags(laptop)
-                update_discount(laptop)
-                print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
-            else:
-                print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))
+        # insert_laptops(laptops)
+        insert_locations()
         conn.commit()
     except mariadb.Error as e:
         print(e)

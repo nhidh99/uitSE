@@ -71,7 +71,14 @@ public class LaptopRestService {
         return ResponseEntity.ok(laptopDetailMap);
     }
 
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "ids")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getByIds(@RequestParam(value = "ids") List<Integer> ids) {
+        List<LaptopBlockData> laptops = laptopService.findBlockDataByIds(ids);
+        return ResponseEntity.ok(laptops);
+    }
+
+    @GetMapping(value = "/latest", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getByPage(@RequestParam(defaultValue = "1") int page) {
         List<LaptopBlockData> laptops = laptopService.findByPage(page);
