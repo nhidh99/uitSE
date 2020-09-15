@@ -1,0 +1,20 @@
+.moreBtn {
+    width: 100%;
+    color: #777;
+    background-color: white;
+    border-top: none;
+    border-left: none;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 10px 0;
+    font-size: 16px;
+}
+
+.moreBtn:hover {
+    color: white;
+    background-color: #aaa;
+}
+
+.moreBtn:focus {
+    outline: 0;
+}
