@@ -1,10 +1,10 @@
 import React from "react";
-import { RoleConstants } from "../../global/constants";
 import GuestRoutes from "./components/GuestRoutes";
 import UserRoutes from "./components/UserRoutes";
 import AdminRoutes from "./components/AdminRoutes";
 import AuthRoutes from "./components/AuthRoutes";
 import store from "../../services/redux/store";
+import RoleConstants from "../../values/constants/RoleConstants";
 
 type RoutesProps = {
     role: string;

@@ -1,11 +1,11 @@
 import { Formik } from "formik";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FaLock, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import IconInput from "../../../../components/IconInput";
-import { LoginFormValues } from "../../../../global/formValues";
 import { authApi } from "../../../../services/api/authApi";
 import { createCookie } from "../../../../services/helper/cookie";
+import LoginFormValues from "../../../../values/forms/LoginFormValues";
 import { SC } from "./styles";
 
 const LoginPage = () => {
@@ -23,10 +23,13 @@ const LoginPage = () => {
         }
     }, []);
 
-    const initialValues: LoginFormValues = {
-        username: "",
-        password: "",
-    };
+    const initialValues: LoginFormValues = useMemo(
+        () => ({
+            username: "",
+            password: "",
+        }),
+        []
+    );
 
     return (
         <Formik initialValues={initialValues} onSubmit={submit}>

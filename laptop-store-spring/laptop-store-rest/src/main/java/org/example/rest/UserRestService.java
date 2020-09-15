@@ -3,6 +3,9 @@ package org.example.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.constant.ErrorMessageConstants;
+import org.example.constant.SuccessMessageConstants;
+import org.example.input.UserInfoInput;
 import org.example.model.*;
 import org.example.projection.LaptopBlockData;
 import org.example.projection.OrderRowData;
@@ -21,7 +24,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +46,19 @@ public class UserRestService {
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username);
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping(value="/me", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
+                                            @RequestBody UserInfoInput userInfoInput) {
+        try {
+            String username = userDetails.getUsername();
+            userService.updateUserInfoByUsername(username, userInfoInput);
+            return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_INFO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
     }
 
     @GetMapping(value = "/me/social-auth", produces = MediaType.APPLICATION_JSON_VALUE)

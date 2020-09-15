@@ -1,4 +1,4 @@
-export type RegisterFormValues = {
+type RegisterFormValues = {
     name: string;
     email: string;
     phone: string;
@@ -8,7 +8,4 @@ export type RegisterFormValues = {
     confirm: string;
 };
 
-export type LoginFormValues = {
-    username: string;
-    password: string;
-};
+export default RegisterFormValues;

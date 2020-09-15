@@ -44,7 +44,7 @@ public class AuthRestService {
     public ResponseEntity<?> register(@RequestBody RegisterInput registerInput) {
         try {
             authService.register(registerInput);
-            return ResponseEntity.ok(SuccessMessageConstants.REGISTRATION);
+            return ResponseEntity.ok(SuccessMessageConstants.POST_REGISTRATION);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

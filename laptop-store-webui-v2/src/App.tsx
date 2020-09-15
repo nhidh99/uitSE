@@ -10,7 +10,7 @@ import { createCookie, removeCookie } from "./services/helper/cookie";
 import userApi from "./services/api/userApi";
 import store from "./services/redux/store";
 import { setUser } from "./services/redux/slices/userSlice";
-import { NumberConstants } from "./global/constants";
+import TokenConstants from "./values/constants/TokenConstants";
 
 const App = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -46,7 +46,7 @@ const App = () => {
                             store.dispatch(setUser(null));
                             window.location.reload();
                         }
-                    }, NumberConstants.REFRESH_TOKEN_LIFESPAN);
+                    }, TokenConstants.REFRESH_TOKEN_LIFESPAN);
                 } else {
                     removeCookie("access_token");
                 }
@@ -59,14 +59,12 @@ const App = () => {
 
     return loading ? null : (
         <>
-            <div>
-                <Banner />
-                <SC.Container>
-                    <Switch>
-                        <Routes />
-                    </Switch>
-                </SC.Container>
-            </div>
+            <Banner />
+            <SC.Container>
+                <Switch>
+                    <Routes />
+                </Switch>
+            </SC.Container>
             <Footer />
         </>
     );

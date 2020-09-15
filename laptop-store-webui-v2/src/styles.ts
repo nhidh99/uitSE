@@ -5,6 +5,8 @@ const Container = styled.main`
     max-width: 1200px;
     padding: 0;
     margin: 0 auto;
+    overflow: auto;
+    flex: 1;
 `;
 
 export const SC = {

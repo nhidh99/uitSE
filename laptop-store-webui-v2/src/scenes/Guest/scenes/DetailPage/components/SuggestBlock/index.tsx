@@ -4,12 +4,13 @@ import { RootState } from "../../../../../../services/redux/rootReducer";
 import LaptopItem from "../../../../../../components/LaptopItem";
 import { SC } from "./styles";
 import { useParams } from "react-router";
+import ProductSummaryModel from "../../../../../../values/models/ProductSummaryModel";
 
 const SuggestBlock = () => {
+    // @ts-ignore
     const { productAlt, productId } = useParams();
-    const suggestions = useSelector(
-        // @ts-ignore
-        (state: RootState) => state.productInfo.suggestions
+    const suggestions: ProductSummaryModel[] = useSelector(
+        (state: RootState) => state.productInfo?.suggestions ?? []
     );
     return (
         <SC.Container>

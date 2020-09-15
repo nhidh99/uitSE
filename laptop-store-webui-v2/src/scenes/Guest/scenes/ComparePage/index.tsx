@@ -1,16 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { ProductSpecType } from "../../../../global/types";
 import { useParams } from "react-router";
 import laptopApi from "../../../../services/api/laptopApi";
-import { Converter } from "../../../../global/constants";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import { SC } from "./styles";
+import ProductSpecModel from "../../../../values/models/ProductSpecModel";
+import CpuConstants from "../../../../values/constants/CpuConstants";
+import ResolutionConstants from "../../../../values/constants/ResolutionConstants";
+import BatteryDesignConstants from "../../../../values/constants/BatteryDesignConstants";
+import CardDesignConstants from "../../../../values/constants/CardDesignConstants";
 
 type ComparePageState = {
     loading: boolean;
-    specs: Array<ProductSpecType>;
+    specs: ProductSpecModel[];
 };
 
 const ComparePage = () => {
@@ -56,7 +59,7 @@ const ComparePage = () => {
                           name: "Công nghệ CPU",
                           values: specs.map(
                               (s) =>
-                                  `${Converter.CPU[s.cpu.type]} ${s.cpu.detail}`
+                                  `${CpuConstants[s.cpu.type]} ${s.cpu.detail}`
                           ),
                       },
                       {
@@ -119,7 +122,7 @@ const ComparePage = () => {
                           values: specs.map((s) => {
                               const m = s.monitor;
                               const type =
-                                  Converter.RESOLUTION[m.resolution_type];
+                                  ResolutionConstants[m.resolution_type];
                               const width = m.resolution_width;
                               const height = m.resolution_height;
                               return `${type} (${width} x ${height})`;
@@ -132,8 +135,7 @@ const ComparePage = () => {
                       {
                           name: "Thiết kế card",
                           values: specs.map(
-                              (s) =>
-                                  Converter.CARD_DESIGN[s.monitor.card_design]
+                              (s) => CardDesignConstants[s.monitor.card_design]
                           ),
                       },
                       {
@@ -177,7 +179,7 @@ const ComparePage = () => {
                       {
                           name: "Loại PIN",
                           values: specs.map(
-                              (s) => Converter.PIN[s.battery.type]
+                              (s) => BatteryDesignConstants[s.battery.type]
                           ),
                       },
                       {

@@ -19,9 +19,10 @@ type LocationState = {
 };
 
 const DetailPage = () => {
-    const location = useLocation<LocationState>();
-    const history = useHistory();
+    // @ts-ignore
     const { productId } = useParams();
+    const history = useHistory();
+    const location = useLocation<LocationState>();
 
     const INITIAL_STATE = {
         commentCount: 0,

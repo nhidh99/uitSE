@@ -1,4 +1,5 @@
-import { LoginFormValues, RegisterFormValues } from "../../global/formValues";
+import LoginFormValues from "../../values/forms/LoginFormValues";
+import RegisterFormValues from "../../values/forms/RegisterFormValues";
 import axiosClient from "./axiosClient";
 
 export const authApi = {

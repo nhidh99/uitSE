@@ -2,7 +2,7 @@ import React, { createElement } from "react";
 import { useHistory } from "react-router";
 import { IconType } from "react-icons/lib";
 import store from "../../../../../../services/redux/store";
-import { RoleConstants } from "../../../../../../global/constants";
+import RoleConstants from "../../../../../../values/constants/RoleConstants";
 
 type NavItemProps = {
     href: string;

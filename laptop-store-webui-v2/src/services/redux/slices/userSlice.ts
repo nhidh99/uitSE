@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserDetailType } from "../../../global/types";
+import UserModel from "../../../values/models/UserModel";
 
-type UserState = UserDetailType | null;
+type UserState = UserModel | null;
 
 const initialState = null as UserState;
 

@@ -1,10 +1,10 @@
 import React from "react";
-import { CommentType } from "../../../../../../../../global/types";
 import { SC } from "./styles";
 import QuestionReply from "../QuestionReply";
+import CommentModel from "../../../../../../../../values/models/CommentModel";
 
 type QuestionItemProps = {
-    comment: CommentType;
+    comment: CommentModel;
 };
 
 const QuestionItem = ({ comment }: QuestionItemProps) => (

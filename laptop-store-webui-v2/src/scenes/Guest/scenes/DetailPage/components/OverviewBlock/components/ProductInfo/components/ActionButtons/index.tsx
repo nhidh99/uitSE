@@ -2,7 +2,7 @@ import React from "react";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../../../../../services/redux/rootReducer";
-import { MAXIMUM_QUANTITY_PER_PRODUCT } from "../../../../../../../../../../global/constants";
+import CartConstants from "../../../../../../../../../../values/constants/CartConstants";
 import { SC } from "./styles";
 
 const ActionButtons = () => {
@@ -63,8 +63,8 @@ const ActionButtons = () => {
             </SC.Container>
 
             <SC.ErrorLabel id="error">
-                Tối đa {MAXIMUM_QUANTITY_PER_PRODUCT} sản phẩm {product["name"]}{" "}
-                trong giỏ hàng
+                Tối đa {CartConstants.MAXIMUM_ITEM_COUNT} sản phẩm{" "}
+                {product["name"]} trong giỏ hàng
             </SC.ErrorLabel>
         </>
     );

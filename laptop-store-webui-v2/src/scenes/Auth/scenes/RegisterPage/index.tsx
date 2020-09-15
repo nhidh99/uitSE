@@ -12,8 +12,8 @@ import IconInput from "../../../../components/IconInput";
 import { SC } from "./styles";
 import * as Yup from "yup";
 import { authApi } from "../../../../services/api/authApi";
-import { RegisterFormValues } from "../../../../global/formValues";
 import { createCookie } from "../../../../services/helper/cookie";
+import RegisterFormValues from "../../../../values/forms/RegisterFormValues";
 
 const RegisterPage = () => {
     const [status, setStatus] = useState<string | null>(null);
@@ -57,7 +57,7 @@ const RegisterPage = () => {
     const submit = useCallback(async (values: RegisterFormValues) => {
         try {
             setStatus("Đang xử lí đăng kí...");
-            const registerResponse = await authApi.postRegister(values);            
+            const registerResponse = await authApi.postRegister(values);
             setStatus(registerResponse.data);
 
             const loginResponse = await authApi.postLogin({
@@ -72,15 +72,18 @@ const RegisterPage = () => {
         }
     }, []);
 
-    const initialValues: RegisterFormValues = {
-        name: "",
-        gender: "MALE",
-        phone: "",
-        email: "",
-        username: "",
-        password: "",
-        confirm: "",
-    };
+    const initialValues: RegisterFormValues = useMemo(
+        () => ({
+            name: "",
+            gender: "MALE",
+            phone: "",
+            email: "",
+            username: "",
+            password: "",
+            confirm: "",
+        }),
+        []
+    );
 
     return (
         <Formik
@@ -124,7 +127,7 @@ const RegisterPage = () => {
                         icon={FaTransgender}
                         type="text"
                         name="gender"
-                        as="select"
+                        component="select"
                         defaultValue=""
                         validate
                     >
@@ -160,7 +163,10 @@ const RegisterPage = () => {
                         validate
                     />
 
-                    <SC.Submit type="submit" disabled={!isValid || isSubmitting}>
+                    <SC.Submit
+                        type="submit"
+                        disabled={!isValid || isSubmitting}
+                    >
                         Đăng kí
                     </SC.Submit>
 

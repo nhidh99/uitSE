@@ -1,12 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../services/redux/rootReducer";
-import { Converter } from "../../../../../../global/constants";
+import BatteryDesignConstants from "../../../../../../values/constants/BatteryDesignConstants";
+import BrandConstants from "../../../../../../values/constants/BrandConstants";
+import CardDesignConstants from "../../../../../../values/constants/CardDesignConstants";
+import CpuConstants from "../../../../../../values/constants/CpuConstants";
+import ResolutionConstants from "../../../../../../values/constants/ResolutionConstants";
+import ProductSpecModel from "../../../../../../values/models/ProductSpecModel";
 import { SC } from "./styles";
 
 const SpecBlock = () => {
-    const product = useSelector(
-        //@ts-ignore
+    const product: ProductSpecModel = useSelector(
+        // @ts-ignore
         (state: RootState) => state.productInfo.details
     );
 
@@ -14,11 +19,11 @@ const SpecBlock = () => {
     const specs = [
         {
             title: "Thương hiệu",
-            detail: Converter.BRAND[product["brand"]],
+            detail: BrandConstants[product["brand"]],
         },
         {
             title: "CPU",
-            detail: `${Converter.CPU[cpu["type"]]} ${cpu["detail"]}, ${
+            detail: `${CpuConstants[cpu["type"]]} ${cpu["detail"]}, ${
                 cpu["speed"]
             } GHz`,
         },
@@ -49,13 +54,13 @@ const SpecBlock = () => {
         {
             title: "Màn hình",
             detail: `${monitor["size"]} inch,
-            ${Converter.RESOLUTION[monitor["resolution_type"]]} 
+            ${ResolutionConstants[monitor["resolution_type"]]} 
             (${monitor["resolution_width"]} x ${monitor["resolution_height"]})`,
         },
         {
             title: "Card màn hình",
             detail: `${monitor["graphics_card"]} (${
-                Converter.CARD_DESIGN[monitor["card_design"]]
+                CardDesignConstants[monitor["card_design"]]
             })`,
         },
         {
@@ -72,7 +77,9 @@ const SpecBlock = () => {
         },
         {
             title: "Thông tin PIN",
-            detail: `${battery["detail"]} (${Converter.PIN[battery["type"]]})`,
+            detail: `${battery["detail"]} (${
+                BatteryDesignConstants[battery["type"]]
+            })`,
         },
         {
             title: "Webcam",

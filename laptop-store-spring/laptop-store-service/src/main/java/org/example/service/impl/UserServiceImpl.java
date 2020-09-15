@@ -10,6 +10,7 @@ import lombok.Data;
 import org.example.dao.LaptopRepository;
 import org.example.dao.PromotionRepository;
 import org.example.dao.UserRepository;
+import org.example.input.UserInfoInput;
 import org.example.model.Promotion;
 import org.example.model.User;
 import org.example.projection.LaptopBlockData;
@@ -50,6 +51,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserInfoByUsername(String username, UserInfoInput userInfoInput) {
+        User user = userRepository.findByUsername(username);
+        user.setName(userInfoInput.getName());
+        user.setEmail(userInfoInput.getEmail());
+        user.setGender(userInfoInput.getGender());
+        user.setPhone(userInfoInput.getPhone());
         userRepository.save(user);
     }
 

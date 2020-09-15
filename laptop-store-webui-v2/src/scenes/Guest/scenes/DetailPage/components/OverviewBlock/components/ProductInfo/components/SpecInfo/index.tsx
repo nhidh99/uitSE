@@ -1,7 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../../../../../services/redux/rootReducer";
-import { Converter } from "../../../../../../../../../../global/constants";
+import CpuConstants from "../../../../../../../../../../values/constants/CpuConstants";
+import ResolutionConstants from "../../../../../../../../../../values/constants/ResolutionConstants";
 import { SC } from "./styles";
 
 const SpecInfo = () => {
@@ -19,7 +20,7 @@ const SpecInfo = () => {
     const specs = [
         {
             title: "CPU",
-            content: `${Converter.CPU[cpu["type"]]}, ${cpu["speed"]} GHz`,
+            content: `${CpuConstants[cpu["type"]]}, ${cpu["speed"]} GHz`,
         },
         {
             title: "RAM",
@@ -38,7 +39,7 @@ const SpecInfo = () => {
         {
             title: "Màn hình",
             content: `${monitor["size"]} inch,
-            ${Converter.RESOLUTION[monitor["resolution_type"]]} 
+            ${ResolutionConstants[monitor["resolution_type"]]} 
             (${monitor["resolution_width"]} x ${monitor["resolution_height"]})`,
         },
     ];

@@ -3,7 +3,7 @@ import NavItem from "./components/NavItem";
 import { FaEdit, FaUser, FaBoxes } from "react-icons/fa";
 import { SC } from "./styles";
 import CartItem from "./components/CartItem";
-import { RoleConstants } from "../../../../global/constants";
+import RoleConstants from "../../../../values/constants/RoleConstants";
 
 const BannerRight = () => (
     <SC.NavBar>

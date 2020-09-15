@@ -1,11 +1,11 @@
 import React from "react";
 import { SC } from "./styles";
-import { RatingType } from "../../../../../../../../global/types";
 import { FaStar } from "react-icons/fa";
 import RatingReply from "../RatingReply";
+import RatingModel from "../../../../../../../../values/models/RatingModel";
 
 type RatingItemProps = {
-    rating: RatingType;
+    rating: RatingModel;
 };
 
 const RatingItem = ({ rating }: RatingItemProps) => (
