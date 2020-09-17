@@ -1,10 +1,8 @@
 package org.example.service.impl;
 
-import org.example.dao.AddressRepository;
-import org.example.dao.CityRepository;
-import org.example.dao.DistrictRepository;
-import org.example.dao.WardRepository;
-import org.example.model.Address;
+import org.example.dao.model.CityRepository;
+import org.example.dao.model.DistrictRepository;
+import org.example.dao.model.WardRepository;
 import org.example.model.City;
 import org.example.model.District;
 import org.example.model.Ward;

@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.LaptopRepository;
+import org.example.dao.model.LaptopRepository;
 import org.example.model.Laptop;
 import org.example.projection.LaptopBlockData;
 import org.example.service.api.LaptopService;

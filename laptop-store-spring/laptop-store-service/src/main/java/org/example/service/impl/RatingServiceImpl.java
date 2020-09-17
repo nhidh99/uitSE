@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.RatingRepository;
+import org.example.dao.model.RatingRepository;
 import org.example.model.Rating;
 import org.example.service.api.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;

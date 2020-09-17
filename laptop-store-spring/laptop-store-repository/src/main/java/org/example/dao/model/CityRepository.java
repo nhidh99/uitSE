@@ -1,4 +1,4 @@
-package org.example.dao;
+package org.example.dao.model;
 
 import org.example.model.City;
 import org.springframework.data.jpa.repository.JpaRepository;

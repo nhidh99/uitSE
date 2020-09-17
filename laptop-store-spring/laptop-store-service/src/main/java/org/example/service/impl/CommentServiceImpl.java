@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.CommentRepository;
+import org.example.dao.model.CommentRepository;
 import org.example.model.Comment;
 import org.example.service.api.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;

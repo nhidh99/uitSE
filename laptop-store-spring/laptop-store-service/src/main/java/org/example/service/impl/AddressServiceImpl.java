@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.*;
+import org.example.dao.model.*;
 import org.example.model.Address;
 import org.example.model.User;
 import org.example.service.api.AddressService;

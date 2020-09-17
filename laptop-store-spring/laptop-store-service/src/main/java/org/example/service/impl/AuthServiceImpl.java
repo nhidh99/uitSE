@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
 import org.example.constant.ErrorMessageConstants;
-import org.example.dao.UserRepository;
+import org.example.dao.model.UserRepository;
 import org.example.input.LoginInput;
 import org.example.input.RegisterInput;
 import org.example.model.User;

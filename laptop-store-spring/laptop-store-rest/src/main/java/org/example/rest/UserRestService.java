@@ -5,10 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.SuccessMessageConstants;
+import org.example.dto.OrderOverviewDTO;
 import org.example.input.UserInfoInput;
 import org.example.model.*;
 import org.example.projection.LaptopBlockData;
-import org.example.projection.OrderRowData;
 import org.example.service.api.AddressService;
 import org.example.service.api.LaptopService;
 import org.example.service.api.OrderService;
@@ -82,7 +82,7 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserOrderOverviews(@AuthenticationPrincipal UserDetails userDetails,
                                                           @RequestParam(value = "page", defaultValue = "1") int page) {
         String username = userDetails.getUsername();
-        List<OrderRowData> orders = orderService.findRowDataByUsernameAndPage(username, page);
+        List<OrderOverviewDTO> orders = orderService.findOverviewByUsernameAndPage(username, page);
         Long totalOrderCount = orderService.countByUsername(username);
         return ResponseEntity.ok().header("X-Total-Count", totalOrderCount.toString()).body(orders);
     }

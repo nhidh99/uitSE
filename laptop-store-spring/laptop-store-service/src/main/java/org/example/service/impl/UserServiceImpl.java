@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.Builder;
 import lombok.Data;
-import org.example.dao.LaptopRepository;
-import org.example.dao.PromotionRepository;
-import org.example.dao.UserRepository;
+import org.example.dao.model.LaptopRepository;
+import org.example.dao.model.PromotionRepository;
+import org.example.dao.model.UserRepository;
 import org.example.input.UserInfoInput;
 import org.example.model.Promotion;
 import org.example.model.User;
@@ -18,7 +18,6 @@ import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,14 +25,19 @@ import java.util.stream.IntStream;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
+
     private UserRepository userRepository;
-
-    @Autowired
     private LaptopRepository laptopRepository;
+    private PromotionRepository promotionRepository;
 
     @Autowired
-    private PromotionRepository promotionRepository;
+    public UserServiceImpl(UserRepository userRepository,
+                           LaptopRepository laptopRepository,
+                           PromotionRepository promotionRepository) {
+        this.userRepository = userRepository;
+        this.laptopRepository = laptopRepository;
+        this.promotionRepository = promotionRepository;
+    }
 
     @Override
     public User findByUsername(String username) {
@@ -58,14 +62,13 @@ public class UserServiceImpl implements UserService {
     public void updateUserInfoByUsername(String username, UserInfoInput userInfoInput) {
         User user = userRepository.findByUsername(username);
         user.setName(userInfoInput.getName());
+        user.setPhone(userInfoInput.getPhone());
         user.setEmail(userInfoInput.getEmail());
         user.setGender(userInfoInput.getGender());
-        user.setPhone(userInfoInput.getPhone());
         userRepository.save(user);
     }
 
     @Override
-    @Transactional
     public Map<String, Object> findPaymentByUsername(String username) throws JsonProcessingException {
         // Parse Cart-JSON to Cart-HashMap
         ObjectMapper om = new ObjectMapper();
@@ -88,7 +91,9 @@ public class UserServiceImpl implements UserService {
         }
 
         // Return null output if cart is empty
-        if (cartMap.isEmpty()) { return null; }
+        if (cartMap.isEmpty()) {
+            return null;
+        }
 
         // Get Laptop Items from Cart
         List<CartItem> laptopItems = laptops.stream().map(laptop -> {

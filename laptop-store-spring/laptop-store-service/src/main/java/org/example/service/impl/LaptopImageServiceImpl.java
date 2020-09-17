@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.LaptopImageRepository;
+import org.example.dao.model.LaptopImageRepository;
 import org.example.service.api.LaptopImageService;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;

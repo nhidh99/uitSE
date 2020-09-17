@@ -29,7 +29,8 @@ const NavItem = styled(Link)`
     color: #545454;
     padding: 15px 15px 15px 10px;
     background-color: ${(props) =>
-        window.location.pathname === props.to ? "#ddd" : "transparent"};
+        //@ts-ignore
+        window.location.pathname.includes(props.to) ? "#ddd" : "transparent"};
 
     :hover {
         background-color: #ddd;

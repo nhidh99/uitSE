@@ -38,7 +38,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="laptop-store-service" />
     <orderEntry type="module" module-name="laptop-store-api" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.1.0" level="project" />
     <orderEntry type="module" module-name="laptop-store-repository" />
     <orderEntry type="library" name="Maven: org.example:laptop-store-security:1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.mindrot:jbcrypt:0.4" level="project" />

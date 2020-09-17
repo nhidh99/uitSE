@@ -1,4 +1,4 @@
-package org.example.dao;
+package org.example.dao.model;
 
 import org.example.model.Rating;
 import org.springframework.data.domain.Pageable;

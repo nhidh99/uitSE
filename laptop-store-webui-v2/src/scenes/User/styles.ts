@@ -8,6 +8,7 @@ const Container = styled.div`
 
 const RightContainer = styled.div`
     width: 100%;
+    margin-bottom: 20px;
 `;
 
 const TitleContainer = styled.header`
