@@ -6,9 +6,10 @@ resolutions = [1000, 400, 150]
 
 def make_images():
     raw_images_path = 'laptops/raw'
+    i = 1
     for subdir, dirs, files in os.walk(raw_images_path):
         if subdir == raw_images_path: continue
-        folder_name = subdir.split('/')[-1]
+        folder_name = subdir.split('/')[-1][4:]
         folder_primary = 'laptops/edited/primary/%s' % folder_name
         folder_secondary = 'laptops/edited/secondary/%s' % folder_name
 
@@ -19,6 +20,8 @@ def make_images():
         for file_name in files:
             image_path = os.path.join(subdir, file_name)
             make_scaled_image(image_path, folder_name, file_name)
+        print('%d. Scaled: %s' % (i, folder_name))
+        i += 1
 
 
 def make_scaled_image(image_path, folder_name, file_name):

@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>laptop-store-org.example.security</artifactId>
+            <artifactId>laptop-store-security</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

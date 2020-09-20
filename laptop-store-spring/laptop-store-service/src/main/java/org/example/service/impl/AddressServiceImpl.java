@@ -35,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
         Integer cityId = cityRepository.findIdByName(address.getCity());
         Integer districtId = districtRepository.findIdByNameAndCityId(address.getDistrict(), cityId);
         Integer wardId = wardRepository.findIdByNameAndDistrictId(address.getWard(), districtId);
-        return new HashMap<String, Object>() {{
+        return new HashMap<>() {{
             put("address", address);
             put("city_id", cityId);
             put("district_id", districtId);

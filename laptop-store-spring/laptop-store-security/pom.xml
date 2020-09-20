@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>laptop-store-org.example.security</artifactId>
+    <artifactId>laptop-store-security</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.example</groupId>

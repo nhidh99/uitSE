@@ -220,7 +220,7 @@ def insert_laptops(laptops):
             insert_primary_images(laptop)
             insert_secondary_images(laptop)
             insert_battery(laptop)
-            insert_promotions(laptop)
+            # insert_promotions(laptop)
             insert_tags(laptop)
             update_discount(laptop)
             print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
@@ -269,14 +269,14 @@ def insert_wards():
 
 
 def insert_locations():
-    # insert_cities()
-    # insert_districts()
+    insert_cities()
+    insert_districts()
     insert_wards()
 
 def insert_db():
-    # laptops = get_data()
+    laptops = get_data()
     try:
-        # insert_laptops(laptops)
+        insert_laptops(laptops)
         insert_locations()
         conn.commit()
     except mariadb.Error as e:
