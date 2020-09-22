@@ -1,8 +1,8 @@
 import React from "react";
-import GuestRoutes from "./components/GuestRoutes";
-import UserRoutes from "./components/UserRoutes";
-import AdminRoutes from "./components/AdminRoutes";
-import AuthRoutes from "./components/AuthRoutes";
+import GuestRoute from "./components/GuestRoute";
+import UserRoute from "./components/UserRoute";
+import AdminRoute from "./components/AdminRoute";
+import AuthRoute from "./components/AuthRoute";
 import store from "../../services/redux/store";
 import RoleConstants from "../../values/constants/RoleConstants";
 
@@ -16,14 +16,25 @@ const Routes = () => {
         case RoleConstants.GUEST:
             return (
                 <>
-                    <GuestRoutes />
-                    <AuthRoutes />
+                    <GuestRoute />
+                    <AuthRoute />
                 </>
             );
         case RoleConstants.USER:
-            return <UserRoutes />;
+            return (
+                <>
+                    <UserRoute />
+                    <GuestRoute />
+                </>
+            );
         case RoleConstants.ADMIN:
-            return <AdminRoutes />;
+            return (
+                <>
+                    <AdminRoute/>
+                    <UserRoute />
+                    <GuestRoute />
+                </>
+            );
         default:
             return null;
     }

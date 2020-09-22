@@ -10,12 +10,17 @@ const userSlice = createSlice({
     initialState: initialState,
     reducers: {
         setUser(state, action: PayloadAction<UserState>) {
-            state = action.payload;
+            return action.payload;
+        },
+        setDefaultAddressId(state, action: PayloadAction<number>) {
+            if (state !== null) {
+                return { ...state, address_id: action.payload };
+            }
             return state;
         },
     },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setDefaultAddressId } = userSlice.actions;
 
 export default userSlice.reducer;

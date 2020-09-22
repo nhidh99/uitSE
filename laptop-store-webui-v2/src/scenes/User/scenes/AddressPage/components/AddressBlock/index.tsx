@@ -1,40 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import addressApi from "../../../../../../services/api/addressApi";
+import store from "../../../../../../services/redux/store";
 import AddressModel from "../../../../../../values/models/AddressModel";
 import { SC } from "./styles";
 
 type AddressBlockProps = {
     address: AddressModel;
+    isDefaultAddress: boolean;
 };
 
-const AddressBlock = ({ address }: AddressBlockProps) => (
-    <SC.BlockContainer>
-        <SC.ButtonsContainer>
-            <Link to={`/users/addresses/${address.id}`}>
-                <SC.EditButton />
-            </Link>
-            <SC.DeleteButton />
-        </SC.ButtonsContainer>
+const AddressBlock = ({ address, isDefaultAddress }: AddressBlockProps) => {
+    const deleteAddress = async () => {
+        const result = window.confirm("Xác nhận xóa địa chỉ?");
+        if (result) {
+            try {
+                await addressApi.deleteAddress(address.id);
+                window.location.reload();
+            } catch (err) {
+                alert("Lỗi");
+            }
+        }
+    };
 
-        <SC.InfoContainer>
-            <SC.ReceiverName>{address.receiver_name}</SC.ReceiverName>
-        </SC.InfoContainer>
+    return (
+        <SC.BlockContainer>
+            <SC.ButtonsContainer>
+                <Link to={`/user/addresses/edit/${address.id}`}>
+                    <SC.EditButton />
+                </Link>
+                <SC.DeleteButton onClick={deleteAddress} />
+            </SC.ButtonsContainer>
 
-        <SC.InfoContainer>
-            <SC.DeliveryField>Điện thoại: </SC.DeliveryField>
-            {address.receiver_phone}
-        </SC.InfoContainer>
+            {isDefaultAddress ? (
+                <SC.DefaultAddress>
+                    <FaCheckCircle />
+                    Địa chỉ mặc định
+                </SC.DefaultAddress>
+            ) : null}
+            
+            <SC.InfoContainer>
+                <SC.ReceiverName>{address.receiver_name}</SC.ReceiverName>{" "}
+            </SC.InfoContainer>
 
-        <SC.InfoContainer>
-            <SC.DeliveryField>Địa chỉ: </SC.DeliveryField>
-            {`${address.address_num} ${[
-                address.street,
-                address.ward,
-                address.district,
-                address.city,
-            ].join(", ")}`}
-        </SC.InfoContainer>
-    </SC.BlockContainer>
-);
+            <SC.InfoContainer>
+                <SC.DeliveryField>Điện thoại: </SC.DeliveryField>
+                {address.receiver_phone}
+            </SC.InfoContainer>
+
+            <SC.InfoContainer>
+                <SC.DeliveryField>Địa chỉ: </SC.DeliveryField>
+                {address.location}
+            </SC.InfoContainer>
+        </SC.BlockContainer>
+    );
+};
 
 export default AddressBlock;

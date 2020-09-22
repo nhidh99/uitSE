@@ -3,10 +3,7 @@ package org.example.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.type.OrderStatus;
 import org.hibernate.annotations.Formula;
 
@@ -78,7 +75,7 @@ public class Order {
     @JsonProperty("city")
     private String city;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
@@ -87,4 +84,25 @@ public class Order {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<OrderDetail> orderDetails;
+
+    @Formula("(SELECT CONCAT(od.quantity, ' ', od.product_name) " +
+            "FROM order_detail od " +
+            "WHERE od.order_id = id " +
+            "AND od.product_type = 'LAPTOP' LIMIT 1)")
+    @Getter(AccessLevel.NONE)
+    private String firstProductInfo;
+
+    @Formula("(SELECT SUM(od.quantity) " +
+            "FROM order_detail od " +
+            "WHERE od.order_id = id " +
+            "AND od.product_type = 'LAPTOP')")
+    @Getter(AccessLevel.NONE)
+    private int productCount;
+
+    public String getDescribe() {
+        int firstProductQuantity = Integer.parseInt(firstProductInfo.split(" ")[0]);
+        int otherProductsQuantity = productCount - firstProductQuantity;
+        return otherProductsQuantity == 0 ? firstProductInfo
+                : String.format("%s và %d sản phẩm khác", firstProductInfo, otherProductsQuantity);
+    }
 }

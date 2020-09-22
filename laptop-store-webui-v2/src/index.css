@@ -13,9 +13,7 @@ button {
 }
 
 input:focus,
-button:focus,
-textarea:focus,
-select:focus {
+button:focus {
     outline: none;
 }
 

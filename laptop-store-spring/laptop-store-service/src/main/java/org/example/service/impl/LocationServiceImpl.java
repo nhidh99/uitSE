@@ -3,6 +3,7 @@ package org.example.service.impl;
 import org.example.dao.model.CityRepository;
 import org.example.dao.model.DistrictRepository;
 import org.example.dao.model.WardRepository;
+import org.example.input.AddressInput;
 import org.example.model.City;
 import org.example.model.District;
 import org.example.model.Ward;
@@ -25,21 +26,6 @@ public class LocationServiceImpl implements LocationService {
     private WardRepository wardRepository;
 
     @Override
-    public Optional<City> findCityById(Integer id) {
-        return cityRepository.findById(id);
-    }
-
-    @Override
-    public Optional<District> findDistrictById(Integer id) {
-        return districtRepository.findById(id);
-    }
-
-    @Override
-    public Optional<Ward> findWardById(Integer id) {
-        return wardRepository.findById(id);
-    }
-
-    @Override
     public List<City> findCities() {
         return cityRepository.findAll();
     }
@@ -55,7 +41,10 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean validateLocation(Integer cityId, Integer districtId, Integer wardId) {
+    public boolean validateLocation(AddressInput addressInput) {
+        Integer cityId = addressInput.getCityId();
+        Integer districtId = addressInput.getDistrictId();
+        Integer wardId = addressInput.getWardId();
         boolean isValidCity = cityRepository.existsById(cityId);
         boolean isValidDistrict = districtRepository.existsByIdAndCityId(districtId, cityId);
         boolean isValidWard = wardRepository.existsByIdAndDistrictId(wardId, districtId);

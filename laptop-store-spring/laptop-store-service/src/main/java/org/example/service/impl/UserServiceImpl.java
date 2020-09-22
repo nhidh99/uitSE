@@ -7,9 +7,12 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.Builder;
 import lombok.Data;
+import org.example.constant.ErrorMessageConstants;
+import org.example.dao.model.AddressRepository;
 import org.example.dao.model.LaptopRepository;
 import org.example.dao.model.PromotionRepository;
 import org.example.dao.model.UserRepository;
+import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.Promotion;
 import org.example.model.User;
@@ -17,7 +20,11 @@ import org.example.projection.LaptopBlockData;
 import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,17 +33,23 @@ import java.util.stream.IntStream;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private LaptopRepository laptopRepository;
-    private PromotionRepository promotionRepository;
+    private final UserRepository userRepository;
+    private final LaptopRepository laptopRepository;
+    private final PromotionRepository promotionRepository;
+    private final AddressRepository addressRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TransactionTemplate txTemplate;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           LaptopRepository laptopRepository,
-                           PromotionRepository promotionRepository) {
+    public UserServiceImpl(UserRepository userRepository, LaptopRepository laptopRepository,
+                           PromotionRepository promotionRepository, AddressRepository addressRepository,
+                           PasswordEncoder passwordEncoder, PlatformTransactionManager txManager) {
         this.userRepository = userRepository;
         this.laptopRepository = laptopRepository;
         this.promotionRepository = promotionRepository;
+        this.addressRepository = addressRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.txTemplate = new TransactionTemplate(txManager);
     }
 
     @Override
@@ -160,6 +173,33 @@ public class UserServiceImpl implements UserService {
         output.put("promotion_count", promotionCount);
         output.put("promotion_price", promotionPrice);
         return output;
+    }
+
+    @Override
+    public void updateUserDefaultAddressId(String username, Integer addressId) {
+        txTemplate.executeWithoutResult((status) -> {
+            boolean isValidRequest = addressRepository.existsByIdAndUserUsername(addressId, username);
+            if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+            User user = userRepository.findByUsername(username);
+            user.setDefaultAddressId(addressId);
+        });
+    }
+
+    @Override
+    public void updateUserPassword(PasswordInput passwordInput, String username) {
+        txTemplate.executeWithoutResult((status) -> {
+            User user = userRepository.findByUsername(username);
+            if (!BCrypt.checkpw(passwordInput.getOldPassword(), user.getPassword())) {
+                throw new IllegalArgumentException(ErrorMessageConstants.WRONG_OLD_PASSWORD);
+            }
+
+            if (!passwordInput.getNewPassword().equals(passwordInput.getConfirmPassword())) {
+                throw new IllegalArgumentException(ErrorMessageConstants.MISMATCH_NEW_PASSWORDS);
+            }
+
+            String newHashedPassword = passwordEncoder.encode(passwordInput.getNewPassword());
+            user.setPassword(newHashedPassword);
+        });
     }
 
     @Data

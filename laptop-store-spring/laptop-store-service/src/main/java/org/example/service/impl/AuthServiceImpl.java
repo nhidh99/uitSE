@@ -8,6 +8,7 @@ import org.example.model.User;
 import org.example.security.JwtProvider;
 import org.example.service.api.AuthService;
 import org.example.type.RoleType;
+import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,16 +61,11 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException(ErrorMessageConstants.MISMATCH_REGISTRATION_PASSWORDS);
         }
 
+        // Build user from input w/ hashed password & role
         String hashedPassword = passwordEncoder.encode(registerInput.getPassword());
-        User user = User.builder().role(RoleType.USER)
-                .name(registerInput.getName())
-                .phone(registerInput.getPhone())
-                .email(registerInput.getEmail())
-                .gender(registerInput.getGender())
-                .username(registerInput.getUsername())
-                .password(hashedPassword).build();
-
-        // Save user to database
+        User user = ModelMapperUtil.map(registerInput, User.class);
+        user.setPassword(hashedPassword);
+        user.setRole(RoleType.USER);
         userRepository.save(user);
     }
 }

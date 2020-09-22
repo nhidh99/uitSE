@@ -3,6 +3,7 @@ package org.example.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 
@@ -27,17 +28,17 @@ public class Address {
     @JsonProperty("street")
     private String street;
 
-    @Column(name = "ward")
+    @Column(name = "ward_id")
     @JsonProperty("ward")
-    private String ward;
+    private Integer wardId;
 
-    @Column(name = "district")
+    @Column(name = "district_id")
     @JsonProperty("district")
-    private String district;
+    private Integer districtId;
 
-    @Column(name = "city")
-    @JsonProperty("city")
-    private String city;
+    @Column(name = "city_id")
+    @JsonProperty("city_id")
+    private Integer cityId;
 
     @Column(name = "receiver_name")
     @JsonProperty("receiver_name")
@@ -56,4 +57,16 @@ public class Address {
     @Basic(fetch = FetchType.LAZY)
     @JsonIgnore
     private boolean recordStatus;
+
+    @Formula("(SELECT c.name FROM City c WHERE c.id = city_id)")
+    @Basic(fetch = FetchType.LAZY)
+    private String cityName;
+
+    @Formula("(SELECT d.name FROM District d WHERE d.id = district_id)")
+    @Basic(fetch = FetchType.LAZY)
+    private String districtName;
+
+    @Formula("(SELECT w.name FROM Ward w WHERE w.id = ward_id)")
+    @Basic(fetch = FetchType.LAZY)
+    private String wardName;
 }

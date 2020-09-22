@@ -53,6 +53,16 @@ const DeliveryField = styled.span`
     font-weight: 600;
 `;
 
+const DefaultAddress = styled.div`
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #007bff;
+    svg {
+        margin-bottom: -1.5px;
+        margin-right: 5px;
+    }
+`;
+
 export const SC = {
     BlockContainer,
     ButtonsContainer,
@@ -61,4 +71,5 @@ export const SC = {
     DeliveryField,
     EditButton,
     DeleteButton,
+    DefaultAddress,
 };

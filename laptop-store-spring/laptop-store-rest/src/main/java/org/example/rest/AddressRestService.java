@@ -1,11 +1,13 @@
 package org.example.rest;
 
+import org.example.dto.AddressDetailDTO;
 import org.example.input.AddressInput;
 import org.example.model.Address;
 import org.example.model.User;
 import org.example.service.api.AddressService;
 import org.example.service.api.LocationService;
 import org.example.service.api.UserService;
+import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,20 +28,14 @@ public class AddressRestService {
     private AddressService addressService;
 
     @Autowired
-    private LocationService locationService;
-
-    @Autowired
     private UserService userService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAddressById(@AuthenticationPrincipal UserDetails userDetails,
                                             @PathVariable("id") Integer id) {
-        boolean isValidRequest = addressService.existsByIdAndUsername(id, userDetails.getUsername());
-        if (!isValidRequest) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        Map<String, Object> output = addressService.findDetailById(id);
+        String username = userDetails.getUsername();
+        AddressDetailDTO output = addressService.findDetailByIdAndUsername(id, username);
         return ResponseEntity.ok(output);
     }
 
@@ -48,30 +44,11 @@ public class AddressRestService {
     public ResponseEntity<?> postAddress(@AuthenticationPrincipal UserDetails userDetails,
                                          @RequestBody AddressInput addressInput) {
         try {
-            Address address = buildAddressFromRequest(userDetails, addressInput);
-            Integer addressId = addressService.save(address);
+            String username = userDetails.getUsername();
+            Integer addressId = addressService.createAddress(addressInput, username);
             return ResponseEntity.ok(addressId.toString());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putAddress(@AuthenticationPrincipal UserDetails userDetails,
-                                        @RequestBody AddressInput addressInput,
-                                        @PathVariable("id") Integer addressId) {
-        try {
-            boolean isValidRequest = addressService.existsByIdAndUsername(addressId, userDetails.getUsername());
-            if (!isValidRequest) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            Address address = buildAddressFromRequest(userDetails, addressInput);
-            address.setId(addressId);
-            addressService.save(address);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -80,15 +57,25 @@ public class AddressRestService {
     public ResponseEntity<?> deleteAddress(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable("id") Integer addressId) {
         try {
-            boolean isValidRequest = addressService.existsByIdAndUsername(addressId, userDetails.getUsername());
-            if (!isValidRequest) {
-                return ResponseEntity.notFound().build();
-            }
-            addressService.deleteById(addressId);
+            String username = userDetails.getUsername();
+            addressService.deleteAddress(addressId, username);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putAddress(@AuthenticationPrincipal UserDetails userDetails,
+                                        @PathVariable("id") Integer addressId,
+                                        @RequestBody AddressInput addressInput) {
+        try {
+            String username = userDetails.getUsername();
+            addressService.updateAddress(addressId, addressInput, username);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -109,29 +96,5 @@ public class AddressRestService {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    private Address buildAddressFromRequest(UserDetails userDetails, AddressInput addressInput) {
-        Integer cityId = addressInput.getCityId();
-        Integer districtId = addressInput.getDistrictId();
-        Integer wardId = addressInput.getWardId();
-
-        boolean isValidLocation = locationService.validateLocation(cityId, districtId, wardId);
-        if (!isValidLocation) {
-            throw new IllegalArgumentException();
-        }
-
-        String cityName = locationService.findCityById(cityId).get().getName();
-        String districtName = locationService.findDistrictById(districtId).get().getName();
-        String wardName = locationService.findWardById(wardId).get().getName();
-        User user = userService.findByUsername(userDetails.getUsername());
-
-        return Address.builder()
-                .city(cityName).district(districtName).ward(wardName)
-                .receiverName(addressInput.getReceiverName())
-                .receiverPhone(addressInput.getReceiverPhone())
-                .street(addressInput.getStreet())
-                .addressNum(addressInput.getAddressNum())
-                .user(user).recordStatus(true).build();
     }
 }

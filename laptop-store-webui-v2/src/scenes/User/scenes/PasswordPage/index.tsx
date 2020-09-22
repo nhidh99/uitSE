@@ -2,13 +2,15 @@ import { Form, Formik } from "formik";
 import React, { useCallback, useMemo } from "react";
 import * as Yup from "yup";
 import FieldInput from "../../../../components/FIeldInput";
+import userApi from "../../../../services/api/userApi";
+import PasswordFormValues from "../../../../values/forms/PasswordFormValues";
 
 const PasswordPage = () => {
-    const initialValues = useMemo(
+    const initialValues: PasswordFormValues = useMemo(
         () => ({
-            oldPassword: "",
-            newPassword: "",
-            confirmPassword: "",
+            old_password: "",
+            new_password: "",
+            confirm_password: "",
         }),
         []
     );
@@ -32,7 +34,15 @@ const PasswordPage = () => {
         []
     );
 
-    const submit = useCallback(() => {}, []);
+    const submit = useCallback(async (values: PasswordFormValues) => {
+        try {
+            const response = await userApi.putCurrentUserPassword(values);
+            alert(response.data);
+            window.location.reload();
+        } catch (err) {
+            alert(err.response.data);
+        }
+    }, []);
 
     return (
         <Formik
@@ -49,28 +59,32 @@ const PasswordPage = () => {
                     color: "#333",
                     marginTop: "5px",
                     width: "200px",
+                    cursor: "pointer",
                     opacity: isDisabledButton ? "0.5" : "1",
                 };
                 return (
                     <Form>
                         <FieldInput
                             name="old_password"
-                            label="Nhập MK cũ:"
                             type="password"
+                            label="Nhập MK cũ:"
+                            placeholder="Nhập mật khẩu cũ"
                             validate
                         />
 
                         <FieldInput
                             name="new_password"
-                            label="Nhập MK mới:"
                             type="password"
+                            label="Nhập MK mới:"
+                            placeholder="Nhập mật khẩu mới"
                             validate
                         />
 
                         <FieldInput
                             name="confirm_password"
-                            label="Xác nhận MK:"
                             type="password"
+                            label="Xác nhận MK:"
+                            placeholder="Xác nhận mật khẩu mới"
                             validate
                         />
 

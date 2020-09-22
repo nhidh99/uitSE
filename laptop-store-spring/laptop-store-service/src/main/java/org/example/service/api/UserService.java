@@ -1,6 +1,7 @@
 package org.example.service.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.User;
 import org.example.type.SocialMediaType;
@@ -17,4 +18,8 @@ public interface UserService {
     Map<String, Object> findPaymentByUsername(String username) throws JsonProcessingException;
 
     void updateUserInfoByUsername(String username, UserInfoInput userInfoInput);
+
+    void updateUserDefaultAddressId(String username, Integer addressId);
+
+    void updateUserPassword(PasswordInput passwordInput, String username);
 }

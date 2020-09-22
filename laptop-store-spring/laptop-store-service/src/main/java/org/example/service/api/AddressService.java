@@ -1,19 +1,21 @@
 package org.example.service.api;
 
-import org.example.model.Address;
+import org.example.dto.AddressDetailDTO;
+import org.example.dto.AddressOverviewDTO;
+import org.example.input.AddressInput;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public interface AddressService {
     boolean existsByIdAndUsername(Integer id, String username);
 
-    List<Address> findByUsername(String username);
+    List<AddressOverviewDTO> findOverviewsByUsername(String username);
 
-    Integer save(Address address);
+    AddressDetailDTO findDetailByIdAndUsername(Integer addressId, String username);
 
-    void deleteById(Integer addressId);
+    Integer createAddress(AddressInput addressInput, String username);
 
-    Map<String, Object> findDetailById(Integer addressId);
+    void deleteAddress(Integer addressId, String username);
+
+    void updateAddress(Integer addressId, AddressInput addressInput, String username);
 }

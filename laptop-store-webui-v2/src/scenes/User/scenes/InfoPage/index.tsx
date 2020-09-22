@@ -79,6 +79,7 @@ const InfoPage = () => {
                     marginTop: "5px",
                     marginBottom: 0,
                     width: "200px",
+                    cursor: "pointer",
                     opacity: isDisabledButton ? "0.5" : "1",
                 };
                 return (

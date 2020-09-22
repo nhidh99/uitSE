@@ -1,27 +1,39 @@
+import PasswordFormValues from "../../values/forms/PasswordFormValues";
 import UserInfoFormValues from "../../values/forms/UserInfoFormValues";
-import axiosClient from "./axiosClient";
+import axiosAuthClient from "../axios/axiosAuthClient";
 
 const userApi = {
     getCurrentUserInfo: () => {
         const url = "/users/me";
-        return axiosClient.get(url);
+        return axiosAuthClient.get(url);
     },
 
     getCurrentUserAddresses: () => {
         const url = "/users/me/addresses";
-        return axiosClient.get(url);
+        return axiosAuthClient.get(url);
     },
 
     getCurrentUserOrders: (page: number) => {
         const url = "/users/me/orders";
         const config = { params: { page: page } };
-        return axiosClient.get(url, config);
+        return axiosAuthClient.get(url, config);
     },
 
     putCurrentUserInfo: (data: UserInfoFormValues) => {
         const url = "/users/me";
-        return axiosClient.put(url, data);
+        return axiosAuthClient.put(url, data);
     },
+
+    putDefaultAddress: (addressId: number) => {
+        const url = "/users/me/default-address";
+        const data = { address_id: addressId }; 
+        return axiosAuthClient.post(url, data);
+    },
+
+    putCurrentUserPassword: (data: PasswordFormValues) => {
+        const url = "/users/me/password";
+        return axiosAuthClient.put(url, data);
+    }
 };
 
 export default userApi;

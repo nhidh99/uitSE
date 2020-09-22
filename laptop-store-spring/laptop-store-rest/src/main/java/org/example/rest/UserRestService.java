@@ -3,9 +3,12 @@ package org.example.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.coyote.Response;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.SuccessMessageConstants;
+import org.example.dto.AddressOverviewDTO;
 import org.example.dto.OrderOverviewDTO;
+import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.*;
 import org.example.projection.LaptopBlockData;
@@ -48,7 +51,7 @@ public class UserRestService {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping(value="/me", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
                                             @RequestBody UserInfoInput userInfoInput) {
@@ -73,7 +76,7 @@ public class UserRestService {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserAddresses(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        List<Address> addresses = addressService.findByUsername(username);
+        List<AddressOverviewDTO> addresses = addressService.findOverviewsByUsername(username);
         return ResponseEntity.ok(addresses);
     }
 
@@ -98,7 +101,8 @@ public class UserRestService {
                 return ResponseEntity.ok(Collections.emptyList());
             }
             ObjectMapper om = new ObjectMapper();
-            List<Integer> laptopIds = om.readValue(user.getWishList(), new TypeReference<List<Integer>>() {});
+            List<Integer> laptopIds = om.readValue(user.getWishList(), new TypeReference<List<Integer>>() {
+            });
             List<LaptopBlockData> laptops = laptopService.findBlockDataByIds(laptopIds);
             return ResponseEntity.ok(laptops);
         } catch (JsonProcessingException e) {
@@ -131,6 +135,37 @@ public class UserRestService {
             return ResponseEntity.ok(output);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping(value = "/me/default-address", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putCurrentUserDefaultAddressId(@RequestBody Map<String, Integer> requestBody,
+                                                            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Integer addressId = requestBody.get("address_id");
+            String username = userDetails.getUsername();
+            userService.updateUserDefaultAddressId(username, addressId);
+            return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_DEFAULT_ADDRESS);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(value = "/me/password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putCurrentUserPassword(@RequestBody PasswordInput passwordInput,
+                                                    @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String username = userDetails.getUsername();
+            userService.updateUserPassword(passwordInput, username);
+            return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_PASSWORD);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
         }
     }
 }

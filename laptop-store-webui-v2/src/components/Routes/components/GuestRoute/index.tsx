@@ -2,7 +2,7 @@ import React from "react";
 import { Route } from "react-router";
 import Guest from "../../../../scenes/Guest";
 
-const GuestRoutes = () => (
+const GuestRoute = () => (
     <Route
         exact
         component={Guest}
@@ -16,4 +16,4 @@ const GuestRoutes = () => (
     />
 );
 
-export default GuestRoutes;
+export default GuestRoute;

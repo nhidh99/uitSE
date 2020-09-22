@@ -1,19 +1,13 @@
 import axios from "axios";
 import queryString from "query-string";
-import { getCookie } from "../helper/cookie";
 
-const axiosClient = axios.create({
+const axiosPublicClient = axios.create({
     baseURL: "/api",
     paramsSerializer: (params) =>
         queryString.stringify(params, { arrayFormat: "comma" }),
 });
 
-axiosClient.interceptors.request.use(async (config) => {
-    // Handle token here ...
-    const token = getCookie("access_token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
+axiosPublicClient.interceptors.request.use(async (config) => {
     const contentType = config.headers["Content-Type"];
     if (!contentType) {
         config.headers["Content-Type"] = "application/json";
@@ -21,7 +15,7 @@ axiosClient.interceptors.request.use(async (config) => {
     return config;
 });
 
-axiosClient.interceptors.response.use(
+axiosPublicClient.interceptors.response.use(
     (response) => {
         return response;
     },
@@ -31,4 +25,4 @@ axiosClient.interceptors.response.use(
     }
 );
 
-export default axiosClient;
+export default axiosPublicClient;

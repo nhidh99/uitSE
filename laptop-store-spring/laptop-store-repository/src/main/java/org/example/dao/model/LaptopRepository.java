@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
     @Query("SELECT l.id AS id, l.alt AS alt, l.name AS name, l.ram AS ram, l.hardDrive AS hardDrive, " +
             "l.avgRating AS avgRating, l.unitPrice as unitPrice, l.discountPrice AS discountPrice " +
