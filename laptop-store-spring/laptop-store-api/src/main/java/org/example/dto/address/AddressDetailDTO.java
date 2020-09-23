@@ -1,4 +1,4 @@
-package org.example.dto;
+package org.example.dto.address;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

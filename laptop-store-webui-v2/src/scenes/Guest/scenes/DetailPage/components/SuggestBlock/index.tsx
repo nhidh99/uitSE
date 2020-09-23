@@ -10,7 +10,7 @@ const SuggestBlock = () => {
     // @ts-ignore
     const { productAlt, productId } = useParams();
     const suggestions: ProductSummaryModel[] = useSelector(
-        (state: RootState) => state.productInfo?.suggestions ?? []
+        (state: RootState) => state.product?.suggestions ?? []
     );
     return (
         <SC.Container>

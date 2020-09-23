@@ -1,15 +1,18 @@
 package org.example.service.impl;
 
 import org.example.dao.model.LaptopRepository;
+import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.model.Laptop;
-import org.example.projection.LaptopBlockData;
 import org.example.service.api.LaptopService;
 import org.example.type.ImageType;
+import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +21,14 @@ import java.util.Optional;
 public class LaptopServiceImpl implements LaptopService {
     private static final int SIZE_PER_PAGE = 10;
 
+    private final LaptopRepository laptopRepository;
+    private final TransactionTemplate txTemplate;
+
     @Autowired
-    private LaptopRepository laptopRepository;
+    public LaptopServiceImpl(LaptopRepository laptopRepository, PlatformTransactionManager txManager) {
+        this.laptopRepository = laptopRepository;
+        this.txTemplate = new TransactionTemplate(txManager);
+    }
 
     @Override
     public Optional<Laptop> findById(Integer id) {
@@ -27,33 +36,56 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public List<LaptopBlockData> findSuggestionsById(Integer id) {
-        List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(id);
-        return laptopRepository.findBlockDataByRecordStatusTrueAndIdIn(suggestionIds);
+    public List<LaptopOverviewDTO> findSuggestionsById(Integer id) {
+        return txTemplate.execute((status) -> {
+            List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(id);
+            List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(suggestionIds);
+            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+        });
     }
 
     @Override
-    public List<LaptopBlockData> findByPage(int page) {
+    public List<LaptopOverviewDTO> findByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
-        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
+            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+        });
     }
 
     @Override
-    public List<LaptopBlockData> findMostDiscountByPage(int page) {
+    public List<LaptopOverviewDTO> findMostDiscountByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
-        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
+            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+        });
     }
 
     @Override
-    public List<LaptopBlockData> findCheapestByPage(int page) {
+    public List<LaptopOverviewDTO> findCheapestByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("unitPrice"));
-        return laptopRepository.findBlockDataByRecordStatusTrue(pageable);
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
+            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+        });
     }
 
     @Override
-    public List<LaptopBlockData> findBestSellingByPage(int page) {
+    public List<LaptopOverviewDTO> findBestSellingByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
-        return laptopRepository.findBestSelling(pageable);
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findBestSelling(pageable);
+            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+        });
+    }
+
+    @Override
+    public List<LaptopOverviewDTO> findByIds(List<Integer> ids) {
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(ids);
+            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+        });
     }
 
     @Override
@@ -68,10 +100,5 @@ public class LaptopServiceImpl implements LaptopService {
             default:
                 return null;
         }
-    }
-
-    @Override
-    public List<LaptopBlockData> findBlockDataByIds(List<Integer> ids) {
-        return laptopRepository.findBlockDataByRecordStatusTrueAndIdIn(ids);
     }
 }

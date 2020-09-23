@@ -1,4 +1,4 @@
-package org.example.dto;
+package org.example.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +14,7 @@ public class OrderOverviewDTO {
     private Integer id;
 
     @JsonProperty("order_status")
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @JsonProperty("order_date")
     @JsonFormat(pattern = "dd/MM/yyyy")

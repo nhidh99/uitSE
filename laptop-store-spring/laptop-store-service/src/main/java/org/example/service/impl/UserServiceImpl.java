@@ -12,8 +12,10 @@ import org.example.dao.model.AddressRepository;
 import org.example.dao.model.LaptopRepository;
 import org.example.dao.model.PromotionRepository;
 import org.example.dao.model.UserRepository;
+import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
+import org.example.model.Laptop;
 import org.example.model.Promotion;
 import org.example.model.User;
 import org.example.projection.LaptopBlockData;
@@ -92,11 +94,11 @@ public class UserServiceImpl implements UserService {
 
         // Get Laptops
         List<Integer> laptopIdsInCart = new LinkedList<>(cartMap.keySet());
-        List<LaptopBlockData> laptops = laptopRepository.findBlockDataByRecordStatusTrueAndIdIn(laptopIdsInCart);
+        List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(laptopIdsInCart);
 
         // Sync with Database
         if (laptopIdsInCart.size() != laptops.size()) {
-            List<Integer> laptopIdsAvailable = laptops.stream().map(LaptopBlockData::getId).collect(Collectors.toList());
+            List<Integer> laptopIdsAvailable = laptops.stream().map(Laptop::getId).collect(Collectors.toList());
             laptopIdsInCart.stream().filter(id -> !laptopIdsAvailable.contains(id)).forEach(cartMap::remove);
             cartJSON = om.writeValueAsString(cartMap);
             user.setCart(cartJSON);

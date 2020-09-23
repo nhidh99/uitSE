@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
 import org.example.dao.model.OrderDetailRepository;
-import org.example.model.OrderDetail;
+import org.example.model.OrderItem;
 import org.example.service.api.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private OrderDetailRepository orderDetailRepository;
 
     @Override
-    public List<OrderDetail> findByOrderId(Integer orderId) {
+    public List<OrderItem> findByOrderId(Integer orderId) {
         return orderDetailRepository.findByOrderId(orderId);
     }
 }

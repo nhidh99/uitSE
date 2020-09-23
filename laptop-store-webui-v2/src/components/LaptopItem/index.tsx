@@ -2,23 +2,10 @@ import React, { memo } from "react";
 import LazyLoad from "react-lazyload";
 import { FaStar } from "react-icons/fa";
 import { SC } from "./styles";
+import ProductOverviewModel from "../../values/models/ProductSummaryModel";
 
 type ProductItemProps = {
-    product: {
-        id: number;
-        alt: string;
-        name: string;
-        avg_rating: number;
-        unit_price: number;
-        discount_price: number;
-        ram: {
-            size: number;
-        };
-        hard_drive: {
-            type: string;
-            size: number;
-        };
-    };
+    product: ProductOverviewModel;
     compareLink?: string | null;
 };
 
@@ -43,11 +30,7 @@ const ProductItem = ({ product, compareLink = null }: ProductItemProps) => (
                 <SC.ItemRating>
                     {product["avg_rating"].toFixed(1)} <FaStar size={10} />
                 </SC.ItemRating>{" "}
-                - RAM {product["ram"]["size"]}GB -{" "}
-                {product["hard_drive"]["type"]}{" "}
-                {product["hard_drive"]["size"] >= 1024
-                    ? `${product["hard_drive"]["size"] / 1024}TB`
-                    : `${product["hard_drive"]["size"]}GB`}
+                - RAM {product["ram"]} - {product["hard_drive"]}
             </SC.ItemSpec>
 
             <SC.ItemName>{product["name"]}</SC.ItemName>

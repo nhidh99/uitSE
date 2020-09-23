@@ -83,7 +83,7 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
-    private List<OrderDetail> orderDetails;
+    private List<OrderItem> orderItems;
 
     @Formula("(SELECT CONCAT(od.quantity, ' ', od.product_name) " +
             "FROM order_detail od " +
@@ -98,11 +98,4 @@ public class Order {
             "AND od.product_type = 'LAPTOP')")
     @Getter(AccessLevel.NONE)
     private int productCount;
-
-    public String getDescribe() {
-        int firstProductQuantity = Integer.parseInt(firstProductInfo.split(" ")[0]);
-        int otherProductsQuantity = productCount - firstProductQuantity;
-        return otherProductsQuantity == 0 ? firstProductInfo
-                : String.format("%s và %d sản phẩm khác", firstProductInfo, otherProductsQuantity);
-    }
 }

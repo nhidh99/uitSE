@@ -1,13 +1,10 @@
 package org.example.rest;
 
-import org.example.dto.AddressDetailDTO;
+import org.example.dto.address.AddressDetailDTO;
 import org.example.input.AddressInput;
-import org.example.model.Address;
 import org.example.model.User;
 import org.example.service.api.AddressService;
-import org.example.service.api.LocationService;
 import org.example.service.api.UserService;
-import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,8 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 
 @RestController

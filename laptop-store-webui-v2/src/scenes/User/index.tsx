@@ -17,6 +17,7 @@ import MenuItemProps from "../../values/props/MenuItemProps";
 import AddressDetail from "./scenes/AddressDetail";
 import AddressPage from "./scenes/AddressPage";
 import InfoPage from "./scenes/InfoPage";
+import OrderDetail from "./scenes/OrderDetail";
 import OrderPage from "./scenes/OrderPage";
 import PasswordPage from "./scenes/PasswordPage";
 import { SC } from "./styles";
@@ -98,7 +99,9 @@ const User = () => {
                             exact
                             path="/user/addresses/edit/:addressId"
                             render={() => {
-                                store.dispatch(setMenuTitle("Cập nhật địa chỉ"));
+                                store.dispatch(
+                                    setMenuTitle("Cập nhật địa chỉ")
+                                );
                                 return <AddressDetail />;
                             }}
                         />
@@ -120,6 +123,17 @@ const User = () => {
                                     setMenuTitle("Danh sách đơn hàng")
                                 );
                                 return <OrderPage />;
+                            }}
+                        />
+
+                        <Route
+                            exact
+                            path="/user/orders/:orderId"
+                            render={() => {
+                                store.dispatch(
+                                    setMenuTitle("Chi tiết đơn hàng")
+                                );
+                                return <OrderDetail />;
                             }}
                         />
                     </Switch>

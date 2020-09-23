@@ -12,7 +12,7 @@ import { SC } from "./styles";
 const SpecBlock = () => {
     const product: ProductSpecModel = useSelector(
         // @ts-ignore
-        (state: RootState) => state.productInfo.details
+        (state: RootState) => state.product.details
     );
 
     const { cpu, ram, hard_drive, monitor, battery } = product;

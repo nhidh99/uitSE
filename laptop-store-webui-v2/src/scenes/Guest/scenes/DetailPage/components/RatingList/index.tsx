@@ -8,7 +8,7 @@ import RatingModel from "../../../../../../values/models/RatingModel";
 const RatingList = () => {
     const ratings: RatingModel[] = useSelector(
         // @ts-ignore
-        (state: RootState) => state.productInfo.ratings
+        (state: RootState) => state.product.ratings
     );
 
     return (

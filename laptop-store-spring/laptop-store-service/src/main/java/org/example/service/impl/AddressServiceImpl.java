@@ -2,8 +2,8 @@ package org.example.service.impl;
 
 import org.example.constant.ErrorMessageConstants;
 import org.example.dao.model.*;
-import org.example.dto.AddressDetailDTO;
-import org.example.dto.AddressOverviewDTO;
+import org.example.dto.address.AddressDetailDTO;
+import org.example.dto.address.AddressOverviewDTO;
 import org.example.input.AddressInput;
 import org.example.model.Address;
 import org.example.model.User;
@@ -13,7 +13,6 @@ import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;

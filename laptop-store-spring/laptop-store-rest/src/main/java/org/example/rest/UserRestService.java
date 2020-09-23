@@ -3,15 +3,14 @@ package org.example.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.coyote.Response;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.SuccessMessageConstants;
-import org.example.dto.AddressOverviewDTO;
-import org.example.dto.OrderOverviewDTO;
+import org.example.dto.address.AddressOverviewDTO;
+import org.example.dto.laptop.LaptopOverviewDTO;
+import org.example.dto.order.OrderOverviewDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
-import org.example.model.*;
-import org.example.projection.LaptopBlockData;
+import org.example.model.User;
 import org.example.service.api.AddressService;
 import org.example.service.api.LaptopService;
 import org.example.service.api.OrderService;
@@ -103,7 +102,7 @@ public class UserRestService {
             ObjectMapper om = new ObjectMapper();
             List<Integer> laptopIds = om.readValue(user.getWishList(), new TypeReference<List<Integer>>() {
             });
-            List<LaptopBlockData> laptops = laptopService.findBlockDataByIds(laptopIds);
+            List<LaptopOverviewDTO> laptops = laptopService.findByIds(laptopIds);
             return ResponseEntity.ok(laptops);
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();

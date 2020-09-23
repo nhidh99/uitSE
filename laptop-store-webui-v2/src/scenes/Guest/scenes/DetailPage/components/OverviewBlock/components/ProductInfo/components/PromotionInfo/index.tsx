@@ -6,7 +6,7 @@ import { SC } from "./styles";
 const PromotionInfo = () => {
     const promotions = useSelector(
         // @ts-ignore
-        (state: RootState) => state.productInfo.promotions
+        (state: RootState) => state.product.promotions
     );
 
     return promotions.length > 0 ? (

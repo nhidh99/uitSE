@@ -1,9 +1,9 @@
 package org.example.service.api;
 
-import org.example.model.OrderDetail;
+import org.example.model.OrderItem;
 
 import java.util.List;
 
 public interface OrderDetailService {
-    List<OrderDetail> findByOrderId(Integer orderId);
+    List<OrderItem> findByOrderId(Integer orderId);
 }

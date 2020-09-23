@@ -7,9 +7,9 @@ import { FaStar } from "react-icons/fa";
 const RatingInfo = () => {
     const { ratings, ratingAvg } = useSelector((state: RootState) => ({
         // @ts-ignore
-        ratings: state.productInfo.ratings,
+        ratings: state.product.ratings,
         // @ts-ignore
-        ratingAvg: state.productInfo.details.avg_rating,
+        ratingAvg: state.product.details.avg_rating,
     }));
 
     const InfoRows = () => (

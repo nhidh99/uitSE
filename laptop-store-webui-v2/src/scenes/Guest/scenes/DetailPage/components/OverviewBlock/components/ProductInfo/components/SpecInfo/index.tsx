@@ -8,7 +8,7 @@ import { SC } from "./styles";
 const SpecInfo = () => {
     const { cpu, ram, hardDrive, monitor } = useSelector((state: RootState) => {
         // @ts-ignore
-        const details = state.productInfo.details;
+        const details = state.product.details;
         return {
             cpu: details?.cpu,
             ram: details?.ram,

@@ -16,11 +16,15 @@ const laptopApi = {
         return axiosPublicClient.get(url, config);
     },
 
-    getById: (id: number, includes: IncludeType) => {
+    getById: (id: number) => {
         const url = `/laptops/${id}`;
-        if (!includes) {
-            return axiosPublicClient.get(url);
-        }
+        const includes: IncludeType = {
+            images: true,
+            ratings: true,
+            comments: true,
+            promotions: true,
+            suggestions: true,
+        };
         const params = Object.keys(includes).filter((key) => includes[key]);
         const config = {
             params: { include: params },

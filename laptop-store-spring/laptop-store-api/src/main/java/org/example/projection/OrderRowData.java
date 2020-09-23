@@ -22,7 +22,7 @@ public interface OrderRowData {
     OrderStatus getStatus();
 
     @JsonIgnore
-    List<OrderDetailData> getOrderDetails();
+    List<OrderDetailData> getOrderItems();
 
     interface OrderDetailData {
         @JsonIgnore
@@ -37,14 +37,14 @@ public interface OrderRowData {
 
     @JsonProperty("product_count")
     default Integer getProductCount() {
-        return getOrderDetails().stream()
+        return getOrderItems().stream()
                 .filter(detail -> detail.getProductType() == ProductType.LAPTOP)
                 .mapToInt(OrderDetailData::getQuantity).sum();
     }
 
     @JsonProperty("first_product")
     default OrderDetailData getFirstProduct() {
-        return getOrderDetails().stream()
+        return getOrderItems().stream()
                 .filter(detail -> detail.getProductType() == ProductType.LAPTOP)
                 .findFirst().get();
     }

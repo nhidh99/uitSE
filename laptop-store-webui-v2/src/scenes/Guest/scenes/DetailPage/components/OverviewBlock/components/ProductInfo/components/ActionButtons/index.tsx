@@ -8,7 +8,7 @@ import { SC } from "./styles";
 const ActionButtons = () => {
     const product = useSelector(
         // @ts-ignore
-        (state: RootState) => state.productInfo.details
+        (state: RootState) => state.product.details
     );
 
     // const [wishList, setWishList] = useState(getWishList());

@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 const QuestionList = () => {
     const comments = useSelector(
         // @ts-ignore
-        (state: RootState) => state.productInfo.comments
+        (state: RootState) => state.product.comments
     );
 
     return (

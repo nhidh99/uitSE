@@ -6,7 +6,11 @@ import Routes from "./components/Routes";
 import { Switch } from "react-router";
 import Footer from "./components/Footer";
 import { authApi } from "./services/api/authApi";
-import { createCookie, getCookie, removeCookie } from "./services/helper/cookie";
+import {
+    createCookie,
+    getCookie,
+    removeCookie,
+} from "./services/helper/cookie";
 import userApi from "./services/api/userApi";
 import store from "./services/redux/store";
 import { setUser } from "./services/redux/slices/userSlice";

@@ -1,7 +1,10 @@
 package org.example.service.impl;
 
+import org.example.constant.ErrorMessageConstants;
 import org.example.dao.model.OrderRepository;
-import org.example.dto.OrderOverviewDTO;
+import org.example.dto.order.OrderDetailDTO;
+import org.example.dto.order.OrderItemDTO;
+import org.example.dto.order.OrderOverviewDTO;
 import org.example.model.Order;
 import org.example.service.api.OrderService;
 import org.example.util.ModelMapperUtil;
@@ -52,5 +55,23 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Long countByUsername(String username) {
         return orderRepository.countByUserUsername(username);
+    }
+
+    @Override
+    public OrderDetailDTO findOrderDTOByOrderIdAndUsername(Integer orderId, String username) {
+        return txTemplate.execute((status) -> {
+            boolean isInvalidRequest = !orderRepository.existsByIdAndUserUsername(orderId, username);
+            if (isInvalidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+
+            Order order = orderRepository.getOne(orderId);
+            List<OrderItemDTO> items = ModelMapperUtil.mapList(order.getOrderItems(), OrderItemDTO.class);
+            String location = order.getAddressNum().concat(" ").concat(String.join(", ",
+                    order.getStreet(), order.getWard(), order.getDistrict(), order.getCity()));
+
+            OrderDetailDTO orderDetailDTO = ModelMapperUtil.map(order, OrderDetailDTO.class);
+            orderDetailDTO.setOrderLocation(location);
+            orderDetailDTO.setItems(items);
+            return orderDetailDTO;
+        });
     }
 }

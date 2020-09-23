@@ -7,7 +7,7 @@ import { SC } from "./styles";
 const OverviewInfo = () => {
     const product = useSelector(
         // @ts-ignore
-        (state: RootState) => state.productInfo.details
+        (state: RootState) => state.product.details
     );
 
     return (
