@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import org.example.dao.model.LaptopDetailImageRepository;
 import org.example.dao.model.LaptopImageRepository;
 import org.example.service.api.LaptopImageService;
 import org.example.type.ImageType;
@@ -10,23 +11,28 @@ import java.util.List;
 
 @Service
 public class LaptopImageServiceImpl implements LaptopImageService {
+
+    private final LaptopDetailImageRepository laptopDetailImageRepository;
+
     @Autowired
-    private LaptopImageRepository laptopImageRepository;
+    public LaptopImageServiceImpl(LaptopDetailImageRepository laptopDetailImageRepository) {
+        this.laptopDetailImageRepository = laptopDetailImageRepository;
+    }
 
     @Override
     public List<Integer> findIdsByLaptopId(Integer laptopId) {
-        return laptopImageRepository.findIdsByLaptopId(laptopId);
+        return laptopDetailImageRepository.findIdsByLaptopId(laptopId);
     }
 
     @Override
     public byte[] findImageById(Integer id, ImageType type) {
         switch (type) {
             case LAPTOP_LARGE_IMAGE:
-                return laptopImageRepository.findLargeImageById(id);
+                return laptopDetailImageRepository.findLargeImageById(id);
             case LAPTOP_IMAGE:
-                return laptopImageRepository.findImageById(id);
+                return laptopDetailImageRepository.findImageById(id);
             case LAPTOP_THUMBNAIL:
-                return laptopImageRepository.findThumbnailById(id);
+                return laptopDetailImageRepository.findThumbnailById(id);
             default:
                 return null;
         }

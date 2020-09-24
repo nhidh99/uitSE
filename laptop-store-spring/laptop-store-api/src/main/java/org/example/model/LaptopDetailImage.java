@@ -1,16 +1,20 @@
 package org.example.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
 @Entity
-@Table(name = "laptop")
+@Data
+@Table(name = "laptop_image")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class LaptopImage {
+public class LaptopDetailImage {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,18 +23,23 @@ public class LaptopImage {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "large_image")
-    @ToString.Exclude
+    @JsonIgnore
     private byte[] largeImage;
 
     @Lob
-    @Column(name = "image")
     @Basic(fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @Column(name = "image")
+    @JsonIgnore
     private byte[] image;
 
     @Lob
-    @Column(name = "thumbnail")
     @Basic(fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @Column(name = "thumbnail")
+    @JsonIgnore
     private byte[] thumbnail;
+
+    @ManyToOne
+    @JoinColumn(name = "laptop_id")
+    @JsonIgnore
+    private Laptop laptop;
 }

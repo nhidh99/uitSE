@@ -26,7 +26,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="laptop-store-api" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.modelmapper:modelmapper:2.3.8" level="project" />
     <orderEntry type="module" module-name="laptop-store-repository" />
     <orderEntry type="module" module-name="laptop-store-security" />

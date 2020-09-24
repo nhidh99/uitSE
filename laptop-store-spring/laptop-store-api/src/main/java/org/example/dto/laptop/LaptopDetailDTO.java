@@ -1,16 +1,20 @@
 package org.example.dto.laptop;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.dto.comment.CommentDTO;
+import org.example.dto.promotion.PromotionDTO;
 import org.example.dto.rating.RatingDTO;
-import org.example.model.Promotion;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LaptopDetailDTO {
     @JsonProperty("specs")
     private LaptopSpecDTO specs;
@@ -19,7 +23,7 @@ public class LaptopDetailDTO {
     private List<Integer> imageIds;
 
     @JsonProperty("promotions")
-    private List<Promotion> promotions;
+    private List<PromotionDTO> promotions;
 
     @JsonProperty("suggestions")
     private List<LaptopOverviewDTO> suggestions;

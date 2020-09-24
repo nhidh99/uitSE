@@ -1,5 +1,6 @@
 package org.example.service.api;
 
+import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.model.Laptop;
 import org.example.projection.LaptopBlockData;
@@ -22,6 +23,8 @@ public interface LaptopService {
     List<LaptopOverviewDTO> findBestSellingByPage(int page);
 
     List<LaptopOverviewDTO> findByIds(List<Integer> ids);
+
+    LaptopDetailDTO findDetailById(int id);
 
     byte[] findImageById(Integer id, ImageType type);
 }

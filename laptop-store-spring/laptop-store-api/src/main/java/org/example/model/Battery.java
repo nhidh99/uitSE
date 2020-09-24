@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.type.BatterType;
+import org.example.type.BatteryType;
 
 import javax.persistence.*;
 
@@ -22,7 +22,7 @@ public class Battery {
     @Column(name = "type")
     @JsonProperty("type")
     @Enumerated(EnumType.STRING)
-    private BatterType type;
+    private BatteryType type;
 
     @Column(name = "detail")
     @JsonProperty("detail")
@@ -31,4 +31,7 @@ public class Battery {
     @Column(name = "adapter")
     @JsonProperty("adapter")
     private String adapter;
+
+    @OneToOne(mappedBy = "battery", fetch = FetchType.LAZY)
+    private Laptop laptop;
 }

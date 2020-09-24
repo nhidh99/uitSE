@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.CPUType;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
@@ -38,5 +40,9 @@ public class CPU {
     @Column(name = "max_speed")
     @JsonProperty("max_speed")
     private String maxSpeed;
+
+    @OneToOne(mappedBy = "cpu", fetch = FetchType.LAZY)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
+    private Laptop laptop;
 }
 

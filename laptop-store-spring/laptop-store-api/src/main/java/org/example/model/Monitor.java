@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.CardDesignType;
 import org.example.type.ResolutionType;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
@@ -52,4 +54,8 @@ public class Monitor {
     @Column(name = "graphics_card")
     @JsonProperty("graphics_card")
     private String graphicsCard;
+
+    @OneToOne(mappedBy = "monitor", fetch = FetchType.LAZY)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
+    private Laptop laptop;
 }

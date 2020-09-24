@@ -20,39 +20,30 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @JsonProperty("id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     @ToString.Exclude
     private User user;
 
     @Formula("(SELECT u.name FROM user u WHERE u.id = user_id)")
-    @JsonProperty("user")
     private String userFullName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "laptop_id")
-    @JsonIgnore
     private Laptop laptop;
 
     @Column(name = "question")
-    @JsonProperty("question")
     private String question;
 
     @Column(name = "comment_date")
-    @JsonProperty("comment_date")
-    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate commentDate;
 
     @Column(name = "approve_status")
-    @JsonProperty("approve_status")
     private boolean approveStatus;
 
     @OneToMany(mappedBy = "comment", orphanRemoval = true)
-    @JsonProperty("replies")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @LazyCollection(LazyCollectionOption.TRUE)
     private List<CommentReply> replies;
 }

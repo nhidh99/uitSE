@@ -1,18 +1,15 @@
 package org.example.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.example.model.User;
+import lombok.Data;
 
 import java.time.LocalDate;
 
+@Data
 public class CommentDTO {
     @JsonProperty("id")
     private Integer id;
-
-    @JsonIgnore
-    private User user;
 
     @JsonProperty("question")
     private String question;
@@ -22,7 +19,5 @@ public class CommentDTO {
     private LocalDate commentDate;
 
     @JsonProperty("user")
-    public String getUserFullName() {
-        return user.getName();
-    }
+    private String userFullName;
 }

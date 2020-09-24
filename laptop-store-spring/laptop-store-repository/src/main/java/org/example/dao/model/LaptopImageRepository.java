@@ -6,13 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface LaptopImageRepository extends JpaRepository<LaptopImage, Integer> {
-    @Query("SELECT i.id FROM LaptopImage i WHERE i.laptop.id = :laptopId")
-    List<Integer> findIdsByLaptopId(@Param("laptopId") Integer laptopId);
-
     @Query("SELECT i.largeImage FROM LaptopImage i WHERE i.id = :id")
     byte[] findLargeImageById(@Param("id") Integer id);
 

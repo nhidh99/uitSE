@@ -1,7 +1,6 @@
 package org.example.dao.model;
 
 import org.example.model.Laptop;
-import org.example.projection.LaptopBlockData;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +11,8 @@ import java.util.List;
 
 @Repository
 public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
+    boolean existsByIdAndRecordStatusTrue(int id);
+
     List<Laptop> findByRecordStatusTrue(Pageable pageable);
 
     List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") List<Integer> ids);
@@ -25,15 +26,6 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
             "GROUP BY l.id ORDER BY SUM(d.quantity) DESC")
     List<Laptop> findBestSelling(Pageable pageable);
 
-    @Query("SELECT l.largeImage FROM Laptop l WHERE l.id = :id")
-    byte[] findLargeImageById(@Param("id") Integer id);
-
-    @Query("SELECT l.image FROM Laptop l WHERE l.id = :id")
-    byte[] findImageById(@Param("id") Integer id);
-
-    @Query("SELECT l.thumbnail FROM Laptop l WHERE l.id = :id")
-    byte[] findThumbnailById(@Param("id") Integer id);
-
-    @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
+        @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
 }

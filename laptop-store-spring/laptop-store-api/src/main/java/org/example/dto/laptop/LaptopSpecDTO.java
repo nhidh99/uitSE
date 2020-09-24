@@ -1,13 +1,17 @@
 package org.example.dto.laptop;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.model.*;
+import org.example.dto.spec.*;
 import org.example.type.BrandType;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LaptopSpecDTO {
     @JsonProperty("id")
     private Integer id;
@@ -63,18 +67,18 @@ public class LaptopSpecDTO {
     @JsonProperty("weight")
     private Float weight;
 
-    @JsonProperty("cpu")
-    private CPU cpu;
+    @JsonProperty("battery")
+    private BatteryDTO batteryDTO;
 
-    @JsonProperty("ram")
-    private RAM ram;
+    @JsonProperty("cpu")
+    private CpuDTO cpuDTO;
 
     @JsonProperty("hard_drive")
-    private HardDrive hardDrive;
+    private HardDriveDTO hardDriveDTO;
 
     @JsonProperty("monitor")
-    private Monitor monitor;
+    private MonitorDTO monitorDTO;
 
-    @JsonProperty("battery")
-    private Battery battery;
+    @JsonProperty("ram")
+    private RamDTO ramDTO;
 }

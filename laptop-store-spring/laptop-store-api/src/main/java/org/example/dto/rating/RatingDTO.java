@@ -1,17 +1,15 @@
 package org.example.dto.rating;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.example.model.User;
+import lombok.Data;
 
 import java.time.LocalDate;
 
+@Data
 public class RatingDTO {
     @JsonProperty("id")
     private Integer id;
-
-    @JsonIgnore
-    private User user;
 
     @JsonProperty("rating")
     private Integer rating;
@@ -23,10 +21,10 @@ public class RatingDTO {
     private String commentDetail;
 
     @JsonProperty("rating_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate ratingDate;
 
     @JsonProperty("user")
-    public String getUserFullName() {
-        return user.getName();
-    }
+    private String userFullName;
+
 }

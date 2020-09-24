@@ -1,6 +1,6 @@
 package org.example.type;
 
-public enum BatterType {
+public enum BatteryType {
     REMOVABLE,
     NON_REMOVABLE;
 }

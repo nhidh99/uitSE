@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.HardDriveType;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
@@ -34,4 +36,8 @@ public class HardDrive {
     @Column(name = "detail")
     @JsonProperty("detail")
     private String detail;
+
+    @OneToOne(mappedBy = "hardDrive", fetch = FetchType.LAZY)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
+    private Laptop laptop;
 }
