@@ -277,7 +277,7 @@ def insert_db():
     laptops = get_data()
     try:
         insert_laptops(laptops)
-        insert_locations()
+        # insert_locations()
         conn.commit()
     except mariadb.Error as e:
         print(e)

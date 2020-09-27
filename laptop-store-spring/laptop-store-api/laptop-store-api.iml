@@ -6,14 +6,18 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="entityManagerFactory" value="30eb3e23-f62e-4f68-949b-47a14625f410" />
-          <factory-entry name="laptop-store-api" value="30eb3e23-f62e-4f68-949b-47a14625f410" />
+          <factory-entry name="entityManagerFactory" value="e122235b-cd3d-49e1-9a66-4c7f90f383e3" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
       <configuration />
+    </facet>
+    <facet type="web" name="Web">
+      <configuration>
+        <webroots />
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">

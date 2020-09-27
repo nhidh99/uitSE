@@ -4,6 +4,7 @@ import HomePage from "./scenes/HomePage";
 import DetailPage from "./scenes/DetailPage";
 import ComparePage from "./scenes/ComparePage";
 import { SC } from "./styles";
+import CartPage from "./scenes/CartPage";
 
 const Guest = () => (
     <SC.Container>
@@ -18,6 +19,11 @@ const Guest = () => (
                 exact
                 path="/compare/:alt1-vs-:alt2/:id1/:id2"
                 component={ComparePage}
+            />
+            <Route
+                exact
+                path="/cart"
+                component={CartPage}
             />
         </Switch>
     </SC.Container>

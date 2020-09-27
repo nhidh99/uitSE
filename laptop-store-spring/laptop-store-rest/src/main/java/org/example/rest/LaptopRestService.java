@@ -3,6 +3,7 @@ package org.example.rest;
 import org.example.constant.ErrorMessageConstants;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
+import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.service.api.LaptopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,19 @@ public class LaptopRestService {
     public ResponseEntity<?> getDetailsById(@PathVariable("id") int id) {
         try {
             LaptopDetailDTO output = laptopService.findDetailById(id);
+            return ResponseEntity.ok(output);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/{id}/spec", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getSpecById(@PathVariable("id") int id) {
+        try {
+            LaptopSpecDTO output = laptopService.findSpecById(id);
             return ResponseEntity.ok(output);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

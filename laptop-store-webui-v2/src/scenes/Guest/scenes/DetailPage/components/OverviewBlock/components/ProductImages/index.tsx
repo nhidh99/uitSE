@@ -8,11 +8,11 @@ import { RootState } from "../../../../../../../../services/redux/rootReducer";
 const ProductImages = () => {
     const { productId, productAlt, imageIds } = useSelector(
         (state: RootState) => {
-            const details = state.product?.details;
+            const spec = state.product?.spec;
             const imageIds = state.product?.image_ids ?? [];
             return {
-                productId: details?.id,
-                productAlt: details?.alt,
+                productId: spec?.id,
+                productAlt: spec?.alt,
                 imageIds: imageIds,
             };
         }

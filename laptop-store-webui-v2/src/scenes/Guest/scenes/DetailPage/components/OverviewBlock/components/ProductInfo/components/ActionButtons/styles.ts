@@ -45,12 +45,12 @@ const WishListButton = styled.button`
 `;
 
 const ErrorLabel = styled.label`
+    display: block;
     font-weight: 600;
-    margin-left: 15px;
     margin-bottom: 0;
-    margin-top: 15px;
+    margin-top: 20px;
+    line-height: 1em;
     color: red;
-    display: none;
 `;
 
 export const SC = {

@@ -2,8 +2,8 @@ import React from "react";
 import NavItem from "./components/NavItem";
 import { FaEdit, FaUser, FaBoxes } from "react-icons/fa";
 import { SC } from "./styles";
-import CartItem from "./components/CartItem";
 import RoleConstants from "../../../../values/constants/RoleConstants";
+import NavCart from "./components/NavCart";
 
 const BannerRight = () => (
     <SC.NavBar>
@@ -22,7 +22,7 @@ const BannerRight = () => (
                 allowedRoles={[RoleConstants.ADMIN, RoleConstants.USER]}
             />
 
-            <CartItem />
+            <NavCart />
 
             <NavItem
                 href="/user/info"

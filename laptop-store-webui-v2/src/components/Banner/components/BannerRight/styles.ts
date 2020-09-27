@@ -7,11 +7,15 @@ const NavBar = styled.nav`
     }
 
     li {
-        padding: 0 10px;
+        padding: 10px;
         display: inline-block;
         color: white;
         text-align: center;
         cursor: pointer;
+
+        :hover {
+            background-color: #999;
+        }
     }
 `;
 

@@ -5,7 +5,7 @@ import laptopApi from "../../api/laptopApi";
 export const fetchProductDetailById = createAsyncThunk(
     "product/fetchProductDetailById",
     async (productId: number) => {
-        const response = await laptopApi.getById(productId);
+        const response = await laptopApi.getDetailById(productId);
         return response.data;
     }
 );

@@ -1,15 +1,21 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useState } from "react";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router";
+import cartService from "../../../../../../../../../../services/helper/cartService";
 import { RootState } from "../../../../../../../../../../services/redux/rootReducer";
 import CartConstants from "../../../../../../../../../../values/constants/CartConstants";
 import { SC } from "./styles";
 
 const ActionButtons = () => {
-    const product = useSelector(
-        // @ts-ignore
-        (state: RootState) => state.product.details
-    );
+    // @ts-ignore
+    const spec = useSelector((state: RootState) => state.product.spec);
+
+    // @ts-ignore
+    const { productId } = useParams();
+
+    const [showError, setShowError] = useState<boolean>(false);
 
     // const [wishList, setWishList] = useState(getWishList());
     // const [isInWishList, setIsInWishList] = useState(false);
@@ -27,12 +33,13 @@ const ActionButtons = () => {
     //     setWishList(getWishList());
     // };
 
-    // const addToCart = async () => {
-    //     const quantity = parseInt(document.getElementById("quantity").value);
-    //     const error = document.getElementById("error");
-    //     const success = await cartService.addProduct(product["id"], quantity);
-    //     error.style.display = success === false ? "inline-block" : "none";
-    // };
+    const addToCart = useCallback(async () => {
+        // @ts-ignore
+        const value = parseInt(document.getElementById("quantity").value);
+        const success = await cartService.increaseItemQuantity(productId, value);
+        setShowError(!success);
+        alert(JSON.stringify(cartService.getCart()));
+    }, []);
 
     return (
         <>
@@ -46,9 +53,7 @@ const ActionButtons = () => {
                     defaultValue={1}
                 />
 
-                <SC.CartButton
-                // onClick={addToCart}
-                >
+                <SC.CartButton onClick={addToCart}>
                     <FaShoppingCart />
                     &nbsp;&nbsp;Thêm vào giỏ hàng
                 </SC.CartButton>
@@ -62,10 +67,12 @@ const ActionButtons = () => {
                 </SC.WishListButton>
             </SC.Container>
 
-            <SC.ErrorLabel id="error">
-                Tối đa {CartConstants.MAXIMUM_ITEM_COUNT} sản phẩm{" "}
-                {product["name"]} trong giỏ hàng
-            </SC.ErrorLabel>
+            {showError ? (
+                <SC.ErrorLabel>
+                    Tối đa {CartConstants.MAX_QUANTITY_PER_ITEM} sản phẩm{" "}
+                    {spec["name"]} trong giỏ hàng
+                </SC.ErrorLabel>
+            ) : null}
         </>
     );
 };

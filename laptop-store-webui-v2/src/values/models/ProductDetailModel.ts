@@ -10,7 +10,7 @@ type ProductDetailModel = {
     image_ids: number[];
     comments: CommentModel[];
     ratings: RatingModel[];
-    details: ProductSpecModel;
+    spec: ProductSpecModel;
 };
 
 export default ProductDetailModel;

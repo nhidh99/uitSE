@@ -29,7 +29,7 @@ const AddressPage = () => {
             setAddresses(data);
         };
         loadData();
-    }, []);
+    }, []); 
 
     return addresses ? (
         <>

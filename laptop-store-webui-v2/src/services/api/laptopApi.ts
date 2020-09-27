@@ -16,20 +16,20 @@ const laptopApi = {
         return axiosPublicClient.get(url, config);
     },
 
-    getById: (id: number) => {
-        const url = `/laptops/${id}`;
-        const includes: IncludeType = {
-            images: true,
-            ratings: true,
-            comments: true,
-            promotions: true,
-            suggestions: true,
-        };
-        const params = Object.keys(includes).filter((key) => includes[key]);
-        const config = {
-            params: { include: params },
-        };
+    getByIds: (ids: number[]) => {
+        const url = "/laptops";
+        const config = { params: { ids: ids } };
         return axiosPublicClient.get(url, config);
+    },
+
+    getDetailById: (id: number) => {
+        const url = `/laptops/${id}/details`;
+        return axiosPublicClient.get(url);
+    },
+
+    getSpecById: (id: number) => {
+        const url = `/laptops/${id}/spec`;
+        return axiosPublicClient.get(url);
     },
 };
 

@@ -5,17 +5,17 @@ import { RootState } from "../../../../../../../../../../services/redux/rootRedu
 import { SC } from "./styles";
 
 const OverviewInfo = () => {
-    const product = useSelector(
+    const spec = useSelector(
         // @ts-ignore
-        (state: RootState) => state.product.details
+        (state: RootState) => state.product.spec
     );
 
     return (
         <>
             <SC.NameContainer>
-                <SC.NameLabel>Laptop {product["name"]}</SC.NameLabel>
+                <SC.NameLabel>Laptop {spec["name"]}</SC.NameLabel>
                 <Rating
-                    initialRating={product["avg_rating"]}
+                    initialRating={spec["avg_rating"]}
                     readonly
                     fullSymbol={<SC.RatingStar color="darkorange" />}
                     emptySymbol={<SC.RatingStar color="gray" />}
@@ -24,18 +24,18 @@ const OverviewInfo = () => {
 
             <SC.PriceContainer>
                 <SC.UnitPrice>
-                    {product["unit_price"].toLocaleString()}đ
+                    {spec["unit_price"].toLocaleString()}đ
                 </SC.UnitPrice>
 
                 <SC.OriginPrice>
                     {(
-                        product["unit_price"] + product["discount_price"]
+                        spec["unit_price"] + spec["discount_price"]
                     ).toLocaleString()}
                     đ
                 </SC.OriginPrice>
 
                 <SC.DiscountPrice>
-                    (Giảm {product["discount_price"].toLocaleString()}đ)
+                    (Giảm {spec["discount_price"].toLocaleString()}đ)
                 </SC.DiscountPrice>
             </SC.PriceContainer>
         </>

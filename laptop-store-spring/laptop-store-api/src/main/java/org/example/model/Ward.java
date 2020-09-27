@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,4 +24,8 @@ public class Ward {
     @Basic(fetch = FetchType.LAZY)
     @JsonIgnore
     private Integer districtId;
+
+    @OneToMany(mappedBy = "ward")
+    @JsonIgnore
+    private List<Address> addresses;
 }

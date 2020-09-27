@@ -9,7 +9,7 @@ const RatingInfo = () => {
         // @ts-ignore
         ratings: state.product.ratings,
         // @ts-ignore
-        ratingAvg: state.product.details.avg_rating,
+        ratingAvg: state.product.spec.avg_rating,
     }));
 
     const InfoRows = () => (

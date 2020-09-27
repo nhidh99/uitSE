@@ -16,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class LaptopDetailDTO {
-    @JsonProperty("specs")
-    private LaptopSpecDTO specs;
+    @JsonProperty("spec")
+    private LaptopSpecDTO spec;
 
     @JsonProperty("image_ids")
     private List<Integer> imageIds;

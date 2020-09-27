@@ -9,7 +9,7 @@ def make_images():
     i = 1
     for subdir, dirs, files in os.walk(raw_images_path):
         if subdir == raw_images_path: continue
-        folder_name = subdir.split('/')[-1][4:]
+        folder_name = subdir.split('/')[-1]
         folder_primary = 'laptops/edited/primary/%s' % folder_name
         folder_secondary = 'laptops/edited/secondary/%s' % folder_name
 

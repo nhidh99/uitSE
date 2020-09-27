@@ -30,8 +30,8 @@ const ComparePage = () => {
     useEffect(() => {
         const loadData = async () => {
             const [res1, res2] = await Promise.all([
-                laptopApi.getById(id1),
-                laptopApi.getById(id2),
+                laptopApi.getSpecById(id1),
+                laptopApi.getSpecById(id2),
             ]);
             setState({
                 specs: [res1.data, res2.data],

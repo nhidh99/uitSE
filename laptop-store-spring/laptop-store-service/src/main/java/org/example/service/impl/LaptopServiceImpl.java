@@ -29,6 +29,7 @@ import java.util.Optional;
 
 @Service
 public class LaptopServiceImpl implements LaptopService {
+
     private static final int SIZE_PER_PAGE = 10;
 
     private final LaptopRepository laptopRepository;
@@ -135,9 +136,19 @@ public class LaptopServiceImpl implements LaptopService {
             List<PromotionDTO> promotionDTOS = ModelMapperUtil.mapList(promotions, PromotionDTO.class);
             List<LaptopOverviewDTO> suggestionDTOs = ModelMapperUtil.mapList(suggestionLaptops, LaptopOverviewDTO.class);
 
-            return LaptopDetailDTO.builder().specs(laptopSpecDTO).ratings(ratingDTOS)
+            return LaptopDetailDTO.builder().spec(laptopSpecDTO).ratings(ratingDTOS)
                     .comments(commentDTOS).promotions(promotionDTOS)
                     .suggestions(suggestionDTOs).imageIds(imageIds).build();
+        });
+    }
+
+    @Override
+    public LaptopSpecDTO findSpecById(int laptopId) {
+        return txTemplate.execute((status) -> {
+            boolean isValidRequest = laptopRepository.existsByIdAndRecordStatusTrue(laptopId);
+            if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.LAPTOP_NOT_FOUND);
+            Laptop laptop = laptopRepository.getOne(laptopId);
+            return buildSpecDTOFromLaptop(laptop);
         });
     }
 

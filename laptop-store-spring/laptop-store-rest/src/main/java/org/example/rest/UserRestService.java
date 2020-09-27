@@ -74,9 +74,14 @@ public class UserRestService {
     @GetMapping(value = "/me/addresses", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserAddresses(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        List<AddressOverviewDTO> addresses = addressService.findOverviewsByUsername(username);
-        return ResponseEntity.ok(addresses);
+        try {
+            String username = userDetails.getUsername();
+            List<AddressOverviewDTO> addresses = addressService.findOverviewsByUsername(username);
+            return ResponseEntity.ok(addresses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
     }
 
     @GetMapping(value = "/me/orders", produces = MediaType.APPLICATION_JSON_VALUE)

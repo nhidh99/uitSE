@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 const OuterContainer = styled.header`
     background-color: #454545;
-    padding: 10px 0;
     width: 100%;
 `;
 
