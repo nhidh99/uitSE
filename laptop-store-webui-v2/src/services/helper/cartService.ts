@@ -1,59 +1,51 @@
 import CartConstants from "../../values/constants/CartConstants";
+import { setCartStatus } from "../redux/slices/cartStatusSlice";
+import store from "../redux/store";
 
 const getCart = () => {
-    // @ts-ignore
-    return (localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {}) as { [key: number]: number };
+    return (localStorage.getItem("cart")
+        ? // @ts-ignore
+          JSON.parse(localStorage.getItem("cart"))
+        : {}) as { [key: number]: number };
 };
 
-const syncStorage = (newCart: { [key: number]: number }) => {
-    const json = JSON.stringify(newCart);
-    localStorage.setItem("cart", json);
+const syncStorage = async (newCart: { [key: number]: number }) => {
+    store.dispatch(setCartStatus(CartConstants.LOADING));
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    await new Promise((r) => setTimeout(r, 500));
+    store.dispatch(setCartStatus(CartConstants.IDLE));
 };
 
-const updateItemQuantity = (itemId: number, quantity: number) => {
-    if (quantity > 0 && quantity <= CartConstants.MAX_QUANTITY_PER_ITEM) {
-        const cart = getCart();
-        cart[itemId] = quantity;
-        syncStorage(cart);
-    }
-};
-
-const increaseItemQuantity = (itemId: number, value: number) => {
+const addItem = async (itemId: number, value: number) => {
+    store.dispatch(setCartStatus(CartConstants.LOADING));
     const cart = getCart();
-    if (value <= 0) return false;
     const quantity = value + (cart?.[itemId] ?? 0);
     if (quantity <= CartConstants.MAX_QUANTITY_PER_ITEM) {
         const cart = getCart();
         cart[itemId] = quantity;
-        syncStorage(cart);
-        return true;
+        localStorage.setItem("cart", JSON.stringify(cart));
+        await new Promise((r) => setTimeout(r, 500));
     }
-    return false;
+    store.dispatch(setCartStatus(CartConstants.IDLE));
 };
 
-const decreaseItemQuantity = (itemId: number, value: number) => {
+const removeItem = async (itemId: number) => {
+    store.dispatch(setCartStatus(CartConstants.LOADING));
     const cart = getCart();
-    if (value <= 0 || !(itemId in cart)) return;
-    const quantity = cart[itemId] - value;
-    if (quantity > 0) {
-        cart[itemId] = quantity;
-        syncStorage(cart);
-    }
+    delete cart[itemId];
+    localStorage.setItem("cart", JSON.stringify(cart));
+    await new Promise((r) => setTimeout(r, 500));
+    store.dispatch(setCartStatus(CartConstants.FETCHING));
 };
 
-const removeItem = (itemId: number) => {
-    const cart = getCart();
-    if (itemId in cart) {
-        delete cart[itemId];
-        syncStorage(cart);
-    }
+const isEmptyCart = () => {
+    return Object.keys(getCart()).length === 0;
 };
 
 export default {
     getCart,
     syncStorage,
-    updateItemQuantity,
-    increaseItemQuantity,
-    decreaseItemQuantity,
+    addItem,
     removeItem,
+    isEmptyCart,
 };

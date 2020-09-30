@@ -8,7 +8,6 @@ import Footer from "./components/Footer";
 import { authApi } from "./services/api/authApi";
 import {
     createCookie,
-    getCookie,
     removeCookie,
 } from "./services/helper/cookie";
 import userApi from "./services/api/userApi";

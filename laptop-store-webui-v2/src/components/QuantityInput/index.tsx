@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { SC } from "./styles";
 
 type QuantityInputProps = {
-    defaultValue: number;
+    value: number;
     maxValue: number;
     minValue: number;
     onIncrease: () => void;
@@ -11,20 +11,17 @@ type QuantityInputProps = {
 };
 
 const QuantityInput = ({
-    defaultValue,
+    value,
     maxValue,
     minValue,
     onIncrease,
     onDecrease,
     onEdit,
 }: QuantityInputProps) => {
-    const [value, setValue] = useState<number>(defaultValue);
-
     return (
         <SC.Container>
-            <SC.Button>-</SC.Button>
+            <SC.Button onClick={onDecrease}>-</SC.Button>
             <SC.Input
-                defaultValue={defaultValue}
                 value={value}
                 allowNegative={false}
                 isAllowed={(values: any) => {
@@ -35,7 +32,7 @@ const QuantityInput = ({
                     );
                 }}
             />
-            <SC.Button>+</SC.Button>
+            <SC.Button onClick={onIncrease}>+</SC.Button>
         </SC.Container>
     );
 };

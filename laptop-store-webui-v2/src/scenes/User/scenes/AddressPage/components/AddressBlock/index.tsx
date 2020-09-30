@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import addressApi from "../../../../../../services/api/addressApi";
-import store from "../../../../../../services/redux/store";
 import AddressModel from "../../../../../../values/models/AddressModel";
 import { SC } from "./styles";
 

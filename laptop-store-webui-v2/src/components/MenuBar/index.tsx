@@ -1,4 +1,4 @@
-import React, { createElement, useCallback } from "react";
+import React, { createElement } from "react";
 import MenuItemProps from "../../values/props/MenuItemProps";
 import { SC } from "./styles";
 

@@ -8,7 +8,7 @@ import {
     FaTrophy,
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Route, Switch, useLocation } from "react-router";
+import { Route, Switch } from "react-router";
 import MenuBar from "../../components/MenuBar";
 import { RootState } from "../../services/redux/rootReducer";
 import { setMenuTitle } from "../../services/redux/slices/menuTitleSlice";

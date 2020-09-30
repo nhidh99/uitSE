@@ -36,8 +36,7 @@ const ActionButtons = () => {
     const addToCart = useCallback(async () => {
         // @ts-ignore
         const value = parseInt(document.getElementById("quantity").value);
-        const success = await cartService.increaseItemQuantity(productId, value);
-        setShowError(!success);
+        await cartService.addItem(productId, value);
         alert(JSON.stringify(cartService.getCart()));
     }, []);
 
