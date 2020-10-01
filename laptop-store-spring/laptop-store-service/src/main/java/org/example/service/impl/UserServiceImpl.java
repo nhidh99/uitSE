@@ -204,6 +204,15 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @Override
+    public void updateUserCart(String username, String cartJSON) {
+        txTemplate.executeWithoutResult((status)-> {
+            System.out.println(cartJSON);
+            User user = userRepository.findByUsername(username);
+            user.setCart(cartJSON);
+        });
+    }
+
     @Data
     @Builder
     private static class CartItem {

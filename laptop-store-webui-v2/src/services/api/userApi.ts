@@ -26,14 +26,20 @@ const userApi = {
 
     putDefaultAddress: (addressId: number) => {
         const url = "/users/me/default-address";
-        const data = { address_id: addressId }; 
+        const data = { address_id: addressId };
         return axiosAuthClient.post(url, data);
     },
 
     putCurrentUserPassword: (data: PasswordFormValues) => {
         const url = "/users/me/password";
         return axiosAuthClient.put(url, data);
-    }
+    },
+
+    putCurrentUserCart: (cartJSON: string) => {
+        const url = "/users/me/cart";
+        const data = { cartJSON: cartJSON };
+        return axiosAuthClient.put(url, data);
+    },
 };
 
 export default userApi;

@@ -20,11 +20,7 @@ const Guest = () => (
                 path="/compare/:alt1-vs-:alt2/:id1/:id2"
                 component={ComparePage}
             />
-            <Route
-                exact
-                path="/cart"
-                component={CartPage}
-            />
+            <Route exact path="/cart" component={CartPage} />
         </Switch>
     </SC.Container>
 );

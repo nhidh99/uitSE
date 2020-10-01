@@ -6,14 +6,13 @@ import Routes from "./components/Routes";
 import { Switch } from "react-router";
 import Footer from "./components/Footer";
 import { authApi } from "./services/api/authApi";
-import {
-    createCookie,
-    removeCookie,
-} from "./services/helper/cookie";
+import { createCookie, removeCookie } from "./services/helper/cookie";
 import userApi from "./services/api/userApi";
 import store from "./services/redux/store";
 import { setUser } from "./services/redux/slices/userSlice";
 import TokenConstants from "./values/constants/TokenConstants";
+import UserModel from "./values/models/UserModel";
+import MessageBox from "./components/MessageBox";
 
 const App = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -34,7 +33,15 @@ const App = () => {
             try {
                 if (isAuthenticated) {
                     const response = await userApi.getCurrentUserInfo();
-                    store.dispatch(setUser(response.data));
+                    const user: UserModel = response.data;
+                    store.dispatch(setUser(user));
+
+                    if (user.cart) {
+                        localStorage.setItem("cart", user.cart);
+                    } else {
+                        const cart = localStorage?.getItem("cart") ?? "{}";
+                        await userApi.putCurrentUserCart(cart);
+                    }
                 }
             } catch (err) {
                 store.dispatch(setUser(null));
@@ -69,6 +76,7 @@ const App = () => {
                 </Switch>
             </SC.Container>
             <Footer />
+            <MessageBox />
         </>
     );
 };

@@ -3,12 +3,11 @@ import styled from "styled-components";
 const Container = styled.div`
     display: flex;
     width: 100%;
-    padding: 10px 20px;
+    padding: 0 20px 0 0;
     font-size: 13px;
     box-sizing: border-box;
     border: 1px dashed #ccc;
     text-decoration: none;
-    gap: 40px;
 
     :not(:last-of-type) {
         margin-bottom: 20px;
@@ -16,7 +15,7 @@ const Container = styled.div`
 `;
 
 const ItemInfo = styled.div`
-    margin-top: 15px;
+    margin-top: 25px;
     > div {
         margin-bottom: 6px;
     }
@@ -27,6 +26,8 @@ const ItemImage = styled.img`
     margin: 0 auto;
     width: 120px;
     height: 120px;
+    user-select: none;
+    padding: 10px 30px 10px 20px;
 `;
 
 const ItemSpec = styled.div`
@@ -42,10 +43,10 @@ const ItemRating = styled.span`
 `;
 
 const ItemName = styled.div`
+    font-size: 15px;
     color: #3b5998;
     font-weight: 600;
-    font-size: 13px;
-    display: block;
+    margin-bottom: 5px;
 `;
 
 const UnitPrice = styled.label`
@@ -81,7 +82,7 @@ const Button = styled.button`
 `;
 
 const InputContainer = styled.div`
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: auto;
 `;
 

@@ -22,4 +22,6 @@ public interface UserService {
     void updateUserDefaultAddressId(String username, Integer addressId);
 
     void updateUserPassword(PasswordInput passwordInput, String username);
+
+    void updateUserCart(String username, String cartJSON);
 }

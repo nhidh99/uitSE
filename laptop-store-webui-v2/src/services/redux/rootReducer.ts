@@ -4,6 +4,7 @@ import userSlice from "./slices/userSlice";
 import menuTitleSlice from "./slices/menuTitleSlice";
 import orderSlice from "./slices/orderSlice";
 import cartStatusSlice from "./slices/cartStatusSlice";
+import messageSlice from "./slices/messageSlice";
 
 const rootReducer = combineReducers({
     menuTitle: menuTitleSlice,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     user: userSlice,
     order: orderSlice,
     cartStatus: cartStatusSlice,
+    message: messageSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

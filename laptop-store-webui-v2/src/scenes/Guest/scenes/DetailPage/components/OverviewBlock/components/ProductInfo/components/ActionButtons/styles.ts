@@ -3,23 +3,11 @@ import styled from "styled-components";
 const Container = styled.div`
     display: flex;
     align-items: center;
-
-    > button,
-    input {
-        margin-left: 15px;
-    }
 `;
 
 const QuantityLabel = styled.label`
     font-weight: bold;
-`;
-
-const QuantityInput = styled.input`
-    text-align: center;
-    width: 100px !important;
-    border-radius: 5px;
-    border: 2px solid lightgray;
-    padding: 10px;
+    margin-right: 15px;
 `;
 
 const CartButton = styled.button`
@@ -28,6 +16,9 @@ const CartButton = styled.button`
     color: white;
     background-color: #5cb85c;
     border: none;
+    margin-left: 15px;
+    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+    cursor: ${(props) => (props.disabled ? "arrow" : "pointer")};
     svg {
         margin-bottom: -2px;
     }
@@ -39,25 +30,15 @@ const WishListButton = styled.button`
     color: white;
     background-color: #d9534f;
     border: none;
+    margin-left: 15px;
     svg {
         margin-bottom: -2px;
     }
 `;
 
-const ErrorLabel = styled.label`
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0;
-    margin-top: 20px;
-    line-height: 1em;
-    color: red;
-`;
-
 export const SC = {
     Container,
-    QuantityInput,
     QuantityLabel,
     CartButton,
     WishListButton,
-    ErrorLabel,
 };

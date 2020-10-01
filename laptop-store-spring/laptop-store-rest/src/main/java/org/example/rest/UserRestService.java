@@ -117,16 +117,15 @@ public class UserRestService {
     @PutMapping(value = "/me/cart", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
-                                                @RequestBody Map<String, Integer> cartMap) {
+                                                @RequestBody Map<String, String> requestBody) {
         try {
-            ObjectMapper om = new ObjectMapper();
-            String cartJSON = om.writeValueAsString(cartMap);
-            User user = userService.findByUsername(userDetails.getUsername());
-            user.setCart(cartJSON);
-            userService.save(user);
+            String cartJSON = requestBody.get("cartJSON");
+            userService.updateUserCart(userDetails.getUsername(), cartJSON);
             return ResponseEntity.noContent().build();
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (IllegalAccessError e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
         }
     }
 

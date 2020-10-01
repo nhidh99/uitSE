@@ -1,71 +1,50 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback } from "react";
 import { FaHeart, FaStar, FaTrash } from "react-icons/fa";
-import QuantityInput from "../../../../../../../../components/QuantityInput";
+import QuantityInput from "../QuantityInput";
 import cartService from "../../../../../../../../services/helper/cartService";
-import CartConstants from "../../../../../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
 import { SC } from "./styles";
+import { Link } from "react-router-dom";
 
 type CartItemProps = {
     item: ProductOverviewModel;
 };
 
 const CartItem = ({ item }: CartItemProps) => {
-    const initialQuantity = cartService.getCart()[item.id];
-    const [quantity, setQuantity] = useState<number>(initialQuantity);
-
-    useEffect(() => {
-        const syncData = async () => {
-            const cart = cartService.getCart();
-            if (cart[item.id] === quantity) {
-                return;
-            }
-
-            try {
-                cart[item.id] = quantity;
-                await cartService.syncStorage(cart);
-            } catch (err) {
-                alert("Loi");
-            }
-        };
-
-        syncData();
-    }, [quantity]);
-
-    const decreaseQuantity = () => {
-        if (quantity > 1) {
-            setQuantity(quantity - 1);
-        }
-    };
-
-    const increaseQuantity = () => {
-        if (quantity < CartConstants.MAX_QUANTITY_PER_ITEM) {
-            setQuantity(quantity + 1);
-        }
-    };
-
-    const removeItem = useCallback(async () => {
-        await cartService.removeItem(item.id);
+    const removeItem = useCallback(() => {
+        cartService.removeItem(item.id);
     }, []);
 
     return (
         <SC.Container>
-            <div>
+            <Link
+                to={{
+                    pathname: `/products/${item["alt"]}/${item["id"]}`,
+                    state: { loading: true },
+                }}
+            >
                 <SC.ItemImage
                     src={`/api/images/150/laptops/${item.id}/${item.alt}.jpg`}
                 />
-            </div>
+            </Link>
 
             <SC.ItemInfo>
+                <Link
+                    to={{
+                        pathname: `/products/${item["alt"]}/${item["id"]}`,
+                        state: { loading: true },
+                    }}
+                >
+                    <SC.ItemName>{item.name}</SC.ItemName>
+                </Link>
+
                 <SC.ItemSpec>
                     <SC.ItemRating>
                         {item["avg_rating"].toFixed(1)} <FaStar size={10} />
                     </SC.ItemRating>{" "}
                     - RAM {item["ram"]} - {item["hard_drive"]}
                 </SC.ItemSpec>
-
-                <SC.ItemName>{item.name}</SC.ItemName>
 
                 <div>
                     <SC.UnitPrice>
@@ -93,14 +72,7 @@ const CartItem = ({ item }: CartItemProps) => {
             </SC.ItemInfo>
 
             <SC.InputContainer>
-                <QuantityInput
-                    value={quantity}
-                    maxValue={CartConstants.MAX_QUANTITY_PER_ITEM}
-                    minValue={1}
-                    onIncrease={increaseQuantity}
-                    onDecrease={decreaseQuantity}
-                    onEdit={() => {}}
-                />
+                <QuantityInput item={item} />
             </SC.InputContainer>
         </SC.Container>
     );
