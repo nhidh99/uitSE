@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FocusEvent, useState } from "react";
-import { setMessage } from "../../../../../../../../../../services/redux/slices/messageSlice";
-import store from "../../../../../../../../../../services/redux/store";
-import CartConstants from "../../../../../../../../../../values/constants/CartConstants";
-import ProductSpecModel from "../../../../../../../../../../values/models/ProductSpecModel";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../../../../services/redux/rootReducer";
+import { setMessage } from "../../../../../../../../../../../../services/redux/slices/messageSlice";
+import store from "../../../../../../../../../../../../services/redux/store";
+import CartConstants from "../../../../../../../../../../../../values/constants/CartConstants";
+import ProductSpecModel from "../../../../../../../../../../../../values/models/ProductSpecModel";
 import { SC } from "./styles";
 
-type QuantityInputProps = {
-    item: ProductSpecModel;
-};
 
-const QuantityInput = ({ item }: QuantityInputProps) => {
+const QuantityInput = () => {
+    // @ts-ignore
+    const item: ProductSpecModel = useSelector(
+        (state: RootState) => state.product?.spec
+    );
+    
     const [quantity, setQuantity] = useState<number>(1);
 
     const decreaseQuantity = () => {
@@ -32,7 +36,7 @@ const QuantityInput = ({ item }: QuantityInputProps) => {
     const updateQuantity = (e: FocusEvent<HTMLInputElement>) => {
         const value = parseInt(e.currentTarget.value);
         setQuantity(value);
-    }
+    };
 
     return (
         <SC.Container>

@@ -4,11 +4,11 @@ import { setCartStatus } from "../redux/slices/cartStatusSlice";
 import store from "../redux/store";
 import { getCookie } from "./cookie";
 
-const getCart = () => {
-    return (localStorage.getItem("cart")
+const getCart = (): { [key: number]: number } => {
+    return localStorage.getItem("cart")
         ? // @ts-ignore
           JSON.parse(localStorage.getItem("cart"))
-        : {}) as { [key: number]: number };
+        : {};
 };
 
 const getTotalQuantity = () => {
@@ -17,17 +17,17 @@ const getTotalQuantity = () => {
 
 const syncStorage = async (newCart: { [key: number]: number }) => {
     try {
+        const cartJSON = JSON.stringify(newCart);
         if (getCookie("access_token")) {
-            const cartJSON = JSON.stringify(newCart);
             await userApi.putCurrentUserCart(cartJSON);
             await new Promise((r) => setTimeout(r, 250));
         } else {
             await new Promise((r) => setTimeout(r, 300));
         }
+        localStorage.setItem("cart", cartJSON);
     } catch (err) {
         throw err;
     }
-    localStorage.setItem("cart", JSON.stringify(newCart));
 };
 
 const addItem = async (itemId: number, value: number) => {

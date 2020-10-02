@@ -129,6 +129,21 @@ public class UserRestService {
         }
     }
 
+    @PutMapping(value = "/me/wish-list", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putCurrentUserWishList(@AuthenticationPrincipal UserDetails userDetails,
+                                                    @RequestBody Map<String, String> requestBody) {
+        try {
+            String listJSON = requestBody.get("listJSON");
+            userService.updateUserWishList(userDetails.getUsername(), listJSON);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalAccessError e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
+    }
+
     @GetMapping(value = "/me/payment", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserPayment(@AuthenticationPrincipal UserDetails userDetails) {

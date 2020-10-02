@@ -206,10 +206,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserCart(String username, String cartJSON) {
-        txTemplate.executeWithoutResult((status)-> {
-            System.out.println(cartJSON);
+        txTemplate.executeWithoutResult((status) -> {
             User user = userRepository.findByUsername(username);
             user.setCart(cartJSON);
+        });
+    }
+
+    @Override
+    public void updateUserWishList(String username, String listJSON) {
+        txTemplate.executeWithoutResult((status) -> {
+            User user = userRepository.findByUsername(username);
+            user.setWishList(listJSON);
         });
     }
 

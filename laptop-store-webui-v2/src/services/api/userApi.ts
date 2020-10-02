@@ -40,6 +40,12 @@ const userApi = {
         const data = { cartJSON: cartJSON };
         return axiosAuthClient.put(url, data);
     },
+
+    putCurrentUserWishList: (listJSON: string) => {
+        const url = "/users/me/wish-list";
+        const data = { listJSON: listJSON };
+        return axiosAuthClient.put(url, data);
+    },
 };
 
 export default userApi;
