@@ -1,6 +1,7 @@
 import CartConstants from "../../values/constants/CartConstants";
 import userApi from "../api/userApi";
 import { setCartStatus } from "../redux/slices/cartStatusSlice";
+import { setMessage } from "../redux/slices/messageSlice";
 import store from "../redux/store";
 import { getCookie } from "./cookie";
 
@@ -9,6 +10,13 @@ const getCart = (): { [key: number]: number } => {
         ? // @ts-ignore
           JSON.parse(localStorage.getItem("cart"))
         : {};
+};
+
+const getWishList = (): number[] => {
+    return localStorage.getItem("wish_list")
+        ? // @ts-ignore
+          JSON.parse(localStorage.getItem("wish_list"))
+        : [];
 };
 
 const getTotalQuantity = () => {
@@ -26,7 +34,7 @@ const syncStorage = async (newCart: { [key: number]: number }) => {
         }
         localStorage.setItem("cart", cartJSON);
     } catch (err) {
-        throw err;
+        store.dispatch(setMessage(err.response));
     }
 };
 
@@ -54,6 +62,22 @@ const isEmptyCart = () => {
     return Object.keys(getCart()).length === 0;
 };
 
+const moveItemToWishList = async (itemId: number) => {
+    store.dispatch(setCartStatus(CartConstants.LOADING));
+    try {
+        await userApi.postItemFromCartToWishList(itemId);
+        const cart = getCart();
+        const wishlist = getWishList();
+        delete cart[itemId];
+        wishlist.unshift(itemId);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("wish_list", JSON.stringify(wishlist));
+    } catch (err) {
+        store.dispatch(setMessage(err.response));
+    }
+    store.dispatch(setCartStatus(CartConstants.FETCHING));
+};
+
 export default {
     getCart,
     getTotalQuantity,
@@ -61,4 +85,5 @@ export default {
     addItem,
     removeItem,
     isEmptyCart,
+    moveItemToWishList,
 };

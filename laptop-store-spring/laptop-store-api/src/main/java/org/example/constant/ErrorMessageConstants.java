@@ -11,4 +11,5 @@ public class ErrorMessageConstants {
     public static final String MISMATCH_NEW_PASSWORDS = "Mật khẩu không khớp";
     public static final String WRONG_OLD_PASSWORD = "Mật khẫu cũ không đúng";
     public static final String LAPTOP_NOT_FOUND = "Không tìm thấy laptop";
+    public static final String ITEM_NOT_FOUND_IN_CART = "Không tìm thấy sản phẩm trong giỏ hàng";
 }

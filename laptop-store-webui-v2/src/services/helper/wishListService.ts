@@ -1,4 +1,7 @@
+import CartConstants from "../../values/constants/CartConstants";
 import userApi from "../api/userApi";
+import { setCartStatus } from "../redux/slices/cartStatusSlice";
+import store from "../redux/store";
 
 const getWishList = (): number[] => {
     return localStorage.getItem("wish_list")
@@ -31,11 +34,14 @@ const addToWishList = async (itemId: number) => {
 };
 
 const removeFromWishList = async (itemId: number) => {
+    store.dispatch(setCartStatus(CartConstants.LOADING));
     const list = getWishList();
     if (list.includes(itemId)) {
         const newList = list.filter((id) => id !== itemId);
+        await new Promise((r) => setTimeout(r, 500));
         await syncStorage(newList);
     }
+    store.dispatch(setCartStatus(CartConstants.FETCHING));
 };
 
 export const wishListService = {

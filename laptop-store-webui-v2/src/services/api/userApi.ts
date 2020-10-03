@@ -19,6 +19,16 @@ const userApi = {
         return axiosAuthClient.get(url, config);
     },
 
+    getCurrentUserWishList: () => {
+        const url = "/users/me/wish-list";
+        return axiosAuthClient.get(url);
+    },
+
+    postItemFromCartToWishList: (itemId: number) => {
+        const url = `/users/me/cart/laptops/${itemId}`;
+        return axiosAuthClient.post(url);
+    },
+
     putCurrentUserInfo: (data: UserInfoFormValues) => {
         const url = "/users/me";
         return axiosAuthClient.put(url, data);

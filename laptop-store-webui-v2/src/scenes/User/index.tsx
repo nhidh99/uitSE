@@ -20,6 +20,7 @@ import InfoPage from "./scenes/InfoPage";
 import OrderDetail from "./scenes/OrderDetail";
 import OrderPage from "./scenes/OrderPage";
 import PasswordPage from "./scenes/PasswordPage";
+import WishListPage from "./scenes/WishListPage";
 import { SC } from "./styles";
 
 const User = () => {
@@ -134,6 +135,17 @@ const User = () => {
                                     setMenuTitle("Chi tiết đơn hàng")
                                 );
                                 return <OrderDetail />;
+                            }}
+                        />
+
+                        <Route
+                            exact
+                            path="/user/wish-list"
+                            render={() => {
+                                store.dispatch(
+                                    setMenuTitle("Danh sách xem sau")
+                                );
+                                return <WishListPage />;
                             }}
                         />
                     </Switch>

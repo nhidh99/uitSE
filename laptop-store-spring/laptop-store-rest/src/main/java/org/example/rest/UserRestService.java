@@ -1,8 +1,5 @@
 package org.example.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.dto.address.AddressOverviewDTO;
@@ -12,7 +9,6 @@ import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.User;
 import org.example.service.api.AddressService;
-import org.example.service.api.LaptopService;
 import org.example.service.api.OrderService;
 import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
@@ -25,7 +21,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +32,6 @@ public class UserRestService {
     private UserService userService;
     @Autowired
     private AddressService addressService;
-    @Autowired
-    private LaptopService laptopService;
     @Autowired
     private OrderService orderService;
 
@@ -99,17 +92,9 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserWishList(@AuthenticationPrincipal UserDetails userDetails) {
         try {
             String username = userDetails.getUsername();
-            User user = userService.findByUsername(username);
-            String wishListJSON = user.getWishList();
-            if (wishListJSON == null) {
-                return ResponseEntity.ok(Collections.emptyList());
-            }
-            ObjectMapper om = new ObjectMapper();
-            List<Integer> laptopIds = om.readValue(user.getWishList(), new TypeReference<List<Integer>>() {
-            });
-            List<LaptopOverviewDTO> laptops = laptopService.findByIds(laptopIds);
+            List<LaptopOverviewDTO> laptops = userService.findUserWishList(username);
             return ResponseEntity.ok(laptops);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -122,6 +107,20 @@ public class UserRestService {
             String cartJSON = requestBody.get("cartJSON");
             userService.updateUserCart(userDetails.getUsername(), cartJSON);
             return ResponseEntity.noContent().build();
+        } catch (IllegalAccessError e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/me/cart/laptops/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
+                                                @PathVariable("id") Integer laptopId) {
+        try {
+            userService.moveCartItemToWishList(userDetails.getUsername(), laptopId);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalAccessError e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

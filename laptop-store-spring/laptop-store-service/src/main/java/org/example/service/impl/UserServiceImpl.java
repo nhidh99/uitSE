@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -18,9 +19,9 @@ import org.example.input.UserInfoInput;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
 import org.example.model.User;
-import org.example.projection.LaptopBlockData;
 import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
+import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -217,6 +218,60 @@ public class UserServiceImpl implements UserService {
         txTemplate.executeWithoutResult((status) -> {
             User user = userRepository.findByUsername(username);
             user.setWishList(listJSON);
+        });
+    }
+
+    @Override
+    public List<LaptopOverviewDTO> findUserWishList(String username) {
+        return txTemplate.execute((status) -> {
+            User user = userRepository.findByUsername(username);
+            if (user.getWishList() == null) {
+                return Collections.EMPTY_LIST;
+            }
+            try {
+                ObjectMapper om = new ObjectMapper();
+                List<Integer> laptopIds = om.readValue(user.getWishList(), new TypeReference<>() {
+                });
+                List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(laptopIds);
+                return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+            } catch (JsonProcessingException e) {
+                return Collections.EMPTY_LIST;
+            }
+        });
+    }
+
+    @Override
+    public void moveCartItemToWishList(String username, Integer laptopId) {
+        txTemplate.executeWithoutResult((status) -> {
+            String errorMessage = null;
+            User user = userRepository.findByUsername(username);
+            boolean isExistedLaptop = laptopRepository.existsByIdAndRecordStatusTrue(laptopId);
+
+            if (isExistedLaptop) {
+                try {
+                    ObjectMapper om = new ObjectMapper();
+                    Set<Integer> wishListLaptopIds = om.readValue(user.getWishList(), new TypeReference<>() {});
+                    Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {});
+                    if (!cartMap.containsKey(laptopId)) {
+                        errorMessage = ErrorMessageConstants.ITEM_NOT_FOUND_IN_CART;
+                    } else {
+                        wishListLaptopIds.add(laptopId);
+                        cartMap.remove(laptopId);
+                        String wishListJSON = om.writeValueAsString(wishListLaptopIds);
+                        String cartJSON = om.writeValueAsString(cartMap);
+                        user.setWishList(wishListJSON);
+                        user.setCart(cartJSON);
+                    }
+                } catch (JsonProcessingException e) {
+                    errorMessage = ErrorMessageConstants.SERVER_ERROR;
+                }
+            } else {
+                errorMessage = ErrorMessageConstants.LAPTOP_NOT_FOUND;
+            }
+
+            if (errorMessage != null) {
+                throw new IllegalArgumentException(errorMessage);
+            }
         });
     }
 

@@ -42,6 +42,11 @@ const App = () => {
                         const cart = localStorage?.getItem("cart") ?? "{}";
                         await userApi.putCurrentUserCart(cart);
                     }
+
+                    if (user.wish_list) {
+                        localStorage.removeItem("wish_list");
+                        localStorage.setItem("wish_list", user.wish_list);
+                    }
                 }
             } catch (err) {
                 store.dispatch(setUser(null));

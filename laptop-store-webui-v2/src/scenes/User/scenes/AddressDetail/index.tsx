@@ -16,6 +16,7 @@ import addressApi from "../../../../services/api/addressApi";
 import locationApi from "../../../../services/api/locationApi";
 import userApi from "../../../../services/api/userApi";
 import { RootState } from "../../../../services/redux/rootReducer";
+import { setMessage } from "../../../../services/redux/slices/messageSlice";
 import { setDefaultAddressId } from "../../../../services/redux/slices/userSlice";
 import store from "../../../../services/redux/store";
 import AddressFormValues from "../../../../values/forms/AddressFormValues";
@@ -140,27 +141,37 @@ const AddressDetail = () => {
     }, []);
 
     const submit = useCallback(async (values: AddressFormValues) => {
+        let message: string | null = null;
         try {
             if (addressId) {
                 await addressApi.putAddress(addressId, values);
-                alert("Cập nhật địa chi thành công");
+                message = "Cập nhật địa chi thành công";
             } else {
                 const response = await addressApi.postAddress(values);
                 window.location.href = `/user/addresses/edit/${response.data}`;
             }
         } catch (err) {
-            alert("Lỗi");
+            message = err.response;
+        } finally {
+            if (message) {
+                store.dispatch(setMessage(message));
+            }
         }
     }, []);
 
     const setDefaultAddress = useCallback(async () => {
+        let message: string | null = null;
         try {
             const id = parseInt(addressId);
             const response = await userApi.putDefaultAddress(id);
             store.dispatch(setDefaultAddressId(id));
-            alert(response.data);
+            message = response.data;
         } catch (err) {
-            alert("Lỗi");
+            message = err.response;
+        } finally {
+            if (message) {
+                store.dispatch(setMessage(message));
+            }
         }
     }, []);
 

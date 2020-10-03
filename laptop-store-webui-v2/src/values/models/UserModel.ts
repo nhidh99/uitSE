@@ -6,7 +6,7 @@ type UserModel = {
     gender: string;
     cart: string | null;
     address_id: number | null;
-    wishlist: number[];
+    wish_list: string;
 };
 
 export default UserModel;

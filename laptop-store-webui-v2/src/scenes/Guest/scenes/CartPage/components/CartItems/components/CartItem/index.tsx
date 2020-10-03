@@ -16,6 +16,10 @@ const CartItem = ({ item }: CartItemProps) => {
         cartService.removeItem(item.id);
     }, []);
 
+    const moveItemToWishList = useCallback(() => {
+        cartService.moveItemToWishList(item.id);
+    }, []);
+
     return (
         <SC.Container>
             <Link
@@ -65,7 +69,7 @@ const CartItem = ({ item }: CartItemProps) => {
                     Xoá
                 </SC.Button>
 
-                <SC.Button>
+                <SC.Button onClick={moveItemToWishList}>
                     <FaHeart size={12} />
                     Để dành mua sau
                 </SC.Button>

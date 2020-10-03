@@ -7,7 +7,7 @@ const Loader = styled.div`
     position: absolute;
     transform-style: preserve-3d;
     background-color: gray;
-    opacity: 0.5;
+    opacity: 0.4;
     display: flex;
     align-items: center;
 `;

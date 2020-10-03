@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { getCookie } from "../../../../../../../../../../../../services/helper/cookie";
@@ -26,8 +26,12 @@ const WishListButton = () => {
             loading: false,
             isInWishList: wishListService.getWishList().includes(item.id),
         }),
-        []
+        [item.id]
     );
+
+    useEffect(() => {
+        setState(initialState);
+    }, [item.id]);
 
     const [state, setState] = useState<WishListButtonState>(initialState);
     const { loading, isInWishList } = state;
