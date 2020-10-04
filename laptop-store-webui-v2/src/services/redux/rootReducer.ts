@@ -3,16 +3,18 @@ import productInfoSlice from "./slices/productSlice";
 import userSlice from "./slices/userSlice";
 import menuTitleSlice from "./slices/menuTitleSlice";
 import orderSlice from "./slices/orderSlice";
-import cartStatusSlice from "./slices/cartStatusSlice";
+import loaderStatusSlice from "./slices/loaderStatusSlice";
 import messageSlice from "./slices/messageSlice";
+import wishListSlice from "./slices/wishListSlice";
 
 const rootReducer = combineReducers({
     menuTitle: menuTitleSlice,
     product: productInfoSlice,
     user: userSlice,
     order: orderSlice,
-    cartStatus: cartStatusSlice,
+    loaderStatus: loaderStatusSlice,
     message: messageSlice,
+    wishList: wishListSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

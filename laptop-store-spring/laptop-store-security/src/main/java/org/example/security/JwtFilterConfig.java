@@ -7,7 +7,7 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class JwtFilterConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
 
     @Autowired
     public JwtFilterConfig(JwtProvider jwtProvider) {

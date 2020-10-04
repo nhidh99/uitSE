@@ -1,12 +1,6 @@
 import { Formik } from "formik";
 import React, { useCallback, useMemo, useState } from "react";
-import {
-    FaLock,
-    FaMailBulk,
-    FaPhone,
-    FaTransgender,
-    FaUser,
-} from "react-icons/fa";
+import { FaLock, FaMailBulk, FaPhone, FaTransgender, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import IconInput from "../../../../components/IconInput";
 import { SC } from "./styles";
@@ -36,19 +30,13 @@ const RegisterPage = () => {
                     .min(6, "Tên tài khoản tối thiểu 6 kí tự")
                     .max(30, "Tên tài khoản tối đa 30 kí tự")
                     .required("Tên tài khoản không được để trống")
-                    .matches(
-                        /^(?!.*[_.]{2})[^_.].*[^_.]$/,
-                        "Tên tải khoản không hợp lệ"
-                    ),
+                    .matches(/^(?!.*[_.]{2})[^_.].*[^_.]$/, "Tên tải khoản không hợp lệ"),
                 password: Yup.string()
                     .min(12, "Mật khẩu tối thiểu 12 kí tự")
                     .max(80, "Mật khẩu tối đa 80 kí tự")
                     .required("Mật khẩu không được để trống"),
                 confirm: Yup.string()
-                    .oneOf(
-                        [Yup.ref("password")],
-                        "Mật khẩu nhập lại không khớp"
-                    )
+                    .oneOf([Yup.ref("password")], "Mật khẩu nhập lại không khớp")
                     .required("Mật khẩu không được để trống"),
             }),
         []
@@ -58,14 +46,14 @@ const RegisterPage = () => {
         try {
             setStatus("Đang xử lí đăng kí...");
             const registerResponse = await authApi.postRegister(values);
-            setStatus(registerResponse.data);
-
             const loginResponse = await authApi.postLogin({
                 username: values.username,
                 password: values.password,
             });
+            createCookie("access_token", loginResponse.headers["x-access-token"]);
+            localStorage.setItem("refresh_token", loginResponse.headers["x-refresh-token"]);
 
-            createCookie("access_token", loginResponse.data);
+            setStatus(registerResponse.data);
             window.location.href = "/";
         } catch (err) {
             setStatus(err.response.data);
@@ -163,10 +151,7 @@ const RegisterPage = () => {
                         validate
                     />
 
-                    <SC.Submit
-                        type="submit"
-                        disabled={!isValid || isSubmitting}
-                    >
+                    <SC.Submit type="submit" disabled={!isValid || isSubmitting}>
                         Đăng kí
                     </SC.Submit>
 

@@ -1,11 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router";
+import userApi from "../../../../../../../../../../../../services/api/userApi";
 import { getCookie } from "../../../../../../../../../../../../services/helper/cookie";
-import { wishListService } from "../../../../../../../../../../../../services/helper/wishListService";
 import { RootState } from "../../../../../../../../../../../../services/redux/rootReducer";
 import { setMessage } from "../../../../../../../../../../../../services/redux/slices/messageSlice";
+import {
+    addWishListItem,
+    removeWishListItem,
+    setWishList,
+} from "../../../../../../../../../../../../services/redux/slices/wishListSlice";
 import store from "../../../../../../../../../../../../services/redux/store";
 import ProductSpecModel from "../../../../../../../../../../../../values/models/ProductSpecModel";
 import { SC } from "./styles";
@@ -17,46 +23,58 @@ type WishListButtonState = {
 
 const WishListButton = () => {
     // @ts-ignore
-    const item: ProductSpecModel = useSelector(
-        (state: RootState) => state.product?.spec
-    );
-
-    const initialState = useMemo<WishListButtonState>(
-        () => ({
-            loading: false,
-            isInWishList: wishListService.getWishList().includes(item.id),
-        }),
-        [item.id]
-    );
+    const item: ProductSpecModel = useSelector((state: RootState) => state.product.spec);
+    const wishList: number[] = useSelector((state: RootState) => state.wishList);
+    const isFirstLoad = useRef<boolean>(true);
+    const location = useLocation();
+    const [state, setState] = useState<WishListButtonState>({
+        loading: false,
+        isInWishList: wishList.includes(item.id),
+    });
+    const { loading, isInWishList } = state;
 
     useEffect(() => {
-        setState(initialState);
-    }, [item.id]);
+        isFirstLoad.current = true;
+        setState({
+            loading: false,
+            isInWishList: wishList.includes(item.id),
+        });
+    }, [location]);
 
-    const [state, setState] = useState<WishListButtonState>(initialState);
-    const { loading, isInWishList } = state;
+    useEffect(() => {
+        const syncWishList = async () => {
+            if (isFirstLoad.current) {
+                isFirstLoad.current = false;
+                return;
+            }
+            const listJSON = JSON.stringify(wishList);
+            await userApi.putCurrentUserWishList(listJSON);
+            setState({
+                loading: false,
+                isInWishList: wishList.includes(item.id),
+            });
+        };
+ 
+        syncWishList();
+    }, [wishList]);
 
     const addToWishList = async () => {
         if (!getCookie("access_token")) {
-            store.dispatch(
-                setMessage("Vui lòng đăng nhập để sử dụng chức năng")
-            );
+            store.dispatch(setMessage("Vui lòng đăng nhập để sử dụng chức năng"));
             return;
         }
 
         setState((prev) => ({ ...prev, loading: true }));
+        const tempWishList = wishList;
         try {
             if (isInWishList) {
-                await wishListService.removeFromWishList(item.id);
+                store.dispatch(removeWishListItem(item.id));
             } else {
-                await wishListService.addToWishList(item.id);
+                store.dispatch(addWishListItem(item.id));
             }
-            setState({ loading: false, isInWishList: !isInWishList });
         } catch (err) {
-            console.log(err.response);
-            store.dispatch(
-                setMessage("Lỗi: Không thể cập nhật danh sách xem sau")
-            );
+            store.dispatch(setWishList(tempWishList));
+            store.dispatch(setMessage("Lỗi: Không thể cập nhật danh sách xem sau"));
         }
     };
 

@@ -9,27 +9,21 @@ import AddressBlock from "./components/AddressBlock";
 
 const AddressPage = () => {
     const [addresses, setAddresses] = useState<AddressModel[] | null>(null);
-    const userDefaultAddressId = useMemo(
-        () => store.getState().user?.address_id,
-        []
-    );
+    const userDefaultAddressId = useMemo(() => store.getState().user?.address_id, []);
 
     useEffect(() => {
         const loadData = async () => {
             const response = await userApi.getCurrentUserAddresses();
             let data: AddressModel[] = response.data;
-
             if (userDefaultAddressId) {
-                const defaultAddress = data.filter(
-                    (a) => a.id === userDefaultAddressId
-                )[0];
+                const defaultAddress = data.filter((a) => a.id === userDefaultAddressId)[0];
                 data = data.filter((a) => a.id !== userDefaultAddressId);
                 data.unshift(defaultAddress);
             }
             setAddresses(data);
         };
         loadData();
-    }, []); 
+    }, []);
 
     return addresses ? (
         <>

@@ -14,7 +14,7 @@ type Props = {
 const CartPayment = ({ payment }: Props) => {
     const loading = useSelector((state: RootState) =>
         [CartConstants.LOADING, CartConstants.FETCHING].includes(
-            state.cartStatus
+            state.loaderStatus
         )
     );
 

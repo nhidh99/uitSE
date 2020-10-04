@@ -8,7 +8,7 @@ import React, {
     useState,
 } from "react";
 import cartService from "../../../../../../../../services/helper/cartService";
-import { setCartStatus } from "../../../../../../../../services/redux/slices/cartStatusSlice";
+import { setLoaderStatus } from "../../../../../../../../services/redux/slices/loaderStatusSlice";
 import { setMessage } from "../../../../../../../../services/redux/slices/messageSlice";
 import store from "../../../../../../../../services/redux/store";
 import CartConstants from "../../../../../../../../values/constants/CartConstants";
@@ -31,10 +31,10 @@ const QuantityInput = ({ item }: QuantityInputProps) => {
             }
 
             try {
-                store.dispatch(setCartStatus(CartConstants.LOADING));
+                store.dispatch(setLoaderStatus(CartConstants.LOADING));
                 cart[item.id] = quantity;
                 await cartService.syncStorage(cart);
-                store.dispatch(setCartStatus(CartConstants.IDLE));
+                store.dispatch(setLoaderStatus(CartConstants.IDLE));
             } catch (err) {
                 alert("Loi");
             }

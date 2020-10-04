@@ -9,42 +9,39 @@ import org.example.security.JwtProvider;
 import org.example.service.api.AuthService;
 import org.example.type.RoleType;
 import org.example.util.ModelMapperUtil;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
-import java.util.Collections;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    @Override
-    public String issueToken(LoginInput loginInput) throws AuthenticationException {
-        String username = loginInput.getUsername();
-        User user = userRepository.findByUsername(username);
-        boolean isValidCredential = user != null && BCrypt.checkpw(loginInput.getPassword(), user.getPassword());
-        if (isValidCredential) {
-            return jwtProvider.createToken(username, Collections.singletonList(user.getRole()));
-        } else {
-            throw new AuthenticationException("Invalid Credential");
-        }
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public AuthServiceImpl(UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public String issueToken(String username) throws AuthenticationException {
+    public Pair<String, String> issueTokens(LoginInput loginInput) throws AuthenticationException {
+        String username = loginInput.getUsername();
         User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new AuthenticationException();
+
+        boolean isValidCredential = user != null && BCrypt.checkpw(loginInput.getPassword(), user.getPassword());
+        if (isValidCredential) {
+            return jwtProvider.createAccessAndRefreshTokens(username);
+        } else {
+            throw new AuthenticationException(ErrorMessageConstants.INVALID_CREDENTIAL);
         }
-        return jwtProvider.createToken(username, Collections.singletonList(user.getRole()));
     }
 
     @Override

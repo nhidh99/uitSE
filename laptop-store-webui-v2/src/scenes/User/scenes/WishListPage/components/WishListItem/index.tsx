@@ -2,9 +2,15 @@
 import React, { memo, useCallback } from "react";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { wishListService } from "../../../../../../services/helper/wishListService";
+import userApi from "../../../../../../services/api/userApi";
+import { setLoaderStatus } from "../../../../../../services/redux/slices/loaderStatusSlice";
 import { setMessage } from "../../../../../../services/redux/slices/messageSlice";
+import {
+    removeWishListItem,
+    setWishList,
+} from "../../../../../../services/redux/slices/wishListSlice";
 import store from "../../../../../../services/redux/store";
+import CartConstants from "../../../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../../../values/models/ProductSummaryModel";
 import { SC } from "./styles";
 
@@ -14,10 +20,17 @@ type WishListItemProps = {
 
 const WishListItem = ({ item }: WishListItemProps) => {
     const removeItem = useCallback(async () => {
+        const tempWishList = store.getState().wishList;
         try {
-            await wishListService.removeFromWishList(item.id);
+            store.dispatch(setLoaderStatus(CartConstants.LOADING));
+            store.dispatch(removeWishListItem(item.id));
+            const wishList = store.getState().wishList;
+            const listJSON = JSON.stringify(wishList);
+            await userApi.putCurrentUserWishList(listJSON);
+            store.dispatch(setLoaderStatus(CartConstants.FETCHING));
         } catch (err) {
-            const message = "Khong the xoa san pham";
+            store.dispatch(setWishList(tempWishList));
+            const message = `Lỗi: Không thể xoá Laptop ${item.name} khỏi danh sách`;
             store.dispatch(setMessage(message));
         }
     }, []);
@@ -32,9 +45,7 @@ const WishListItem = ({ item }: WishListItemProps) => {
                         state: { loading: true },
                     }}
                 >
-                    <SC.ItemImage
-                        src={`/api/images/150/laptops/${item.id}/${item.alt}.jpg`}
-                    />
+                    <SC.ItemImage src={`/api/images/150/laptops/${item.id}/${item.alt}.jpg`} />
                 </Link>
 
                 <SC.ItemInfo>
@@ -61,9 +72,7 @@ const WishListItem = ({ item }: WishListItemProps) => {
                         </SC.UnitPrice>
 
                         <SC.OriginPrice>
-                            {(
-                                item["unit_price"] + item["discount_price"]
-                            ).toLocaleString()}
+                            {(item["unit_price"] + item["discount_price"]).toLocaleString()}
                             <sup>đ</sup>
                         </SC.OriginPrice>
                     </div>

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import laptopApi from "../../../../services/api/laptopApi";
 import cartService from "../../../../services/helper/cartService";
 import { RootState } from "../../../../services/redux/rootReducer";
-import { setCartStatus } from "../../../../services/redux/slices/cartStatusSlice";
+import { setLoaderStatus } from "../../../../services/redux/slices/loaderStatusSlice";
 import store from "../../../../services/redux/store";
 import CartConstants from "../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../values/models/ProductSummaryModel";
@@ -35,14 +35,14 @@ const CartPage = () => {
 
     const isFirstLoad = useRef<boolean>(true);
 
-    const cartStatus = useSelector((state: RootState) => state.cartStatus);
+    const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
 
     let { items, payment } = state;
 
     useEffect(() => {
         const loadData = async () => {
             // While loading -> cart is syncing -> wait till next status
-            if (cartStatus === CartConstants.LOADING) {
+            if (loaderStatus === CartConstants.LOADING) {
                 return;
             }
 
@@ -53,7 +53,7 @@ const CartPage = () => {
             } else {
                 const cart = cartService.getCart();
                 if (
-                    cartStatus === CartConstants.FETCHING ||
+                    loaderStatus === CartConstants.FETCHING ||
                     isFirstLoad.current
                 ) {
                     isFirstLoad.current = false;
@@ -81,11 +81,11 @@ const CartPage = () => {
                     },
                 });
             }
-            store.dispatch(setCartStatus(CartConstants.IDLE));
+            store.dispatch(setLoaderStatus(CartConstants.IDLE));
         };
 
         loadData();
-    }, [cartStatus]);
+    }, [loaderStatus]);
 
     return (
         <SC.Container>

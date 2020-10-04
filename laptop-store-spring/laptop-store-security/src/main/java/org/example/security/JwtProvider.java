@@ -1,10 +1,10 @@
 package org.example.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import org.example.constant.ErrorMessageConstants;
+import org.example.dao.model.UserRepository;
 import org.example.type.RoleType;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,33 +17,38 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtProvider {
     @Value("${org.example.security.jwt.token.secret-key:LAPTOP_STORE}")
     private String secretKey;
 
-    @Value("${org.example.security.jwt.token.expire-length:900000}")
-    private long validityInMilliseconds;
+    @Value("${org.example.security.jwt.token.access-token-expire-length:900000}")
+    private long accessTokenExpiration;
+
+    @Value("${org.example.security.jwt.token.refresh-token-expire-length:2592000000}")
+    private long refreshTokenExpiration;
 
     @Autowired
     private AppUserDetails appUserDetails;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, List<RoleType> roles) {
+    public String createAccessToken(String username) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("auth", roles.stream()
-                .map(s -> new SimpleGrantedAuthority(s.getAuthority())).collect(Collectors.toList()));
+        RoleType role = userRepository.findRoleByUsername(username);
+        claims.put("auth", Collections.singletonList(new SimpleGrantedAuthority(role.getAuthority())));
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenExpiration);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -51,6 +56,28 @@ public class JwtProvider {
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public String createRefreshToken(String username) {
+        Claims claims = Jwts.claims().setSubject(username);
+        RoleType role = userRepository.findRoleByUsername(username);
+        claims.put("auth", Collections.singletonList(new SimpleGrantedAuthority(role.getAuthority())));
+
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + refreshTokenExpiration);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    public Pair<String, String> createAccessAndRefreshTokens(String username) {
+        String accessToken = createAccessToken(username);
+        String refreshToken = createRefreshToken(username);
+        return Pair.of(accessToken, refreshToken);
     }
 
     public Authentication getAuthentication(String token) {
@@ -74,8 +101,8 @@ public class JwtProvider {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthenticationException("Expired or invalid JWT token") {
+        } catch (MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException e) {
+            throw new AuthenticationException(ErrorMessageConstants.FORBIDDEN) {
             };
         }
     }

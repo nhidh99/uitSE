@@ -1,19 +1,22 @@
 package org.example.rest;
 
 import org.example.constant.ErrorMessageConstants;
+import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.input.LoginInput;
 import org.example.input.RegisterInput;
 import org.example.service.api.AuthService;
-import org.example.service.api.UserService;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.AuthenticationException;
 
@@ -30,8 +33,12 @@ public class AuthRestService {
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> login(@RequestBody LoginInput loginInput) {
         try {
-            String accessToken = authService.issueToken(loginInput);
-            return ResponseEntity.ok(accessToken);
+            Pair<String, String> tokens = authService.issueTokens(loginInput);
+            HttpHeaders headers = new HttpHeaders() {{
+                add(HeaderConstants.ACCESS_TOKEN, tokens.getFirst());
+                add(HeaderConstants.REFRESH_TOKEN, tokens.getSecond());
+            }};
+            return ResponseEntity.noContent().headers(headers).build();
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessageConstants.INVALID_CREDENTIAL);
         } catch (Exception e) {
@@ -49,17 +56,6 @@ public class AuthRestService {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(value = "/token", produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> issueNewToken(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String accessToken = authService.issueToken(userDetails.getUsername());
-            return ResponseEntity.ok(accessToken);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid JWT");
         }
     }
 }

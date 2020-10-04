@@ -14,7 +14,7 @@ type ItemListProps = {
 const CartItems = ({ items }: ItemListProps) => {
     const loading = useSelector((state: RootState) =>
         [CartConstants.LOADING, CartConstants.FETCHING].includes(
-            state.cartStatus
+            state.loaderStatus
         )
     );
 

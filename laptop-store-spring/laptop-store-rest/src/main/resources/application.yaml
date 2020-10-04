@@ -11,7 +11,8 @@ security:
   jwt:
     token:
       secret-key: LAPTOP_STORE
-      expire-length: 900000   # 15 minutes
+      access-token-expire-length: 900000        #15 minutes
+      refresh-token-expire-length: 2592000000   # 30 days
 
 server:
   error:

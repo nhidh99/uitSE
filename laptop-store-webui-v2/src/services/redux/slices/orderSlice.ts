@@ -17,7 +17,6 @@ const orderSlice = createSlice({
         [fetchOrderById.fulfilled as any]: (state, action) => {
             return action.payload;
         },
-        [fetchOrderById.rejected as any]: (state, action) => {},
     },
 });
 

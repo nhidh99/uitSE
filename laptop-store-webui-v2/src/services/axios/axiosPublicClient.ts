@@ -1,10 +1,11 @@
 import axios from "axios";
 import queryString from "query-string";
+import { setMessage } from "../redux/slices/messageSlice";
+import store from "../redux/store";
 
 const axiosPublicClient = axios.create({
     baseURL: "/api",
-    paramsSerializer: (params) =>
-        queryString.stringify(params, { arrayFormat: "comma" }),
+    paramsSerializer: (params) => queryString.stringify(params, { arrayFormat: "comma" }),
 });
 
 axiosPublicClient.interceptors.request.use(async (config) => {
@@ -20,7 +21,11 @@ axiosPublicClient.interceptors.response.use(
         return response;
     },
     (error) => {
-        // Handle errors
+        if (error.response.status === 500) {
+            store.dispatch(setMessage("Lỗi hệ thống"));
+        } else {
+            store.dispatch(setMessage(error.response.data));
+        }
         throw error;
     }
 );

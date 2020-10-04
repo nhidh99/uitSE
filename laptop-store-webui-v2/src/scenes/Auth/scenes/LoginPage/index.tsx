@@ -12,15 +12,12 @@ const LoginPage = () => {
     const [status, setStatus] = useState<string | null>(null);
 
     const submit = useCallback(async (values: LoginFormValues) => {
-        try {
-            setStatus("Đang xử lí đăng nhập");
-            const response = await authApi.postLogin(values);
-            setStatus("Đăng nhập thành công");
-            createCookie("access_token", response.data);
-            window.location.href = "/";
-        } catch (err) {
-            setStatus(err.response.data);
-        }
+        setStatus("Đang xử lí đăng nhập");
+        const response = await authApi.postLogin(values);
+        createCookie("access_token", response.headers["x-access-token"]);
+        localStorage.setItem("refresh_token", response.headers["x-refresh-token"]);
+        setStatus("Đăng nhập thành công");
+        window.location.href = "/";
     }, []);
 
     const initialValues: LoginFormValues = useMemo(
@@ -44,18 +41,12 @@ const LoginPage = () => {
                     placeholder="Tài khoản"
                 />
 
-                <IconInput
-                    icon={FaLock}
-                    type="password"
-                    name="password"
-                    placeholder="Mật khẩu"
-                />
+                <IconInput icon={FaLock} type="password" name="password" placeholder="Mật khẩu" />
 
                 <SC.Submit type="submit" value="Đăng nhập" />
 
                 <SC.RegisterRedirect>
-                    Chưa có tài khoản?{" "}
-                    <Link to="/auth/register">Đăng kí ngay</Link>
+                    Chưa có tài khoản? <Link to="/auth/register">Đăng kí ngay</Link>
                 </SC.RegisterRedirect>
 
                 {status ? <SC.Status>{status}</SC.Status> : null}

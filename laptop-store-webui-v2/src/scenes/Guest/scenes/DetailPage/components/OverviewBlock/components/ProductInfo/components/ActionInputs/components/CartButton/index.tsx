@@ -13,7 +13,7 @@ const CartButton = () => {
     const { spec, loading } = useSelector((state: RootState) => ({
         // @ts-ignore
         spec: state.product.spec,
-        loading: state.cartStatus === CartConstants.LOADING,
+        loading: state.loaderStatus === CartConstants.LOADING,
     }));
 
     const addToCart = useCallback(async () => {

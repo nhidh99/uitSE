@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import CartConstants from "../../../values/constants/CartConstants";
 
-const cartStatusSlice = createSlice({
-    name: "cartStatus",
+const loaderStatusSlice = createSlice({
+    name: "loaderStatus",
     initialState: CartConstants.IDLE,
     reducers: {
-        setCartStatus(state, action: PayloadAction<string>) {
+        setLoaderStatus(state, action: PayloadAction<string>) {
             return action.payload;
         },
     },
 });
 
-export const { setCartStatus } = cartStatusSlice.actions;
+export const { setLoaderStatus } = loaderStatusSlice.actions;
 
-export default cartStatusSlice.reducer;
+export default loaderStatusSlice.reducer;

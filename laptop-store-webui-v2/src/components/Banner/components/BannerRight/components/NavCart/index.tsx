@@ -12,7 +12,7 @@ const NavCart = () => {
     const history = useHistory();
 
     const loading = useSelector(
-        (state: RootState) => state.cartStatus === CartConstants.LOADING
+        (state: RootState) => state.loaderStatus === CartConstants.LOADING
     );
 
     const getCounter = useCallback(() => {

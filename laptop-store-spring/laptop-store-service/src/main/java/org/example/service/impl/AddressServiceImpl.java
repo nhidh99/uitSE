@@ -106,6 +106,12 @@ public class AddressServiceImpl implements AddressService {
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
             Address address = addressRepository.getOne(addressId);
             address.setRecordStatus(false);
+
+            // If the deleted address is user default address
+            User user = userRepository.findByUsername(username);
+            if (user.getDefaultAddressId().equals(addressId)) {
+                user.setDefaultAddressId(null);
+            }
         });
     }
 

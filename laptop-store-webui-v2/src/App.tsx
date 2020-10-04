@@ -5,33 +5,21 @@ import { SC } from "./styles";
 import Routes from "./components/Routes";
 import { Switch } from "react-router";
 import Footer from "./components/Footer";
-import { authApi } from "./services/api/authApi";
-import { createCookie, removeCookie } from "./services/helper/cookie";
+import { getCookie, removeCookie } from "./services/helper/cookie";
 import userApi from "./services/api/userApi";
 import store from "./services/redux/store";
 import { setUser } from "./services/redux/slices/userSlice";
-import TokenConstants from "./values/constants/TokenConstants";
 import UserModel from "./values/models/UserModel";
 import MessageBox from "./components/MessageBox";
+import { setWishList } from "./services/redux/slices/wishListSlice";
 
 const App = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const refreshToken = async () => {
-            try {
-                const tokenResponse = await authApi.getRefreshToken();
-                createCookie("access_token", tokenResponse.data);
-                return true;
-            } catch (err) {
-                return false;
-            }
-        };
-
         const loadData = async () => {
-            let isAuthenticated = await refreshToken();
-            try {
-                if (isAuthenticated) {
+            if (getCookie("access_token") !== null) {
+                try {
                     const response = await userApi.getCurrentUserInfo();
                     const user: UserModel = response.data;
                     store.dispatch(setUser(user));
@@ -42,31 +30,13 @@ const App = () => {
                         const cart = localStorage?.getItem("cart") ?? "{}";
                         await userApi.putCurrentUserCart(cart);
                     }
-
-                    if (user.wish_list) {
-                        localStorage.removeItem("wish_list");
-                        localStorage.setItem("wish_list", user.wish_list);
-                    }
-                }
-            } catch (err) {
-                store.dispatch(setUser(null));
-                isAuthenticated = false;
-            } finally {
-                if (isAuthenticated) {
-                    const heartbeat = setInterval(async () => {
-                        isAuthenticated = await refreshToken();
-                        if (!isAuthenticated) {
-                            clearInterval(heartbeat);
-                            removeCookie("access_token");
-                            store.dispatch(setUser(null));
-                            window.location.reload();
-                        }
-                    }, TokenConstants.REFRESH_TOKEN_LIFESPAN);
-                } else {
+                    store.dispatch(setWishList(JSON.parse(user?.wish_list ?? "[]")));
+                } catch (err) {
                     removeCookie("access_token");
+                    localStorage.removeItem("refresh_token");
                 }
-                setLoading(false);
             }
+            setLoading(false);
         };
 
         loadData();
