@@ -7,6 +7,7 @@ import org.example.type.RoleType;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -31,11 +32,15 @@ public class JwtProvider {
     @Value("${org.example.security.jwt.token.refresh-token-expire-length:2592000000}")
     private long refreshTokenExpiration;
 
-    @Autowired
-    private AppUserDetails appUserDetails;
+    private final AppUserDetails appUserDetails;
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public JwtProvider(AppUserDetails appUserDetails, UserRepository userRepository) {
+        this.appUserDetails = appUserDetails;
+        this.userRepository = userRepository;
+    }
 
     @PostConstruct
     protected void init() {
@@ -60,9 +65,6 @@ public class JwtProvider {
 
     public String createRefreshToken(String username) {
         Claims claims = Jwts.claims().setSubject(username);
-        RoleType role = userRepository.findRoleByUsername(username);
-        claims.put("auth", Collections.singletonList(new SimpleGrantedAuthority(role.getAuthority())));
-
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenExpiration);
 
@@ -90,7 +92,7 @@ public class JwtProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
+        String bearerToken = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }

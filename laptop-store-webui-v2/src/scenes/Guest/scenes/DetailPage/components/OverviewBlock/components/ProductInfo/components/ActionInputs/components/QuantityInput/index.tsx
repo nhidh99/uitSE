@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FocusEvent, useState } from "react";
+import React, { FocusEvent, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../../../../../../../services/redux/rootReducer";
 import { setMessage } from "../../../../../../../../../../../../services/redux/slices/messageSlice";
@@ -8,13 +8,9 @@ import CartConstants from "../../../../../../../../../../../../values/constants/
 import ProductSpecModel from "../../../../../../../../../../../../values/models/ProductSpecModel";
 import { SC } from "./styles";
 
-
 const QuantityInput = () => {
     // @ts-ignore
-    const item: ProductSpecModel = useSelector(
-        (state: RootState) => state.product?.spec
-    );
-    
+    const item: ProductSpecModel = useSelector((state: RootState) => state.product?.spec);
     const [quantity, setQuantity] = useState<number>(1);
 
     const decreaseQuantity = () => {
@@ -33,10 +29,10 @@ const QuantityInput = () => {
         }
     };
 
-    const updateQuantity = (e: FocusEvent<HTMLInputElement>) => {
+    const updateQuantity = useCallback((e: FocusEvent<HTMLInputElement>) => {
         const value = parseInt(e.currentTarget.value);
         setQuantity(value);
-    };
+    }, []);
 
     return (
         <SC.Container>

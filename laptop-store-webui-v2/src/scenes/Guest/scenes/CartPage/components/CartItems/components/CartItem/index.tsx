@@ -6,6 +6,9 @@ import cartService from "../../../../../../../../services/helper/cartService";
 import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
 import { SC } from "./styles";
 import { Link } from "react-router-dom";
+import { getCookie } from "../../../../../../../../services/helper/cookie";
+import store from "../../../../../../../../services/redux/store";
+import { setMessage } from "../../../../../../../../services/redux/slices/messageSlice";
 
 type CartItemProps = {
     item: ProductOverviewModel;
@@ -17,7 +20,11 @@ const CartItem = ({ item }: CartItemProps) => {
     }, []);
 
     const moveItemToWishList = useCallback(() => {
-        cartService.moveItemToWishList(item.id);
+        if (getCookie("access_token")) {
+            cartService.moveItemToWishList(item.id);
+        } else {
+            store.dispatch(setMessage("Vui lòng đăng nhập để sử dụng chức năng"));
+        }
     }, []);
 
     return (
@@ -28,9 +35,7 @@ const CartItem = ({ item }: CartItemProps) => {
                     state: { loading: true },
                 }}
             >
-                <SC.ItemImage
-                    src={`/api/images/150/laptops/${item.id}/${item.alt}.jpg`}
-                />
+                <SC.ItemImage src={`/api/images/150/laptops/${item.id}/${item.alt}.jpg`} />
             </Link>
 
             <SC.ItemInfo>
@@ -57,9 +62,7 @@ const CartItem = ({ item }: CartItemProps) => {
                     </SC.UnitPrice>
 
                     <SC.OriginPrice>
-                        {(
-                            item["unit_price"] + item["discount_price"]
-                        ).toLocaleString()}
+                        {(item["unit_price"] + item["discount_price"]).toLocaleString()}
                         <sup>đ</sup>
                     </SC.OriginPrice>
                 </div>
