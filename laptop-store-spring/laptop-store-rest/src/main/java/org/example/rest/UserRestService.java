@@ -5,6 +5,7 @@ import org.example.constant.SuccessMessageConstants;
 import org.example.dto.address.AddressOverviewDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.order.OrderOverviewDTO;
+import org.example.dto.order.OrderPaymentDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.User;
@@ -148,7 +149,7 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserPayment(@AuthenticationPrincipal UserDetails userDetails) {
         try {
             String username = userDetails.getUsername();
-            Map<String, Object> output = userService.findPaymentByUsername(username);
+            OrderPaymentDTO output = userService.findPaymentByUsername(username);
             return ResponseEntity.ok(output);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
@@ -16,6 +17,8 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
     List<Laptop> findByRecordStatusTrue(Pageable pageable);
 
     List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") List<Integer> ids);
+
+    List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") Set<Integer> ids);
 
     @Query("SELECT l FROM Laptop l " +
             "LEFT JOIN OrderItem d ON d.productId = l.id " +

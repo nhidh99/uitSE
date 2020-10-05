@@ -1,7 +1,7 @@
 package org.example.service.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.example.dto.laptop.LaptopOverviewDTO;
+import org.example.dto.order.OrderPaymentDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.User;
@@ -17,7 +17,7 @@ public interface UserService {
 
     void save(User user);
 
-    Map<String, Object> findPaymentByUsername(String username) throws JsonProcessingException;
+    OrderPaymentDTO findPaymentByUsername(String username);
 
     void updateUserInfoByUsername(String username, UserInfoInput userInfoInput);
 

@@ -1,14 +1,15 @@
 package org.example.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.ProductType;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class OrderItemDTO {
-    @JsonProperty("product_id")
+    @JsonProperty("id")
     private Integer productId;
 
     @JsonProperty("name")
@@ -24,5 +25,7 @@ public class OrderItemDTO {
     private Long unitPrice;
 
     @JsonProperty("total_price")
-    private Long totalPrice;
+    public Long getTotalPrice() {
+        return quantity * unitPrice;
+    }
 }
