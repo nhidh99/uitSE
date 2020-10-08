@@ -7,7 +7,6 @@ const OuterContainer = styled.div`
 `;
 
 const Container = styled.div`
-    font-size: 16px;
     padding: 20px;
 `;
 

@@ -10,16 +10,18 @@ import org.example.dao.model.PromotionRepository;
 import org.example.dao.model.UserRepository;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.order.OrderItemDTO;
-import org.example.dto.order.OrderPaymentDTO;
+import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.Laptop;
+import org.example.model.OrderItem;
 import org.example.model.Promotion;
 import org.example.model.User;
 import org.example.service.api.UserService;
 import org.example.type.ProductType;
 import org.example.type.SocialMediaType;
 import org.example.util.ModelMapperUtil;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -83,15 +85,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public OrderPaymentDTO findPaymentByUsername(String username) {
-        return txTemplate.execute((status)-> {
+    public OrderCheckoutDTO findCheckoutByUsername(String username) {
+        return txTemplate.execute((status) -> {
             try {
                 // Parse Cart-JSON to Cart-Map
                 ObjectMapper om = new ObjectMapper();
                 User user = userRepository.findByUsername(username);
-                Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {});
+                Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {
+                });
                 if (cartMap.isEmpty()) {
-                    return OrderPaymentDTO.fromItems(Collections.EMPTY_LIST);
+                    return OrderCheckoutDTO.fromItems(Collections.EMPTY_LIST);
                 }
 
                 // Sync with Database
@@ -106,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
                 // Buid order items -> order payment
                 List<OrderItemDTO> items = buildOrderItems(laptops, cartMap);
-                return OrderPaymentDTO.fromItems(items);
+                return OrderCheckoutDTO.fromItems(items);
             } catch (JsonProcessingException e) {
                 throw new IllegalArgumentException(ErrorMessageConstants.SERVER_ERROR);
             }
@@ -126,30 +129,28 @@ public class UserServiceImpl implements UserService {
         }).collect(Collectors.toList());
 
         // Get Promotions Items from Cart - find and calculate total quantities per promotion
-        int laptopItemSize = items.size();
+        Map<Integer, OrderItemDTO> promotionItemMap = new HashMap<>();
         items.forEach(laptop -> {
             List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndLaptopsId(laptop.getProductId());
             for (Promotion promotion : promotions) {
-                Integer addedQuantity = laptop.getQuantity();
-                int index = IntStream.range(laptopItemSize, items.size())
-                        .filter(i -> promotion.getId().equals(items.get(i).getProductId()))
-                        .findFirst().orElse(-1);
-
-                if (index == -1) {
-                    OrderItemDTO item = OrderItemDTO.builder()
+                Integer quantity = laptop.getQuantity();
+                Integer promotionId = promotion.getId();
+                OrderItemDTO item;
+                if (promotionItemMap.containsKey(promotionId)) {
+                    item = promotionItemMap.get(promotionId);
+                    item.setQuantity(item.getQuantity() + quantity);
+                } else {
+                    item = OrderItemDTO.builder()
                             .productId(promotion.getId())
                             .productType(ProductType.PROMOTION)
                             .productName(promotion.getName())
                             .unitPrice(promotion.getPrice())
-                            .quantity(addedQuantity).build();
-                    items.add(item);
-                } else {
-                    OrderItemDTO item = items.get(index);
-                    item.setQuantity(item.getQuantity() + addedQuantity);
-                    items.set(index, item);
+                            .quantity(quantity).build();
                 }
+                promotionItemMap.put(promotionId, item);
             }
         });
+        items.addAll(promotionItemMap.values());
         return items;
     }
 
@@ -225,8 +226,10 @@ public class UserServiceImpl implements UserService {
             if (isExistedLaptop) {
                 try {
                     ObjectMapper om = new ObjectMapper();
-                    Set<Integer> wishListLaptopIds = om.readValue(user.getWishList(), new TypeReference<>() {});
-                    Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {});
+                    Set<Integer> wishListLaptopIds = om.readValue(user.getWishList(), new TypeReference<>() {
+                    });
+                    Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {
+                    });
                     if (!cartMap.containsKey(laptopId)) {
                         errorMessage = ErrorMessageConstants.ITEM_NOT_FOUND_IN_CART;
                     } else {

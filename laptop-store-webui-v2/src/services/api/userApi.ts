@@ -24,6 +24,11 @@ const userApi = {
         return axiosAuthClient.get(url);
     },
 
+    getCurrentUserCheckout: () => {
+        const url = "/users/me/checkout";
+        return axiosAuthClient.get(url);
+    },
+
     postItemFromCartToWishList: (itemId: number) => {
         const url = `/users/me/cart/laptops/${itemId}`;
         return axiosAuthClient.post(url);

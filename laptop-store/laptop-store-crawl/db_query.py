@@ -37,6 +37,13 @@ def get_data():
     return df.T.to_dict()
 
 
+def get_promotion_data():
+    file_name = 'data.xlsx'
+    sheet_name = 'Sheet2'
+    df = pd.read_excel(file_name, sheet_name=sheet_name)
+    return df.T.to_dict()
+
+
 def insert_laptop(laptop):
     quantity = random.randint(0, 20)
     brand = laptop['Tên sản phẩm'].split()[0].upper()
@@ -178,7 +185,7 @@ def insert_secondary_images(laptop):
         cursor.execute(sql, val)
 
 
-def insert_promotions(laptop):
+def insert_laptop_promotions(laptop):
     cursor.execute("SELECT id FROM promotion")
     result = [i[0] for i in cursor.fetchall()]
     num = random.choice(range(2, 4))
@@ -212,17 +219,17 @@ def insert_laptops(laptops):
         brand = laptop['Tên sản phẩm'].split()[0].upper()
         allowed_brands = ['ACER', 'ASUS', 'DELL', 'HP', 'LENOVO', 'MACBOOK', 'MSI']
         if brand in allowed_brands:
-            insert_laptop(laptop)
-            insert_cpu(laptop)
-            insert_ram(laptop)
-            insert_hard_drive(laptop)
-            insert_monitor(laptop)
-            insert_primary_images(laptop)
-            insert_secondary_images(laptop)
-            insert_battery(laptop)
-            # insert_promotions(laptop)
-            insert_tags(laptop)
-            update_discount(laptop)
+            # insert_laptop(laptop)
+            # insert_cpu(laptop)
+            # insert_ram(laptop)
+            # insert_hard_drive(laptop)
+            # insert_monitor(laptop)
+            # insert_primary_images(laptop)
+            # insert_secondary_images(laptop)
+            # insert_battery(laptop)
+            # insert_laptop_promotions(laptop)
+            # insert_tags(laptop)
+            # update_discount(laptop)
             print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
         else:
             print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))
@@ -273,10 +280,27 @@ def insert_locations():
     insert_districts()
     insert_wards()
 
+
+def insert_promotions(promotions):
+    for i in range(len(promotions)):
+        promotion = promotions[i]
+        quantity = random.randint(0, 20)
+        dir_path = 'promotions/edited'
+        file_path = os.path.join(dir_path, promotion['alt']) + '.jpg'
+        blob_value = open(file_path, 'rb').read()
+        sql = 'INSERT INTO promotion (name, price, quantity, alt, image, record_status) ' \
+              'VALUES (?, ?, ?, ?, ?, 1)'
+        val = (promotion['name'], promotion['price'], quantity, promotion['alt'], blob_value)
+        cursor.execute(sql, val)
+        print('%s. Inserted: %s' % (i, promotion['alt']))
+
+
 def insert_db():
     laptops = get_data()
+    promotions = get_promotion_data()
     try:
         insert_laptops(laptops)
+        # insert_promotions(promotions)
         # insert_locations()
         conn.commit()
     except mariadb.Error as e:

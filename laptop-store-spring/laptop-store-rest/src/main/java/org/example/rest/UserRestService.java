@@ -5,7 +5,7 @@ import org.example.constant.SuccessMessageConstants;
 import org.example.dto.address.AddressOverviewDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.order.OrderOverviewDTO;
-import org.example.dto.order.OrderPaymentDTO;
+import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.User;
@@ -144,12 +144,12 @@ public class UserRestService {
         }
     }
 
-    @GetMapping(value = "/me/payment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/me/checkout", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserPayment(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getCurrentUserCheckout(@AuthenticationPrincipal UserDetails userDetails) {
         try {
             String username = userDetails.getUsername();
-            OrderPaymentDTO output = userService.findPaymentByUsername(username);
+            OrderCheckoutDTO output = userService.findCheckoutByUsername(username);
             return ResponseEntity.ok(output);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class OrderPaymentDTO {
+public class OrderCheckoutDTO {
     @JsonProperty("transport_fee")
     private final Integer transportFee;
 
@@ -40,10 +40,10 @@ public class OrderPaymentDTO {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private final LocalDate deliveryDate;
 
-    @JsonProperty("laptops")
+    @JsonProperty("items")
     private final List<OrderItemDTO> items;
 
-    public static OrderPaymentDTO fromItems(List<OrderItemDTO> items) {
+    public static OrderCheckoutDTO fromItems(List<OrderItemDTO> items) {
         LocalDate orderDate = LocalDate.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE));
         LocalDate deliveryDate = DateUtil.addWorkingDays(orderDate, OrderConstants.DELIVERY_DAYS);
         int laptopCount = 0, promotionCount = 0;
@@ -63,7 +63,7 @@ public class OrderPaymentDTO {
             }
         }
 
-        return OrderPaymentDTO.builder()
+        return OrderCheckoutDTO.builder()
                 .transportFee(items.isEmpty() ? 0 : OrderConstants.TRANSPORT_FEE)
                 .totalPrice(items.isEmpty() ? 0 : totalLaptopPrice + OrderConstants.TRANSPORT_FEE)
                 .orderDate(orderDate).deliveryDate(deliveryDate)

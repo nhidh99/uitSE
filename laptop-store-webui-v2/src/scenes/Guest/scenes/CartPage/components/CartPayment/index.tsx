@@ -13,9 +13,7 @@ type Props = {
 
 const CartPayment = ({ payment }: Props) => {
     const loading = useSelector((state: RootState) =>
-        [CartConstants.LOADING, CartConstants.FETCHING].includes(
-            state.loaderStatus
-        )
+        [CartConstants.LOADING, CartConstants.FETCHING].includes(state.loaderStatus)
     );
 
     const { totalCount, totalDiscount, totalPrice } = payment;
@@ -26,12 +24,16 @@ const CartPayment = ({ payment }: Props) => {
 
             <SC.Container>
                 <SC.InfoRow>
-                    <div>Tổng số lượng:</div>
+                    <div>
+                        <b>Tổng số lượng:</b>
+                    </div>
                     <div>{totalCount}</div>
                 </SC.InfoRow>
 
                 <SC.InfoRow>
-                    <div>Tổng giảm giá:</div>
+                    <div>
+                        <b>Tổng giảm giá:</b>
+                    </div>
                     <div>
                         {totalDiscount.toLocaleString()}
                         <u>đ</u>
@@ -39,7 +41,9 @@ const CartPayment = ({ payment }: Props) => {
                 </SC.InfoRow>
 
                 <SC.InfoRow>
-                    <div>Tạm tính:</div>
+                    <div>
+                        <b>Tạm tính:</b>
+                    </div>
                     <div>
                         <b>
                             {totalPrice.toLocaleString()}
