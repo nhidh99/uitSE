@@ -3,7 +3,6 @@ import styled from "styled-components";
 const OuterContainer = styled.div`
     position: relative;
     background-color: white;
-    border: 1px dashed #ddd;
 `;
 
 const Container = styled.div`
@@ -26,7 +25,7 @@ const PaymentButton = styled.button`
     padding: 12px;
     font-size: 16px;
     line-height: 1em;
-    font-weight: 600;
+    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 export const SC = {

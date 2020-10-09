@@ -8,7 +8,7 @@ const CategoryContainer = styled.div`
 
 const CategoryHeader = styled.header`
     font-size: 18px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 `;
 
 const ItemContainer = styled.div`

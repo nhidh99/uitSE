@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { FaShoppingBag, FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import Loader from "../../../../components/Loader";
+import SectionHeader from "../../../../components/SectionHeader";
 import laptopApi from "../../../../services/api/laptopApi";
 import cartService from "../../../../services/helper/cartService";
 import { RootState } from "../../../../services/redux/rootReducer";
@@ -52,10 +55,7 @@ const CartPage = () => {
                 }
             } else {
                 const cart = cartService.getCart();
-                if (
-                    loaderStatus === CartConstants.FETCHING ||
-                    isFirstLoad.current
-                ) {
+                if (loaderStatus === CartConstants.FETCHING || isFirstLoad.current) {
                     isFirstLoad.current = false;
                     const laptopIds = Object.keys(cart).map((k) => parseInt(k));
                     const response = await laptopApi.getByIds(laptopIds);
@@ -90,13 +90,35 @@ const CartPage = () => {
     return (
         <SC.Container>
             <SC.LeftContainer>
-                <SC.Header>Giỏ hàng của tôi</SC.Header>
-                <CartItems items={items} />
+                <SectionHeader
+                    left={
+                        <>
+                            <FaShoppingCart />
+                            Giỏ hàng của tôi
+                        </>
+                    }
+                />
+                {isFirstLoad.current ? (
+                    <Loader loading={true} loadOnce={true} />
+                ) : (
+                    <CartItems items={items} />
+                )}
             </SC.LeftContainer>
 
             <SC.RightContainer>
-                <SC.Header>Chi tiết thanh toán</SC.Header>
-                <CartPayment payment={payment} />
+                <SectionHeader
+                    left={
+                        <>
+                            <FaShoppingBag />
+                            Chi tiết thanh toán
+                        </>
+                    }
+                />
+                {isFirstLoad.current ? (
+                    <Loader loading={true} loadOnce={true} />
+                ) : (
+                    <CartPayment payment={payment} />
+                )}
             </SC.RightContainer>
         </SC.Container>
     );

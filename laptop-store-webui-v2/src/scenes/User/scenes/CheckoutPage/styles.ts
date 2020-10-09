@@ -1,13 +1,9 @@
 import styled from "styled-components";
 
-const Header = styled.div`
-    font-size: 18px;
-`;
-
 const OuterContainer = styled.div`
     display: flex;
     margin: 30px 0;
-    gap: 30px;
+    gap: 20px;
 `;
 
 const LeftContainer = styled.div`
@@ -20,7 +16,9 @@ const RightContainer = styled.div`
 
 const SectionContainer = styled.section`
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-    margin-top: 15px;
+    :not(:first-of-type) {
+        margin-top: 20px;
+    }
 `;
 
 const ItemList = styled.div`
@@ -52,8 +50,29 @@ const SubmitButton = styled.button`
     margin-top: -5px;
 `;
 
+const EditAddressContainer = styled.div`
+    display: flex;
+    gap: 10px;
+`;
+
+const EditButton = styled.button`
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    svg {
+        margin-right: 6px;
+    }
+    :hover {
+        text-decoration: underline;
+    }
+`;
+
+const LoaderContainer = styled.div`
+    width: 100%;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+`;
+
 export const SC = {
-    Header,
     OuterContainer,
     LeftContainer,
     RightContainer,
@@ -62,4 +81,7 @@ export const SC = {
     InfoRow,
     TotalPrice,
     SubmitButton,
+    EditAddressContainer,
+    EditButton,
+    LoaderContainer,
 };

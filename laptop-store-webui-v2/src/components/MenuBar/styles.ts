@@ -2,11 +2,10 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.nav`
-    width: 250px;
+    width: 200px;
     display: flex;
     flex-direction: column;
     margin: 0;
-    border-right: 1px solid #ddd;
 
     ul {
         padding: 0;
@@ -17,8 +16,8 @@ const Container = styled.nav`
 const Setting = styled.div`
     color: #333;
     font-size: 18px;
-    padding: 20px 0 0px 10px;
-    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-bottom: 12px;
     font-weight: 600;
     line-height: 1em;
 `;

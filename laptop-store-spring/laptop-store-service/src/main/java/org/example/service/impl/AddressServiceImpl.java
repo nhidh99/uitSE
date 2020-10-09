@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +54,17 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<AddressOverviewDTO> findOverviewsByUsername(String username) {
         return txTemplate.execute((status) -> {
+            User user = userRepository.findByUsername(username);
             List<Address> addresses = addressRepository.findByUserUsernameAndRecordStatusTrueOrderByIdDesc(username);
+            Integer defaultAddressId = user.getDefaultAddressId();
+            if (defaultAddressId != null) {
+                Address defaultAddress = addresses.stream()
+                        .filter(address -> address.getId().equals(defaultAddressId))
+                        .findFirst().orElseThrow(IllegalArgumentException::new);
+                addresses.remove(defaultAddress);
+                addresses.add(0, defaultAddress);
+            }
+
             return addresses.stream().map((address) -> {
                 AddressOverviewDTO addressOverviewDTO = ModelMapperUtil.map(address, AddressOverviewDTO.class);
                 String location = address.getAddressNum().concat(" ").concat(

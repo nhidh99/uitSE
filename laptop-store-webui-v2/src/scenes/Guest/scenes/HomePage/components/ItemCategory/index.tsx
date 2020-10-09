@@ -10,7 +10,6 @@ type ItemCategoryProps = {
 const ItemCategory = ({ title, category }: ItemCategoryProps) => (
     <SC.CategoryContainer>
         <SC.CategoryHeader>{title}</SC.CategoryHeader>
-
         <SC.ItemContainer>
             <ItemList category={category} />
         </SC.ItemContainer>

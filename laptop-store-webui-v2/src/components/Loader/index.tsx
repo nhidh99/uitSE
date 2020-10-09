@@ -4,13 +4,22 @@ import { SC } from "./styles";
 
 type LoaderProps = {
     loading: boolean;
+    loadOnce?: boolean;
 };
 
-const Loader = ({ loading }: LoaderProps) =>
+const Loader = ({ loading, loadOnce }: LoaderProps) =>
     loading ? (
-        <SC.Loader>
-            <Spinner />
-        </SC.Loader>
+        loadOnce ? (
+            <SC.SpinnerContainer>
+                <Spinner />
+                <br />
+                Đang tải thông tin
+            </SC.SpinnerContainer>
+        ) : (
+            <SC.Loader>
+                <Spinner />
+            </SC.Loader>
+        )
     ) : null;
 
 export default Loader;

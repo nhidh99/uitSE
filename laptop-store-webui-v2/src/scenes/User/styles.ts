@@ -4,17 +4,19 @@ const Container = styled.div`
     display: flex;
     height: 100%;
     gap: 30px;
+    margin-top: 30px;
+`;
+
+const LeftContainer = styled.div`
 `;
 
 const RightContainer = styled.div`
     width: 100%;
-    margin-bottom: 20px;
 `;
 
 const TitleContainer = styled.header`
-    padding: 20px 0 0px 0px;
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     line-height: 1em;
     font-weight: bold;
 `;
@@ -22,10 +24,12 @@ const TitleContainer = styled.header`
 const ContentContainer = styled.div`
     background-color: white;
     padding: 30px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
 export const SC = {
     Container,
+    LeftContainer,
     RightContainer,
     TitleContainer,
     ContentContainer,

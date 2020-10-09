@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import Loader from "../../../../../../components/Loader";
 import { RootState } from "../../../../../../services/redux/rootReducer";
 import CartConstants from "../../../../../../values/constants/CartConstants";
@@ -17,11 +18,16 @@ const CartPayment = ({ payment }: Props) => {
     );
 
     const { totalCount, totalDiscount, totalPrice } = payment;
+    const history = useHistory();
+
+    const checkout = () => {
+        if (totalCount === 0) return;
+        history.push("/checkout");
+    };
 
     return (
         <SC.OuterContainer>
             <Loader loading={loading} />
-
             <SC.Container>
                 <SC.InfoRow>
                     <div>
@@ -52,7 +58,9 @@ const CartPayment = ({ payment }: Props) => {
                     </div>
                 </SC.InfoRow>
 
-                <SC.PaymentButton>TIẾN HÀNH ĐẶT HÀNG</SC.PaymentButton>
+                <SC.PaymentButton disabled={totalCount === 0} onClick={checkout}>
+                    TIẾN HÀNH ĐẶT HÀNG
+                </SC.PaymentButton>
             </SC.Container>
         </SC.OuterContainer>
     );

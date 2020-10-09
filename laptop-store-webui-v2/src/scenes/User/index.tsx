@@ -64,7 +64,9 @@ const User = () => {
 
     return (
         <SC.Container>
-            <MenuBar items={items} />
+            <SC.LeftContainer>
+                <MenuBar items={items} />
+            </SC.LeftContainer>
             <SC.RightContainer>
                 <SC.TitleContainer>{title}</SC.TitleContainer>
                 <SC.ContentContainer>
@@ -100,9 +102,7 @@ const User = () => {
                             exact
                             path="/user/addresses/edit/:addressId"
                             render={() => {
-                                store.dispatch(
-                                    setMenuTitle("Cập nhật địa chỉ")
-                                );
+                                store.dispatch(setMenuTitle("Cập nhật địa chỉ"));
                                 return <AddressDetail />;
                             }}
                         />
@@ -120,9 +120,7 @@ const User = () => {
                             exact
                             path="/user/orders"
                             render={() => {
-                                store.dispatch(
-                                    setMenuTitle("Danh sách đơn hàng")
-                                );
+                                store.dispatch(setMenuTitle("Danh sách đơn hàng"));
                                 return <OrderPage />;
                             }}
                         />
@@ -131,9 +129,7 @@ const User = () => {
                             exact
                             path="/user/orders/:orderId"
                             render={() => {
-                                store.dispatch(
-                                    setMenuTitle("Chi tiết đơn hàng")
-                                );
+                                store.dispatch(setMenuTitle("Chi tiết đơn hàng"));
                                 return <OrderDetail />;
                             }}
                         />
@@ -142,9 +138,7 @@ const User = () => {
                             exact
                             path="/user/wish-list"
                             render={() => {
-                                store.dispatch(
-                                    setMenuTitle("Danh sách xem sau")
-                                );
+                                store.dispatch(setMenuTitle("Danh sách xem sau"));
                                 return <WishListPage />;
                             }}
                         />
