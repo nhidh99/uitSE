@@ -80,13 +80,7 @@ public class AddressRestService {
                                                @PathVariable("id") Integer addressId) {
         try {
             String username = userDetails.getUsername();
-            boolean isValidRequest = addressService.existsByIdAndUsername(addressId, username);
-            if (!isValidRequest) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            User user = userService.findByUsername(username);
-            user.setDefaultAddressId(addressId);
-            userService.save(user);
+            userService.setDefaultAddress(username, addressId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

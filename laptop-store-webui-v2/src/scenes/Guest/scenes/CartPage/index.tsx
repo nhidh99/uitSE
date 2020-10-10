@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaShoppingBag, FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import Loader from "../../../../components/Loader";
 import SectionHeader from "../../../../components/SectionHeader";
 import laptopApi from "../../../../services/api/laptopApi";
 import cartService from "../../../../services/helper/cartService";
@@ -17,14 +16,14 @@ import CartPayment from "./components/CartPayment";
 import { SC } from "./styles";
 
 type CartPageState = {
-    items: ProductOverviewModel[];
+    items: ProductOverviewModel[] | null;
     payment: CartPaymentProps;
 };
 
 const CartPage = () => {
     const initialState: CartPageState = useMemo(
         () => ({
-            items: [],
+            items: null,
             payment: {
                 totalCount: 0,
                 totalDiscount: 0,
@@ -35,8 +34,6 @@ const CartPage = () => {
     );
 
     const [state, setState] = useState<CartPageState>(initialState);
-
-    const isFirstLoad = useRef<boolean>(true);
 
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
 
@@ -50,13 +47,12 @@ const CartPage = () => {
             }
 
             if (cartService.isEmptyCart()) {
-                if (!isFirstLoad.current) {
+                if (items !== null) {
                     setState(initialState);
                 }
             } else {
                 const cart = cartService.getCart();
-                if (loaderStatus === CartConstants.FETCHING || isFirstLoad.current) {
-                    isFirstLoad.current = false;
+                if (loaderStatus === CartConstants.FETCHING || !items) {
                     const laptopIds = Object.keys(cart).map((k) => parseInt(k));
                     const response = await laptopApi.getByIds(laptopIds);
                     items = response.data;
@@ -66,6 +62,7 @@ const CartPage = () => {
                 let totalDiscount = 0;
                 let totalPrice = 0;
 
+                // @ts-ignore
                 for (const item of items) {
                     totalCount += cart[item.id];
                     totalDiscount += cart[item.id] * item.discount_price;
@@ -98,11 +95,7 @@ const CartPage = () => {
                         </>
                     }
                 />
-                {isFirstLoad.current ? (
-                    <Loader loading={true} loadOnce={true} />
-                ) : (
-                    <CartItems items={items} />
-                )}
+                <CartItems items={items} />
             </SC.LeftContainer>
 
             <SC.RightContainer>
@@ -114,11 +107,7 @@ const CartPage = () => {
                         </>
                     }
                 />
-                {isFirstLoad.current ? (
-                    <Loader loading={true} loadOnce={true} />
-                ) : (
-                    <CartPayment payment={payment} />
-                )}
+                <CartPayment payment={payment} />
             </SC.RightContainer>
         </SC.Container>
     );

@@ -12,12 +12,16 @@ const LoginPage = () => {
     const [status, setStatus] = useState<string | null>(null);
 
     const submit = useCallback(async (values: LoginFormValues) => {
-        setStatus("Đang xử lí đăng nhập");
-        const response = await authApi.postLogin(values);
-        createCookie("access_token", response.headers["x-access-token"]);
-        localStorage.setItem("refresh_token", response.headers["x-refresh-token"]);
-        setStatus("Đăng nhập thành công");
-        window.location.href = "/";
+        try {
+            setStatus("Đang xử lí đăng nhập");
+            const response = await authApi.postLogin(values);
+            createCookie("access_token", response.headers["x-access-token"]);
+            localStorage.setItem("refresh_token", response.headers["x-refresh-token"]);
+            setStatus("Đăng nhập thành công");
+            window.location.href = "/";
+        } catch (err) {
+            setStatus(err.response.data);
+        }
     }, []);
 
     const initialValues: LoginFormValues = useMemo(

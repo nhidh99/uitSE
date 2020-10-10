@@ -1,12 +1,7 @@
 import styled from "styled-components";
 
-const OuterContainer = styled.div`
-    position: relative;
-    margin: -30px;
-`;
-
 const Container = styled.div`
-    padding: 30px;
+    position: relative;
 `;
 
-export const SC = { OuterContainer, Container };
+export const SC = { Container };

@@ -31,19 +31,13 @@ public class AuthRestService {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> login(@RequestBody LoginInput loginInput) {
-        try {
-            Pair<String, String> tokens = authService.issueTokens(loginInput);
-            HttpHeaders headers = new HttpHeaders() {{
-                add(HeaderConstants.ACCESS_TOKEN, tokens.getFirst());
-                add(HeaderConstants.REFRESH_TOKEN, tokens.getSecond());
-            }};
-            return ResponseEntity.noContent().headers(headers).build();
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessageConstants.INVALID_CREDENTIAL);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+    public ResponseEntity<?> login(@RequestBody LoginInput loginInput) throws AuthenticationException {
+        Pair<String, String> tokens = authService.issueTokens(loginInput);
+        HttpHeaders headers = new HttpHeaders() {{
+            add(HeaderConstants.ACCESS_TOKEN, tokens.getFirst());
+            add(HeaderConstants.REFRESH_TOKEN, tokens.getSecond());
+        }};
+        return ResponseEntity.noContent().headers(headers).build();
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)

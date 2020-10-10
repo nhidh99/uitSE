@@ -9,8 +9,8 @@ const Container = styled.div`
     border: 1px dashed #ccc;
     text-decoration: none;
 
-    :not(:last-of-type) {
-        margin-bottom: 20px;
+    :not(:first-of-type) {
+        margin-top: 20px;
     }
 `;
 

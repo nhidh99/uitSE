@@ -1,6 +1,7 @@
 package org.example.rest;
 
 import org.example.constant.ErrorMessageConstants;
+import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.dto.address.AddressOverviewDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
@@ -29,12 +30,17 @@ import java.util.Map;
 @RequestMapping("/api/users")
 @PreAuthorize("isAuthenticated()")
 public class UserRestService {
+
+    private final UserService userService;
+    private final AddressService addressService;
+    private final OrderService orderService;
+
     @Autowired
-    private UserService userService;
-    @Autowired
-    private AddressService addressService;
-    @Autowired
-    private OrderService orderService;
+    public UserRestService(UserService userService, AddressService addressService, OrderService orderService) {
+        this.userService = userService;
+        this.addressService = addressService;
+        this.orderService = orderService;
+    }
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -48,13 +54,9 @@ public class UserRestService {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
                                             @RequestBody UserInfoInput userInfoInput) {
-        try {
-            String username = userDetails.getUsername();
-            userService.updateUserInfoByUsername(username, userInfoInput);
-            return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_INFO);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        String username = userDetails.getUsername();
+        userService.updateUserInfoByUsername(username, userInfoInput);
+        return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_INFO);
     }
 
     @GetMapping(value = "/me/social-auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,14 +70,9 @@ public class UserRestService {
     @GetMapping(value = "/me/addresses", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserAddresses(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String username = userDetails.getUsername();
-            List<AddressOverviewDTO> addresses = addressService.findOverviewsByUsername(username);
-            return ResponseEntity.ok(addresses);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        String username = userDetails.getUsername();
+        List<AddressOverviewDTO> addresses = addressService.findOverviewsByUsername(username);
+        return ResponseEntity.ok(addresses);
     }
 
     @GetMapping(value = "/me/orders", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,105 +82,67 @@ public class UserRestService {
         String username = userDetails.getUsername();
         List<OrderOverviewDTO> orders = orderService.findOverviewByUsernameAndPage(username, page);
         Long totalOrderCount = orderService.countByUsername(username);
-        return ResponseEntity.ok().header("X-Total-Count", totalOrderCount.toString()).body(orders);
+        return ResponseEntity.ok().header(HeaderConstants.TOTAL_COUNT, totalOrderCount.toString()).body(orders);
     }
 
     @GetMapping(value = "/me/wish-list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserWishList(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String username = userDetails.getUsername();
-            List<LaptopOverviewDTO> laptops = userService.findUserWishList(username);
-            return ResponseEntity.ok(laptops);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        String username = userDetails.getUsername();
+        List<LaptopOverviewDTO> laptops = userService.findUserWishList(username);
+        return ResponseEntity.ok(laptops);
     }
 
     @PutMapping(value = "/me/cart", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
                                                 @RequestBody Map<String, String> requestBody) {
-        try {
-            String cartJSON = requestBody.get("cartJSON");
-            userService.updateUserCart(userDetails.getUsername(), cartJSON);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalAccessError e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        String cartJSON = requestBody.get("cartJSON");
+        userService.updateUserCart(userDetails.getUsername(), cartJSON);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/me/cart/laptops/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
                                                 @PathVariable("id") Integer laptopId) {
-        try {
-            userService.moveCartItemToWishList(userDetails.getUsername(), laptopId);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalAccessError e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        userService.moveCartItemToWishList(userDetails.getUsername(), laptopId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping(value = "/me/wish-list", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserWishList(@AuthenticationPrincipal UserDetails userDetails,
                                                     @RequestBody Map<String, String> requestBody) {
-        try {
-            String listJSON = requestBody.get("listJSON");
-            userService.updateUserWishList(userDetails.getUsername(), listJSON);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalAccessError e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        String listJSON = requestBody.get("listJSON");
+        userService.updateUserWishList(userDetails.getUsername(), listJSON);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/me/checkout", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserCheckout(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String username = userDetails.getUsername();
-            OrderCheckoutDTO output = userService.findCheckoutByUsername(username);
-            return ResponseEntity.ok(output);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        String username = userDetails.getUsername();
+        OrderCheckoutDTO output = userService.findCheckoutByUsername(username);
+        return ResponseEntity.ok(output);
     }
 
     @PostMapping(value = "/me/default-address", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserDefaultAddressId(@RequestBody Map<String, Integer> requestBody,
                                                             @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            Integer addressId = requestBody.get("address_id");
-            String username = userDetails.getUsername();
-            userService.updateUserDefaultAddressId(username, addressId);
-            return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_DEFAULT_ADDRESS);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        Integer addressId = requestBody.get("address_id");
+        String username = userDetails.getUsername();
+        userService.updateUserDefaultAddressId(username, addressId);
+        return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_DEFAULT_ADDRESS);
     }
 
     @PutMapping(value = "/me/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserPassword(@RequestBody PasswordInput passwordInput,
                                                     @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            String username = userDetails.getUsername();
-            userService.updateUserPassword(passwordInput, username);
-            return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_PASSWORD);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        String username = userDetails.getUsername();
+        userService.updateUserPassword(passwordInput, username);
+        return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_PASSWORD);
     }
 }

@@ -32,4 +32,6 @@ public interface UserService {
     List<LaptopOverviewDTO> findUserWishList(String username);
 
     void moveCartItemToWishList(String username, Integer laptopId);
+
+    void setDefaultAddress(String username, Integer addressId);
 }

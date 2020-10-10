@@ -31,18 +31,16 @@ const WishListPage = () => {
     }, [status]);
 
     return (
-        <SC.OuterContainer>
-            <Loader loading={loading} />
-            <SC.Container>
-                {items ? (
-                    <>
-                        {items.map((item) => (
-                            <WishListItem item={item} key={item.id} />
-                        ))}
-                    </>
-                ) : null}
-            </SC.Container>
-        </SC.OuterContainer>
+        <SC.Container>
+            <Loader loading={loading} loadOnce={!items} />
+            {items ? (
+                <>
+                    {items.map((item) => (
+                        <WishListItem item={item} key={item.id} />
+                    ))}
+                </>
+            ) : null}
+        </SC.Container>
     );
 };
 

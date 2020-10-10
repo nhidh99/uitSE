@@ -14,10 +14,11 @@ const Loader = styled.div`
 
 const SpinnerContainer = styled.div`
     width: 100%;
-    padding: 20px;
+    padding: 30px;
     background-color: white;
     text-align: center;
     box-sizing: border-box;
+    color: #727272;
 `;
 
 export const SC = { Loader, SpinnerContainer };

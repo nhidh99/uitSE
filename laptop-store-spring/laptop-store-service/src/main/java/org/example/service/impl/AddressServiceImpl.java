@@ -47,11 +47,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public boolean existsByIdAndUsername(Integer id, String username) {
-        return addressRepository.existsByIdAndUserUsername(id, username);
-    }
-
-    @Override
     public List<AddressOverviewDTO> findOverviewsByUsername(String username) {
         return txTemplate.execute((status) -> {
             User user = userRepository.findByUsername(username);
@@ -83,7 +78,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressDetailDTO findDetailByIdAndUsername(Integer addressId, String username) {
         return txTemplate.execute((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsername(addressId, username);
+            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
             Address address = addressRepository.getOne(addressId);
             return ModelMapperUtil.map(address, AddressDetailDTO.class);
@@ -113,7 +108,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void deleteAddress(Integer addressId, String username) {
         txTemplate.executeWithoutResult((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsername(addressId, username);
+            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
             Address address = addressRepository.getOne(addressId);
             address.setRecordStatus(false);
@@ -129,7 +124,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void updateAddress(Integer addressId, AddressInput addressInput, String username) {
         txTemplate.executeWithoutResult((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsername(addressId, username);
+            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
 
             boolean isValidInput = locationService.validateLocation(addressInput);

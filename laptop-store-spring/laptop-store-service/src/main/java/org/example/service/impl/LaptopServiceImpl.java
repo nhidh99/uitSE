@@ -58,20 +58,6 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public Optional<Laptop> findById(Integer id) {
-        return laptopRepository.findById(id);
-    }
-
-    @Override
-    public List<LaptopOverviewDTO> findSuggestionsById(Integer id) {
-        return txTemplate.execute((status) -> {
-            List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(id);
-            List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(suggestionIds);
-            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
-        });
-    }
-
-    @Override
     public List<LaptopOverviewDTO> findByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
         return txTemplate.execute((status) -> {

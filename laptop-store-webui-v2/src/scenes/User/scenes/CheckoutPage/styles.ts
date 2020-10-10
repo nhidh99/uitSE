@@ -70,6 +70,7 @@ const EditButton = styled.button`
 const LoaderContainer = styled.div`
     width: 100%;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    background-color: white;
 `;
 
 export const SC = {

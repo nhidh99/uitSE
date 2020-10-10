@@ -50,4 +50,12 @@ public class OrderItem {
     @JsonIgnore
     @ToString.Exclude
     private Order order;
+
+    public boolean isLaptopItem() {
+        return productType == ProductType.LAPTOP;
+    }
+
+    public boolean isPromotionItem() {
+        return productType == ProductType.PROMOTION;
+    }
 }

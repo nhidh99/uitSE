@@ -3,11 +3,11 @@ import styled from "styled-components";
 
 const Container = styled.div`
     width: 100%;
-    padding: 0 20px 0 0;
     font-size: 13px;
     box-sizing: border-box;
     border: 1px dashed #ccc;
     text-decoration: none;
+    padding-right: 20px;
 
     :not(:last-of-type) {
         margin-bottom: 20px;

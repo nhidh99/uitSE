@@ -7,7 +7,6 @@ import org.example.input.AddressInput;
 import java.util.List;
 
 public interface AddressService {
-    boolean existsByIdAndUsername(Integer id, String username);
 
     List<AddressOverviewDTO> findOverviewsByUsername(String username);
 

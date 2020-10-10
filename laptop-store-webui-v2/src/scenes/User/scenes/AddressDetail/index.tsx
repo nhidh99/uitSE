@@ -1,17 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Form, Formik } from "formik";
-import React, {
-    FormEvent,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import React, { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as Yup from "yup";
 import FieldInput from "../../../../components/FIeldInput";
-import Spinner from "../../../../components/Spinner";
+import Loader from "../../../../components/Loader";
 import addressApi from "../../../../services/api/addressApi";
 import locationApi from "../../../../services/api/locationApi";
 import userApi from "../../../../services/api/userApi";
@@ -35,8 +29,7 @@ const AddressDetail = () => {
     const { addressId } = useParams();
 
     const showAddressButton: boolean = useSelector(
-        (state: RootState) =>
-            addressId && state.user?.address_id !== parseInt(addressId)
+        (state: RootState) => addressId && state.user?.address_id !== parseInt(addressId)
     );
 
     const schema = useMemo(
@@ -49,15 +42,9 @@ const AddressDetail = () => {
                 receiver_phone: Yup.string()
                     .matches(/^[0-9]{10}$/, "Số điện thoại gồm 10 chữ số")
                     .required("Số điện thoại không được để trống"),
-                city_id: Yup.number()
-                    .required("Chọn tỉnh thành")
-                    .typeError("Chọn tỉnh thành"),
-                district_id: Yup.number()
-                    .required("Chọn quận huyện")
-                    .typeError("Chọn tỉnh thành"),
-                ward_id: Yup.number()
-                    .required("Chọn phường xã")
-                    .typeError("Chọn tỉnh thành"),
+                city_id: Yup.number().required("Chọn tỉnh thành").typeError("Chọn tỉnh thành"),
+                district_id: Yup.number().required("Chọn quận huyện").typeError("Chọn tỉnh thành"),
+                ward_id: Yup.number().required("Chọn phường xã").typeError("Chọn tỉnh thành"),
                 street: Yup.string()
                     .max(30, "Tên đường tối đa 30 kí tự")
                     .required("Tên đường không được để trống"),
@@ -176,7 +163,7 @@ const AddressDetail = () => {
     }, []);
 
     return cities.length === 0 ? (
-        <Spinner />
+        <Loader loading loadOnce />
     ) : (
         <Formik
             enableReinitialize={true}
@@ -243,9 +230,7 @@ const AddressDetail = () => {
                                 Chọn quận/huyện
                             </option>
                             {districts.map((district) => (
-                                <option value={district.id}>
-                                    {district.name}
-                                </option>
+                                <option value={district.id}>{district.name}</option>
                             ))}
                         </FieldInput>
 
@@ -286,18 +271,12 @@ const AddressDetail = () => {
                         />
 
                         <SC.ButtonContainer>
-                            <SC.SubmitButton
-                                disabled={isDisabledButton}
-                                type="submit"
-                            >
+                            <SC.SubmitButton disabled={isDisabledButton} type="submit">
                                 {addressId ? "Cập nhật" : "Tạo"} địa chỉ
                             </SC.SubmitButton>
 
                             {showAddressButton ? (
-                                <SC.AddressButton
-                                    type="button"
-                                    onClick={setDefaultAddress}
-                                >
+                                <SC.AddressButton type="button" onClick={setDefaultAddress}>
                                     Đặt địa chỉ mặc định
                                 </SC.AddressButton>
                             ) : null}

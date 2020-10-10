@@ -1,10 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import Loader from "../../../../../../components/Loader";
-import { RootState } from "../../../../../../services/redux/rootReducer";
-import CartConstants from "../../../../../../values/constants/CartConstants";
 import CartPaymentProps from "../../../../../../values/props/CartPaymentProps";
 import { SC } from "./styles";
 
@@ -13,21 +9,16 @@ type Props = {
 };
 
 const CartPayment = ({ payment }: Props) => {
-    const loading = useSelector((state: RootState) =>
-        [CartConstants.LOADING, CartConstants.FETCHING].includes(state.loaderStatus)
-    );
-
     const { totalCount, totalDiscount, totalPrice } = payment;
     const history = useHistory();
 
     const checkout = () => {
         if (totalCount === 0) return;
         history.push("/checkout");
-    };
+    }
 
     return (
         <SC.OuterContainer>
-            <Loader loading={loading} />
             <SC.Container>
                 <SC.InfoRow>
                     <div>

@@ -10,5 +10,5 @@ import java.util.List;
 public interface AddressRepository extends JpaRepository<Address, Integer> {
     List<Address> findByUserUsernameAndRecordStatusTrueOrderByIdDesc(String username);
 
-    boolean existsByIdAndUserUsername(Integer id, String username);
+    boolean existsByIdAndUserUsernameAndRecordStatusTrue(Integer addressId, String username);
 }

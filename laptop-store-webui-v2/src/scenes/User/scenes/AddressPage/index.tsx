@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from "react";
-import Spinner from "../../../../components/Spinner";
+import Loader from "../../../../components/Loader";
 import userApi from "../../../../services/api/userApi";
 import store from "../../../../services/redux/store";
 import AddressModel from "../../../../values/models/AddressModel";
@@ -30,7 +30,7 @@ const AddressPage = () => {
             ))}
         </>
     ) : (
-        <Spinner />
+        <Loader loading loadOnce />
     );
 };
 

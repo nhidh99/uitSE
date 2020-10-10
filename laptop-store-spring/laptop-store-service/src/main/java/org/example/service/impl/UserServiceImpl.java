@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserDefaultAddressId(String username, Integer addressId) {
         txTemplate.executeWithoutResult((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsername(addressId, username);
+            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
             User user = userRepository.findByUsername(username);
             user.setDefaultAddressId(addressId);
@@ -250,6 +250,18 @@ public class UserServiceImpl implements UserService {
             if (errorMessage != null) {
                 throw new IllegalArgumentException(errorMessage);
             }
+        });
+    }
+
+    @Override
+    public void setDefaultAddress(String username, Integer addressId) {
+        boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
+        if (!isValidRequest) {
+            throw new IllegalArgumentException(ErrorMessageConstants.INVALID_ADDRESS);
+        }
+        txTemplate.executeWithoutResult((status) -> {
+            User user = userRepository.findByUsername(username);
+            user.setDefaultAddressId(addressId);
         });
     }
 }

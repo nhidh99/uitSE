@@ -26,6 +26,7 @@ const Submit = styled(Field)`
     border-radius: 5px;
     border: none;
     margin-bottom: 12px;
+    cursor: pointer;
 `;
 
 const RegisterRedirect = styled.div`
@@ -49,5 +50,5 @@ export const SC = {
     Header,
     Submit,
     RegisterRedirect,
-    Status
+    Status,
 };
