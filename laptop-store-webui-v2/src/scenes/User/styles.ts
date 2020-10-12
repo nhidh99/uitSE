@@ -4,11 +4,10 @@ const Container = styled.div`
     display: flex;
     height: 100%;
     gap: 30px;
-    margin-top: 30px;
+    margin: 30px 0;
 `;
 
-const LeftContainer = styled.div`
-`;
+const LeftContainer = styled.div``;
 
 const RightContainer = styled.div`
     width: 100%;
@@ -27,10 +26,15 @@ const ContentContainer = styled.div`
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
+const LoaderContainer = styled.div`
+    position: relative;
+`;
+
 export const SC = {
     Container,
     LeftContainer,
     RightContainer,
     TitleContainer,
     ContentContainer,
+    LoaderContainer,
 };

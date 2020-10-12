@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from "react";
-import Loader from "../../../../components/Loader";
 import userApi from "../../../../services/api/userApi";
+import { fireFetching, skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import store from "../../../../services/redux/store";
 import AddressModel from "../../../../values/models/AddressModel";
 import AddButton from "./components/AddButton";
@@ -13,8 +13,10 @@ const AddressPage = () => {
 
     useEffect(() => {
         const loadData = async () => {
+            store.dispatch(fireFetching());
             const response = await userApi.getCurrentUserAddresses();
             setAddresses(response.data);
+            store.dispatch(skipFetching());
         };
         loadData();
     }, []);
@@ -29,9 +31,7 @@ const AddressPage = () => {
                 />
             ))}
         </>
-    ) : (
-        <Loader loading loadOnce />
-    );
+    ) : null;
 };
 
 export default AddressPage;

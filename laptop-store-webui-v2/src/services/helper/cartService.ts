@@ -1,6 +1,6 @@
 import CartConstants from "../../values/constants/CartConstants";
 import userApi from "../api/userApi";
-import { setLoaderStatus } from "../redux/slices/loaderStatusSlice";
+import { fireFetching, fireLoading, skipFetching } from "../redux/slices/loaderStatusSlice";
 import { setMessage } from "../redux/slices/messageSlice";
 import store from "../redux/store";
 import { getCookie } from "./cookie";
@@ -39,7 +39,7 @@ const syncStorage = async (newCart: { [key: number]: number }) => {
 };
 
 const addItem = async (itemId: number, value: number) => {
-    store.dispatch(setLoaderStatus(CartConstants.LOADING));
+    store.dispatch(fireLoading());
     const cart = getCart();
     const quantity = value + (cart?.[itemId] ?? 0);
     if (quantity <= CartConstants.MAX_QUANTITY_PER_ITEM) {
@@ -47,15 +47,15 @@ const addItem = async (itemId: number, value: number) => {
         cart[itemId] = quantity;
         await syncStorage(cart);
     }
-    store.dispatch(setLoaderStatus(CartConstants.IDLE));
+    store.dispatch(skipFetching());
 };
 
 const removeItem = async (itemId: number) => {
-    store.dispatch(setLoaderStatus(CartConstants.LOADING));
+    store.dispatch(fireLoading());
     const cart = getCart();
     delete cart[itemId];
     await syncStorage(cart);
-    store.dispatch(setLoaderStatus(CartConstants.FETCHING));
+    store.dispatch(fireFetching());
 };
 
 const isEmptyCart = () => {
@@ -63,7 +63,7 @@ const isEmptyCart = () => {
 };
 
 const moveItemToWishList = async (itemId: number) => {
-    store.dispatch(setLoaderStatus(CartConstants.LOADING));
+    store.dispatch(fireLoading());
     try {
         await userApi.postItemFromCartToWishList(itemId);
         const cart = getCart();
@@ -75,7 +75,7 @@ const moveItemToWishList = async (itemId: number) => {
     } catch (err) {
         store.dispatch(setMessage(err.response));
     }
-    store.dispatch(setLoaderStatus(CartConstants.FETCHING));
+    store.dispatch(fireFetching());
 };
 
 export default {

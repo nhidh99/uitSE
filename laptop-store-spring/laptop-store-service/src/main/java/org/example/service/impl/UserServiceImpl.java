@@ -4,24 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
-import org.example.dao.model.AddressRepository;
-import org.example.dao.model.LaptopRepository;
-import org.example.dao.model.PromotionRepository;
-import org.example.dao.model.UserRepository;
+import org.example.dao.AddressRepository;
+import org.example.dao.LaptopRepository;
+import org.example.dao.PromotionRepository;
+import org.example.dao.UserRepository;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.order.OrderItemDTO;
 import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.Laptop;
-import org.example.model.OrderItem;
 import org.example.model.Promotion;
 import org.example.model.User;
 import org.example.service.api.UserService;
 import org.example.type.ProductType;
 import org.example.type.SocialMediaType;
 import org.example.util.ModelMapperUtil;
-import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +29,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class UserServiceImpl implements UserService {

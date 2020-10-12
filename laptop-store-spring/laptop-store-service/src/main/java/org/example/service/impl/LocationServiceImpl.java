@@ -1,8 +1,8 @@
 package org.example.service.impl;
 
-import org.example.dao.model.CityRepository;
-import org.example.dao.model.DistrictRepository;
-import org.example.dao.model.WardRepository;
+import org.example.dao.CityRepository;
+import org.example.dao.DistrictRepository;
+import org.example.dao.WardRepository;
 import org.example.input.AddressInput;
 import org.example.model.City;
 import org.example.model.District;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LocationServiceImpl implements LocationService {

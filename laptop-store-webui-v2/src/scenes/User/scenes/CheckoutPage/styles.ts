@@ -48,6 +48,8 @@ const SubmitButton = styled.button`
     border-radius: 5px;
     border: none;
     margin-top: -5px;
+    cursor: ${(props) => (props.disabled ? "arrow" : "pointer")};
+    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const EditAddressContainer = styled.div`

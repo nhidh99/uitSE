@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import {
     FaAddressBook,
     FaGift,
@@ -12,6 +12,7 @@ import {
 import { useHistory } from "react-router";
 import Loader from "../../../../components/Loader";
 import SectionHeader from "../../../../components/SectionHeader";
+import orderApi from "../../../../services/api/orderApi";
 import userApi from "../../../../services/api/userApi";
 import AddressModel from "../../../../values/models/AddressModel";
 import OrderCheckoutModel from "../../../../values/models/OrderCheckoutModel";
@@ -45,6 +46,8 @@ const CheckoutPage = () => {
         []
     );
 
+    const [submitting, setSubmitting] = useState<boolean>(false);
+
     const history = useHistory();
     const [state, setState] = useState<CheckoutPageState>(initialState);
     const { loading, checkout, addresses } = state;
@@ -72,6 +75,19 @@ const CheckoutPage = () => {
         // @ts-ignore
         const addressId = document.getElementById("address")?.value;
         history.push(`/user/addresses/edit/${addressId}`);
+    }, []);
+
+    const submitCheckout = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
+        setSubmitting(true);
+        try {
+            // @ts-ignore
+            const addressId = parseInt(document.getElementById("address")?.value);
+            const response = await orderApi.postOrder(addressId);
+            const orderId = response.data;
+            window.location.href = `/user/orders/${orderId}`;
+        } catch (err) {
+            setSubmitting(false);
+        }
     }, []);
 
     return (
@@ -237,7 +253,9 @@ const CheckoutPage = () => {
                                     </SC.TotalPrice>
                                 </SC.InfoRow>
 
-                                <SC.SubmitButton>ĐẶT HÀNG</SC.SubmitButton>
+                                <SC.SubmitButton disabled={submitting} onClick={submitCheckout}>
+                                    ĐẶT HÀNG
+                                </SC.SubmitButton>
                             </SC.ItemList>
                         </SC.SectionContainer>
                     </SC.RightContainer>

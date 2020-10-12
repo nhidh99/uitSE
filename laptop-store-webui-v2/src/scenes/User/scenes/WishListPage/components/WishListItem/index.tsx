@@ -3,14 +3,13 @@ import React, { memo, useCallback } from "react";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import userApi from "../../../../../../services/api/userApi";
-import { setLoaderStatus } from "../../../../../../services/redux/slices/loaderStatusSlice";
+import { fireFetching, fireLoading } from "../../../../../../services/redux/slices/loaderStatusSlice";
 import { setMessage } from "../../../../../../services/redux/slices/messageSlice";
 import {
     removeWishListItem,
     setWishList,
 } from "../../../../../../services/redux/slices/wishListSlice";
 import store from "../../../../../../services/redux/store";
-import CartConstants from "../../../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../../../values/models/ProductSummaryModel";
 import { SC } from "./styles";
 
@@ -22,12 +21,12 @@ const WishListItem = ({ item }: WishListItemProps) => {
     const removeItem = useCallback(async () => {
         const tempWishList = store.getState().wishList;
         try {
-            store.dispatch(setLoaderStatus(CartConstants.LOADING));
+            store.dispatch(fireLoading());
             store.dispatch(removeWishListItem(item.id));
             const wishList = store.getState().wishList;
             const listJSON = JSON.stringify(wishList);
             await userApi.putCurrentUserWishList(listJSON);
-            store.dispatch(setLoaderStatus(CartConstants.FETCHING));
+            store.dispatch(fireFetching());
         } catch (err) {
             store.dispatch(setWishList(tempWishList));
             const message = `Lỗi: Không thể xoá Laptop ${item.name} khỏi danh sách`;

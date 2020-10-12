@@ -1,8 +1,5 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.example.type.OrderStatus;
 import org.hibernate.annotations.Formula;
@@ -74,7 +71,7 @@ public class Order {
             "FROM order_item i " +
             "WHERE i.order_id = id " +
             "AND i.product_type = 'LAPTOP' LIMIT 1)")
-    @Getter(AccessLevel.NONE)
+    @Getter
     private String firstProductInfo;
 
     @Formula("(SELECT SUM(i.quantity) " +
@@ -83,4 +80,14 @@ public class Order {
             "AND i.product_type = 'LAPTOP')")
     @Getter(AccessLevel.NONE)
     private int productCount;
+
+    public String getDescribe() {
+        int firstProductQuantity = Integer.parseInt(firstProductInfo.split(" ")[0]);
+        if (productCount == firstProductQuantity) {
+            return firstProductInfo;
+        }
+        return new StringBuilder(firstProductInfo).append(" và ")
+                .append(productCount-firstProductQuantity)
+                .append(" sản phẩm khác").toString();
+    }
 }

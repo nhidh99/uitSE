@@ -6,9 +6,8 @@ import SectionHeader from "../../../../components/SectionHeader";
 import laptopApi from "../../../../services/api/laptopApi";
 import cartService from "../../../../services/helper/cartService";
 import { RootState } from "../../../../services/redux/rootReducer";
-import { setLoaderStatus } from "../../../../services/redux/slices/loaderStatusSlice";
+import { skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import store from "../../../../services/redux/store";
-import CartConstants from "../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../values/models/ProductSummaryModel";
 import CartPaymentProps from "../../../../values/props/CartPaymentProps";
 import CartItems from "./components/CartItems";
@@ -41,22 +40,18 @@ const CartPage = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            // While loading -> cart is syncing -> wait till next status
-            if (loaderStatus === CartConstants.LOADING) {
+            if (items && !loaderStatus.isFetching) {
                 return;
             }
 
             if (cartService.isEmptyCart()) {
-                if (items !== null) {
-                    setState(initialState);
-                }
+                const emptyCartState = { ...initialState, loading: false, items: [] };
+                setState(emptyCartState);
             } else {
                 const cart = cartService.getCart();
-                if (loaderStatus === CartConstants.FETCHING || !items) {
-                    const laptopIds = Object.keys(cart).map((k) => parseInt(k));
-                    const response = await laptopApi.getByIds(laptopIds);
-                    items = response.data;
-                }
+                const laptopIds = Object.keys(cart).map((k) => parseInt(k));
+                const response = await laptopApi.getByIds(laptopIds);
+                const items = response.data;
 
                 let totalCount = 0;
                 let totalDiscount = 0;
@@ -78,7 +73,7 @@ const CartPage = () => {
                     },
                 });
             }
-            store.dispatch(setLoaderStatus(CartConstants.IDLE));
+            store.dispatch(skipFetching());
         };
 
         loadData();

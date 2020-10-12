@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.OrderConstants;
-import org.example.dao.model.*;
+import org.example.dao.*;
 import org.example.dto.order.OrderDetailDTO;
 import org.example.dto.order.OrderItemDTO;
 import org.example.dto.order.OrderOverviewDTO;
@@ -15,7 +15,6 @@ import org.example.type.OrderStatus;
 import org.example.type.ProductType;
 import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
-import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +32,8 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private static final int SIZE_PER_PAGE = 5;
+    private static final String EMPTY_CART = "{}";
+
     private final OrderRepository orderRepository;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
@@ -88,8 +89,8 @@ public class OrderServiceImpl implements OrderService {
 
         ObjectMapper om = new ObjectMapper();
         User user = userRepository.findByUsername(username);
-        Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {
-        });
+        Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {});
+
         if (cartMap.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessageConstants.EMPTY_CART);
         }
@@ -97,18 +98,13 @@ public class OrderServiceImpl implements OrderService {
         // Sync with Database
         Set<Integer> laptopIdsInCart = cartMap.keySet();
         List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(cartMap.keySet());
-        String[] newCartJSON = {null};
         if (laptopIdsInCart.size() != laptops.size()) {
             List<Integer> laptopIdsAvailable = laptops.stream().map(Laptop::getId).collect(Collectors.toList());
             laptopIdsInCart.stream().filter(id -> !laptopIdsAvailable.contains(id)).forEach(cartMap::remove);
-            newCartJSON[0] = om.writeValueAsString(cartMap);
         }
 
         return txTemplate.execute((status) -> {
-            if (newCartJSON[0] != null) {
-                user.setCart(newCartJSON[0]);
-            }
-
+            // Build order info
             LocalDate orderDate = LocalDate.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE));
             LocalDate deliveryDate = DateUtil.addWorkingDays(orderDate, OrderConstants.DELIVERY_DAYS);
             Address address = addressRepository.getOne(addressId);
@@ -130,6 +126,11 @@ public class OrderServiceImpl implements OrderService {
             // Build order items
             items.forEach(item -> item.setOrder(order));
             order.setOrderItems(items);
+
+            // Clear user cart
+            user.setCart(EMPTY_CART);
+
+            // Save order
             return orderRepository.saveAndFlush(order);
         });
     }
@@ -162,11 +163,11 @@ public class OrderServiceImpl implements OrderService {
                     item.setQuantity(item.getQuantity() + quantity);
                 } else {
                     item = OrderItem.builder()
+                            .productType(ProductType.PROMOTION)
                             .productId(promotion.getId())
                             .productName(promotion.getName())
-                            .productType(ProductType.PROMOTION)
-                            .quantity(quantity)
-                            .unitPrice(promotion.getPrice()).build();
+                            .unitPrice(promotion.getPrice())
+                            .quantity(quantity).build();
                 }
                 promotionItemMap.put(promotionId, item);
             }

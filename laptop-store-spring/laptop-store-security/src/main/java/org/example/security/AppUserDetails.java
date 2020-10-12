@@ -1,6 +1,6 @@
 package org.example.security;
 
-import org.example.dao.model.UserRepository;
+import org.example.dao.UserRepository;
 import org.example.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

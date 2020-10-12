@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Loader from "../../../../../../components/Loader";
 import { RootState } from "../../../../../../services/redux/rootReducer";
-import CartConstants from "../../../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../../../values/models/ProductSummaryModel";
 import CartItem from "./components/CartItem";
 import { SC } from "./style";
@@ -12,10 +11,7 @@ type ItemListProps = {
 };
 
 const CartItems = ({ items }: ItemListProps) => {
-    const loading = useSelector(
-        (state: RootState) =>
-            [CartConstants.LOADING, CartConstants.FETCHING].includes(state.loaderStatus) || !items
-    );
+    const loading = useSelector((state: RootState) => state.loaderStatus.isLoading || !items);
 
     return (
         <SC.OuterContainer>

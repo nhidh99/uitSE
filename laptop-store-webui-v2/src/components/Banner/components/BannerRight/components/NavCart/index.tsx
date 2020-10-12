@@ -5,15 +5,12 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import cartService from "../../../../../../services/helper/cartService";
 import { RootState } from "../../../../../../services/redux/rootReducer";
-import CartConstants from "../../../../../../values/constants/CartConstants";
 import { SC } from "./styles";
 
 const NavCart = () => {
     const history = useHistory();
 
-    const loading = useSelector(
-        (state: RootState) => state.loaderStatus === CartConstants.LOADING
-    );
+    const loading = useSelector((state: RootState) => state.loaderStatus.isLoading);
 
     const getCounter = useCallback(() => {
         return Object.values(cartService.getCart()).reduce((a, b) => a + b, 0);

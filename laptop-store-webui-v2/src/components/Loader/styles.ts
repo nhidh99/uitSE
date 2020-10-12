@@ -5,7 +5,6 @@ const Loader = styled.div`
     width: 100%;
     height: 100%;
     position: absolute;
-    transform-style: preserve-3d;
     background-color: gray;
     opacity: 0.2;
     display: flex;

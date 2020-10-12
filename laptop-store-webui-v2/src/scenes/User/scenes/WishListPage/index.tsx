@@ -4,9 +4,8 @@ import { useSelector } from "react-redux";
 import Loader from "../../../../components/Loader";
 import userApi from "../../../../services/api/userApi";
 import { RootState } from "../../../../services/redux/rootReducer";
-import { setLoaderStatus } from "../../../../services/redux/slices/loaderStatusSlice";
+import { skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import store from "../../../../services/redux/store";
-import CartConstants from "../../../../values/constants/CartConstants";
 import ProductOverviewModel from "../../../../values/models/ProductSummaryModel";
 import WishListItem from "./components/WishListItem";
 import { SC } from "./styles";
@@ -15,15 +14,15 @@ const WishListPage = () => {
     const [items, setItems] = useState<ProductOverviewModel[] | null>(null);
     const { status, loading } = useSelector((state: RootState) => ({
         status: state.loaderStatus,
-        loading: state.loaderStatus !== CartConstants.IDLE || !items,
+        loading: state.loaderStatus.isLoading || !items,
     }));
 
     useEffect(() => {
         const loadData = async () => {
-            if (status === CartConstants.FETCHING || !items) {
+            if (status.isFetching || !items) {
                 const response = await userApi.getCurrentUserWishList();
                 setItems(response.data);
-                store.dispatch(setLoaderStatus(CartConstants.IDLE));
+                store.dispatch(skipFetching());
             }
         };
 

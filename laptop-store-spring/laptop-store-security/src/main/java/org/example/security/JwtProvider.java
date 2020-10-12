@@ -2,7 +2,7 @@ package org.example.security;
 
 import io.jsonwebtoken.*;
 import org.example.constant.ErrorMessageConstants;
-import org.example.dao.model.UserRepository;
+import org.example.dao.UserRepository;
 import org.example.type.RoleType;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;

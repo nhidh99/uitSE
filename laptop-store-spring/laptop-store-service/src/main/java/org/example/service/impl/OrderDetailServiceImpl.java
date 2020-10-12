@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.model.OrderDetailRepository;
+import org.example.dao.OrderDetailRepository;
 import org.example.model.OrderItem;
 import org.example.service.api.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,14 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-    FocusEvent,
-    memo,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import React, { FocusEvent, memo, useCallback, useEffect, useMemo, useState } from "react";
 import cartService from "../../../../../../../../services/helper/cartService";
-import { setLoaderStatus } from "../../../../../../../../services/redux/slices/loaderStatusSlice";
+import {
+    fireFetching,
+    fireLoading,
+} from "../../../../../../../../services/redux/slices/loaderStatusSlice";
 import { setMessage } from "../../../../../../../../services/redux/slices/messageSlice";
 import store from "../../../../../../../../services/redux/store";
 import CartConstants from "../../../../../../../../values/constants/CartConstants";
@@ -31,10 +27,10 @@ const QuantityInput = ({ item }: QuantityInputProps) => {
             }
 
             try {
-                store.dispatch(setLoaderStatus(CartConstants.LOADING));
+                store.dispatch(fireLoading());
                 cart[item.id] = quantity;
                 await cartService.syncStorage(cart);
-                store.dispatch(setLoaderStatus(CartConstants.IDLE));
+                store.dispatch(fireFetching());
             } catch (err) {
                 alert("Loi");
             }
