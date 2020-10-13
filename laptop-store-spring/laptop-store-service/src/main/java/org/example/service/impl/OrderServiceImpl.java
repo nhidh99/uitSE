@@ -15,6 +15,7 @@ import org.example.type.OrderStatus;
 import org.example.type.ProductType;
 import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,17 +55,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderOverviewDTO> findOverviewByUsernameAndPage(String username, int page) {
+    public Pair<List<OrderOverviewDTO>, Long> findOverviewByUsernameAndPage(String username, int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
         return txTemplate.execute((status) -> {
             List<Order> orders = orderRepository.findByUserUsername(username, pageable);
-            return ModelMapperUtil.mapList(orders, OrderOverviewDTO.class);
+            long orderCount = orderRepository.countByUserUsername(username);
+            return Pair.of(ModelMapperUtil.mapList(orders, OrderOverviewDTO.class), orderCount);
         });
-    }
-
-    @Override
-    public Long countByUsername(String username) {
-        return orderRepository.countByUserUsername(username);
     }
 
     @Override

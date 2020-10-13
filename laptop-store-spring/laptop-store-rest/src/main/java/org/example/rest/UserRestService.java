@@ -14,6 +14,7 @@ import org.example.service.api.AddressService;
 import org.example.service.api.OrderService;
 import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -80,9 +81,10 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserOrderOverviews(@AuthenticationPrincipal UserDetails userDetails,
                                                           @RequestParam(value = "page", defaultValue = "1") int page) {
         String username = userDetails.getUsername();
-        List<OrderOverviewDTO> orders = orderService.findOverviewByUsernameAndPage(username, page);
-        Long totalOrderCount = orderService.countByUsername(username);
-        return ResponseEntity.ok().header(HeaderConstants.TOTAL_COUNT, totalOrderCount.toString()).body(orders);
+        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findOverviewByUsernameAndPage(username, page);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, ordersPair.getSecond().toString())
+                .body(ordersPair.getFirst());
     }
 
     @GetMapping(value = "/me/wish-list", produces = MediaType.APPLICATION_JSON_VALUE)
