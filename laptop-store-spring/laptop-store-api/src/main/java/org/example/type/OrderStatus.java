@@ -26,4 +26,23 @@ public enum OrderStatus {
     public boolean isCanceled() {
         return this.equals(CANCELED);
     }
+
+    public int getProgressStep() {
+        switch (this) {
+            case PENDING:
+                return 0;
+            case RECEIVED:
+                return 1;
+            case PACKAGED:
+                return 2;
+            case DELIVERING:
+                return 3;
+            case DELIVERED:
+                return 4;
+            case CANCELED:
+                return -1;
+            default:
+                return -2;
+        }
+    }
 }

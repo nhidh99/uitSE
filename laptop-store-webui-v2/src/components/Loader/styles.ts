@@ -18,6 +18,7 @@ const SpinnerContainer = styled.div`
     text-align: center;
     box-sizing: border-box;
     color: #727272;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
 export const SC = { Loader, SpinnerContainer };

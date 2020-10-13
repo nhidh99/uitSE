@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 import org.example.model.City;
 import org.example.model.District;
 import org.example.model.Ward;
+import org.example.type.OrderStatus;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,10 +36,13 @@ public class OrderDetailDTO {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate deliveryDate;
 
-    @Column(name = "address_num")
+    @JsonIgnore
+    private OrderStatus status;
+
+    @JsonIgnore
     private String addressNum;
 
-    @Column(name = "street")
+    @JsonIgnore
     private String street;
 
     @JsonIgnore
@@ -56,10 +57,20 @@ public class OrderDetailDTO {
     @JsonProperty("items")
     private List<OrderItemDTO> items;
 
+    @JsonProperty("tracks")
+    private List<OrderTrackDTO> tracks;
+
     @JsonProperty("order_location")
     public String getOrderLocation() {
-        return new StringBuilder(addressNum).append(" ").append(street)
-                .append(", ").append(ward).append(", ").append(district)
-                .append(", ").append(city).toString();
+        return new StringBuilder(addressNum)
+                .append(" ").append(street)
+                .append(", ").append(ward.getName())
+                .append(", ").append(district.getName())
+                .append(", ").append(city.getName()).toString();
+    }
+
+    @JsonProperty("progress_step")
+    public int getProgressStep() {
+        return status.getProgressStep();
     }
 }

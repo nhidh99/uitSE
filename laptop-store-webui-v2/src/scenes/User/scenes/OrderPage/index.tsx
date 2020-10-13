@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import ReactPaginate from "react-paginate";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
+import Paginate from "../../../../components/Paginate";
 import userApi from "../../../../services/api/userApi";
 import {
     fireFetching,
@@ -12,7 +11,6 @@ import {
 } from "../../../../services/redux/slices/loaderStatusSlice";
 import OrderOverviewModel from "../../../../values/models/OrderOverviewModel";
 import OrderBlock from "./components/OrderBlock";
-import { SC } from "./styles";
 
 type OrderPageState = {
     orders: OrderOverviewModel[] | null;
@@ -60,17 +58,7 @@ const OrderPage = () => {
             {orders.map((order) => (
                 <OrderBlock order={order} />
             ))}
-            <SC.PaginateContainer>
-                <ReactPaginate
-                    pageCount={Math.floor((orderCount + 4) / 5)}
-                    pageRangeDisplayed={2}
-                    marginPagesDisplayed={1}
-                    initialPage={page - 1}
-                    previousLabel={<FaArrowLeft />}
-                    nextLabel={<FaArrowRight />}
-                    onPageChange={pageChange}
-                />
-            </SC.PaginateContainer>
+            <Paginate count={orderCount} initialPage={page} pageChange={pageChange} />
         </>
     ) : null;
 };

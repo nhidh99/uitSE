@@ -63,9 +63,11 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private List<OrderItem> items;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private List<OrderTrack> tracks;
 
     @Formula("(SELECT CONCAT(i.quantity, ' ', i.product_name) " +
             "FROM order_item i " +

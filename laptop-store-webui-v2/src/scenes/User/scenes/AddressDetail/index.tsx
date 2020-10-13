@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as Yup from "yup";
 import FieldInput from "../../../../components/FIeldInput";
-import Loader from "../../../../components/Loader";
 import addressApi from "../../../../services/api/addressApi";
 import locationApi from "../../../../services/api/locationApi";
 import userApi from "../../../../services/api/userApi";
 import { RootState } from "../../../../services/redux/rootReducer";
+import { fireFetching, skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import { setMessage } from "../../../../services/redux/slices/messageSlice";
 import { setDefaultAddressId } from "../../../../services/redux/slices/userSlice";
 import store from "../../../../services/redux/store";
@@ -162,9 +162,15 @@ const AddressDetail = () => {
         }
     }, []);
 
-    return cities.length === 0 ? (
-        <Loader loading loadOnce />
-    ) : (
+    useEffect(() => {
+        if (cities.length === 0) {
+            store.dispatch(fireFetching());
+        } else {
+            store.dispatch(skipFetching());
+        }
+    }, [cities]);
+
+    return (
         <Formik
             enableReinitialize={true}
             initialValues={initialValues}

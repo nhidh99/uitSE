@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import OrderDetailModel from "../../../values/models/OrderDetailModel";
 import orderApi from "../../api/orderApi";
 
 export const fetchOrderById = createAsyncThunk(
@@ -9,9 +10,11 @@ export const fetchOrderById = createAsyncThunk(
     }
 );
 
+type OrderState = OrderDetailModel | null;
+
 const orderSlice = createSlice({
     name: "order",
-    initialState: null,
+    initialState: null as OrderState,
     reducers: {},
     extraReducers: {
         [fetchOrderById.fulfilled as any]: (state, action) => {

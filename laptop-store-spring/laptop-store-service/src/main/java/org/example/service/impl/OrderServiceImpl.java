@@ -9,6 +9,7 @@ import org.example.dao.*;
 import org.example.dto.order.OrderDetailDTO;
 import org.example.dto.order.OrderItemDTO;
 import org.example.dto.order.OrderOverviewDTO;
+import org.example.dto.order.OrderTrackDTO;
 import org.example.model.*;
 import org.example.service.api.OrderService;
 import org.example.type.OrderStatus;
@@ -25,6 +26,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,10 +71,13 @@ public class OrderServiceImpl implements OrderService {
         return txTemplate.execute((status) -> {
             boolean isInvalidRequest = !orderRepository.existsByIdAndUserUsername(orderId, username);
             if (isInvalidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+
             Order order = orderRepository.getOne(orderId);
-            List<OrderItemDTO> items = ModelMapperUtil.mapList(order.getOrderItems(), OrderItemDTO.class);
+            List<OrderItemDTO> items = ModelMapperUtil.mapList(order.getItems(), OrderItemDTO.class);
+            List<OrderTrackDTO> tracks = ModelMapperUtil.mapList(order.getTracks(), OrderTrackDTO.class);
             OrderDetailDTO orderDetailDTO = ModelMapperUtil.map(order, OrderDetailDTO.class);
             orderDetailDTO.setItems(items);
+            orderDetailDTO.setTracks(tracks);
             return orderDetailDTO;
         });
     }
@@ -122,7 +127,13 @@ public class OrderServiceImpl implements OrderService {
 
             // Build order items
             items.forEach(item -> item.setOrder(order));
-            order.setOrderItems(items);
+            order.setItems(items);
+
+            // Set order pending status
+             OrderTrack track = OrderTrack.builder()
+                     .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE)))
+                     .status(OrderStatus.PENDING).order(order).build();
+             order.setTracks(Collections.singletonList(track));
 
             // Clear user cart
             user.setCart(EMPTY_CART);
