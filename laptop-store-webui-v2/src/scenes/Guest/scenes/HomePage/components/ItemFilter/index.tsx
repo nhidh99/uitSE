@@ -1,12 +1,19 @@
 import { Field, Formik } from "formik";
 import React from "react";
+import { useHistory } from "react-router";
 import { SC } from "./styles";
 
 const ItemFilter = () => {
+    const history = useHistory();
+
+    const submit = () => {
+        history.push("/filter");
+    };
+
     return (
         <SC.Container>
             <SC.Header>BỘ LỌC</SC.Header>
-            <Formik initialValues={{}} onSubmit={() => {}}>
+            <Formik initialValues={{}} onSubmit={submit}>
                 <SC.FilterForm>
                     <SC.Title>Hãng sản xuất</SC.Title>
                     <SC.BrandGroup>
@@ -138,7 +145,7 @@ const ItemFilter = () => {
                         </label>
                     </SC.InputGroup>
 
-                    <SC.Button>Tìm kiếm</SC.Button>
+                    <SC.Button type="submit">Tìm kiếm</SC.Button>
                 </SC.FilterForm>
             </Formik>
         </SC.Container>

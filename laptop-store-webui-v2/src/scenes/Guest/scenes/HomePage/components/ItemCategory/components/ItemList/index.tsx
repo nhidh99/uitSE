@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import laptopApi from "../../../../../../../../services/api/laptopApi";
-import EmptyItem from "./components/EmptyItem";
-import MoreButton from "./components/MoreButton";
 import LaptopItem from "../../../../../../../../components/LaptopItem";
 import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
+import EmptyItem from "../EmptyItem";
+import MoreButton from "../MoreButton";
 // import store from "../../../../../../../../services/redux/store";
 // import { buildErrorModal } from "../../../../../../../../services/redux/actions";
 
@@ -21,7 +21,7 @@ type ItemListState = {
 };
 
 const ItemList = ({ category }: ItemListProps) => {
-    const initialState: ItemListState = useMemo(
+    const initialState = useMemo<ItemListState>(
         () => ({
             page: 1,
             products: [],
@@ -32,7 +32,7 @@ const ItemList = ({ category }: ItemListProps) => {
         []
     );
 
-    const [state, setState] = useState(initialState);
+    const [state, setState] = useState<ItemListState>(initialState);
     const { products, loading, fetching, page, isDone } = state;
 
     useEffect(() => {
@@ -56,7 +56,6 @@ const ItemList = ({ category }: ItemListProps) => {
                     isDone: true,
                     fetching: false,
                 }));
-                // store.dispatch(buildErrorModal());
             }
         };
         loadData();

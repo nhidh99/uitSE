@@ -9,6 +9,7 @@ const GuestRoute = () => (
         path={[
             "/",
             "/search",
+            "/filter",
             "/cart",
             "/products/:alt/:id",
             "/compare/:alt/:id1/:id2",
