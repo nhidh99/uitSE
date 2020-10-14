@@ -37,6 +37,15 @@ public class OrderRestService {
         return ResponseEntity.ok(order);
     }
 
+    @PostMapping(value = "/{id}/cancel", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> postCancelOrderById(@AuthenticationPrincipal UserDetails userDetails,
+                                          @PathVariable("id") Integer orderId) {
+        String username = userDetails.getUsername();
+        orderService.cancelOrderByIdAndUsername(orderId, username);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> postOrder(@AuthenticationPrincipal UserDetails userDetails,

@@ -1,44 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import Loader from "../../../../components/Loader";
+import { useDispatch, useSelector } from "react-redux";
 import userApi from "../../../../services/api/userApi";
 import { RootState } from "../../../../services/redux/rootReducer";
-import { skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
-import store from "../../../../services/redux/store";
+import { fireFetching, skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import ProductOverviewModel from "../../../../values/models/ProductSummaryModel";
 import WishListItem from "./components/WishListItem";
 import { SC } from "./styles";
 
 const WishListPage = () => {
     const [items, setItems] = useState<ProductOverviewModel[] | null>(null);
-    const { status, loading } = useSelector((state: RootState) => ({
-        status: state.loaderStatus,
-        loading: state.loaderStatus.isLoading || !items,
-    }));
+    const wishList = useSelector((state: RootState) => state.wishList);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const loadData = async () => {
-            if (status.isFetching || !items) {
-                const response = await userApi.getCurrentUserWishList();
-                setItems(response.data);
-                store.dispatch(skipFetching());
+            if (!items) {
+                dispatch(fireFetching());
             }
+            const response = await userApi.getCurrentUserWishList();
+            setItems(response.data);
+            dispatch(skipFetching());
         };
-
+        
         loadData();
-    }, [status]);
+    }, [wishList]);
 
     return (
         <SC.Container>
-            <Loader loading={loading} loadOnce={!items} />
-            {items ? (
-                <>
-                    {items.map((item) => (
-                        <WishListItem item={item} key={item.id} />
-                    ))}
-                </>
-            ) : null}
+            {items ? items.map((item) => <WishListItem item={item} key={item.id} />) : null}
         </SC.Container>
     );
 };

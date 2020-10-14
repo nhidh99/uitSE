@@ -1,6 +1,6 @@
 package org.example.type;
 
-public enum RewardLevelType {
+public enum MilestoneLevelType {
     NONE,
     BRONZE,
     SILVER,

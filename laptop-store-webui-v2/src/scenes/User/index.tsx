@@ -11,6 +11,7 @@ import MenuItemProps from "../../values/props/MenuItemProps";
 import AddressDetail from "./scenes/AddressDetail";
 import AddressPage from "./scenes/AddressPage";
 import InfoPage from "./scenes/InfoPage";
+import MilestonePage from "./scenes/MilestonePage";
 import OrderDetail from "./scenes/OrderDetail";
 import OrderPage from "./scenes/OrderPage";
 import PasswordPage from "./scenes/PasswordPage";
@@ -50,7 +51,7 @@ const User = () => {
             },
             {
                 icon: FaTrophy,
-                link: "/user/rewards",
+                link: "/user/milestones",
                 title: "Cột mốc",
             },
         ],
@@ -139,6 +140,15 @@ const User = () => {
                                 render={() => {
                                     store.dispatch(setMenuTitle("Danh sách xem sau"));
                                     return <WishListPage />;
+                                }}
+                            />
+
+                            <Route
+                                exact
+                                path="/user/milestones"
+                                render={() => {
+                                    store.dispatch(setMenuTitle("Cột mốc"));
+                                    return <MilestonePage />;
                                 }}
                             />
                         </Switch>

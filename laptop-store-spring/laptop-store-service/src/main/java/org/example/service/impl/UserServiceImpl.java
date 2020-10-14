@@ -4,19 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
-import org.example.dao.AddressRepository;
-import org.example.dao.LaptopRepository;
-import org.example.dao.PromotionRepository;
-import org.example.dao.UserRepository;
+import org.example.dao.*;
 import org.example.dto.laptop.LaptopOverviewDTO;
+import org.example.dto.milestone.MilestoneDTO;
 import org.example.dto.order.OrderItemDTO;
 import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.Laptop;
+import org.example.model.Milestone;
 import org.example.model.Promotion;
 import org.example.model.User;
 import org.example.service.api.UserService;
+import org.example.type.MilestoneLevelType;
+import org.example.type.MilestoneType;
 import org.example.type.ProductType;
 import org.example.type.SocialMediaType;
 import org.example.util.ModelMapperUtil;
@@ -43,7 +44,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserServiceImpl(UserRepository userRepository, LaptopRepository laptopRepository,
                            PromotionRepository promotionRepository, AddressRepository addressRepository,
-                           PasswordEncoder passwordEncoder, PlatformTransactionManager txManager) {
+                           PasswordEncoder passwordEncoder, MilestoneRepository milestoneRepository,
+                           PlatformTransactionManager txManager) {
         this.userRepository = userRepository;
         this.laptopRepository = laptopRepository;
         this.promotionRepository = promotionRepository;
@@ -64,11 +66,6 @@ public class UserServiceImpl implements UserService {
             put(SocialMediaType.FACEBOOK, user.getFacebookId() != null);
             put(SocialMediaType.GOOGLE, user.getGoogleId() != null);
         }};
-    }
-
-    @Override
-    public void save(User user) {
-        userRepository.save(user);
     }
 
     @Override

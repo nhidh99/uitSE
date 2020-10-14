@@ -1,34 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const Container = styled(Link)`
-    width: 20%;
-    padding: 20px 0;
-    border-bottom: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    background-color: white;
-    font-size: 13px;
-    box-sizing: border-box;
-    text-decoration: none;
-    cursor: pointer;
-
-    * {
-        cursor: pointer;
-    }
-
-    :hover {
-        box-shadow: 0 0 5px 5px #ddd;
-        img {
-            transform: translateY(-12px);
-            transition-duration: 0s;
-        }
-    }
-
-    :empty {
-        border: 0;
-    }
-`;
-
 const ItemInfo = styled.div`
     margin: 0 15px;
 `;
@@ -57,6 +29,36 @@ const ItemName = styled.label`
     margin-bottom: 2px;
     line-height: 1.2rem;
     display: inline-block;
+`;
+
+const Container = styled(Link)`
+    max-width: 25%;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    background-color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+    text-decoration: none;
+    cursor: pointer;
+
+    * {
+        cursor: pointer;
+    }
+
+    :hover {
+        img {
+            transform: translateY(-12px);
+            transition-duration: 0s;
+        }
+        ${ItemName} {
+            color: #288ad6;
+        }
+    }
+
+    :empty {
+        border: 0;
+    }
 `;
 
 const UnitPrice = styled.label`

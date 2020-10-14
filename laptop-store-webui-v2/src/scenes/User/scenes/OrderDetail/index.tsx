@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import orderApi from "../../../../services/api/orderApi";
 import { RootState } from "../../../../services/redux/rootReducer";
 import { fireFetching, skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import { fetchOrderById } from "../../../../services/redux/slices/orderSlice";
@@ -24,6 +25,14 @@ const OrderDetail = () => {
             dispatch(skipFetching());
         };
         loadData();
+    }, []);
+
+    const cancelOrder = useCallback(async () => {
+        const confirmCancel = window.confirm(`Xác nhận hủy đơn hàng #${orderId}?`);
+        if (confirmCancel) {
+            await orderApi.postCancelOrder(parseInt(orderId));
+            window.location.reload();
+        }
     }, []);
 
     return loading || !order ? null : (
@@ -52,7 +61,9 @@ const OrderDetail = () => {
             <SC.DeliveryInfo>
                 <SC.Header>
                     THÔNG TIN VẬN CHUYỂN
-                    <SC.CancelButton>Hủy đơn hàng</SC.CancelButton>
+                    {order.progress_step === -1 || order.progress_step >= 3 ? null : (
+                        <SC.CancelButton onClick={cancelOrder}>Hủy đơn hàng</SC.CancelButton>
+                    )}
                 </SC.Header>
                 <div>
                     <b>Phí vận chuyển: </b>

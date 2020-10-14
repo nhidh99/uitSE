@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback } from "react";
+import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import cartService from "../../../../../../../../../../../../services/helper/cartService";
@@ -16,7 +16,7 @@ const CartButton = () => {
         loading: state.loaderStatus.isLoading,
     }));
 
-    const addToCart = useCallback(async () => {
+    const addToCart = async () => {
         // @ts-ignore
         const value = parseInt(document.getElementById("quantity").value);
         const curItemQuantity = cartService.getCart()?.[spec.id] ?? 0;
@@ -37,7 +37,7 @@ const CartButton = () => {
         }
 
         store.dispatch(setMessage(message));
-    }, []);
+    };
 
     return (
         <SC.Button onClick={addToCart} disabled={loading}>

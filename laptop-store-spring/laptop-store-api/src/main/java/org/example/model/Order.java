@@ -30,7 +30,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @Column(name="order_date")
+    @Column(name = "order_date")
     private LocalDate orderDate;
 
     @Column(name = "delivery_date")
@@ -63,10 +63,11 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<OrderItem> items;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OrderBy("id DESC")
     private List<OrderTrack> tracks;
 
     @Formula("(SELECT CONCAT(i.quantity, ' ', i.product_name) " +
@@ -89,7 +90,11 @@ public class Order {
             return firstProductInfo;
         }
         return new StringBuilder(firstProductInfo).append(" và ")
-                .append(productCount-firstProductQuantity)
+                .append(productCount - firstProductQuantity)
                 .append(" sản phẩm khác").toString();
+    }
+
+    public void addTrack(OrderTrack track) {
+        tracks.add(track);
     }
 }

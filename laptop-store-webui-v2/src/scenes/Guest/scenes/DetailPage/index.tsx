@@ -13,7 +13,7 @@ import RatingBlock from "./components/RatingBlock";
 import RatingList from "./components/RatingList";
 import { fetchProductDetailById } from "../../../../services/redux/slices/productSlice";
 import { RootState } from "../../../../services/redux/rootReducer";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 type LocationState = {
     loading: boolean;
@@ -28,6 +28,7 @@ const DetailPage = () => {
     // @ts-ignore
     const { productId } = useParams();
     const history = useHistory();
+    const dispatch = useDispatch();
     const location = useLocation<LocationState>();
 
     const [loading, setLoading] = useState<boolean>(
@@ -35,18 +36,16 @@ const DetailPage = () => {
     );
 
     // @ts-ignore
-    const { showComments, showRatings }: ShowState = useSelector(
-        (state: RootState) => ({
-            showComments: state.product && state.product.ratings.length !== 0,
-            showRatings: state.product && state.product.ratings.length !== 0,
-        })
-    );
+    const { showComments, showRatings }: ShowState = useSelector((state: RootState) => ({
+        showComments: state.product && state.product.ratings.length !== 0,
+        showRatings: state.product && state.product.ratings.length !== 0,
+    }));
 
     useEffect(() => {
         const loadData = async () => {
             try {
                 const id = parseInt(productId);
-                await store.dispatch(fetchProductDetailById(id));
+                await dispatch(fetchProductDetailById(id));
                 setLoading(false);
             } catch (err) {
                 setLoading(true);
@@ -70,44 +69,13 @@ const DetailPage = () => {
         </>
     ) : (
         <>
-            <ContentBlock
-                title="Thong tin"
-                component={OverviewBlock}
-                show={true}
-            />
-            <ContentBlock
-                title="Thông tin chi tiết"
-                component={SpecBlock}
-                show={true}
-            />
-            <ContentBlock
-                title="Sản phẩm tương tự"
-                component={SuggestBlock}
-                show={true}
-            />
-            <ContentBlock
-                title="Hỏi, đáp về sản phẩm"
-                component={QuestionBlock}
-                show={true}
-            />
-
-            <ContentBlock
-                title="Khách hàng hỏi đáp"
-                component={QuestionList}
-                show={showComments}
-            />
-
-            <ContentBlock
-                title="Đánh giá sản phẩm"
-                component={RatingBlock}
-                show={true}
-            />
-
-            <ContentBlock
-                title="Khách hàng đánh giá"
-                component={RatingList}
-                show={showRatings}
-            />
+            <ContentBlock title="Thong tin" component={OverviewBlock} show={true} />
+            <ContentBlock title="Thông tin chi tiết" component={SpecBlock} show={true} />
+            <ContentBlock title="Sản phẩm tương tự" component={SuggestBlock} show={true} />
+            <ContentBlock title="Hỏi, đáp về sản phẩm" component={QuestionBlock} show={true} />
+            <ContentBlock title="Khách hàng hỏi đáp" component={QuestionList} show={showComments} />
+            <ContentBlock title="Đánh giá sản phẩm" component={RatingBlock} show={true} />
+            <ContentBlock title="Khách hàng đánh giá" component={RatingList} show={showRatings} />
         </>
     );
 };

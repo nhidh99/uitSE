@@ -29,7 +29,7 @@ import java.util.List;
 @Service
 public class LaptopServiceImpl implements LaptopService {
 
-    private static final int SIZE_PER_PAGE = 10;
+    private static final int SIZE_PER_PAGE = 12;
 
     private final LaptopRepository laptopRepository;
     private final LaptopImageRepository laptopImageRepository;

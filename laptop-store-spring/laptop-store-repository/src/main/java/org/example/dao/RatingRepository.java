@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Integer> {
     List<Rating> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
+
+    Long countByApproveStatusTrueAndUserUsername(String username);
 }

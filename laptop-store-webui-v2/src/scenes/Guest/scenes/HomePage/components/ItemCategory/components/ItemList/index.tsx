@@ -71,7 +71,7 @@ const ItemList = ({ category }: ItemListProps) => {
 
     return loading ? (
         <>
-            {[...Array(10)].map((_) => (
+            {[...Array(12)].map((_) => (
                 <EmptyItem />
             ))}
         </>

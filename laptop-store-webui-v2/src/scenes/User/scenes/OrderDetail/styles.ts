@@ -29,9 +29,6 @@ const OrderInfo = styled.div`
 `;
 
 const DeliveryInfo = styled.div`
-    ${Header} {
-        margin-bottom: -8px;
-    }
     ${flexColumn}
     grid-column: 2;
 `;
@@ -65,6 +62,7 @@ const CancelButton = styled.button`
     color: white;
     padding: 5px;
     border-radius: 2px;
+    margin-bottom: -8px;
     :hover {
         cursor: pointer;
         text-decoration: underline;

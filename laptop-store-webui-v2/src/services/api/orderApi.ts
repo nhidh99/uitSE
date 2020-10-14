@@ -11,6 +11,11 @@ const orderApi = {
         const data = { addressId: addressId };
         return axiosAuthClient.post(url, data);
     },
+
+    postCancelOrder: (orderId: number) => {
+        const url = `/orders/${orderId}/cancel`;
+        return axiosAuthClient.post(url);
+    },
 };
 
 export default orderApi;

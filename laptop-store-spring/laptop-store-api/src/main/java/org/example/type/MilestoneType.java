@@ -1,9 +1,9 @@
 package org.example.type;
 
-public enum RewardType {
+public enum MilestoneType {
     MONEY,
     ORDER,
     PROMOTION,
     QUESTION,
-    RATING
+    RATING;
 }

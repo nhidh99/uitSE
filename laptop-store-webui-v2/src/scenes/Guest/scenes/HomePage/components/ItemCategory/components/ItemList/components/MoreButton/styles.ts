@@ -13,8 +13,7 @@ const Button = styled.button`
     cursor: ${(props) => (props.disabled ? "arrow" : "pointer")};
 
     :hover {
-        color: white;
-        background-color: #aaa;
+        color: #288ad6;
     }
 
     :focus {

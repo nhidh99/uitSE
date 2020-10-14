@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.dto.milestone;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,16 +12,22 @@ import org.example.type.MilestoneType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserReward {
-    @JsonProperty("type")
-    private MilestoneType type;
+public class MilestoneDTO {
+    @JsonProperty("id")
+    private MilestoneType id;
+
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("description")
+    private String description;
 
     @JsonProperty("level")
     private MilestoneLevelType level;
 
-    @JsonProperty("cur_value")
-    private Number curValue;
+    @JsonProperty("target")
+    private Long target;
 
-    @JsonProperty("reward")
-    private Milestone milestone;
+    @JsonProperty("cur_value")
+    private Long curValue;
 }

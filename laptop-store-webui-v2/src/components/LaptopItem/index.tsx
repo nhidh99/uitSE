@@ -26,6 +26,9 @@ const ProductItem = ({ product, compareLink = null }: ProductItemProps) => (
         </LazyLoad>
 
         <SC.ItemInfo>
+            <SC.ItemName>{product["name"]}</SC.ItemName>
+            <br />
+
             <SC.ItemSpec>
                 <SC.ItemRating>
                     {product["avg_rating"].toFixed(1)} <FaStar size={10} />
@@ -33,18 +36,13 @@ const ProductItem = ({ product, compareLink = null }: ProductItemProps) => (
                 - RAM {product["ram"]} - {product["hard_drive"]}
             </SC.ItemSpec>
 
-            <SC.ItemName>{product["name"]}</SC.ItemName>
-            <br />
-
             <SC.UnitPrice>
                 {product["unit_price"].toLocaleString()}
                 <sup>đ</sup>
             </SC.UnitPrice>
 
             <SC.OriginPrice>
-                {(
-                    product["unit_price"] + product["discount_price"]
-                ).toLocaleString()}
+                {(product["unit_price"] + product["discount_price"]).toLocaleString()}
                 <sup>đ</sup>
             </SC.OriginPrice>
 

@@ -9,7 +9,7 @@ const UserRoute = () => (
             exact
             component={User}
             path={[
-                "/user/(info|password|addresses|orders|wish-list|rewards)",
+                "/user/(info|password|addresses|orders|wish-list|milestones)",
                 "/user/addresses/create",
                 "/user/addresses/edit/:addressId",
                 "/user/orders/:id",

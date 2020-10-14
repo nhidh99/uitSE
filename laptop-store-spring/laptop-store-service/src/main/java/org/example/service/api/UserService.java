@@ -1,6 +1,7 @@
 package org.example.service.api;
 
 import org.example.dto.laptop.LaptopOverviewDTO;
+import org.example.dto.milestone.MilestoneDTO;
 import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
@@ -14,8 +15,6 @@ public interface UserService {
     User findByUsername(String username);
 
     Map<SocialMediaType, Boolean> findSocialMediaAuthByUsername(String username);
-
-    void save(User user);
 
     OrderCheckoutDTO findCheckoutByUsername(String username);
 

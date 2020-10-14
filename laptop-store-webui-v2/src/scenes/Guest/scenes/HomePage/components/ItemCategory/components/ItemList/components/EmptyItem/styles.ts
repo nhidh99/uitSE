@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ReactPlaceholder from "react-placeholder/lib";
 
 const Container = styled.div`
-    width: 20%;
+    width: 25%;
     padding: 20px;
     height: fit-content;
     border-bottom: 1px solid #ddd;

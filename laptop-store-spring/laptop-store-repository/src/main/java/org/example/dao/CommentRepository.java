@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
+
+    Long countByApproveStatusTrueAndUserUsername(String username);
 }

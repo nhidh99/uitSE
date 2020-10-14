@@ -1,16 +1,17 @@
 package org.example.rest;
 
-import org.example.constant.ErrorMessageConstants;
 import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.dto.address.AddressOverviewDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
+import org.example.dto.milestone.MilestoneDTO;
 import org.example.dto.order.OrderOverviewDTO;
 import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.PasswordInput;
 import org.example.input.UserInfoInput;
 import org.example.model.User;
 import org.example.service.api.AddressService;
+import org.example.service.api.MilestoneService;
 import org.example.service.api.OrderService;
 import org.example.service.api.UserService;
 import org.example.type.SocialMediaType;
@@ -35,12 +36,14 @@ public class UserRestService {
     private final UserService userService;
     private final AddressService addressService;
     private final OrderService orderService;
+    private final MilestoneService milestoneService;
 
     @Autowired
-    public UserRestService(UserService userService, AddressService addressService, OrderService orderService) {
+    public UserRestService(UserService userService, AddressService addressService, OrderService orderService, MilestoneService milestoneService) {
         this.userService = userService;
         this.addressService = addressService;
         this.orderService = orderService;
+        this.milestoneService = milestoneService;
     }
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -146,5 +149,13 @@ public class UserRestService {
         String username = userDetails.getUsername();
         userService.updateUserPassword(passwordInput, username);
         return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_PASSWORD);
+    }
+
+    @GetMapping(value = "/me/milestones", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCurrentUserMilestones(@AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        List<MilestoneDTO> milestones = milestoneService.findByUsername(username);
+        return ResponseEntity.ok(milestones);
     }
 }

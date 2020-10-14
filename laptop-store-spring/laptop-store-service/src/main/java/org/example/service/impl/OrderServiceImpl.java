@@ -91,7 +91,8 @@ public class OrderServiceImpl implements OrderService {
 
         ObjectMapper om = new ObjectMapper();
         User user = userRepository.findByUsername(username);
-        Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {});
+        Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {
+        });
 
         if (cartMap.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessageConstants.EMPTY_CART);
@@ -130,10 +131,10 @@ public class OrderServiceImpl implements OrderService {
             order.setItems(items);
 
             // Set order pending status
-             OrderTrack track = OrderTrack.builder()
-                     .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE)))
-                     .status(OrderStatus.PENDING).order(order).build();
-             order.setTracks(Collections.singletonList(track));
+            OrderTrack track = OrderTrack.builder()
+                    .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE)))
+                    .status(OrderStatus.PENDING).order(order).build();
+            order.setTracks(Collections.singletonList(track));
 
             // Clear user cart
             user.setCart(EMPTY_CART);
@@ -190,5 +191,21 @@ public class OrderServiceImpl implements OrderService {
 
         items.addAll(promotionItems);
         return items;
+    }
+
+    @Override
+    public void cancelOrderByIdAndUsername(Integer orderId, String username) {
+        txTemplate.executeWithoutResult((status) -> {
+            boolean isValidRequest = orderRepository.existsByIdAndUserUsername(orderId, username);
+            if (!isValidRequest) {
+                throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+            }
+
+            Order order = orderRepository.getOne(orderId);
+            order.setStatus(OrderStatus.CANCELED);
+            OrderTrack track = OrderTrack.builder().order(order).status(OrderStatus.CANCELED)
+                    .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE))).build();
+            order.addTrack(track);
+        });
     }
 }

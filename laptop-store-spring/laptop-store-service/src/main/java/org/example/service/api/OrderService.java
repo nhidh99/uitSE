@@ -14,4 +14,6 @@ public interface OrderService {
     OrderDetailDTO findOrderDTOByOrderIdAndUsername(Integer orderId, String username);
 
     Order createOrder(Integer addressId, String username) throws JsonProcessingException;
+
+    void cancelOrderByIdAndUsername(Integer orderId, String username);
 }

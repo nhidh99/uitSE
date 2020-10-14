@@ -29,6 +29,11 @@ const userApi = {
         return axiosAuthClient.get(url);
     },
 
+    getCurrentUserMilestones: () => {
+        const url = "/users/me/milestones";
+        return axiosAuthClient.get(url);
+    },
+
     postItemFromCartToWishList: (itemId: number) => {
         const url = `/users/me/cart/laptops/${itemId}`;
         return axiosAuthClient.post(url);
