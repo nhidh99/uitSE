@@ -31,6 +31,10 @@ const laptopApi = {
         const url = `/laptops/${id}/spec`;
         return axiosPublicClient.get(url);
     },
+
+    getByFilter(url: string) {
+        return axiosPublicClient.get(url);
+    }
 };
 
 export default laptopApi;

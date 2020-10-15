@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.dao.custom.FilterLaptopRepository;
 import org.example.model.Laptop;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
+public interface LaptopRepository extends JpaRepository<Laptop, Integer>, FilterLaptopRepository {
     boolean existsByIdAndRecordStatusTrue(int id);
 
     List<Laptop> findByRecordStatusTrue(Pageable pageable);
@@ -20,15 +21,22 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer> {
 
     List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") Set<Integer> ids);
 
+    //    @Query("SELECT l FROM Laptop l " +
+//            "LEFT JOIN OrderItem d ON d.productId = l.id " +
+//            "LEFT JOIN Order o ON o.id = d.order.id " +
+//            "WHERE l.recordStatus = true " +
+//            "AND ((o.status = 'DELIVERED' AND d.productType = 'LAPTOP') " +
+//            "OR l.id NOT IN (SELECT DISTINCT d2.productId FROM OrderItem d2 WHERE d2.productType = 'LAPTOP')) " +
+//            "GROUP BY l.id ORDER BY SUM(d.quantity) DESC")
     @Query("SELECT l FROM Laptop l " +
-            "LEFT JOIN OrderItem d ON d.productId = l.id " +
-            "LEFT JOIN Order o ON o.id = d.order.id " +
+            "LEFT JOIN OrderItem i ON i.productId = l.id " +
+            "LEFT JOIN i.order as o " +
             "WHERE l.recordStatus = true " +
-            "AND ((o.status = 'DELIVERED' AND d.productType = 'LAPTOP') " +
-            "OR l.id NOT IN (SELECT DISTINCT d2.productId FROM OrderItem d2 WHERE d2.productType = 'LAPTOP')) " +
-            "GROUP BY l.id ORDER BY SUM(d.quantity) DESC")
+            "AND ((o.status = 'DELIVERED' AND i.productType = 'LAPTOP') " +
+            "OR l.id NOT IN (SELECT DISTINCT i2.productId FROM OrderItem i2 WHERE i2.productType = 'LAPTOP')) " +
+            "GROUP BY l.id ORDER BY SUM(i.quantity) DESC")
     List<Laptop> findBestSelling(Pageable pageable);
 
-        @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
+    @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
 }

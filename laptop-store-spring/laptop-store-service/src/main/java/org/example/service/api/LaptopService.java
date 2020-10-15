@@ -3,7 +3,9 @@ package org.example.service.api;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
+import org.example.input.LaptopFilterInput;
 import org.example.type.ImageType;
+import org.example.util.Pair;
 
 import java.util.List;
 
@@ -24,4 +26,6 @@ public interface LaptopService {
     LaptopSpecDTO findSpecById(int id);
 
     byte[] findImageById(Integer id, ImageType type);
+
+    Pair<List<LaptopOverviewDTO>, Long> findByFilter(LaptopFilterInput filter);
 }

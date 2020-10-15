@@ -9,6 +9,7 @@ import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.promotion.PromotionDTO;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.spec.*;
+import org.example.input.LaptopFilterInput;
 import org.example.model.Comment;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
@@ -16,6 +17,7 @@ import org.example.model.Rating;
 import org.example.service.api.LaptopService;
 import org.example.type.ImageType;
 import org.example.util.ModelMapperUtil;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -163,5 +165,14 @@ public class LaptopServiceImpl implements LaptopService {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public Pair<List<LaptopOverviewDTO>, Long> findByFilter(LaptopFilterInput filter) {
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findByFilter(filter);
+            Long laptopsCount = laptopRepository.countByFilter(filter);
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopsCount);
+        });
     }
 }

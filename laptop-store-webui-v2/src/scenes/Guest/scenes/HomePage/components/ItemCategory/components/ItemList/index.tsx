@@ -5,8 +5,6 @@ import LaptopItem from "../../../../../../../../components/LaptopItem";
 import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
 import EmptyItem from "../EmptyItem";
 import MoreButton from "../MoreButton";
-// import store from "../../../../../../../../services/redux/store";
-// import { buildErrorModal } from "../../../../../../../../services/redux/actions";
 
 type ItemListProps = {
     category: string;
@@ -39,7 +37,17 @@ const ItemList = ({ category }: ItemListProps) => {
         if (!fetching) return;
         const loadData = async () => {
             try {
-                const response = await laptopApi.getByCategory(category, page);
+                let response;
+                switch (category) {
+                    case "filter":
+                        const url = `laptops/filter${window.location.search}&page=${page}`;
+                        response = await laptopApi.getByFilter(url);
+                        break;
+                    default:
+                        response = await laptopApi.getByCategory(category, page);
+                        break;
+                }
+
                 const length = parseInt(response.headers["x-total-count"]);
                 const newProducts = [...products, ...response.data];
                 setState((prev) => ({

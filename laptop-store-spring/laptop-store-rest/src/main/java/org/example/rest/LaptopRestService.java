@@ -1,10 +1,17 @@
 package org.example.rest;
 
 import org.example.constant.ErrorMessageConstants;
+import org.example.constant.HeaderConstants;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
+import org.example.input.LaptopFilterInput;
 import org.example.service.api.LaptopService;
+import org.example.type.BrandType;
+import org.example.type.CPUType;
+import org.example.type.LaptopTagType;
+import org.example.type.SortFilterType;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -85,5 +92,24 @@ public class LaptopRestService {
     public ResponseEntity<?> getBestSellingByPage(@RequestParam(defaultValue = "1") int page) {
         List<LaptopOverviewDTO> laptops = laptopService.findBestSellingByPage(page);
         return ResponseEntity.ok(laptops);
+    }
+
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getLaptopsByFilter(
+            @RequestParam(value = "brands", defaultValue = "", required = false) List<BrandType> brands,
+            @RequestParam(value = "cpus", defaultValue = "", required = false) List<CPUType> cpus,
+            @RequestParam(value = "rams", defaultValue = "", required = false) List<Integer> rams,
+            @RequestParam(value = "tags", defaultValue = "", required = false) List<LaptopTagType> tags,
+            @RequestParam(value = "price", required = false) Integer price,
+            @RequestParam(value = "sort", defaultValue = "BEST_SELLING") SortFilterType sort,
+            @RequestParam(value = "page", defaultValue = "1") Integer page) {
+
+        LaptopFilterInput filter = LaptopFilterInput.builder().brands(brands).sort(sort)
+                .cpus(cpus).rams(rams).page(page).price(price).tags(tags).build();
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByFilter(filter);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
+                .body(laptopsAndCount.getFirst());
     }
 }

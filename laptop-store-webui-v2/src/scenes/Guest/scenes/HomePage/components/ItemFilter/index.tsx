@@ -1,48 +1,65 @@
 import { Field, Formik } from "formik";
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { useHistory } from "react-router";
+import FilterFormValues from "../../../../../../values/forms/FilterFormValues";
 import { SC } from "./styles";
+import queryString from "query-string";
 
 const ItemFilter = () => {
     const history = useHistory();
 
-    const submit = () => {
-        history.push("/filter");
+    const initialValues = useMemo<FilterFormValues>(
+        () => ({
+            brands: [],
+            cpus: [],
+            price: "",
+            rams: [],
+            tags: [],
+        }),
+        []
+    );
+
+    const submit = (values: FilterFormValues) => {
+        const params = queryString.stringify(values, {
+            arrayFormat: "comma",
+            skipEmptyString: true,
+        });
+        history.push(`/filter?${params}`);
     };
 
     return (
         <SC.Container>
             <SC.Header>BỘ LỌC</SC.Header>
-            <Formik initialValues={{}} onSubmit={submit}>
+            <Formik initialValues={initialValues} onSubmit={submit}>
                 <SC.FilterForm>
                     <SC.Title>Hãng sản xuất</SC.Title>
                     <SC.BrandGroup>
                         <label>
-                            <Field name="brands" type="checkbox" value="ACER" />
+                            <Field name="brands" type="checkbox" value="acer" />
                             Acer
                         </label>
                         <label>
-                            <Field name="brands" type="checkbox" value="ASUS" />
+                            <Field name="brands" type="checkbox" value="asus" />
                             Asus
                         </label>
                         <label>
-                            <Field name="brands" type="checkbox" value="DELL" />
+                            <Field name="brands" type="checkbox" value="dell" />
                             Dell
                         </label>
                         <label>
-                            <Field name="brands" type="checkbox" value="HP" />
+                            <Field name="brands" type="checkbox" value="hp" />
                             HP
                         </label>
                         <label>
-                            <Field name="brands" type="checkbox" value="LENOVO" />
+                            <Field name="brands" type="checkbox" value="lenovo" />
                             Lenovo
                         </label>
                         <label>
-                            <Field name="brands" type="checkbox" value="MACBOOK" />
+                            <Field name="brands" type="checkbox" value="macbook" />
                             Macbook
                         </label>
                         <label>
-                            <Field name="brands" type="checkbox" value="MSI" />
+                            <Field name="brands" type="checkbox" value="msi" />
                             MSI
                         </label>
                     </SC.BrandGroup>
@@ -50,7 +67,7 @@ const ItemFilter = () => {
                     <SC.Title>Mức giá</SC.Title>
                     <SC.InputGroup>
                         <label>
-                            <Field name="price" type="radio" value="0" />
+                            <Field name="price" type="radio" value="" />
                             Tất cả mức giá
                         </label>
                         <label>
@@ -78,23 +95,23 @@ const ItemFilter = () => {
                     <SC.Title>Nhu cầu</SC.Title>
                     <SC.InputGroup>
                         <label>
-                            <Field name="tags" type="checkbox" value="OFFICE" />
+                            <Field name="tags" type="checkbox" value="office" />
                             Học tập - văn phòng
                         </label>
                         <label>
-                            <Field name="tags" type="checkbox" value="TECHNICAL" />
+                            <Field name="tags" type="checkbox" value="technical" />
                             Đồ họa - kỹ thuật
                         </label>
                         <label>
-                            <Field name="tags" type="checkbox" value="GAMING" />
+                            <Field name="tags" type="checkbox" value="gaming" />
                             Laptop Gaming
                         </label>
                         <label>
-                            <Field name="tags" type="checkbox" value="LUXURY" />
+                            <Field name="tags" type="checkbox" value="luxury" />
                             Cao cấp - sang trọng
                         </label>
                         <label>
-                            <Field name="tags" type="checkbox" value="LIGHTRIGHT" />
+                            <Field name="tags" type="checkbox" value="lightweight" />
                             Mỏng nhẹ
                         </label>
                     </SC.InputGroup>
@@ -102,33 +119,33 @@ const ItemFilter = () => {
                     <SC.Title>CPU</SC.Title>
                     <SC.InputGroup>
                         <label>
-                            <Field name="cpus" type="checkbox" value="INTEL_CORE_I7" />
+                            <Field name="cpus" type="checkbox" value="intel_core_i7" />
                             Intel Core i7
                         </label>
                         <label>
-                            <Field name="cpus" type="checkbox" value="INTEL_CORE_I5" />
+                            <Field name="cpus" type="checkbox" value="intel_core_i5" />
                             Intel Core i5
                         </label>
                         <label>
-                            <Field name="cpus" type="checkbox" value="INTEL_CORE_I3" />
+                            <Field name="cpus" type="checkbox" value="intel_core_i3" />
                             Intel Core i3
                         </label>
                         <label>
-                            <Field name="cpus" type="checkbox" value="INTEL_CELERON" />
+                            <Field name="cpus" type="checkbox" value="intel_celeron" />
                             Intel Core Celeron
                         </label>
                         <label>
-                            <Field name="cpus" type="checkbox" value="INTEL_PENTIUM" />
+                            <Field name="cpus" type="checkbox" value="intel_pentium" />
                             Intel Core Pentium
                         </label>
                         <label>
-                            <Field name="cpus" type="checkbox" value="AMD" />
+                            <Field name="cpus" type="checkbox" value="amd" />
                             AMD
                         </label>
                     </SC.InputGroup>
 
                     <SC.Title>RAM</SC.Title>
-                    <SC.InputGroup>
+                    <SC.BrandGroup>
                         <label>
                             <Field name="rams" type="checkbox" value="24" />
                             24 GB
@@ -143,7 +160,7 @@ const ItemFilter = () => {
                         <label>
                             <Field name="rams" type="checkbox" value="4" />4 GB
                         </label>
-                    </SC.InputGroup>
+                    </SC.BrandGroup>
 
                     <SC.Button type="submit">Tìm kiếm</SC.Button>
                 </SC.FilterForm>
@@ -152,4 +169,4 @@ const ItemFilter = () => {
     );
 };
 
-export default ItemFilter;
+export default memo(ItemFilter);
