@@ -9,6 +9,8 @@ const CategoryContainer = styled.div`
 const CategoryHeader = styled.header`
     font-size: 18px;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
 `;
 
 const ItemContainer = styled.div`
@@ -17,6 +19,9 @@ const ItemContainer = styled.div`
     flex-wrap: wrap;
     border-left: 1px solid #ddd;
     border-top: 1px solid #ddd;
+    background-color: white;
+    margin-right: -1px;
+    margin-bottom: -1px;
 `;
 
 export const SC = {

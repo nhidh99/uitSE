@@ -59,38 +59,42 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public List<LaptopOverviewDTO> findByPage(int page) {
+    public Pair<List<LaptopOverviewDTO>, Long> findByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
-            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+            long laptopCount = laptopRepository.countByRecordStatusTrue();
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
     }
 
     @Override
-    public List<LaptopOverviewDTO> findMostDiscountByPage(int page) {
+    public Pair<List<LaptopOverviewDTO>, Long> findMostDiscountByPage(int page) {
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
         return txTemplate.execute((status) -> {
-            Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
-            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+            long laptopCount = laptopRepository.countByRecordStatusTrue();
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
     }
 
     @Override
-    public List<LaptopOverviewDTO> findCheapestByPage(int page) {
+    public Pair<List<LaptopOverviewDTO>, Long> findCheapestByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("unitPrice"));
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
-            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+            long laptopCount = laptopRepository.countByRecordStatusTrue();
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
     }
 
     @Override
-    public List<LaptopOverviewDTO> findBestSellingByPage(int page) {
+    public Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findBestSelling(pageable);
-            return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
+            long laptopCount = laptopRepository.countByRecordStatusTrue();
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
     }
 

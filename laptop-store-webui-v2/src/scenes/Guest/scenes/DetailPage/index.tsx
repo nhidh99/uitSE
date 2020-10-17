@@ -69,7 +69,7 @@ const DetailPage = () => {
         </>
     ) : (
         <>
-            <ContentBlock title="Thong tin" component={OverviewBlock} show={true} />
+            <ContentBlock title="Thông tin" component={OverviewBlock} show={true} />
             <ContentBlock title="Thông tin chi tiết" component={SpecBlock} show={true} />
             <ContentBlock title="Sản phẩm tương tự" component={SuggestBlock} show={true} />
             <ContentBlock title="Hỏi, đáp về sản phẩm" component={QuestionBlock} show={true} />

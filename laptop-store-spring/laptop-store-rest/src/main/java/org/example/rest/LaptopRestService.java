@@ -36,27 +36,15 @@ public class LaptopRestService {
     @GetMapping(value = "/{id}/details", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getDetailsById(@PathVariable("id") int id) {
-        try {
-            LaptopDetailDTO output = laptopService.findDetailById(id);
-            return ResponseEntity.ok(output);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        LaptopDetailDTO output = laptopService.findDetailById(id);
+        return ResponseEntity.ok(output);
     }
 
     @GetMapping(value = "/{id}/spec", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getSpecById(@PathVariable("id") int id) {
-        try {
-            LaptopSpecDTO output = laptopService.findSpecById(id);
-            return ResponseEntity.ok(output);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
-        }
+        LaptopSpecDTO output = laptopService.findSpecById(id);
+        return ResponseEntity.ok(output);
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "ids")
@@ -69,29 +57,37 @@ public class LaptopRestService {
     @GetMapping(value = "/latest", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopOverviewDTO> laptops = laptopService.findByPage(page);
-        return ResponseEntity.ok(laptops);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByPage(page);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
+                .body(laptopsAndCount.getFirst());
     }
 
     @GetMapping(value = "/discount", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getMostDiscountByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopOverviewDTO> laptops = laptopService.findMostDiscountByPage(page);
-        return ResponseEntity.ok(laptops);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findMostDiscountByPage(page);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
+                .body(laptopsAndCount.getFirst());
     }
 
     @GetMapping(value = "/cheap", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getCheapestByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopOverviewDTO> laptops = laptopService.findCheapestByPage(page);
-        return ResponseEntity.ok(laptops);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findCheapestByPage(page);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
+                .body(laptopsAndCount.getFirst());
     }
 
     @GetMapping(value = "/best-selling", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getBestSellingByPage(@RequestParam(defaultValue = "1") int page) {
-        List<LaptopOverviewDTO> laptops = laptopService.findBestSellingByPage(page);
-        return ResponseEntity.ok(laptops);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findBestSellingByPage(page);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
+                .body(laptopsAndCount.getFirst());
     }
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)

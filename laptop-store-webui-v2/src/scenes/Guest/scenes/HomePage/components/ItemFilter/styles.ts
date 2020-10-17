@@ -36,7 +36,9 @@ const Title = styled.header`
 `;
 
 const BrandGroup = styled.div`
-    border-bottom: 1px dashed #ddd;
+    :not(:last-of-type) {
+        border-bottom: 1px dashed #ddd;
+    }
     display: flex;
     flex: 1 50%;
     flex-wrap: wrap;
@@ -54,16 +56,4 @@ const InputGroup = styled.div`
     }
 `;
 
-const Button = styled.button`
-    padding: 10px;
-    color: white;
-    background-color: #d9534f;
-    margin-top: 10px;
-    text-align: center;
-    border-radius: 3px;
-    border: none;
-    width: 100%;
-    cursor: pointer;
-`;
-
-export const SC = { Container, Header, Title, FilterForm, BrandGroup, InputGroup, Button };
+export const SC = { Container, Header, Title, FilterForm, BrandGroup, InputGroup };

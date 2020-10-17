@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface LaptopService {
 
-    List<LaptopOverviewDTO> findByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findByPage(int page);
 
-    List<LaptopOverviewDTO> findMostDiscountByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findMostDiscountByPage(int page);
 
-    List<LaptopOverviewDTO> findCheapestByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findCheapestByPage(int page);
 
-    List<LaptopOverviewDTO> findBestSellingByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page);
 
     List<LaptopOverviewDTO> findByIds(List<Integer> ids);
 

@@ -21,13 +21,6 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
 
     List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") Set<Integer> ids);
 
-    //    @Query("SELECT l FROM Laptop l " +
-//            "LEFT JOIN OrderItem d ON d.productId = l.id " +
-//            "LEFT JOIN Order o ON o.id = d.order.id " +
-//            "WHERE l.recordStatus = true " +
-//            "AND ((o.status = 'DELIVERED' AND d.productType = 'LAPTOP') " +
-//            "OR l.id NOT IN (SELECT DISTINCT d2.productId FROM OrderItem d2 WHERE d2.productType = 'LAPTOP')) " +
-//            "GROUP BY l.id ORDER BY SUM(d.quantity) DESC")
     @Query("SELECT l FROM Laptop l " +
             "LEFT JOIN OrderItem i ON i.productId = l.id " +
             "LEFT JOIN i.order as o " +
@@ -39,4 +32,6 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
 
     @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
+
+    Long countByRecordStatusTrue();
 }
