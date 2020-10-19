@@ -2,7 +2,9 @@ package org.example.dao.custom;
 
 import org.example.constant.PaginateConstants;
 import org.example.input.LaptopFilterInput;
+import org.example.input.LaptopSearchInput;
 import org.example.model.Laptop;
+import org.example.type.SortFilterType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,12 +22,29 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
     private static final String LAPTOP_COUNT_QUERY = "SELECT COUNT(l) FROM Laptop l";
     private static final String BEST_SELLING_LAPTOP_IDS_SELECT_QUERY =
             "SELECT l.id FROM Laptop l " +
-            "LEFT JOIN OrderItem i ON i.productId = l.id " +
-            "LEFT JOIN i.order as o " +
-            "WHERE l.recordStatus = true " +
-            "AND ((o.status = 'DELIVERED' AND i.productType = 'LAPTOP') " +
-            "OR l.id NOT IN (SELECT DISTINCT i2.productId FROM OrderItem i2 WHERE i2.productType = 'LAPTOP')) " +
-            "GROUP BY l.id ORDER BY SUM(i.quantity) DESC";
+                    "LEFT JOIN OrderItem i ON i.productId = l.id " +
+                    "LEFT JOIN i.order as o " +
+                    "WHERE l.recordStatus = true " +
+                    "AND ((o.status = 'DELIVERED' AND i.productType = 'LAPTOP') " +
+                    "OR l.id NOT IN (SELECT DISTINCT i2.productId FROM OrderItem i2 WHERE i2.productType = 'LAPTOP')) " +
+                    "GROUP BY l.id ORDER BY SUM(i.quantity) DESC";
+
+
+
+    @Override
+    public List<Laptop> findByName(LaptopSearchInput search) {
+        StringBuilder sb = new StringBuilder("SELECT l FROM Laptop l WHERE l.name LIKE '%'||:name||'%' AND l.recordStatus = true");
+        Map<String, Object> params = new HashMap<>();
+        buildFilterByOrder(sb, params, search.getSort());
+        params.put("name", search.getName());
+
+        TypedQuery<Laptop> typedQuery = em.createQuery(sb.toString(), Laptop.class);
+        for (String key : params.keySet()) {
+            typedQuery.setParameter(key, params.get(key));
+        }
+        return typedQuery.setFirstResult(PaginateConstants.LAPTOP_PER_PAGE * (search.getPage() - 1))
+                .setMaxResults(PaginateConstants.LAPTOP_PER_PAGE).getResultList();
+    }
 
     @Override
     public List<Laptop> findByFilter(LaptopFilterInput filter) {
@@ -51,7 +70,7 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
         buildFilterByRams(sb, params, filter);
 
         if (selectQuery.equals(LAPTOP_SELECT_QUERY)) {
-            buildFilterByOrder(sb, params, filter);
+            buildFilterByOrder(sb, params, filter.getSort());
         }
 
         TypedQuery<T> typedQuery = em.createQuery(sb.toString(), clazz);
@@ -129,9 +148,9 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
         }
     }
 
-    private void buildFilterByOrder(StringBuilder sb, Map<String, Object> params, LaptopFilterInput filter) {
+    private void buildFilterByOrder(StringBuilder sb, Map<String, Object> params, SortFilterType sort) {
         sb.append(" ORDER BY");
-        switch (filter.getSort()) {
+        switch (sort) {
             case BEST_SELLING:
                 List<Integer> bestSellingIds = findBestSellingLaptopIds();
                 sb.append(" FIELD (l.id, :bestSellingIds)");

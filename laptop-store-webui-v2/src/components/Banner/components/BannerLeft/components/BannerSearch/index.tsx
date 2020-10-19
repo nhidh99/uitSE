@@ -14,8 +14,10 @@ const BannerSearch = () => {
             if (name.length !== 0) {
                 const params = new URLSearchParams();
                 params.append("name", name);
-                const url = `/search?${params.toString()}`;
-                history.push(url);
+                history.push({
+                    pathname: "/search",
+                    search: params.toString(),
+                });
             }
         }
     }, []);

@@ -13,7 +13,7 @@ const SortFilter = () => {
         const params = queryString.parse(location.search);
         params.sort = e.target.value;
         history.push({
-            pathname: "/filter",
+            pathname: window.location.pathname,
             search: queryString.stringify(params, { skipEmptyString: true }),
         });
     }, []);

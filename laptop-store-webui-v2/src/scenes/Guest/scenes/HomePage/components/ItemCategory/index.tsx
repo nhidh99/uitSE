@@ -12,7 +12,7 @@ const ItemCategory = ({ title, category }: ItemCategoryProps) => (
     <SC.CategoryContainer>
         <SC.CategoryHeader>
             {title}
-            {category === "filter" ? <SortFilter /> : null}
+            {["filter", "search"].includes(category) ? <SortFilter /> : null}
         </SC.CategoryHeader>
         <SC.ItemContainer>
             <ItemList category={category} />

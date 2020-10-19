@@ -10,6 +10,7 @@ import org.example.dto.promotion.PromotionDTO;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.spec.*;
 import org.example.input.LaptopFilterInput;
+import org.example.input.LaptopSearchInput;
 import org.example.model.Comment;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
@@ -100,11 +101,10 @@ public class LaptopServiceImpl implements LaptopService {
 
 
     @Override
-    public Pair<List<LaptopOverviewDTO>, Long> findByName(String name, int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
+    public Pair<List<LaptopOverviewDTO>, Long> findByName(LaptopSearchInput search) {
         return txTemplate.execute((status) -> {
-            List<Laptop> laptops = laptopRepository.findByNameContainingIgnoreCaseAndRecordStatusTrue(name, pageable);
-            long laptopCount = laptopRepository.countByNameContainingIgnoreCaseAndRecordStatusTrue(name);
+            List<Laptop> laptops = laptopRepository.findByName(search);
+            long laptopCount = laptopRepository.countByNameContainingIgnoreCaseAndRecordStatusTrue(search.getName());
             return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
     }

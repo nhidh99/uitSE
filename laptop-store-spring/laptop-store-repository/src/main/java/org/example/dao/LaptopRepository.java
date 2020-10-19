@@ -35,7 +35,5 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
 
     Long countByRecordStatusTrue();
 
-    List<Laptop> findByNameContainingIgnoreCaseAndRecordStatusTrue(String name, Pageable pageable);
-
     Long countByNameContainingIgnoreCaseAndRecordStatusTrue(String name);
 }

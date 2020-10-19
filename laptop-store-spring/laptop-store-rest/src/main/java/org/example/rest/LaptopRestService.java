@@ -6,6 +6,7 @@ import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.input.LaptopFilterInput;
+import org.example.input.LaptopSearchInput;
 import org.example.service.api.LaptopService;
 import org.example.type.BrandType;
 import org.example.type.CPUType;
@@ -111,9 +112,12 @@ public class LaptopRestService {
 
     @PreAuthorize("permitAll()")
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getLaptopsByName(@RequestParam(value = "name", defaultValue = "", required = false) String name,
-                                              @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByName(name, page);
+    public ResponseEntity<?> getLaptopsByName(
+            @RequestParam(value = "name", defaultValue = "", required = false) String name,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "sort", defaultValue = "BEST_SELLING") SortFilterType sort) {
+        LaptopSearchInput search = LaptopSearchInput.builder().name(name).page(page).sort(sort).build();
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByName(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());

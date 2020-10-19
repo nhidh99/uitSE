@@ -19,7 +19,10 @@ const FilterForm = memo(() => {
                 history.push("/");
             }
         } else {
-            history.push(`/filter?${params}`);
+            history.push({
+                pathname: "/filter",
+                search: params,
+            });
         }
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [values]);

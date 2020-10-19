@@ -27,7 +27,7 @@ const HomePage = () => (
 
                 <Route
                     exact
-                    path={["/search", "/filter"]}
+                    path="/filter"
                     component={() => <ItemCategory title="KẾT QUẢ TÌM KIẾM" category="filter" />}
                 />
             </Switch>

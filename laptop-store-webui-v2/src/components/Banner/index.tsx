@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import BannerLeft from "./components/BannerLeft";
 import BannerRight from "./components/BannerRight";
 import { SC } from "./styles";
@@ -12,4 +12,4 @@ const Banner = () => (
     </SC.OuterContainer>
 );
 
-export default Banner;
+export default memo(Banner);

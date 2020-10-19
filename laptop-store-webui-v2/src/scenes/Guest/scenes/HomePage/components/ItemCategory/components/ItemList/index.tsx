@@ -40,23 +40,28 @@ const ItemList = ({ category }: ItemListProps) => {
         const loadData = async () => {
             try {
                 let response;
-                switch (window.location.pathname) {
-                    case "/filter":
+                switch (category) {
+                    case "filter": {
                         const url = `laptops/filter${window.location.search}&page=${page}`;
                         response = await laptopApi.getByFilter(url);
                         break;
-                    case "/search":
-                        const name = new URLSearchParams(window.location.search).get("name");
-                        if (name) {
-                            response = await laptopApi.getByName(name, page);
+                    }
+                    case "search": {
+                        const params = new URLSearchParams(window.location.search);
+                        const name = params.get("name");
+                        const sort = params?.get("sort") ?? "best_selling";
+                        if (name !== null) {
+                            response = await laptopApi.getByName(name, sort, page);
                         } else {
                             history.push("/");
                             return;
                         }
                         break;
-                    default:
+                    }
+                    default: {
                         response = await laptopApi.getByCategory(category, page);
                         break;
+                    }
                 }
 
                 const length = parseInt(response.headers["x-total-count"]);

@@ -36,9 +36,9 @@ const laptopApi = {
         return axiosPublicClient.get(url);
     },
 
-    getByName(name: string, page: number) {
+    getByName(name: string, sort: string, page: number) {
         const url = "/laptops/search";
-        const config = { params: { page: page, name: name } };
+        const config = { params: { page: page, name: name, sort: sort } };
         return axiosPublicClient.get(url, config);
     },
 };
