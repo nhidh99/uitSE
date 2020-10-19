@@ -108,4 +108,14 @@ public class LaptopRestService {
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getLaptopsByName(@RequestParam(value = "name", defaultValue = "", required = false) String name,
+                                              @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByName(name, page);
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
+                .body(laptopsAndCount.getFirst());
+    }
 }

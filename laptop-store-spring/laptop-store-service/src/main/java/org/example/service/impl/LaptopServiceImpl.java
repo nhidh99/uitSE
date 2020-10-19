@@ -98,6 +98,17 @@ public class LaptopServiceImpl implements LaptopService {
         });
     }
 
+
+    @Override
+    public Pair<List<LaptopOverviewDTO>, Long> findByName(String name, int page) {
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops = laptopRepository.findByNameContainingIgnoreCaseAndRecordStatusTrue(name, pageable);
+            long laptopCount = laptopRepository.countByNameContainingIgnoreCaseAndRecordStatusTrue(name);
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
+        });
+    }
+
     @Override
     public List<LaptopOverviewDTO> findByIds(List<Integer> ids) {
         return txTemplate.execute((status) -> {

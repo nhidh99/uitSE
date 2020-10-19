@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import userApi from "../../../../../../../../../../../../services/api/userApi";
@@ -51,7 +51,10 @@ const WishListButton = () => {
                 dispatch(setMessage("Lỗi: Không thể cập nhật danh sách xem sau"));
             }
         };
-        syncWishList();
+
+        if (getCookie("access_token")) {
+            syncWishList();
+        }
     }, [isInWishList]);
 
     return (
@@ -63,4 +66,4 @@ const WishListButton = () => {
     );
 };
 
-export default WishListButton;
+export default memo(WishListButton);

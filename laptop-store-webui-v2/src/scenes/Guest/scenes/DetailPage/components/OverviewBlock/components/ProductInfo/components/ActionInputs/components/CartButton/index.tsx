@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { memo } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import cartService from "../../../../../../../../../../../../services/helper/cartService";
@@ -47,4 +47,4 @@ const CartButton = () => {
     );
 };
 
-export default CartButton;
+export default memo(CartButton);

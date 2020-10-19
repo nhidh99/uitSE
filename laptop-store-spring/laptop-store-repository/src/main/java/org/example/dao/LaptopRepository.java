@@ -34,4 +34,8 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
 
     Long countByRecordStatusTrue();
+
+    List<Laptop> findByNameContainingIgnoreCaseAndRecordStatusTrue(String name, Pageable pageable);
+
+    Long countByNameContainingIgnoreCaseAndRecordStatusTrue(String name);
 }

@@ -5,6 +5,7 @@ import LaptopItem from "../../../../../../../../components/LaptopItem";
 import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
 import EmptyItem from "../EmptyItem";
 import MoreButton from "../MoreButton";
+import { useHistory } from "react-router";
 
 type ItemListProps = {
     category: string;
@@ -30,6 +31,7 @@ const ItemList = ({ category }: ItemListProps) => {
         []
     );
 
+    const history = useHistory();
     const [state, setState] = useState<ItemListState>(initialState);
     const { products, loading, fetching, page, isDone } = state;
 
@@ -38,10 +40,19 @@ const ItemList = ({ category }: ItemListProps) => {
         const loadData = async () => {
             try {
                 let response;
-                switch (category) {
-                    case "filter":
+                switch (window.location.pathname) {
+                    case "/filter":
                         const url = `laptops/filter${window.location.search}&page=${page}`;
                         response = await laptopApi.getByFilter(url);
+                        break;
+                    case "/search":
+                        const name = new URLSearchParams(window.location.search).get("name");
+                        if (name) {
+                            response = await laptopApi.getByName(name, page);
+                        } else {
+                            history.push("/");
+                            return;
+                        }
                         break;
                     default:
                         response = await laptopApi.getByCategory(category, page);

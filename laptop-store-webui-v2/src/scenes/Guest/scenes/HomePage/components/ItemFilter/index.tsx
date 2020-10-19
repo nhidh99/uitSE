@@ -174,8 +174,10 @@ const ItemFilter = () => {
         };
 
         Object.keys(output).forEach((key) => {
-            // @ts-ignore
-            output[key] = Array.isArray(output[key]) ? output[key] : [output[key]];
+            if (key !== "price") {
+                // @ts-ignore
+                output[key] = Array.isArray(output[key]) ? output[key] : [output[key]];
+            }
         });
         return output;
     }, []);

@@ -34,7 +34,13 @@ const laptopApi = {
 
     getByFilter(url: string) {
         return axiosPublicClient.get(url);
-    }
+    },
+
+    getByName(name: string, page: number) {
+        const url = "/laptops/search";
+        const config = { params: { page: page, name: name } };
+        return axiosPublicClient.get(url, config);
+    },
 };
 
 export default laptopApi;

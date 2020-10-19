@@ -19,6 +19,8 @@ public interface LaptopService {
 
     Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page);
 
+    Pair<List<LaptopOverviewDTO>, Long> findByName(String name, int page);
+
     List<LaptopOverviewDTO> findByIds(List<Integer> ids);
 
     LaptopDetailDTO findDetailById(int id);
