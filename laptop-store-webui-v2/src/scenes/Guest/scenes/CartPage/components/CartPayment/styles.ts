@@ -21,10 +21,10 @@ const PaymentButton = styled.button`
     border-radius: 4px;
     border: none;
     background-color: #d9534f;
-    cursor: pointer;
     padding: 12px;
     font-size: 16px;
     line-height: 1em;
+    cursor: ${(props) => (props.disabled ? "arrow" : "pointer")};
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 

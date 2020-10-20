@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
-const CategoryContainer = styled.div`
+const OuterContainer = styled.div`
     :not(:last-of-type) {
         margin-bottom: 30px;
     }
 `;
-
-const CategoryHeader = styled.header`
+const Header = styled.header`
     font-size: 18px;
     margin-bottom: 10px;
     display: flex;
@@ -25,7 +24,7 @@ const ItemContainer = styled.div`
 `;
 
 export const SC = {
-    CategoryContainer,
-    CategoryHeader,
+    OuterContainer,
+    Header,
     ItemContainer,
 };

@@ -25,7 +25,7 @@ const SortFilter = () => {
     }, [location.search]);
 
     return (
-        <SC.Select value={value} name="sort" onChange={changeSort}>
+        <SC.Select id="sort" value={value} name="sort" onChange={changeSort}>
             <option value="best_selling">Bán chạy</option>
             <option value="low_price">Giá thấp</option>
             <option value="high_price">Giá cao</option>

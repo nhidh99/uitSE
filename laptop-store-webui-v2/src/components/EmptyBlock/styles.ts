@@ -1,16 +1,26 @@
 import styled from "styled-components";
 
-const OuterContainer = styled.div``;
+const OuterContainer = styled.div`
+    width: 100%;
+    background-color: white;
+    box-sizing: border-box;
 
-const InnerContainer = styled.div``;
+    &.border {
+        border: 1px solid #ddd;
+        padding: 30px;
+    }
+`;
 
-const IconContainer = styled.div``;
+const InnerContainer = styled.div`
+    text-align: center;
+`;
 
-const Title = styled.label``;
+const IconContainer = styled.div`
+    font-size: 50px;
+`;
 
 export const SC = {
     OuterContainer,
     InnerContainer,
     IconContainer,
-    Title,
 };

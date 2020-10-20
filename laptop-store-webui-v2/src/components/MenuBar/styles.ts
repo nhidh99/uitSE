@@ -10,6 +10,7 @@ const Container = styled.nav`
     ul {
         padding: 0;
         margin: 0;
+        list-style-type: none;
     }
 `;
 
