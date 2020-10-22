@@ -114,7 +114,7 @@ public class AddressServiceImpl implements AddressService {
 
             // If the deleted address is user default address
             User user = userRepository.findByUsername(username);
-            if (user.getDefaultAddressId().equals(addressId)) {
+            if (addressId.equals(user.getDefaultAddressId())) {
                 user.setDefaultAddressId(null);
             }
         });

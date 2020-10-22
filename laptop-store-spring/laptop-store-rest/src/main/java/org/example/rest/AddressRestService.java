@@ -56,6 +56,7 @@ public class AddressRestService {
             addressService.deleteAddress(addressId, username);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
