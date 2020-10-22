@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-    margin-bottom: 20px;
+    padding-bottom: 25px;
     *:focus {
         outline: 0;
     }
