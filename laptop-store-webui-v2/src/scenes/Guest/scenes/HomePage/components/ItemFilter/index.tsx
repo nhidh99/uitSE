@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Field, Formik, useFormikContext } from "formik";
-import React, { memo, useEffect, useMemo } from "react";
+import React, { memo, useEffect, useMemo, useRef } from "react";
 import { useHistory, useLocation } from "react-router";
 import FilterFormValues from "../../../../../../values/forms/FilterFormValues";
 import { SC } from "./styles";
@@ -9,6 +9,7 @@ import queryString from "query-string";
 const FilterForm = memo(() => {
     const history = useHistory();
     const location = useLocation();
+    const firstLoad = useRef<boolean>(true);
 
     const { values } = useFormikContext<FilterFormValues>();
 
@@ -24,7 +25,12 @@ const FilterForm = memo(() => {
                 search: params,
             });
         }
-        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        if (firstLoad.current) {
+            firstLoad.current = false;
+        } else {
+            window.scrollTo({ top: 230, behavior: "smooth" });
+        }
     }, [values]);
 
     return (

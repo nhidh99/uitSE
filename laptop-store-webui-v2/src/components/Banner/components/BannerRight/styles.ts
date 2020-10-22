@@ -2,13 +2,13 @@ import styled from "styled-components";
 
 const NavBar = styled.nav`
     ul {
-        display: inline-block;
+        display: flex;
         margin: 0;
+        list-style-type: none;
     }
 
     li {
         padding: 10px;
-        display: inline-block;
         color: white;
         text-align: center;
         cursor: pointer;

@@ -219,17 +219,17 @@ def insert_laptops(laptops):
         brand = laptop['Tên sản phẩm'].split()[0].upper()
         allowed_brands = ['ACER', 'ASUS', 'DELL', 'HP', 'LENOVO', 'MACBOOK', 'MSI']
         if brand in allowed_brands:
-            # insert_laptop(laptop)
-            # insert_cpu(laptop)
-            # insert_ram(laptop)
-            # insert_hard_drive(laptop)
-            # insert_monitor(laptop)
-            # insert_primary_images(laptop)
-            # insert_secondary_images(laptop)
-            # insert_battery(laptop)
-            # insert_laptop_promotions(laptop)
-            # insert_tags(laptop)
-            # update_discount(laptop)
+            insert_laptop(laptop)
+            insert_cpu(laptop)
+            insert_ram(laptop)
+            insert_hard_drive(laptop)
+            insert_monitor(laptop)
+            insert_primary_images(laptop)
+            insert_secondary_images(laptop)
+            insert_battery(laptop)
+            insert_laptop_promotions(laptop)
+            insert_tags(laptop)
+            update_discount(laptop)
             print('%d. Done: %s' % (i, laptop['Tên sản phẩm']))
         else:
             print('%d. Not allow: %s' % (i, laptop['Tên sản phẩm']))
@@ -297,7 +297,7 @@ def insert_promotions(promotions):
 
 def insert_db():
     laptops = get_data()
-    promotions = get_promotion_data()
+    # promotions = get_promotion_data()
     try:
         insert_laptops(laptops)
         # insert_promotions(promotions)

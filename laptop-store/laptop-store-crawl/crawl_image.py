@@ -20,8 +20,8 @@ def is_square_image(url):
 
 def get_images(id, alt, tiki_product_id):
     url = 'https://tiki.vn/api/v2/products/' + tiki_product_id + '?include=images'
-    resp = requests.get(url)
-    data = resp.json()
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    data = requests.get(url, headers=headers).json()
     folder_name = 'laptops/raw/%s-%s' % (id, alt)
     images = data['images']
 

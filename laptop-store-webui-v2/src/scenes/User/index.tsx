@@ -1,25 +1,29 @@
-import React, { useMemo } from "react";
-import { FaAddressBook, FaBoxes, FaHeart, FaInfoCircle, FaLock, FaTrophy } from "react-icons/fa";
+import React, { memo, useMemo, useState } from "react";
+import {
+    FaAddressBook,
+    FaBoxes,
+    FaHeart,
+    FaInfoCircle,
+    FaLock,
+    FaTrophy,
+} from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router";
 import Loader from "../../components/Loader";
 import MenuBar from "../../components/MenuBar";
 import { RootState } from "../../services/redux/rootReducer";
-import { setMenuTitle } from "../../services/redux/slices/menuTitleSlice";
-import store from "../../services/redux/store";
 import MenuItemProps from "../../values/props/MenuItemProps";
 import AddressDetail from "./scenes/AddressDetail";
 import AddressPage from "./scenes/AddressPage";
 import InfoPage from "./scenes/InfoPage";
 import MilestonePage from "./scenes/MilestonePage";
-import OrderDetail from "./scenes/OrderDetail";
 import OrderPage from "./scenes/OrderPage";
 import PasswordPage from "./scenes/PasswordPage";
 import WishListPage from "./scenes/WishListPage";
 import { SC } from "./styles";
 
 const User = () => {
-    const title = useSelector((state: RootState) => state.menuTitle);
+    const [title, setTitle] = useState<string | null>(null);
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
 
     const items: MenuItemProps[] = useMemo(
@@ -58,99 +62,88 @@ const User = () => {
         []
     );
 
+    const routes = useMemo(
+        () => [
+            {
+                path: "/user/info",
+                title: "Thông tin",
+                component: <InfoPage />,
+            },
+            {
+                path: "/user/addresses",
+                title: "Sổ địa chỉ",
+                component: <AddressPage />,
+            },
+            {
+                path: "/user/addresses/create",
+                title: "Tạo địa chỉ",
+                component: <AddressDetail />,
+            },
+            {
+                path: "/user/addresses/edit/:addressId",
+                title: "Cập nhật địa chỉ",
+                component: <AddressDetail />,
+            },
+            {
+                path: "/user/password",
+                title: "Đổi mật khẩu",
+                component: <PasswordPage />,
+            },
+            {
+                path: "/user/orders",
+                title: "Danh sách đơn hàng",
+                component: <OrderPage />,
+            },
+            {
+                path: "/user/orders/:orderId",
+                title: "Chi tiết đơn hàng",
+                component: <OrderPage />,
+            },
+            {
+                path: "/user/wish-list",
+                title: "Danh sách xem sau",
+                component: <WishListPage />,
+            },
+            {
+                path: "/user/milestones",
+                title: "Cột mốc",
+                component: <MilestonePage />,
+            },
+        ],
+        []
+    );
+
     return (
         <SC.Container>
             <SC.LeftContainer>
                 <MenuBar items={items} />
             </SC.LeftContainer>
+
             <SC.RightContainer>
                 <SC.TitleContainer>{title}</SC.TitleContainer>
                 <SC.LoaderContainer>
-                    <Loader loading={loaderStatus.isLoading} loadOnce={loaderStatus.isFetching} />
+                    <Loader
+                        loading={loaderStatus.isLoading}
+                        loadOnce={loaderStatus.isFetching}
+                    />
                     <SC.ContentContainer
-                        style={{ display: loaderStatus.isFetching ? "none" : "inherit" }}
+                        style={{
+                            display: loaderStatus.isFetching
+                                ? "none"
+                                : "inherit",
+                        }}
                     >
                         <Switch>
-                            <Route
-                                exact
-                                path="/user/info"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Thông tin"));
-                                    return <InfoPage />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/addresses"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Sổ địa chỉ"));
-                                    return <AddressPage />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/addresses/create"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Tạo địa chỉ"));
-                                    return <AddressDetail />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/addresses/edit/:addressId"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Cập nhật địa chỉ"));
-                                    return <AddressDetail />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/password"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Đổi mật khẩu"));
-                                    return <PasswordPage />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/orders"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Danh sách đơn hàng"));
-                                    return <OrderPage />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/orders/:orderId"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Chi tiết đơn hàng"));
-                                    return <OrderDetail />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/wish-list"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Danh sách xem sau"));
-                                    return <WishListPage />;
-                                }}
-                            />
-
-                            <Route
-                                exact
-                                path="/user/milestones"
-                                render={() => {
-                                    store.dispatch(setMenuTitle("Cột mốc"));
-                                    return <MilestonePage />;
-                                }}
-                            />
+                            {routes.map((route) => (
+                                <Route
+                                    exact
+                                    path={route.path}
+                                    render={() => {
+                                        setTitle(route.title);
+                                        return route.component;
+                                    }}
+                                />
+                            ))}
                         </Switch>
                     </SC.ContentContainer>
                 </SC.LoaderContainer>
@@ -159,4 +152,4 @@ const User = () => {
     );
 };
 
-export default User;
+export default memo(User);

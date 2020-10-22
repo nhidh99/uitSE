@@ -184,6 +184,7 @@ const CheckoutPage = () => {
                             </SC.ItemList>
                         </SC.SectionContainer>
                     </SC.LeftContainer>
+
                     <SC.RightContainer>
                         <SC.SectionContainer>
                             <SectionHeader
@@ -253,7 +254,10 @@ const CheckoutPage = () => {
                                     </SC.TotalPrice>
                                 </SC.InfoRow>
 
-                                <SC.SubmitButton disabled={submitting} onClick={submitCheckout}>
+                                <SC.SubmitButton
+                                    disabled={submitting || addresses.length === 0}
+                                    onClick={submitCheckout}
+                                >
                                     ĐẶT HÀNG
                                 </SC.SubmitButton>
                             </SC.ItemList>

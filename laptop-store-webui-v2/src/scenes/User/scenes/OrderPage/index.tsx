@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FaBoxes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
+import EmptyBlock from "../../../../components/EmptyBlock";
 import Paginate from "../../../../components/Paginate";
 import userApi from "../../../../services/api/userApi";
 import {
@@ -26,7 +28,9 @@ const OrderPage = () => {
         () => ({
             orders: null,
             orderCount: 0,
-            page: parseInt(new URLSearchParams(window.location.search)?.get("page") ?? "1"),
+            page: parseInt(
+                new URLSearchParams(window.location.search)?.get("page") ?? "1"
+            ),
         }),
         []
     );
@@ -55,10 +59,24 @@ const OrderPage = () => {
 
     return orders ? (
         <>
-            {orders.map((order) => (
-                <OrderBlock order={order} />
-            ))}
-            <Paginate count={orderCount} initialPage={page} pageChange={pageChange} />
+            {orderCount === 0 ? (
+                <EmptyBlock
+                    icon={<FaBoxes />}
+                    title="Danh sách đơn hàng trống"
+                    borderless
+                />
+            ) : (
+                <>
+                    {orders.map((order) => (
+                        <OrderBlock order={order} />
+                    ))}
+                    <Paginate
+                        count={orderCount}
+                        initialPage={page}
+                        pageChange={pageChange}
+                    />
+                </>
+            )}
         </>
     ) : null;
 };
