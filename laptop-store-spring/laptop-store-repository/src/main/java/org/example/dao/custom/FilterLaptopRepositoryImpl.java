@@ -2,9 +2,8 @@ package org.example.dao.custom;
 
 import org.example.constant.PaginateConstants;
 import org.example.input.LaptopFilterInput;
-import org.example.input.LaptopSearchInput;
 import org.example.model.Laptop;
-import org.example.type.SortFilterType;
+import org.example.type.FilterTargetType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -32,17 +31,17 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
 
 
     @Override
-    public List<Laptop> findByName(LaptopSearchInput search) {
+    public List<Laptop> findByName(LaptopFilterInput filter) {
         StringBuilder sb = new StringBuilder("SELECT l FROM Laptop l WHERE l.name LIKE '%'||:name||'%' AND l.recordStatus = true");
         Map<String, Object> params = new HashMap<>();
-        buildFilterByOrder(sb, params, search.getSort());
-        params.put("name", search.getName());
+        buildFilterByOrder(sb, params, filter.getTarget());
+        params.put("name", filter.getName());
 
         TypedQuery<Laptop> typedQuery = em.createQuery(sb.toString(), Laptop.class);
         for (String key : params.keySet()) {
             typedQuery.setParameter(key, params.get(key));
         }
-        return typedQuery.setFirstResult(PaginateConstants.LAPTOP_PER_PAGE * (search.getPage() - 1))
+        return typedQuery.setFirstResult(PaginateConstants.LAPTOP_PER_PAGE * (filter.getPage() - 1))
                 .setMaxResults(PaginateConstants.LAPTOP_PER_PAGE).getResultList();
     }
 
@@ -70,7 +69,7 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
         buildFilterByRams(sb, params, filter);
 
         if (selectQuery.equals(LAPTOP_SELECT_QUERY)) {
-            buildFilterByOrder(sb, params, filter.getSort());
+            buildFilterByOrder(sb, params, filter.getTarget());
         }
 
         TypedQuery<T> typedQuery = em.createQuery(sb.toString(), clazz);
@@ -148,7 +147,7 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
         }
     }
 
-    private void buildFilterByOrder(StringBuilder sb, Map<String, Object> params, SortFilterType sort) {
+    private void buildFilterByOrder(StringBuilder sb, Map<String, Object> params, FilterTargetType sort) {
         sb.append(" ORDER BY");
         switch (sort) {
             case BEST_SELLING:

@@ -15,6 +15,11 @@ import java.util.Set;
 public interface LaptopRepository extends JpaRepository<Laptop, Integer>, FilterLaptopRepository {
     boolean existsByIdAndRecordStatusTrue(int id);
 
+    @Query("SELECT l FROM Laptop l " +
+            "WHERE l.recordStatus = true " +
+            "AND (l.id = :query OR l.name LIKE '%:query%')")
+    List<Laptop> findByRecordStatusTrueAndNameContainingOrIdEquals(@Param("query") String query, Pageable pageable);
+
     List<Laptop> findByRecordStatusTrue(Pageable pageable);
 
     List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") List<Integer> ids);
@@ -33,7 +38,12 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
     @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
 
-    Long countByRecordStatusTrue();
+    long countByRecordStatusTrue();
 
-    Long countByNameContainingIgnoreCaseAndRecordStatusTrue(String name);
+    long countByNameContainingIgnoreCaseAndRecordStatusTrue(String name);
+
+    @Query("SELECT COUNT(l) FROM Laptop l " +
+            "WHERE l.recordStatus = true " +
+            "AND (l.id = :query OR l.name LIKE '%:query%')")
+    long countByRecordStatusTrueAndNameContainingOrIdEquals(@Param("query") String query);
 }

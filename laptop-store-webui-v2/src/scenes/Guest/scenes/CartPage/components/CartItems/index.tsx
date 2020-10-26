@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
 import Loader from "../../../../../../components/Loader";
 import { RootState } from "../../../../../../services/redux/rootReducer";
-import ProductOverviewModel from "../../../../../../values/models/ProductSummaryModel";
+import ProductOverviewModel from "../../../../../../values/models/ProductOverviewModel";
 import CartItem from "./components/CartItem";
 import { SC } from "./style";
 

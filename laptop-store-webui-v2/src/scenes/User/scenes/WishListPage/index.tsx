@@ -6,7 +6,7 @@ import EmptyBlock from "../../../../components/EmptyBlock";
 import userApi from "../../../../services/api/userApi";
 import { RootState } from "../../../../services/redux/rootReducer";
 import { fireFetching, skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
-import ProductOverviewModel from "../../../../values/models/ProductSummaryModel";
+import ProductOverviewModel from "../../../../values/models/ProductOverviewModel";
 import WishListItem from "./components/WishListItem";
 import { SC } from "./styles";
 

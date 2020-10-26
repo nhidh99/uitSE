@@ -8,7 +8,7 @@ import {
 import { setMessage } from "../../../../../../../../services/redux/slices/messageSlice";
 import store from "../../../../../../../../services/redux/store";
 import CartConstants from "../../../../../../../../values/constants/CartConstants";
-import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
+import ProductOverviewModel from "../../../../../../../../values/models/ProductOverviewModel";
 import { SC } from "./styles";
 
 type QuantityInputProps = {

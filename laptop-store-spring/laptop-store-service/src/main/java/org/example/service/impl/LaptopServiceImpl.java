@@ -6,17 +6,19 @@ import org.example.dto.comment.CommentDTO;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
+import org.example.dto.laptop.LaptopSummaryDTO;
 import org.example.dto.promotion.PromotionDTO;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.spec.*;
 import org.example.input.LaptopFilterInput;
-import org.example.input.LaptopSearchInput;
+import org.example.input.SearchInput;
 import org.example.model.Comment;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
 import org.example.model.Rating;
 import org.example.service.api.LaptopService;
 import org.example.type.ImageType;
+import org.example.type.SearchOrderType;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,8 @@ import java.util.List;
 @Service
 public class LaptopServiceImpl implements LaptopService {
 
-    private static final int SIZE_PER_PAGE = 12;
+    private static final int SIZE_PER_CLIENT_PAGE = 12;
+    private static final int SIZE_PER_ADMIN_PAGE = 10;
 
     private final LaptopRepository laptopRepository;
     private final LaptopImageRepository laptopImageRepository;
@@ -60,18 +63,18 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public Pair<List<LaptopOverviewDTO>, Long> findByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
+    public <T> Pair<List<T>, Long> findByPage(int page, Class<T> clazz) {
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("id").descending());
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
-            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
+            return Pair.of(ModelMapperUtil.mapList(laptops, clazz), laptopCount);
         });
     }
 
     @Override
     public Pair<List<LaptopOverviewDTO>, Long> findMostDiscountByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("discountPrice").descending());
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("discountPrice").descending());
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
@@ -81,7 +84,7 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     public Pair<List<LaptopOverviewDTO>, Long> findCheapestByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("unitPrice"));
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("unitPrice"));
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
@@ -91,20 +94,10 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     public Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE);
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE);
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findBestSelling(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
-            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
-        });
-    }
-
-
-    @Override
-    public Pair<List<LaptopOverviewDTO>, Long> findByName(LaptopSearchInput search) {
-        return txTemplate.execute((status) -> {
-            List<Laptop> laptops = laptopRepository.findByName(search);
-            long laptopCount = laptopRepository.countByNameContainingIgnoreCaseAndRecordStatusTrue(search.getName());
             return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
     }
@@ -119,7 +112,7 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     public LaptopDetailDTO findDetailById(int laptopId) {
-        Pageable pageable = PageRequest.of(0, SIZE_PER_PAGE);
+        Pageable pageable = PageRequest.of(0, SIZE_PER_CLIENT_PAGE);
         return txTemplate.execute((status) -> {
             boolean isValidRequest = laptopRepository.existsByIdAndRecordStatusTrue(laptopId);
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.LAPTOP_NOT_FOUND);
@@ -185,9 +178,43 @@ public class LaptopServiceImpl implements LaptopService {
     @Override
     public Pair<List<LaptopOverviewDTO>, Long> findByFilter(LaptopFilterInput filter) {
         return txTemplate.execute((status) -> {
-            List<Laptop> laptops = laptopRepository.findByFilter(filter);
-            Long laptopsCount = laptopRepository.countByFilter(filter);
-            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopsCount);
+            List<Laptop> laptops;
+            long laptopCount;
+            if (filter.getName() != null) {
+                laptops = laptopRepository.findByName(filter);
+                laptopCount = laptopRepository.countByNameContainingIgnoreCaseAndRecordStatusTrue(filter.getName());
+            } else {
+                laptops = laptopRepository.findByFilter(filter);
+                laptopCount = laptopRepository.countByFilter(filter);
+            }
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });
+    }
+
+    @Override
+    public Pair<List<LaptopSummaryDTO>, Long> findBySearch(SearchInput search) {
+        return txTemplate.execute((status) -> {
+            List<Laptop> laptops;
+            long laptopCount;
+            Pageable pageable = buildPageableFromSearch(search);
+            String query = search.getQuery().trim();
+
+            if (query.isEmpty()) {
+                laptops = laptopRepository.findByRecordStatusTrue(pageable);
+                laptopCount = laptopRepository.countByRecordStatusTrue();
+            } else {
+                laptops = laptopRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
+                laptopCount = laptopRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
+            }
+            return Pair.of(ModelMapperUtil.mapList(laptops, LaptopSummaryDTO.class), laptopCount);
+        });
+    }
+
+    private Pageable buildPageableFromSearch(SearchInput search) {
+        Sort sort = Sort.by(search.getTarget().toString());
+        if (search.getOrder().equals(SearchOrderType.DESC)) {
+            sort = sort.descending();
+        }
+        return PageRequest.of(search.getPage() - 1, SIZE_PER_ADMIN_PAGE, sort);
     }
 }

@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import LazyLoad from "react-lazyload";
 import { FaStar } from "react-icons/fa";
 import { SC } from "./styles";
-import ProductOverviewModel from "../../values/models/ProductSummaryModel";
+import ProductOverviewModel from "../../values/models/ProductOverviewModel";
 
 type ProductItemProps = {
     product: ProductOverviewModel;

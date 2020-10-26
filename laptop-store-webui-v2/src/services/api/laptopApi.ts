@@ -1,3 +1,4 @@
+import axiosAuthClient from "../axios/axiosAuthClient";
 import axiosPublicClient from "../axios/axiosPublicClient";
 
 type IncludeType = {
@@ -32,14 +33,16 @@ const laptopApi = {
         return axiosPublicClient.get(url);
     },
 
-    getByFilter(url: string) {
-        return axiosPublicClient.get(url);
+    getByFilter(params: object) {
+        const url = "/laptops/filter";
+        const config = { params: params };
+        return axiosPublicClient.get(url, config);
     },
 
-    getByName(name: string, sort: string, page: number) {
+    getByPage(params: object) {
         const url = "/laptops/search";
-        const config = { params: { page: page, name: name, sort: sort } };
-        return axiosPublicClient.get(url, config);
+        const config = { params: params };
+        return axiosAuthClient.get(url, config);
     },
 };
 

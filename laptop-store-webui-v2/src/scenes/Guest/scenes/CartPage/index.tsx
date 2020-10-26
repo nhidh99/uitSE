@@ -8,7 +8,7 @@ import cartService from "../../../../services/helper/cartService";
 import { RootState } from "../../../../services/redux/rootReducer";
 import { skipFetching } from "../../../../services/redux/slices/loaderStatusSlice";
 import store from "../../../../services/redux/store";
-import ProductOverviewModel from "../../../../values/models/ProductSummaryModel";
+import ProductOverviewModel from "../../../../values/models/ProductOverviewModel";
 import CartPaymentProps from "../../../../values/props/CartPaymentProps";
 import CartItems from "./components/CartItems";
 import CartPayment from "./components/CartPayment";

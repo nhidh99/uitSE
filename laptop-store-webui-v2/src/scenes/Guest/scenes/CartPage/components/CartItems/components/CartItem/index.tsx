@@ -3,12 +3,12 @@ import React, { memo, useCallback } from "react";
 import { FaHeart, FaStar, FaTrash } from "react-icons/fa";
 import QuantityInput from "../QuantityInput";
 import cartService from "../../../../../../../../services/helper/cartService";
-import ProductOverviewModel from "../../../../../../../../values/models/ProductSummaryModel";
 import { SC } from "./styles";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../../../../../../../services/helper/cookie";
 import store from "../../../../../../../../services/redux/store";
 import { setMessage } from "../../../../../../../../services/redux/slices/messageSlice";
+import ProductOverviewModel from "../../../../../../../../values/models/ProductOverviewModel";
 
 type CartItemProps = {
     item: ProductOverviewModel;

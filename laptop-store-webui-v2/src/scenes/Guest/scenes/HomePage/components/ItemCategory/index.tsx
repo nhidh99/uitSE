@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { FaLaptop, FaTruckLoading } from "react-icons/fa";
-import ProductOverviewModel from "../../../../../../values/models/ProductSummaryModel";
 import laptopApi from "../../../../../../services/api/laptopApi";
 import EmptyItem from "./components/EmptyItem";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
@@ -10,6 +9,8 @@ import SortFilter from "./components/SortFilter";
 import LaptopItem from "../../../../../../components/LaptopItem";
 import MoreButton from "./components/MoreButton";
 import { SC } from "./styles";
+import ProductOverviewModel from "../../../../../../values/models/ProductOverviewModel";
+import queryString from "query-string";
 
 type ItemListProps = {
     category: string;
@@ -39,6 +40,7 @@ const ItemCategory = ({ category, title }: ItemListProps) => {
     );
 
     const history = useHistory();
+    const location = useLocation();
     const [state, setState] = useState<ItemListState>(initialState);
     const { products, loading, fetching, page, isDone, length } = state;
 
@@ -46,33 +48,14 @@ const ItemCategory = ({ category, title }: ItemListProps) => {
         if (!fetching) return;
         const loadData = async () => {
             try {
-                let response;
-                switch (category) {
-                    case "filter": {
-                        const url = `laptops/filter${window.location.search}&page=${page}`;
-                        response = await laptopApi.getByFilter(url);
-                        break;
-                    }
-                    case "search": {
-                        const params = new URLSearchParams(window.location.search);
-                        const name = params.get("name");
-                        const sort = params?.get("sort") ?? "best_selling";
-                        if (name !== null) {
-                            response = await laptopApi.getByName(name, sort, page);
-                        } else {
-                            history.push("/");
-                            return;
-                        }
-                        break;
-                    }
-                    default: {
-                        response = await laptopApi.getByCategory(category, page);
-                        break;
-                    }
-                }
+                const params = queryString.parse(location.search);
+                const response = await (["filter", "search"].includes(category)
+                    ? laptopApi.getByFilter(params)
+                    : laptopApi.getByCategory(category, page));
 
                 const length = parseInt(response.headers["x-total-count"]);
                 const newProducts = [...products, ...response.data];
+
                 setState((prev) => ({
                     ...prev,
                     products: newProducts,
@@ -113,10 +96,7 @@ const ItemCategory = ({ category, title }: ItemListProps) => {
 
             {loading ? (
                 ["filter", "search"].includes(category) ? (
-                    <EmptyBlock
-                        icon={<FaTruckLoading />}
-                        title="Đang tìm kiếm sản phẩm"
-                    />
+                    <EmptyBlock icon={<FaTruckLoading />} title="Đang tìm kiếm sản phẩm" />
                 ) : (
                     <SC.ItemContainer>
                         {[...Array(12)].map((_) => (

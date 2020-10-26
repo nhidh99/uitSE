@@ -1,6 +1,6 @@
 package org.example.type;
 
-public enum SortFilterType {
+public enum FilterTargetType {
     BEST_SELLING,
     LOW_PRICE,
     HIGH_PRICE,

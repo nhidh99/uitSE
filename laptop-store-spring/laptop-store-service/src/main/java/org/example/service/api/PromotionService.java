@@ -1,11 +1,15 @@
 package org.example.service.api;
 
+import org.example.dto.promotion.PromotionSummaryDTO;
+import org.example.input.SearchInput;
 import org.example.model.Promotion;
+import org.example.util.Pair;
 
 import java.util.List;
 
 public interface PromotionService {
-    List<Promotion> findByLaptopId(Integer laptopId);
 
     byte[] findImageById(Integer id);
+
+    Pair<List<PromotionSummaryDTO>, Long> findBySearch(SearchInput search);
 }

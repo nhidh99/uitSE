@@ -1,21 +1,55 @@
 package org.example.service.impl;
 
+import org.example.constant.PaginateConstants;
 import org.example.dao.PromotionRepository;
+import org.example.dto.promotion.PromotionSummaryDTO;
+import org.example.input.SearchInput;
 import org.example.model.Promotion;
 import org.example.service.api.PromotionService;
+import org.example.type.SearchOrderType;
+import org.example.util.ModelMapperUtil;
+import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
+
+    private final PromotionRepository promotionRepository;
+
     @Autowired
-    private PromotionRepository promotionRepository;
+    public PromotionServiceImpl(PromotionRepository promotionRepository) {
+        this.promotionRepository = promotionRepository;
+    }
 
     @Override
-    public List<Promotion> findByLaptopId(Integer laptopId) {
-        return promotionRepository.findByRecordStatusTrueAndLaptopsId(laptopId);
+    public Pair<List<PromotionSummaryDTO>, Long> findBySearch(SearchInput search) {
+        List<Promotion> promotions;
+        long promotionCount;
+        Pageable pageable = buildPageableFromSearch(search);
+        String query = search.getQuery().trim();
+
+        if (query.isEmpty()) {
+            promotions = promotionRepository.findByRecordStatusTrue(pageable);
+            promotionCount = promotionRepository.countByRecordStatusTrue();
+        } else {
+            promotions = promotionRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
+            promotionCount = promotionRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
+        }
+        return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
+    };
+
+    private Pageable buildPageableFromSearch(SearchInput search) {
+        Sort sort = Sort.by(search.getTarget().toString());
+        if (search.getOrder().equals(SearchOrderType.DESC)) {
+            sort = sort.descending();
+        }
+        return PageRequest.of(search.getPage() - 1, PaginateConstants.SIZE_PER_ADMIN_PAGE, sort);
     }
 
     @Override

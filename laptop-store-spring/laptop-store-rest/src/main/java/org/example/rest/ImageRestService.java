@@ -1,5 +1,6 @@
 package org.example.rest;
 
+import org.example.constant.ResolutionConstants;
 import org.example.input.ImageInput;
 import org.example.service.api.LaptopImageService;
 import org.example.service.api.LaptopService;
@@ -21,15 +22,11 @@ import java.util.Map;
 @RequestMapping("/api/images/{resolution}")
 @PreAuthorize("permitAll()")
 public class ImageRestService {
-    private static final int LAPTOP_LARGE_IMAGE_RESOLUTION = 1000;
-    private static final int LAPTOP_IMAGE_RESOLUTION = 400;
-    private static final int LAPTOP_THUMBNAIL_RESOLUTION = 150;
-    private static final int PROMOTION_IMAGE_RESOLUTION = 200;
 
     private static final Map<Integer, ImageType> laptopResolutionMap = new HashMap<Integer, ImageType>() {{
-        put(LAPTOP_LARGE_IMAGE_RESOLUTION, ImageType.LAPTOP_LARGE_IMAGE);
-        put(LAPTOP_IMAGE_RESOLUTION, ImageType.LAPTOP_IMAGE);
-        put(LAPTOP_THUMBNAIL_RESOLUTION, ImageType.LAPTOP_THUMBNAIL);
+        put(ResolutionConstants.LAPTOP_LARGE_IMAGE_RESOLUTION, ImageType.LAPTOP_LARGE_IMAGE);
+        put(ResolutionConstants.LAPTOP_IMAGE_RESOLUTION, ImageType.LAPTOP_IMAGE);
+        put(ResolutionConstants.LAPTOP_THUMBNAIL_RESOLUTION, ImageType.LAPTOP_THUMBNAIL);
     }};
 
     @Autowired
@@ -63,7 +60,7 @@ public class ImageRestService {
     @PreAuthorize("permitAll()")
     @Cacheable("images")
     public ResponseEntity<?> getPromotionImage(ImageInput imageInput) {
-        byte[] image = imageInput.getResolution() == PROMOTION_IMAGE_RESOLUTION
+        byte[] image = imageInput.getResolution() == ResolutionConstants.PROMOTION_IMAGE_RESOLUTION
                 ? promotionService.findImageById(imageInput.getId()) : null;
         return (image == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(image);
     }

@@ -10,7 +10,7 @@ import {
     removeWishListItem,
     setWishList,
 } from "../../../../../../services/redux/slices/wishListSlice";
-import ProductOverviewModel from "../../../../../../values/models/ProductSummaryModel";
+import ProductOverviewModel from "../../../../../../values/models/ProductOverviewModel";
 import { SC } from "./styles";
 
 type WishListItemProps = {
