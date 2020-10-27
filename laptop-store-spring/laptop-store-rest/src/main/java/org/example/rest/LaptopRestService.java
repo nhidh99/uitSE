@@ -111,7 +111,7 @@ public class LaptopRestService {
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getLaptopsByPage(
             @RequestParam(value = "query", defaultValue = "") String query,
-            @RequestParam(value = "target", defaultValue = "ID") SearchTagetType target,
+            @RequestParam(value = "target", defaultValue = "ID") SearchTargetType target,
             @RequestParam(value = "order", defaultValue = "DESC") SearchOrderType order,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
 

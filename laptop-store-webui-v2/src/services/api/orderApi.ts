@@ -1,6 +1,12 @@
 import axiosAuthClient from "../axios/axiosAuthClient";
 
 const orderApi = {
+    getByPage: (params: object) => {
+        const url = "/orders/search";
+        const config = { params: params };
+        return axiosAuthClient.get(url, config);
+    },
+
     getById: (id: number) => {
         const url = `/orders/${id}`;
         return axiosAuthClient.get(url);

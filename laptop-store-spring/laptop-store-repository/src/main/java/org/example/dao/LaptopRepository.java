@@ -17,7 +17,7 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
 
     @Query("SELECT l FROM Laptop l " +
             "WHERE l.recordStatus = true " +
-            "AND (l.id = :query OR l.name LIKE '%:query%')")
+            "AND (TRIM(l.id) LIKE %:query% OR l.name LIKE %:query%)")
     List<Laptop> findByRecordStatusTrueAndNameContainingOrIdEquals(@Param("query") String query, Pageable pageable);
 
     List<Laptop> findByRecordStatusTrue(Pageable pageable);
@@ -44,6 +44,6 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
 
     @Query("SELECT COUNT(l) FROM Laptop l " +
             "WHERE l.recordStatus = true " +
-            "AND (l.id = :query OR l.name LIKE '%:query%')")
+            "AND (TRIM(l.id) LIKE %:query% OR l.name LIKE %:query%) ")
     long countByRecordStatusTrueAndNameContainingOrIdEquals(@Param("query") String query);
 }

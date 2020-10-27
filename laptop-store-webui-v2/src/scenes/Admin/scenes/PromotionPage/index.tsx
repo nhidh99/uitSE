@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { SC } from "./styles";
 import { SSC } from "../../share.styles";
 import useTableFetch from "../../../../services/hooks/useTableFetch";
@@ -88,4 +88,4 @@ const PromotionPage = () => {
     );
 };
 
-export default PromotionPage;
+export default memo(PromotionPage);

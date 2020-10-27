@@ -84,6 +84,14 @@ public class Order {
     @Getter(AccessLevel.NONE)
     private int productCount;
 
+    public String getOrderLocation() {
+        return new StringBuilder(addressNum)
+                .append(" ").append(street)
+                .append(", ").append(ward.getName())
+                .append(", ").append(district.getName())
+                .append(", ").append(city.getName()).toString();
+    }
+
     public String getDescribe() {
         int firstProductQuantity = Integer.parseInt(firstProductInfo.split(" ")[0]);
         if (productCount == firstProductQuantity) {

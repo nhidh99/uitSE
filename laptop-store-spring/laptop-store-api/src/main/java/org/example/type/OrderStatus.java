@@ -27,6 +27,8 @@ public enum OrderStatus {
         return this.equals(CANCELED);
     }
 
+
+
     public int getProgressStep() {
         switch (this) {
             case PENDING:
@@ -43,6 +45,26 @@ public enum OrderStatus {
                 return -1;
             default:
                 return -2;
+        }
+    }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case PENDING:
+                return "Chờ duyệt";
+            case RECEIVED:
+                return "Tiếp nhận";
+            case PACKAGED:
+                return "Đóng gói";
+            case DELIVERING:
+                return "Vận chuyển";
+            case DELIVERED:
+                return "Đã giao";
+            case CANCELED:
+                return "Đã hủy";
+            default:
+                return null;
         }
     }
 }

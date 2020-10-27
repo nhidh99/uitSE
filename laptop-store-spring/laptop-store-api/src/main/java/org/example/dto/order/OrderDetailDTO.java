@@ -45,15 +45,6 @@ public class OrderDetailDTO {
     @JsonIgnore
     private String street;
 
-    @JsonIgnore
-    private Ward ward;
-
-    @JsonIgnore
-    private District district;
-
-    @JsonIgnore
-    private City city;
-
     @JsonProperty("items")
     private List<OrderItemDTO> items;
 
@@ -61,13 +52,7 @@ public class OrderDetailDTO {
     private List<OrderTrackDTO> tracks;
 
     @JsonProperty("order_location")
-    public String getOrderLocation() {
-        return new StringBuilder(addressNum)
-                .append(" ").append(street)
-                .append(", ").append(ward.getName())
-                .append(", ").append(district.getName())
-                .append(", ").append(city.getName()).toString();
-    }
+    private String orderLocation;
 
     @JsonProperty("progress_step")
     public int getProgressStep() {

@@ -14,11 +14,11 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByUserUsername(String username, Pageable pageable);
 
-    Long countByUserUsername(String username);
+    long countByUserUsername(String username);
 
     boolean existsByIdAndUserUsername(Integer id, String username);
 
-    Long countByStatusAndUserUsername(OrderStatus orderStatus, String username);
+    long countByStatusAndUserUsername(OrderStatus orderStatus, String username);
 
     @Query("SELECT SUM(o.totalPrice) FROM Order o " +
             "WHERE o.status = 'DELIVERED' " +

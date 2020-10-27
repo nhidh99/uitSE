@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.OrderConstants;
 import org.example.dao.*;
-import org.example.dto.order.OrderDetailDTO;
-import org.example.dto.order.OrderItemDTO;
-import org.example.dto.order.OrderOverviewDTO;
-import org.example.dto.order.OrderTrackDTO;
+import org.example.dto.order.*;
+import org.example.input.SearchInput;
 import org.example.model.*;
 import org.example.service.api.OrderService;
+import org.example.service.util.PageableUtil;
 import org.example.type.OrderStatus;
 import org.example.type.ProductType;
 import org.example.util.DateUtil;
@@ -206,6 +205,16 @@ public class OrderServiceImpl implements OrderService {
             OrderTrack track = OrderTrack.builder().order(order).status(OrderStatus.CANCELED)
                     .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE))).build();
             order.addTrack(track);
+        });
+    }
+
+    @Override
+    public Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(SearchInput search) {
+        Pageable pageable = PageableUtil.buildPageableFromSearch(search);
+        return txTemplate.execute((status) -> {
+            List<Order> orders = orderRepository.findAll(pageable).toList();
+            long orderCount = orderRepository.count();
+            return Pair.of(ModelMapperUtil.mapList(orders, OrderSummaryDTO.class), orderCount);
         });
     }
 }

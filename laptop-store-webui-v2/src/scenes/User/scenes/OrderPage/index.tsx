@@ -28,9 +28,7 @@ const OrderPage = () => {
         () => ({
             orders: null,
             orderCount: 0,
-            page: parseInt(
-                new URLSearchParams(window.location.search)?.get("page") ?? "1"
-            ),
+            page: parseInt(new URLSearchParams(window.location.search)?.get("page") ?? "1"),
         }),
         []
     );
@@ -60,11 +58,7 @@ const OrderPage = () => {
     return orders ? (
         <>
             {orderCount === 0 ? (
-                <EmptyBlock
-                    icon={<FaBoxes />}
-                    title="Danh sách đơn hàng trống"
-                    borderless
-                />
+                <EmptyBlock icon={<FaBoxes />} title="Danh sách đơn hàng trống" borderless />
             ) : (
                 <>
                     {orders.map((order) => (
@@ -73,6 +67,7 @@ const OrderPage = () => {
                     <Paginate
                         count={orderCount}
                         initialPage={page}
+                        sizePerPage={5}
                         pageChange={pageChange}
                     />
                 </>

@@ -1,12 +1,16 @@
 package org.example.type;
 import com.google.common.base.CaseFormat;
 
-public enum SearchTagetType {
+public enum SearchTargetType {
     ID,
     NAME,
     QUANTITY,
     UNIT_PRICE,
+    TOTAL_PRICE,
     RATING,
+    ORDER_DATE,
+    RECEIVER_NAME,
+    STATUS,
     PRICE;
 
     @Override

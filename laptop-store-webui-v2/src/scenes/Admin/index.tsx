@@ -6,6 +6,7 @@ import Loader from "../../components/Loader";
 import MenuBar from "../../components/MenuBar";
 import { RootState } from "../../services/redux/rootReducer";
 import MenuItemProps from "../../values/props/MenuItemProps";
+import OrderPage from "./scenes/OrderPage";
 import ProductPage from "./scenes/ProductPage";
 import PromotionPage from "./scenes/PromotionPage";
 import { SC } from "./styles";
@@ -66,6 +67,7 @@ const Admin = () => {
                         <Switch>
                             <Route exact path="/admin/products" component={ProductPage} />
                             <Route exact path="/admin/promotions" component={PromotionPage} />
+                            <Route exact path="/admin/orders" component={OrderPage} />
                         </Switch>
                     </SC.ContentContainer>
                 </SC.LoaderContainer>

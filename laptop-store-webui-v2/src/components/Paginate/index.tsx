@@ -6,13 +6,14 @@ import { SC } from "./styles";
 type PaginateProps = {
     count: number;
     initialPage: number;
+    sizePerPage: number;
     pageChange: (e: { selected: number }) => void;
 };
 
-const Paginate = ({ count, initialPage, pageChange }: PaginateProps) => (
+const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps) => (
     <SC.PaginateContainer>
         <ReactPaginate
-            pageCount={Math.floor((count + 4) / 5)}
+            pageCount={Math.floor((count + sizePerPage - 1) / sizePerPage)}
             pageRangeDisplayed={2}
             marginPagesDisplayed={1}
             initialPage={initialPage - 1}

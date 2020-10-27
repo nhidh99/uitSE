@@ -1,13 +1,17 @@
-import React, { useMemo } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useMemo } from "react";
 import { SC } from "./styles";
 import { SSC } from "../../share.styles";
 import ProductSummaryModel from "../../../../values/models/ProductSummaryModel";
 import laptopApi from "../../../../services/api/laptopApi";
 import useTableFetch from "../../../../services/hooks/useTableFetch";
-import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
+import { FaLaptop, FaPlus, FaSearch, FaTrash } from "react-icons/fa";
+import Paginate from "../../../../components/Paginate";
+import EmptyBlock from "../../../../components/EmptyBlock";
+import Loader from "../../../../components/Loader";
 
 const ProductPage = () => {
-    const { list, count, setPage, setTarget } = useTableFetch<ProductSummaryModel>(
+    const { list, count, setPage, setQuery, setTarget } = useTableFetch<ProductSummaryModel>(
         laptopApi.getByPage,
         {
             target: "id",
@@ -18,15 +22,33 @@ const ProductPage = () => {
 
     const headers = useMemo(
         () => [
-            { name: "Ma san pham", target: "id" },
-            { name: "Ten san pham", target: "name" },
-            { name: "Hinh anh", target: undefined },
-            { name: "So luong", target: "quantity" },
-            { name: "Don gia", target: "unit_price" },
-            { name: "Danh gia", target: "rating" },
+            { name: "Mã SP", target: "id" },
+            { name: "Sản phẩm", target: "name" },
+            { name: "Hình ảnh", target: undefined },
+            { name: "Số lượng", target: "quantity" },
+            { name: "Đơn giá", target: "unit_price" },
+            { name: "Đánh giá", target: "rating" },
         ],
         []
     );
+
+    const search = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.keyCode === 13) {
+            // @ts-ignore
+            setQuery(e.currentTarget.value);
+        }
+    }, []);
+
+    const submitSearch = useCallback((e: any) => {
+        // @ts-ignore
+        const query = document.getElementById("search").value;
+        setQuery(query);
+    }, []);
+
+    const pageChange = useCallback((e: { selected: number }) => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setPage(e.selected + 1);
+    }, []);
 
     return (
         <>
@@ -44,48 +66,81 @@ const ProductPage = () => {
             </SSC.SectionTitle>
 
             <SSC.SearchContainer>
-                <SSC.SearchInput placeholder="Tìm kiếm theo mã hoặc tên" />
-                <SSC.SearchButton>
+                <SSC.SearchInput
+                    id="search"
+                    onKeyUp={search}
+                    placeholder="Tìm kiếm theo mã hoặc tên"
+                />
+                <SSC.SearchButton onClick={submitSearch}>
                     <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
-                    Tim kiem
+                    Tìm kiếm
                 </SSC.SearchButton>
             </SSC.SearchContainer>
 
-            <SC.Table>
-                <tr>
-                    <th>
-                        <input type="checkbox" />
-                    </th>
-                    {headers.map((header) => (
-                        <th onClick={header.target ? () => setTarget(header.target) : undefined}>
-                            {header.name}
-                        </th>
-                    ))}
-                </tr>
-
-                {list
-                    ? list.map((product) => (
-                          <tr>
-                              <td>
-                                  <input type="checkbox" />
-                              </td>
-                              <td>{product.id}</td>
-                              <td>{product.name}</td>
-                              <td>
-                                  <img
-                                      src={product.image_url}
-                                      width={40}
-                                      height={40}
-                                      alt={product.name}
-                                  />
-                              </td>
-                              <td>{product.quantity}</td>
-                              <td>{product.unit_price.toLocaleString()}</td>
-                              <td>{product.avg_rating.toFixed(1)}</td>
-                          </tr>
-                      ))
-                    : null}
-            </SC.Table>
+            {list ? (
+                list.length > 0 ? (
+                    <>
+                        <SC.Table>
+                            <tr>
+                                <th className="select">
+                                    <input type="checkbox" />
+                                </th>
+                                {headers.map((header) => (
+                                    <th
+                                        onClick={
+                                            header.target
+                                                ? () => setTarget(header.target)
+                                                : undefined
+                                        }
+                                        className={header.target ? "sortable" : "unsortable"}
+                                    >
+                                        {header.name}
+                                    </th>
+                                ))}
+                            </tr>
+                            {list.map((product) => (
+                                <tr>
+                                    <td className="select">
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td className="id">{product.id}</td>
+                                    <td className="name">{product.name}</td>
+                                    <td className="image">
+                                        <img
+                                            src={product.image_url}
+                                            width={40}
+                                            height={40}
+                                            alt={product.name}
+                                        />
+                                    </td>
+                                    <td className="quantity">{product.quantity}</td>
+                                    <td className="unit_price">
+                                        {product.unit_price.toLocaleString()}
+                                        <u>đ</u>
+                                    </td>
+                                    <td className="rating">{product.avg_rating.toFixed(1)}</td>
+                                </tr>
+                            ))}
+                        </SC.Table>
+                        <Paginate
+                            count={count}
+                            initialPage={1}
+                            sizePerPage={10}
+                            pageChange={pageChange}
+                        />
+                    </>
+                ) : (
+                    <SSC.EmptyContainer>
+                        <EmptyBlock
+                            icon={<FaLaptop />}
+                            title="Không tìm thấy sản phẩm nào"
+                            borderless
+                        />
+                    </SSC.EmptyContainer>
+                )
+            ) : (
+                <Loader loading={true} loadOnce={true} />
+            )}
         </>
     );
 };
