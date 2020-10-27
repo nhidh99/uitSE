@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SC } from "./styles";
 import { SSC } from "../../share.styles";
 import ProductSummaryModel from "../../../../values/models/ProductSummaryModel";
@@ -9,15 +9,16 @@ import { FaLaptop, FaPlus, FaSearch, FaTrash } from "react-icons/fa";
 import Paginate from "../../../../components/Paginate";
 import EmptyBlock from "../../../../components/EmptyBlock";
 import Loader from "../../../../components/Loader";
+import queryString from "query-string";
+import { useLocation } from "react-router";
 
 const ProductPage = () => {
-    const { list, count, setPage, setQuery, setTarget } = useTableFetch<ProductSummaryModel>(
+    const location = useLocation();
+
+    const { list, count, page, setPage, setQuery, setTarget } = useTableFetch<ProductSummaryModel>(
         laptopApi.getByPage,
-        {
-            target: "id",
-            order: "desc",
-            page: 1,
-        }
+        // @ts-ignore
+        queryString.parse(location.search, { parseNumbers: true })
     );
 
     const headers = useMemo(
@@ -45,10 +46,9 @@ const ProductPage = () => {
         setQuery(query);
     }, []);
 
-    const pageChange = useCallback((e: { selected: number }) => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+    const pageChange = (e: { selected: number }) => {
         setPage(e.selected + 1);
-    }, []);
+    };
 
     return (
         <>
@@ -85,16 +85,12 @@ const ProductPage = () => {
                                 <th className="select">
                                     <input type="checkbox" />
                                 </th>
-                                {headers.map((header) => (
+                                {headers.map((h) => (
                                     <th
-                                        onClick={
-                                            header.target
-                                                ? () => setTarget(header.target)
-                                                : undefined
-                                        }
-                                        className={header.target ? "sortable" : "unsortable"}
+                                        onClick={h.target ? () => setTarget(h.target) : undefined}
+                                        className={h.target ? "sortable" : "unsortable"}
                                     >
-                                        {header.name}
+                                        {h.name}
                                     </th>
                                 ))}
                             </tr>
@@ -124,7 +120,7 @@ const ProductPage = () => {
                         </SC.Table>
                         <Paginate
                             count={count}
-                            initialPage={1}
+                            initialPage={page}
                             sizePerPage={10}
                             pageChange={pageChange}
                         />

@@ -29,7 +29,7 @@ const NavItem = styled(Link)`
     padding: 15px 15px 15px 10px;
     background-color: ${(props) =>
         //@ts-ignore
-        window.location.pathname.includes(props.to) ? "#ddd" : "transparent"};
+        window.location.pathname.startsWith(props.to.pathname) ? "#ddd" : "transparent"};
 
     :hover {
         background-color: #ddd;

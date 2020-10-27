@@ -20,6 +20,8 @@ const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps
             previousLabel={<FaArrowLeft />}
             nextLabel={<FaArrowRight />}
             onPageChange={pageChange}
+            disableInitialCallback={true}
+            forcePage={initialPage - 1}
         />
     </SC.PaginateContainer>
 );

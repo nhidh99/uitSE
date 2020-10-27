@@ -9,7 +9,7 @@ const BannerRight = () => (
     <SC.NavBar>
         <ul>
             <NavItem
-                href="/admin/orders"
+                href={`/admin/products?order=desc&page=1&target=id`}
                 icon={FaEdit}
                 title="Quản lí"
                 allowedRoles={[RoleConstants.ADMIN]}

@@ -10,45 +10,56 @@ import OrderPage from "./scenes/OrderPage";
 import ProductPage from "./scenes/ProductPage";
 import PromotionPage from "./scenes/PromotionPage";
 import { SC } from "./styles";
+import queryString from "query-string";
 
 const Admin = () => {
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
 
-    const items = useMemo<MenuItemProps[]>(
-        () => [
+    const items = useMemo<MenuItemProps[]>(() => {
+        const initialSearch = queryString.stringify({
+            page: 1,
+            order: "desc",
+            target: "id",
+        });
+        return [
             {
                 icon: FaLaptop,
                 link: "/admin/products",
                 title: "Sản phẩm",
+                search: initialSearch,
             },
             {
                 icon: FaGift,
                 link: "/admin/promotions",
                 title: "Khuyễn mãi",
+                search: initialSearch,
             },
             {
                 icon: FaBoxes,
                 link: "/admin/orders",
                 title: "Đơn hàng",
+                search: initialSearch,
             },
             {
                 icon: FaQuestionCircle,
                 link: "/admin/comments",
                 title: "Câu hỏi",
+                search: initialSearch,
             },
             {
                 icon: FaStar,
                 link: "/admin/ratings",
                 title: "Đánh giá",
+                search: initialSearch,
             },
             {
                 icon: FaComment,
                 link: "/admin/replies",
                 title: "Trả lời",
+                search: initialSearch,
             },
-        ],
-        []
-    );
+        ];
+    }, []);
 
     return (
         <SC.Container>
