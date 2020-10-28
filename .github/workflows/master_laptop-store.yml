@@ -11,6 +11,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./laptop-store-spring
 
     steps:
     - uses: actions/checkout@master
@@ -19,9 +23,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: '11'
-        
-    - name: Go to backend folder
-      run: cd/laptop-store-spring
 
     - name: Build with Maven
       run: mvn clean install
