@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AxiosResponse } from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import queryString from "query-string";
 
@@ -35,15 +35,21 @@ function useTableFetch<T>(
     const history = useHistory();
 
     const { list, count } = data;
-    const { order, page } = params;
+    const { query, order, page } = params;
 
     const prevTarget = useRef<string>(params?.target ?? "id");
 
     const isPopState = useRef<boolean>(false);
 
-    const setPage = (page: number) => setParams((prev) => ({ ...prev, page: page }));
+    const setPage = useCallback(
+        (page: number) => setParams((prev) => ({ ...prev, page: page })),
+        []
+    );
 
-    const setQuery = (query: string) => setParams((prev) => ({ ...prev, query: query }));
+    const setQuery = useCallback(
+        (query: string) => setParams((prev) => ({ ...prev, query: query })),
+        []
+    );
 
     const setTarget = (target: string) => {
         if (target === prevTarget.current) {
@@ -69,7 +75,7 @@ function useTableFetch<T>(
     useEffect(() => {
         if (isPopState.current) {
             isPopState.current = false;
-        } else {
+        } else if (list !== null) {
             history.push({
                 pathname: location.pathname,
                 search: queryString.stringify(params, { skipEmptyString: true }),
@@ -90,7 +96,7 @@ function useTableFetch<T>(
         loadData();
     }, [location.search]);
 
-    return { list, count, page, setPage, setTarget, setQuery };
+    return { list, count, page, query, setPage, setTarget, setQuery };
 }
 
 export default useTableFetch;

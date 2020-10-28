@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { SC } from "./styles";
 import { SSC } from "../../share.styles";
 import ProductSummaryModel from "../../../../values/models/ProductSummaryModel";
@@ -11,11 +11,14 @@ import EmptyBlock from "../../../../components/EmptyBlock";
 import Loader from "../../../../components/Loader";
 import queryString from "query-string";
 import { useLocation } from "react-router";
+import { Formik } from "formik";
 
 const ProductPage = () => {
     const location = useLocation();
 
-    const { list, count, page, setPage, setQuery, setTarget } = useTableFetch<ProductSummaryModel>(
+    const { list, count, page, query, setPage, setQuery, setTarget } = useTableFetch<
+        ProductSummaryModel
+    >(
         laptopApi.getByPage,
         // @ts-ignore
         queryString.parse(location.search, { parseNumbers: true })
@@ -33,17 +36,8 @@ const ProductPage = () => {
         []
     );
 
-    const search = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.keyCode === 13) {
-            // @ts-ignore
-            setQuery(e.currentTarget.value);
-        }
-    }, []);
-
-    const submitSearch = useCallback((e: any) => {
-        // @ts-ignore
-        const query = document.getElementById("search").value;
-        setQuery(query);
+    const submitSearch = useCallback((values: { query: string }) => {
+        setQuery(values.query);
     }, []);
 
     const pageChange = (e: { selected: number }) => {
@@ -65,17 +59,23 @@ const ProductPage = () => {
                 </div>
             </SSC.SectionTitle>
 
-            <SSC.SearchContainer>
-                <SSC.SearchInput
-                    id="search"
-                    onKeyUp={search}
-                    placeholder="Tìm kiếm theo mã hoặc tên"
-                />
-                <SSC.SearchButton onClick={submitSearch}>
-                    <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
-                    Tìm kiếm
-                </SSC.SearchButton>
-            </SSC.SearchContainer>
+            <Formik
+                initialValues={{ query: query || "" }}
+                onSubmit={submitSearch}
+                enableReinitialize={true}
+            >
+                <SSC.SearchForm noValidate>
+                    <SSC.SearchInput
+                        name="query"
+                        placeholder="Tìm kiếm theo mã hoặc tên"
+                        defaultValue={query}
+                    />
+                    <SSC.SearchButton type="submit">
+                        <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
+                        Tìm kiếm
+                    </SSC.SearchButton>
+                </SSC.SearchForm>
+            </Formik>
 
             {list ? (
                 list.length > 0 ? (
@@ -104,8 +104,8 @@ const ProductPage = () => {
                                     <td className="image">
                                         <img
                                             src={product.image_url}
-                                            width={40}
-                                            height={40}
+                                            width={30}
+                                            height={30}
                                             alt={product.name}
                                         />
                                     </td>

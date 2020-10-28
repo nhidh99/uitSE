@@ -5,24 +5,28 @@ import useTableFetch from "../../../../services/hooks/useTableFetch";
 import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
 import promotionApi from "../../../../services/api/promotionApi";
 import PromotionSummaryModel from "../../../../values/models/PromotionSummaryModel";
+import { Formik } from "formik";
+import queryString from "query-string";
+import { useLocation } from "react-router";
 
 const PromotionPage = () => {
-    const { list, count, setPage, setTarget } = useTableFetch<PromotionSummaryModel>(
+    const location = useLocation();
+
+    const { list, count, query, setPage, setTarget } = useTableFetch<PromotionSummaryModel>(
         promotionApi.getByPage,
-        {
-            target: "id",
-            order: "desc",
-            page: 1,
-        }
+        // @ts-ignore
+        queryString.parse(location.search, { parseNumbers: true })
     );
+
+    const submitSearch = (values: { query: string }) => {};
 
     const headers = useMemo(
         () => [
-            { name: "Ma khuyen mai", target: "id" },
-            { name: "Ten san pham", target: "name" },
-            { name: "Hinh anh", target: undefined },
-            { name: "So luong", target: "quantity" },
-            { name: "Don gia", target: "price" },
+            { name: "Mã KM", target: "id" },
+            { name: "Khuyến mãi", target: "name" },
+            { name: "Hình ảnh", target: undefined },
+            { name: "Số lượng", target: "quantity" },
+            { name: "Đơn giá", target: "price" },
         ],
         []
     );
@@ -42,21 +46,30 @@ const PromotionPage = () => {
                 </div>
             </SSC.SectionTitle>
 
-            <SSC.SearchContainer>
-                <SSC.SearchInput placeholder="Tìm kiếm theo mã hoặc tên" />
-                <SSC.SearchButton>
-                    <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
-                    Tim kiem
-                </SSC.SearchButton>
-            </SSC.SearchContainer>
+            <Formik
+                initialValues={{ query: query || "" }}
+                onSubmit={submitSearch}
+                enableReinitialize={true}
+            >
+                <SSC.SearchForm noValidate>
+                    <SSC.SearchInput name="query" placeholder="Tìm kiếm theo mã hoặc tên" />
+                    <SSC.SearchButton>
+                        <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
+                        Tim kiem
+                    </SSC.SearchButton>
+                </SSC.SearchForm>
+            </Formik>
 
             <SC.Table>
                 <tr>
-                    <th>
+                    <th className="select">
                         <input type="checkbox" />
                     </th>
                     {headers.map((header) => (
-                        <th onClick={header.target ? () => setTarget(header.target) : undefined}>
+                        <th
+                            onClick={header.target ? () => setTarget(header.target) : undefined}
+                            className={header.target ? "sortable" : "unsortable"}
+                        >
                             {header.name}
                         </th>
                     ))}
@@ -64,22 +77,36 @@ const PromotionPage = () => {
 
                 {list
                     ? list.map((product) => (
-                          <tr>
-                              <td>
-                                  <input type="checkbox" />
+                          <tr onDoubleClick={() => alert("hey")}>
+                              <td
+                                  className="select"
+                                  onClick={(e) => {
+                                      // @ts-ignore
+                                      e.currentTarget.firstChild.click();
+                                  }}
+                                  onDoubleClick={(e) => e.stopPropagation()}
+                              >
+                                  <input
+                                      type="checkbox"
+                                      onClick={(e) => e.stopPropagation()}
+                                      onDoubleClick={(e) => e.stopPropagation()}
+                                  />
                               </td>
-                              <td>{product.id}</td>
-                              <td>{product.name}</td>
-                              <td>
+                              <td className="id">{product.id}</td>
+                              <td className="name">{product.name}</td>
+                              <td className="image">
                                   <img
                                       src={product.image_url}
-                                      width={40}
-                                      height={40}
+                                      width={30}
+                                      height={30}
                                       alt={product.name}
                                   />
                               </td>
-                              <td>{product.quantity}</td>
-                              <td>{product.price.toLocaleString()}</td>
+                              <td className="quantity">{product.quantity}</td>
+                              <td className="price">
+                                  {product.price.toLocaleString()}
+                                  <u>đ</u>
+                              </td>
                           </tr>
                       ))
                     : null}

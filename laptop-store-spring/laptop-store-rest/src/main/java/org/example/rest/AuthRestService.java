@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 
@@ -26,6 +23,12 @@ import javax.naming.AuthenticationException;
 public class AuthRestService {
     @Autowired
     private AuthService authService;
+
+    @GetMapping(value = "/demo")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> demo() {
+        return ResponseEntity.ok("Hello world!");
+    }
 
     @PostMapping(value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,

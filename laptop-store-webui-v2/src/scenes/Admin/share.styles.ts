@@ -1,3 +1,4 @@
+import { Field, Form } from "formik";
 import styled, { css } from "styled-components";
 
 const AdminTable = css`
@@ -19,7 +20,7 @@ const AdminTable = css`
 
     tr:not(:first-of-type) {
         :hover {
-            background-color: #e0e0e0;
+            background-color: #eee;
             cursor: pointer;
         }
     }
@@ -37,7 +38,8 @@ const AdminTable = css`
     }
 
     input[type="checkbox"] {
-        transform: scale(1.1);
+        transform: scale(1.2);
+        margin: 0;
     }
 `;
 
@@ -86,7 +88,13 @@ const SearchContainer = styled.div`
     margin-bottom: 15px;
 `;
 
-const SearchInput = styled.input`
+const SearchForm = styled(Form)`
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+`;
+
+const SearchInput = styled(Field)`
     border-radius: 0;
     background-color: white;
     padding: 10px;
@@ -131,6 +139,7 @@ export const SSC = {
     SearchContainer,
     SearchInput,
     SearchButton,
+    SearchForm,
     Select,
     EmptyContainer,
 };
