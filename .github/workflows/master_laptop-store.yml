@@ -32,4 +32,4 @@ jobs:
         app-name: 'laptop-store'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_3b7a62e3647d4729837f0911e66facab }}
-        package: '/laptop-store-rest/target/*.jar'
+        package: '${{ github.workspace }}/laptop-store-rest/target/*.jar'
