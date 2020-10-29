@@ -8,6 +8,8 @@ import PromotionSummaryModel from "../../../../values/models/PromotionSummaryMod
 import { Formik } from "formik";
 import queryString from "query-string";
 import { useLocation } from "react-router";
+import SelectAll from "../components/SelectAll";
+import SelectItem from "../components/SelectItem";
 
 const PromotionPage = () => {
     const location = useLocation();
@@ -62,9 +64,7 @@ const PromotionPage = () => {
 
             <SC.Table>
                 <tr>
-                    <th className="select">
-                        <input type="checkbox" />
-                    </th>
+                    <SelectAll />
                     {headers.map((header) => (
                         <th
                             onClick={header.target ? () => setTarget(header.target) : undefined}
@@ -77,21 +77,8 @@ const PromotionPage = () => {
 
                 {list
                     ? list.map((product) => (
-                          <tr onDoubleClick={() => alert("hey")}>
-                              <td
-                                  className="select"
-                                  onClick={(e) => {
-                                      // @ts-ignore
-                                      e.currentTarget.firstChild.click();
-                                  }}
-                                  onDoubleClick={(e) => e.stopPropagation()}
-                              >
-                                  <input
-                                      type="checkbox"
-                                      onClick={(e) => e.stopPropagation()}
-                                      onDoubleClick={(e) => e.stopPropagation()}
-                                  />
-                              </td>
+                          <tr onClick={() => alert("hey")}>
+                              <SelectItem />
                               <td className="id">{product.id}</td>
                               <td className="name">{product.name}</td>
                               <td className="image">

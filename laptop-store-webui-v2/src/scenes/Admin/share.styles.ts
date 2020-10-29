@@ -8,6 +8,13 @@ const AdminTable = css`
     border-collapse: collapse;
     margin-bottom: 15px;
 
+    td,
+    th {
+        &.select {
+            border-right: 1px dashed #ddd;
+        }
+    }
+
     th {
         user-select: none;
         &.sortable {

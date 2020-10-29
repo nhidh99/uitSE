@@ -3,13 +3,6 @@ import { SS } from "../../share.styles";
 
 const Table = styled.table`
     ${SS.AdminTable}
-
-    td, th {
-        &.select {
-            border-right: 1px dashed #ddd;
-        }
-    }
-
     td {
         &.select,
         &.id,

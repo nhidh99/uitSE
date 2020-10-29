@@ -47,7 +47,7 @@ function useTableFetch<T>(
     );
 
     const setQuery = useCallback(
-        (query: string) => setParams((prev) => ({ ...prev, query: query })),
+        (query: string) => setParams((prev) => ({ ...prev, query: query, page: 1 })),
         []
     );
 
@@ -73,14 +73,19 @@ function useTableFetch<T>(
     }, []);
 
     useEffect(() => {
-        if (isPopState.current) {
-            isPopState.current = false;
-        } else if (list !== null) {
-            history.push({
-                pathname: location.pathname,
-                search: queryString.stringify(params, { skipEmptyString: true }),
-            });
-        }
+        const loadData = () => {
+            if (isPopState.current) {
+                isPopState.current = false;
+                loadData();
+            } else if (list !== null) {
+                history.push({
+                    pathname: location.pathname,
+                    search: queryString.stringify(params, { skipEmptyString: true }),
+                });
+            }
+        };
+
+        loadData();
     }, [params]);
 
     useEffect(() => {
@@ -93,6 +98,7 @@ function useTableFetch<T>(
                 count: parseInt(response.headers["x-total-count"]),
             });
         };
+
         loadData();
     }, [location.search]);
 

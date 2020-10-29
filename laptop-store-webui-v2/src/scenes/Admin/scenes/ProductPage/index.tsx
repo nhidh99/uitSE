@@ -12,6 +12,8 @@ import Loader from "../../../../components/Loader";
 import queryString from "query-string";
 import { useLocation } from "react-router";
 import { Formik } from "formik";
+import SelectAll from "../components/SelectAll";
+import SelectItem from "../components/SelectItem";
 
 const ProductPage = () => {
     const location = useLocation();
@@ -82,9 +84,7 @@ const ProductPage = () => {
                     <>
                         <SC.Table>
                             <tr>
-                                <th className="select">
-                                    <input type="checkbox" />
-                                </th>
+                                <SelectAll />
                                 {headers.map((h) => (
                                     <th
                                         onClick={h.target ? () => setTarget(h.target) : undefined}
@@ -96,9 +96,7 @@ const ProductPage = () => {
                             </tr>
                             {list.map((product) => (
                                 <tr>
-                                    <td className="select">
-                                        <input type="checkbox" />
-                                    </td>
+                                    <SelectItem />
                                     <td className="id">{product.id}</td>
                                     <td className="name">{product.name}</td>
                                     <td className="image">

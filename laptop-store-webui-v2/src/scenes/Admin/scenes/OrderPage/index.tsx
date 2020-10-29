@@ -2,9 +2,10 @@ import React, { memo, useMemo } from "react";
 import { SC } from "./styles";
 import { SSC } from "../../share.styles";
 import useTableFetch from "../../../../services/hooks/useTableFetch";
-import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import OrderSummaryModel from "../../../../values/models/OrderSummaryModel";
 import orderApi from "../../../../services/api/orderApi";
+import { Formik } from "formik";
 
 const OrderPage = () => {
     const { list, count, setPage, setTarget } = useTableFetch<OrderSummaryModel>(
@@ -32,21 +33,23 @@ const OrderPage = () => {
         <>
             <SSC.SectionTitle>Danh sách đơn hàng</SSC.SectionTitle>
 
-            <SSC.SearchContainer>
-                <SSC.SearchInput placeholder="Tìm kiếm theo mã hoặc tên" />
-                <SSC.Select>
-                    <option>Chờ duyệt</option>
-                    <option>Tiếp nhận</option>
-                    <option>Đóng gói</option>
-                    <option>Vận chuyển</option>
-                    <option>Đã giao</option>
-                    <option>Đã huỷ</option>
-                </SSC.Select>
-                <SSC.SearchButton>
-                    <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
-                    Tim kiem
-                </SSC.SearchButton>
-            </SSC.SearchContainer>
+            <Formik initialValues={{ query: "", status: "pending" }} onSubmit={() => {}}>
+                <SSC.SearchContainer>
+                    <SSC.SearchInput name="query" placeholder="Tìm kiếm theo mã hoặc tên" />
+                    <SSC.SearchInput name="status" component="select">
+                        <option value="pending">Chờ duyệt</option>
+                        <option value="received">Tiếp nhận</option>
+                        <option value="packaged">Đóng gói</option>
+                        <option value="delivering">Vận chuyển</option>
+                        <option value="delivered">Đã giao</option>
+                        <option value="canceled">Đã huỷ</option>
+                    </SSC.SearchInput>
+                    <SSC.SearchButton type="submit">
+                        <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
+                        Tim kiem
+                    </SSC.SearchButton>
+                </SSC.SearchContainer>
+            </Formik>
 
             <SC.Table>
                 <tr>

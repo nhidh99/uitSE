@@ -18,7 +18,7 @@ const Table = styled.table`
     th,
     td {
         &.select {
-            width: 5%;
+            width: 6%;
         }
 
         &.id,
@@ -29,7 +29,7 @@ const Table = styled.table`
         }
 
         &.name {
-            width: 40%;
+            width: 39%;
         }
 
         &.unit_price {
