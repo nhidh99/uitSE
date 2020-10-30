@@ -9,7 +9,6 @@ import { FaLaptop, FaPlus, FaSearch, FaTrash } from "react-icons/fa";
 import Paginate from "../../../../components/Paginate";
 import EmptyBlock from "../../../../components/EmptyBlock";
 import Loader from "../../../../components/Loader";
-import queryString from "query-string";
 import { useLocation } from "react-router";
 import { Formik } from "formik";
 import SelectAll from "../components/SelectAll";
@@ -20,11 +19,7 @@ const ProductPage = () => {
 
     const { list, count, page, query, setPage, setQuery, setTarget } = useTableFetch<
         ProductSummaryModel
-    >(
-        laptopApi.getByPage,
-        // @ts-ignore
-        queryString.parse(location.search, { parseNumbers: true })
-    );
+    >(laptopApi.getByPage);
 
     const headers = useMemo(
         () => [
@@ -118,7 +113,7 @@ const ProductPage = () => {
                         </SC.Table>
                         <Paginate
                             count={count}
-                            initialPage={page}
+                            initialPage={page || 1}
                             sizePerPage={10}
                             pageChange={pageChange}
                         />

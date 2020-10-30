@@ -2,7 +2,7 @@ package org.example.service.impl;
 
 import org.example.constant.ErrorMessageConstants;
 import org.example.dao.*;
-import org.example.dto.comment.CommentDTO;
+import org.example.dto.comment.QuestionDTO;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
@@ -12,7 +12,7 @@ import org.example.dto.rating.RatingDTO;
 import org.example.dto.spec.*;
 import org.example.input.LaptopFilterInput;
 import org.example.input.SearchInput;
-import org.example.model.Comment;
+import org.example.model.Question;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
 import org.example.model.Rating;
@@ -121,18 +121,18 @@ public class LaptopServiceImpl implements LaptopService {
             List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(laptopId);
             List<Laptop> suggestionLaptops = laptopRepository.findByRecordStatusTrueAndIdIn(suggestionIds);
             List<Rating> ratings = ratingRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
-            List<Comment> comments = commentRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
+            List<Question> questions = commentRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
             List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndLaptopsId(laptopId);
             List<Integer> imageIds = laptopDetailImageRepository.findIdsByLaptopId(laptopId);
 
             LaptopSpecDTO laptopSpecDTO = buildSpecDTOFromLaptop(laptop);
             List<RatingDTO> ratingDTOS = ModelMapperUtil.mapList(ratings, RatingDTO.class);
-            List<CommentDTO> commentDTOS = ModelMapperUtil.mapList(comments, CommentDTO.class);
+            List<QuestionDTO> questionDTOS = ModelMapperUtil.mapList(questions, QuestionDTO.class);
             List<PromotionDTO> promotionDTOS = ModelMapperUtil.mapList(promotions, PromotionDTO.class);
             List<LaptopOverviewDTO> suggestionDTOs = ModelMapperUtil.mapList(suggestionLaptops, LaptopOverviewDTO.class);
 
             return LaptopDetailDTO.builder().spec(laptopSpecDTO).ratings(ratingDTOS)
-                    .comments(commentDTOS).promotions(promotionDTOS)
+                    .comments(questionDTOS).promotions(promotionDTOS)
                     .suggestions(suggestionDTOs).imageIds(imageIds).build();
         });
     }

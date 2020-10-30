@@ -50,7 +50,7 @@ const ProductItem = ({ product, compareLink = null }: ProductItemProps) => (
                 <SC.Compare
                     to={{
                         pathname: compareLink,
-                        state: { loading: false },
+                        state: { loading: true },
                     }}
                 >
                     So sánh sản phẩm

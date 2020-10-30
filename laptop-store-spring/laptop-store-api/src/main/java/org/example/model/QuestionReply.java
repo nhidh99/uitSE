@@ -1,6 +1,5 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Formula;
@@ -14,22 +13,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Table(name = "comment_reply")
-public class CommentReply {
+public class QuestionReply {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
-    @JsonIgnore
     @ToString.Exclude
-    private Comment comment;
+    private Question question;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     @ToString.Exclude
     private User user;
 
@@ -38,10 +34,8 @@ public class CommentReply {
     private String userFullName;
 
     @Column(name = "reply")
-    @JsonProperty("reply")
     private String reply;
 
     @Column(name = "reply_date")
-    @JsonProperty("reply_date")
     private LocalDate replyDate;
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.dto.comment.CommentDTO;
+import org.example.dto.comment.QuestionDTO;
 import org.example.dto.promotion.PromotionDTO;
 import org.example.dto.rating.RatingDTO;
 
@@ -29,7 +29,7 @@ public class LaptopDetailDTO {
     private List<LaptopOverviewDTO> suggestions;
 
     @JsonProperty("comments")
-    private List<CommentDTO> comments;
+    private List<QuestionDTO> comments;
 
     @JsonProperty("ratings")
     private List<RatingDTO> ratings;

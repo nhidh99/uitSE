@@ -21,6 +21,12 @@ const Button = styled.button`
     border: none;
     color: white;
     background-color: #5cb85c;
+    cursor: pointer;
+
+    :disabled {
+        opacity: 0.5;
+        cursor: unset;
+    }
 
     svg {
         margin-bottom: -2px;

@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import org.example.model.Comment;
+import org.example.model.Question;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Integer> {
-    List<Comment> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
+public interface CommentRepository extends JpaRepository<Question, Integer> {
+    List<Question> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
 
     Long countByApproveStatusTrueAndUserUsername(String username);
 }

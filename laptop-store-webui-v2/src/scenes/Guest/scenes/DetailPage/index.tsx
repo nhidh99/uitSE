@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { useLocation, useHistory, useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import LoadingBlock from "./components/LoadingBlock";
-import store from "../../../../services/redux/store";
 import OverviewBlock from "./components/OverviewBlock";
 import ContentBlock from "./components/ContentBlock";
 import SpecBlock from "./components/SpecBlock";
@@ -29,11 +28,8 @@ const DetailPage = () => {
     const { productId } = useParams();
     const history = useHistory();
     const dispatch = useDispatch();
-    const location = useLocation<LocationState>();
 
-    const [loading, setLoading] = useState<boolean>(
-        location.state?.loading || store.getState().product === null
-    );
+    const [loading, setLoading] = useState<boolean>(true);
 
     // @ts-ignore
     const { showComments, showRatings }: ShowState = useSelector((state: RootState) => ({
@@ -43,6 +39,13 @@ const DetailPage = () => {
 
     useEffect(() => {
         const loadData = async () => {
+            setLoading(true);
+            window.scroll(0, 0);
+            if (isNaN(parseInt(productId))) {
+                history.push("/");
+                return;
+            }
+
             try {
                 const id = parseInt(productId);
                 await dispatch(fetchProductDetailById(id));
@@ -52,12 +55,6 @@ const DetailPage = () => {
             }
         };
 
-        window.scroll(0, 0);
-        window.history.replaceState(null, "");
-        if (isNaN(parseInt(productId))) {
-            history.push("/");
-            return;
-        }
         loadData();
     }, [productId]);
 

@@ -1,6 +1,5 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
@@ -16,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "comment")
 @Builder
-public class Comment {
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -43,7 +42,7 @@ public class Comment {
     @Column(name = "approve_status")
     private boolean approveStatus;
 
-    @OneToMany(mappedBy = "comment", orphanRemoval = true)
+    @OneToMany(mappedBy = "question", orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.TRUE)
-    private List<CommentReply> replies;
+    private List<QuestionReply> replies;
 }

@@ -5,4 +5,6 @@ public class SuccessMessageConstants {
     public static final String PUT_USER_INFO = "Đã cập nhật thông tin";
     public static final String PUT_USER_DEFAULT_ADDRESS = "Đã cập nhật địa chỉ mặc định";
     public static final String PUT_USER_PASSWORD = "Đã cập nhật mật khẩu";
+
+    public static final String QUESTION_CREATED = "Câu hỏi đã được gửi để duyệt";
 }

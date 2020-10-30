@@ -1,9 +1,14 @@
 package org.example.util;
 
+import org.example.constant.OrderConstants;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class DateUtil {
+    private static final ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+
     public static LocalDate addWorkingDays(LocalDate date, int workdays) {
         if (workdays < 1) {
             return date;
@@ -18,5 +23,9 @@ public class DateUtil {
             }
         }
         return result;
+    }
+
+    public static LocalDate getCurrentLocalDate() {
+        return LocalDate.now(zoneId);
     }
 }

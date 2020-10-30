@@ -3,6 +3,8 @@ import { AxiosResponse } from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import queryString from "query-string";
+import { useDispatch } from "react-redux";
+import { fireLoading, skipLoading } from "../redux/slices/loaderStatusSlice";
 
 type PageFetchState<T> = {
     list: T[] | null;
@@ -13,13 +15,14 @@ type FetchApiParams = {
     query?: string;
     target?: string;
     order?: string;
-    page: number;
+    page?: number;
 };
 
-function useTableFetch<T>(
-    fetchApi: (params: FetchApiParams) => Promise<AxiosResponse<T[]>>,
-    initialParams: FetchApiParams
-) {
+function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosResponse<T[]>>) {
+    const location = useLocation();
+    const history = useHistory();
+    const dispatch = useDispatch();
+
     const initialState = useMemo<PageFetchState<T>>(
         () => ({
             list: null,
@@ -28,18 +31,16 @@ function useTableFetch<T>(
         []
     );
 
-    const [data, setData] = useState<PageFetchState<T>>(initialState);
+    const initialParams = queryString.parse(location.search, { parseNumbers: true });
+    // @ts-ignore
     const [params, setParams] = useState<FetchApiParams>(initialParams);
-
-    const location = useLocation();
-    const history = useHistory();
+    const [data, setData] = useState<PageFetchState<T>>(initialState);
 
     const { list, count } = data;
     const { query, order, page } = params;
 
-    const prevTarget = useRef<string>(params?.target ?? "id");
-
     const isPopState = useRef<boolean>(false);
+    const prevTarget = useRef<string>(params?.target ?? "id");
 
     const setPage = useCallback(
         (page: number) => setParams((prev) => ({ ...prev, page: page })),
@@ -53,7 +54,7 @@ function useTableFetch<T>(
 
     const setTarget = (target: string) => {
         if (target === prevTarget.current) {
-            setParams((prev) => ({ ...prev, order: order === "desc" ? "asc" : "desc" }));
+            setParams((prev) => ({ ...prev, order: order === "desc" || !order ? "asc" : "desc" }));
         } else {
             prevTarget.current = target;
             setParams((prev) => ({ ...prev, target: target, order: "asc" }));
@@ -61,23 +62,15 @@ function useTableFetch<T>(
     };
 
     useEffect(() => {
-        const listenToPopstate = () => {
+        window.addEventListener("popstate", () => {
             isPopState.current = true;
-            // @ts-ignore
-            setParams(queryString.parse(location.search, { parseNumbers: true }));
-        };
-        window.addEventListener("popstate", listenToPopstate);
-        return () => {
-            window.removeEventListener("popstate", listenToPopstate);
-        };
+            window.location.reload();
+        });
     }, []);
 
     useEffect(() => {
         const loadData = () => {
-            if (isPopState.current) {
-                isPopState.current = false;
-                loadData();
-            } else if (list !== null) {
+            if (list !== null) {
                 history.push({
                     pathname: location.pathname,
                     search: queryString.stringify(params, { skipEmptyString: true }),
@@ -89,14 +82,27 @@ function useTableFetch<T>(
     }, [params]);
 
     useEffect(() => {
-        const loadData = async () => {
+        const loadTable = async () => {
+            if (isPopState.current) {
+                return;
+            }
+
             const params = queryString.parse(location.search, { parseNumbers: true });
-            // @ts-ignore
             const response = await fetchApi(params);
             setData({
                 list: response.data,
                 count: parseInt(response.headers["x-total-count"]),
             });
+        };
+
+        const loadData = async () => {
+            if (list === null) {
+                loadTable();
+            } else {
+                dispatch(fireLoading());
+                await loadTable();
+                dispatch(skipLoading());
+            }
         };
 
         loadData();

@@ -5,6 +5,7 @@ import orderSlice from "./slices/orderSlice";
 import loaderStatusSlice from "./slices/loaderStatusSlice";
 import messageSlice from "./slices/messageSlice";
 import wishListSlice from "./slices/wishListSlice";
+import modalSlice from "./slices/modalSlice";
 
 const rootReducer = combineReducers({
     product: productInfoSlice,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     loaderStatus: loaderStatusSlice,
     message: messageSlice,
     wishList: wishListSlice,
+    modal: modalSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

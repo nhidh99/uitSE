@@ -9,12 +9,7 @@ import { Formik } from "formik";
 
 const OrderPage = () => {
     const { list, count, setPage, setTarget } = useTableFetch<OrderSummaryModel>(
-        orderApi.getByPage,
-        {
-            target: "id",
-            order: "desc",
-            page: 1,
-        }
+        orderApi.getByPage
     );
 
     const headers = useMemo(

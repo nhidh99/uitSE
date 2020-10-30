@@ -16,4 +16,6 @@ public class ErrorMessageConstants {
     public static final String INVALID_DELIVERY_ADDRESS = "Địa chỉ giao hàng không hợp lệ";
     public static final String INVALID_ADDRESS = "Địa chỉ không hợp lệ";
     public static final String EMPTY_CART = "Giỏ hàng trống";
+    public static final String BAD_REQUEST = "Yêu cầu không hợp lệ";
+    public static final String EMPTY_QUESTION = "Câu hỏi không được để trống";
 }

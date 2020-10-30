@@ -59,19 +59,17 @@ const SectionTitle = styled.div`
     justify-content: space-between;
 
     div {
-        margin-top: -5px;
-        margin-bottom: -5px;
-        width: 160px;
-        display: flex;
-        justify-content: space-between;
-
         button {
             font-size: 14px;
             border: none;
             cursor: pointer;
-            padding: 5px 10px;
-            background-color: #dedede;
+            padding: 5px 5px;
+            margin-bottom: -5px;
             color: #333;
+
+            :hover {
+                background-color: #dedede;
+            }
 
             &.delete {
                 color: #d01929;

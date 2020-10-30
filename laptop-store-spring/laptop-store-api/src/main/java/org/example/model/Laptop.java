@@ -102,7 +102,7 @@ public class Laptop {
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "laptop")
     @LazyCollection(LazyCollectionOption.TRUE)
-    private List<Comment> comments;
+    private List<Question> questions;
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "laptop")
     @LazyCollection(LazyCollectionOption.TRUE)

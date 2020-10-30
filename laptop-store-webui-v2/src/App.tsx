@@ -12,6 +12,7 @@ import { setUser } from "./services/redux/slices/userSlice";
 import UserModel from "./values/models/UserModel";
 import MessageBox from "./components/MessageBox";
 import { setWishList } from "./services/redux/slices/wishListSlice";
+import GlobalModal from "./components/GlobalModal";
 
 const App = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -44,6 +45,7 @@ const App = () => {
 
     return loading ? null : (
         <>
+            <GlobalModal />
             <Banner />
             <SC.Container>
                 <Switch>
