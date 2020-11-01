@@ -1,10 +1,21 @@
-import { ErrorMessage, Field } from "formik";
 import styled from "styled-components";
 
 const Container = styled.div`
     border-radius: 5px;
     margin-bottom: 12px;
     display: flex;
+
+    input,
+    select {
+        border: none;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        font-size: 16px;
+        width: 100%;
+        color: #333;
+    }
 `;
 
 const IconContainer = styled.span`
@@ -19,18 +30,7 @@ const IconContainer = styled.span`
     }
 `;
 
-const Input = styled(Field)`
-    border: none;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    font-size: 16px;
-    width: 100%;
-    color: #333;
-`;
-
-const Error = styled(ErrorMessage)`
+const Error = styled.div`
     color: red;
     font-size: 12px;
     text-align: left;
@@ -40,6 +40,5 @@ const Error = styled(ErrorMessage)`
 export const SC = {
     Container,
     IconContainer,
-    Input,
     Error,
 };

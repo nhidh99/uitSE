@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Form, Formik } from "formik";
-import React, { useCallback, useMemo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
+import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import FieldInput from "../../../../components/FIeldInput";
@@ -10,6 +10,8 @@ import { setUser } from "../../../../services/redux/slices/userSlice";
 import store from "../../../../services/redux/store";
 import UserInfoFormValues from "../../../../values/forms/UserInfoFormValues";
 import UserModel from "../../../../values/models/UserModel";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SC } from "./styles";
 
 type InfoPageState = {
     user: UserModel;
@@ -18,20 +20,18 @@ type InfoPageState = {
 
 const InfoPage = () => {
     // @ts-ignore
-    const { user, initialValues }: InfoPageState = useSelector(
-        (state: RootState) => {
-            const user = state.user;
-            return {
-                user: user,
-                initialValues: {
-                    name: user?.name,
-                    phone: user?.phone,
-                    email: user?.email,
-                    gender: user?.gender,
-                },
-            };
-        }
-    );
+    const { user, initialValues }: InfoPageState = useSelector((state: RootState) => {
+        const user = state.user;
+        return {
+            user: user,
+            initialValues: {
+                name: user?.name,
+                phone: user?.phone,
+                email: user?.email,
+                gender: user?.gender,
+            },
+        };
+    });
 
     const submit = useCallback(async (data: UserInfoFormValues) => {
         try {
@@ -51,7 +51,7 @@ const InfoPage = () => {
                     .max(30, "Họ tên tối đa 30 kí tự")
                     .required("Họ tên không được để trống"),
                 email: Yup.string()
-                    .max(80, "Email tối đa 80 kí tự")
+                    .max(50, "Email tối đa 50 kí tự")
                     .required("Email không được để trống")
                     .matches(/(.+)@(.+){2,}\.(.+){2,}/, "Email không hợp lệ"),
                 phone: Yup.string()
@@ -62,55 +62,47 @@ const InfoPage = () => {
         []
     );
 
-    return (
-        <Formik
-            initialValues={initialValues}
-            onSubmit={submit}
-            validationSchema={schema}
-            isInitialValid={schema.isValidSync(initialValues)}
-            enableReinitialize={true}
-        >
-            {({ isValid, isSubmitting }) => {
-                const isDisabledButton = isSubmitting || !isValid;
-                const buttonStyle = {
-                    border: "none",
-                    backgroundColor: "#5cb85c",
-                    color: "white",
-                    marginTop: "5px",
-                    marginBottom: 0,
-                    width: "200px",
-                    cursor: "pointer",
-                    opacity: isDisabledButton ? "0.5" : "1",
-                };
-                return (
-                    <Form>
-                        <FieldInput label="Họ tên:" name="name" validate />
-                        <FieldInput label="Email:" name="email" validate />
-                        <FieldInput label="Điện thoại:" name="phone" validate />
-                        <FieldInput
-                            label="Giới tính"
-                            name="gender"
-                            component="select"
-                            validate
-                        >
-                            <option value="MALE">Nam</option>
-                            <option value="FEMALE">Nữ</option>
-                            <option value="OTHER">Khác</option>
-                        </FieldInput>
+    const { register, handleSubmit, formState, errors } = useForm({
+        mode: "onBlur",
+        defaultValues: initialValues,
+        resolver: yupResolver(schema),
+    });
 
-                        <FieldInput
-                            label=""
-                            component="button"
-                            disabled={isDisabledButton}
-                            style={buttonStyle}
-                        >
-                            Lưu
-                        </FieldInput>
-                    </Form>
-                );
-            }}
-        </Formik>
+    return (
+        <form onSubmit={handleSubmit(submit)}>
+            <FieldInput
+                label="Họ tên:"
+                component={<input type="text" name="name" ref={register} maxLength={30} />}
+                errorMessage={errors.name?.message}
+            />
+
+            <FieldInput
+                label="Email:"
+                component={<input type="text" name="email" ref={register} maxLength={50} />}
+                errorMessage={errors.email?.message}
+            />
+
+            <FieldInput
+                label="Điện thoại:"
+                component={<input type="text" name="phone" ref={register} maxLength={10} />}
+                errorMessage={errors.phone?.message}
+            />
+
+            <FieldInput
+                label="Giới tính:"
+                noValidate
+                component={
+                    <select name="gender" ref={register}>
+                        <option value="MALE">Nam</option>
+                        <option value="FEMALE">Nữ</option>
+                        <option value="OTHER">Khác</option>
+                    </select>
+                }
+            />
+
+            <SC.Submit type="submit" value="Lưu" disabled={formState.isSubmitting} />
+        </form>
     );
 };
 
-export default InfoPage;
+export default memo(InfoPage);

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaBoxes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
@@ -51,10 +51,6 @@ const OrderPage = () => {
         loadData();
     }, [page]);
 
-    const pageChange = useCallback((data: { selected: number }) => {
-        setState((prev) => ({ ...prev, page: data.selected + 1 }));
-    }, []);
-
     return orders ? (
         <>
             {orderCount === 0 ? (
@@ -64,12 +60,7 @@ const OrderPage = () => {
                     {orders.map((order) => (
                         <OrderBlock order={order} />
                     ))}
-                    <Paginate
-                        count={orderCount}
-                        initialPage={page}
-                        sizePerPage={5}
-                        pageChange={pageChange}
-                    />
+                    <Paginate count={orderCount} initialPage={page} sizePerPage={5} />
                 </>
             )}
         </>

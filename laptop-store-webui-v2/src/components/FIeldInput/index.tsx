@@ -1,25 +1,20 @@
-import { FieldAttributes } from "formik";
-import React from "react";
+import React, { ReactNode } from "react";
 import { SC } from "./styles";
 
 type FieldInputProps = {
     label: string;
-    validate?: boolean;
+    component: ReactNode;
+    noValidate?: boolean;
+    errorMessage?: string;
 };
 
-const FieldInput = ({
-    label,
-    validate,
-    ...props
-}: FieldInputProps & FieldAttributes<any>) => (
+const FieldInput = ({ label, component, noValidate, errorMessage }: FieldInputProps) => (
     <>
         <SC.Container>
-            <SC.Label htmlFor={props.name}>{label}</SC.Label>
+            <SC.Label>{label}</SC.Label>
             <SC.InputContainer>
-                <SC.Input {...props} />
-                {validate ? (
-                    <SC.Error name={props.name} component="div" />
-                ) : null}
+                {component}
+                {!noValidate && errorMessage ? <SC.Error>{errorMessage}</SC.Error> : null}
             </SC.InputContainer>
         </SC.Container>
     </>

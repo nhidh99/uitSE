@@ -12,6 +12,7 @@ import javax.naming.AuthenticationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(value = AuthenticationException.class)
     public ResponseEntity<?> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorMessageConstants.INVALID_CREDENTIAL);
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {JsonProcessingException.class, Exception.class})
     public ResponseEntity<?> handleServerException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorMessageConstants.SERVER_ERROR);
     }
 }

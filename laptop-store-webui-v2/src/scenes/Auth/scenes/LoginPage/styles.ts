@@ -1,7 +1,6 @@
-import { Field, Form } from "formik";
 import styled from "styled-components";
 
-const LoginForm = styled(Form)`
+const LoginForm = styled.form`
     background-color: white;
     margin: 0 auto;
     width: fit-content;
@@ -18,7 +17,7 @@ const Header = styled.header`
     font-size: 20px;
 `;
 
-const Submit = styled(Field)`
+const Submit = styled.button`
     width: 100%;
     background-color: #727272;
     color: white;

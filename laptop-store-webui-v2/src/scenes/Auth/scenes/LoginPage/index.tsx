@@ -1,5 +1,5 @@
-import { Formik } from "formik";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
 import { FaLock, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import IconInput from "../../../../components/IconInput";
@@ -11,10 +11,10 @@ import { SC } from "./styles";
 const LoginPage = () => {
     const [status, setStatus] = useState<string | null>(null);
 
-    const submit = useCallback(async (values: LoginFormValues) => {
+    const submit = useCallback(async (data: LoginFormValues) => {
         try {
             setStatus("Đang xử lí đăng nhập");
-            const response = await authApi.postLogin(values);
+            const response = await authApi.postLogin(data);
             createCookie("access_token", response.headers["x-access-token"]);
             localStorage.setItem("refresh_token", response.headers["x-refresh-token"]);
             setStatus("Đăng nhập thành công");
@@ -24,38 +24,41 @@ const LoginPage = () => {
         }
     }, []);
 
-    const initialValues: LoginFormValues = useMemo(
-        () => ({
+    const { register, handleSubmit, formState } = useForm({
+        defaultValues: {
             username: "",
             password: "",
-        }),
-        []
-    );
+        },
+    });
 
     return (
-        <Formik initialValues={initialValues} onSubmit={submit}>
-            <SC.LoginForm>
-                <SC.Header>ĐĂNG NHẬP</SC.Header>
+        <SC.LoginForm onSubmit={handleSubmit(submit)}>
+            <SC.Header>ĐĂNG NHẬP</SC.Header>
 
-                <IconInput
-                    icon={FaUser}
-                    validate={true}
-                    type="text"
-                    name="username"
-                    placeholder="Tài khoản"
-                />
+            <IconInput
+                icon={<FaUser />}
+                component={
+                    <input type="text" name="username" placeholder="Tài khoản" ref={register} />
+                }
+            />
 
-                <IconInput icon={FaLock} type="password" name="password" placeholder="Mật khẩu" />
+            <IconInput
+                icon={<FaLock />}
+                component={
+                    <input type="password" name="username" placeholder="Mật khẩu" ref={register} />
+                }
+            />
 
-                <SC.Submit type="submit" value="Đăng nhập" />
+            <SC.Submit disabled={formState.isSubmitting} type="submit">
+                Đăng nhập
+            </SC.Submit>
 
-                <SC.RegisterRedirect>
-                    Chưa có tài khoản? <Link to="/auth/register">Đăng kí ngay</Link>
-                </SC.RegisterRedirect>
+            <SC.RegisterRedirect>
+                Chưa có tài khoản? <Link to="/auth/register">Đăng kí ngay</Link>
+            </SC.RegisterRedirect>
 
-                {status ? <SC.Status>{status}</SC.Status> : null}
-            </SC.LoginForm>
-        </Formik>
+            {status ? <SC.Status>{status}</SC.Status> : null}
+        </SC.LoginForm>
     );
 };
 

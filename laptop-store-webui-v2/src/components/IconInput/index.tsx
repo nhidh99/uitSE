@@ -1,27 +1,22 @@
-import { FieldAttributes } from "formik";
-import React, { createElement } from "react";
-import { IconType } from "react-icons";
+import React, { ReactNode } from "react";
 import { SC } from "./styles";
 
 type IconInputProps = {
-    icon: IconType;
-    validate?: boolean;
+    icon: ReactNode;
+    component: ReactNode;
+    noValidate?: boolean;
+    errorMessage?: string;
 };
 
-const IconInput = ({
-    icon,
-    validate,
-    ...props
-}: IconInputProps & FieldAttributes<any>) => {
-    const iconElement = createElement(icon);
+const IconInput = ({ icon, component, noValidate, errorMessage }: IconInputProps) => {
     return (
         <>
             <SC.Container>
-                <SC.IconContainer>{iconElement}</SC.IconContainer>
-                <SC.Input {...props} />
+                <SC.IconContainer>{icon}</SC.IconContainer>
+                {component}
             </SC.Container>
 
-            {validate ? <SC.Error name={props.name} component="div" /> : null}
+            {!noValidate && errorMessage ? <SC.Error>{errorMessage}</SC.Error> : null}
         </>
     );
 };

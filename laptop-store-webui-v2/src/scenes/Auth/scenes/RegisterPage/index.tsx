@@ -1,4 +1,3 @@
-import { Formik } from "formik";
 import React, { useCallback, useMemo, useState } from "react";
 import { FaLock, FaMailBulk, FaPhone, FaTransgender, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -8,6 +7,8 @@ import * as Yup from "yup";
 import { authApi } from "../../../../services/api/authApi";
 import { createCookie } from "../../../../services/helper/cookie";
 import RegisterFormValues from "../../../../values/forms/RegisterFormValues";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const RegisterPage = () => {
     const [status, setStatus] = useState<string | null>(null);
@@ -60,8 +61,8 @@ const RegisterPage = () => {
         }
     }, []);
 
-    const initialValues: RegisterFormValues = useMemo(
-        () => ({
+    const { register, handleSubmit, formState, errors } = useForm({
+        defaultValues: {
             name: "",
             gender: "MALE",
             phone: "",
@@ -69,100 +70,121 @@ const RegisterPage = () => {
             username: "",
             password: "",
             confirm: "",
-        }),
-        []
-    );
+        },
+        mode: "onBlur",
+        resolver: yupResolver(schema),
+    });
 
     return (
-        <Formik
-            initialValues={initialValues}
-            onSubmit={submit}
-            validationSchema={schema}
-            isInitialValid={schema.isValidSync(initialValues)}
-        >
-            {({ isValid, isSubmitting }) => (
-                <SC.RegisterForm>
-                    <SC.Header>ĐĂNG KÍ</SC.Header>
+        <SC.RegisterForm onSubmit={handleSubmit(submit)}>
+            <SC.Header>ĐĂNG KÍ</SC.Header>
 
-                    <IconInput
-                        icon={FaUser}
+            <IconInput
+                icon={<FaUser />}
+                component={
+                    <input
                         type="text"
                         name="name"
                         placeholder="Họ tên"
                         maxLength={30}
-                        validate
+                        ref={register}
                     />
+                }
+                errorMessage={errors.name?.message}
+            />
 
-                    <IconInput
-                        icon={FaMailBulk}
+            <IconInput
+                icon={<FaMailBulk />}
+                component={
+                    <input
                         type="text"
                         name="email"
                         placeholder="Email"
                         maxLength={80}
-                        validate
+                        ref={register}
                     />
+                }
+                errorMessage={errors.email?.message}
+            />
 
-                    <IconInput
-                        icon={FaPhone}
+            <IconInput
+                icon={<FaPhone />}
+                component={
+                    <input
                         type="text"
                         name="phone"
                         placeholder="Điện thoại"
                         maxLength={10}
-                        validate
+                        ref={register}
                     />
+                }
+                errorMessage={errors.phone?.message}
+            />
 
-                    <IconInput
-                        icon={FaTransgender}
-                        type="text"
-                        name="gender"
-                        component="select"
-                        defaultValue=""
-                        validate
-                    >
+            <IconInput
+                icon={<FaTransgender />}
+                component={
+                    <select name="gender" ref={register}>
                         <option value="MALE">Nam</option>
                         <option value="FEMALE">Nữ</option>
                         <option value="OTHER">Khác</option>
-                    </IconInput>
+                    </select>
+                }
+                noValidate
+            />
 
-                    <IconInput
-                        icon={FaUser}
+            <IconInput
+                icon={<FaUser />}
+                component={
+                    <input
                         type="text"
                         name="username"
                         placeholder="Tài khoản"
                         maxLength={30}
-                        validate
+                        ref={register}
                     />
+                }
+                errorMessage={errors.username?.message}
+            />
 
-                    <IconInput
-                        icon={FaLock}
+            <IconInput
+                icon={<FaLock />}
+                component={
+                    <input
                         type="password"
                         name="password"
                         placeholder="Mật khẩu"
                         maxLength={80}
-                        validate
+                        ref={register}
                     />
+                }
+                errorMessage={errors.password?.message}
+            />
 
-                    <IconInput
-                        icon={FaLock}
+            <IconInput
+                icon={<FaLock />}
+                component={
+                    <input
                         type="password"
                         name="confirm"
                         placeholder="Nhập lại mật khẩu"
                         maxLength={80}
-                        validate
+                        ref={register}
                     />
+                }
+                errorMessage={errors.confirm?.message}
+            />
 
-                    <SC.Submit type="submit" disabled={!isValid || isSubmitting}>
-                        Đăng kí
-                    </SC.Submit>
+            <SC.Submit type="submit" disabled={formState.isSubmitting}>
+                Đăng kí
+            </SC.Submit>
 
-                    <SC.LoginRedirect>
-                        Đã có tài khoản? <Link to="/auth/login">Đăng nhập</Link>
-                    </SC.LoginRedirect>
+            <SC.LoginRedirect>
+                Đã có tài khoản? <Link to="/auth/login">Đăng nhập</Link>
+            </SC.LoginRedirect>
 
-                    {status ? <SC.Status>{status}</SC.Status> : null}
-                </SC.RegisterForm>
-            )}
-        </Formik>
+            {status ? <SC.Status>{status}</SC.Status> : null}
+        </SC.RegisterForm>
     );
 };
 

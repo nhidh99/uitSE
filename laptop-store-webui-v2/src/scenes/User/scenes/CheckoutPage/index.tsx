@@ -58,6 +58,12 @@ const CheckoutPage = () => {
                 userApi.getCurrentUserCheckout(),
                 userApi.getCurrentUserAddresses(),
             ]);
+
+            if (checkoutResponse.data.laptop_count === 0) {
+                history.push("/cart");
+                return;
+            }
+
             setState({
                 loading: false,
                 checkout: checkoutResponse.data,

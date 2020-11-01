@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AxiosResponse } from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router";
 import queryString from "query-string";
 import { useDispatch } from "react-redux";
 import { fireLoading, skipLoading } from "../redux/slices/loaderStatusSlice";
@@ -20,7 +20,6 @@ type FetchApiParams = {
 
 function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosResponse<T[]>>) {
     const location = useLocation();
-    const history = useHistory();
     const dispatch = useDispatch();
 
     const initialState = useMemo<PageFetchState<T>>(
@@ -32,25 +31,12 @@ function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosRes
     );
 
     const initialParams = queryString.parse(location.search, { parseNumbers: true });
-    // @ts-ignore
     const [params, setParams] = useState<FetchApiParams>(initialParams);
     const [data, setData] = useState<PageFetchState<T>>(initialState);
 
     const { list, count } = data;
-    const { query, order, page } = params;
-
-    const isPopState = useRef<boolean>(false);
-    const prevTarget = useRef<string>(params?.target ?? "id");
-
-    const setPage = useCallback(
-        (page: number) => setParams((prev) => ({ ...prev, page: page })),
-        []
-    );
-
-    const setQuery = useCallback(
-        (query: string) => setParams((prev) => ({ ...prev, query: query, page: 1 })),
-        []
-    );
+    const { query, order, page, target } = params;
+    const prevTarget = useRef<string>(target || "id");
 
     const setTarget = (target: string) => {
         if (target === prevTarget.current) {
@@ -62,32 +48,7 @@ function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosRes
     };
 
     useEffect(() => {
-        window.addEventListener("popstate", () => {
-            isPopState.current = true;
-            window.location.reload();
-        });
-    }, []);
-
-    useEffect(() => {
-        const loadData = () => {
-            if (list !== null) {
-                history.push({
-                    pathname: location.pathname,
-                    search: queryString.stringify(params, { skipEmptyString: true }),
-                });
-            }
-        };
-
-        loadData();
-    }, [params]);
-
-    useEffect(() => {
         const loadTable = async () => {
-            if (isPopState.current) {
-                return;
-            }
-
-            const params = queryString.parse(location.search, { parseNumbers: true });
             const response = await fetchApi(params);
             setData({
                 list: response.data,
@@ -106,9 +67,13 @@ function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosRes
         };
 
         loadData();
+    }, [params]);
+
+    useEffect(() => {
+        setParams(queryString.parse(location.search, { parseNumbers: true }));
     }, [location.search]);
 
-    return { list, count, page, query, setPage, setTarget, setQuery };
+    return { list, count, page, query, setTarget };
 }
 
 export default useTableFetch;

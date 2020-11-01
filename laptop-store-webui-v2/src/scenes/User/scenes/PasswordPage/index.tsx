@@ -1,34 +1,22 @@
-import { Form, Formik } from "formik";
+import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useCallback, useMemo } from "react";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import FieldInput from "../../../../components/FIeldInput";
 import userApi from "../../../../services/api/userApi";
 import PasswordFormValues from "../../../../values/forms/PasswordFormValues";
+import { SC } from "./styles";
 
 const PasswordPage = () => {
-    const initialValues: PasswordFormValues = useMemo(
-        () => ({
-            old_password: "",
-            new_password: "",
-            confirm_password: "",
-        }),
-        []
-    );
-
     const schema = useMemo(
         () =>
             Yup.object({
-                old_password: Yup.string().required(
-                    "Mật khẩu không được để trống"
-                ),
+                old_password: Yup.string().required("Mật khẩu không được để trống"),
                 new_password: Yup.string()
                     .min(12, "Mật khẩu tối thiểu 12 kí tự")
                     .required("Mật khẩu không được để trống"),
                 confirm_password: Yup.string()
-                    .oneOf(
-                        [Yup.ref("new_password")],
-                        "Mật khẩu nhập lại không khớp"
-                    )
+                    .oneOf([Yup.ref("new_password")], "Mật khẩu nhập lại không khớp")
                     .required("Mật khẩu không được để trống"),
             }),
         []
@@ -44,63 +32,60 @@ const PasswordPage = () => {
         }
     }, []);
 
+    const { register, handleSubmit, formState, errors } = useForm({
+        mode: "onBlur",
+        defaultValues: { old_password: "", new_password: "", confirm_password: "" },
+        resolver: yupResolver(schema),
+    });
+
     return (
-        <Formik
-            initialValues={initialValues}
-            onSubmit={submit}
-            validationSchema={schema}
-            isInitialValid={schema.isValidSync(initialValues)}
-        >
-            {({ isValid, isSubmitting }) => {
-                const isDisabledButton = isSubmitting || !isValid;
-                const buttonStyle = {
-                    border: "none",
-                    backgroundColor: "#FFCC00",
-                    color: "#333",
-                    marginTop: "5px",
-                    width: "200px",
-                    cursor: "pointer",
-                    opacity: isDisabledButton ? "0.5" : "1",
-                };
-                return (
-                    <Form>
-                        <FieldInput
-                            name="old_password"
-                            type="password"
-                            label="Nhập MK cũ:"
-                            placeholder="Nhập mật khẩu cũ"
-                            validate
-                        />
+        <form onSubmit={handleSubmit(submit)}>
+            <FieldInput
+                label="Mật khẩu cũ:"
+                component={
+                    <input
+                        name="old_password"
+                        maxLength={50}
+                        ref={register}
+                        type="password"
+                        placeholder="Nhập mật khẩu cũ"
+                    />
+                }
+                errorMessage={errors.old_password?.message}
+            />
 
-                        <FieldInput
-                            name="new_password"
-                            type="password"
-                            label="Nhập MK mới:"
-                            placeholder="Nhập mật khẩu mới"
-                            validate
-                        />
+            <FieldInput
+                label="Mật khẩu mới:"
+                component={
+                    <input
+                        name="new_password"
+                        type="password"
+                        maxLength={50}
+                        ref={register}
+                        placeholder="Nhập mật khẩu mới"
+                    />
+                }
+                errorMessage={errors.new_password?.message}
+            />
 
-                        <FieldInput
-                            name="confirm_password"
-                            type="password"
-                            label="Xác nhận MK:"
-                            placeholder="Xác nhận mật khẩu mới"
-                            validate
-                        />
+            <FieldInput
+                label="Xác nhận MK:"
+                component={
+                    <input
+                        name="confirm_password"
+                        type="password"
+                        maxLength={50}
+                        ref={register}
+                        placeholder="Xác nhận mật khẩu"
+                    />
+                }
+                errorMessage={errors.confirm_password?.message}
+            />
 
-                        <FieldInput
-                            label=""
-                            component="button"
-                            type="submit"
-                            style={buttonStyle}
-                            disabled={isDisabledButton}
-                        >
-                            Đổi mật khẩu
-                        </FieldInput>
-                    </Form>
-                );
-            }}
-        </Formik>
+            <SC.SubmitButton type="submit" disabled={formState.isSubmitting}>
+                Đổi mật khẩu
+            </SC.SubmitButton>
+        </form>
     );
 };
 

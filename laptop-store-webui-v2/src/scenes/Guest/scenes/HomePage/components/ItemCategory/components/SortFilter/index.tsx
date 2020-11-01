@@ -11,7 +11,7 @@ const SortFilter = () => {
 
     const changeSort = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
         const params = queryString.parse(location.search);
-        params.sort = e.target.value;
+        params.target = e.target.value;
         history.push({
             pathname: window.location.pathname,
             search: queryString.stringify(params, { skipEmptyString: true }),

@@ -1,4 +1,3 @@
-import { Field, Form } from "formik";
 import styled, { css } from "styled-components";
 
 const AdminTable = css`
@@ -17,6 +16,7 @@ const AdminTable = css`
 
     th {
         user-select: none;
+        &.select,
         &.sortable {
             cursor: pointer;
             :hover {
@@ -59,12 +59,12 @@ const SectionTitle = styled.div`
     justify-content: space-between;
 
     div {
+        margin-bottom: -10px;
         button {
             font-size: 14px;
             border: none;
             cursor: pointer;
-            padding: 5px 5px;
-            margin-bottom: -5px;
+            padding: 5px 8px;
             color: #333;
 
             :hover {
@@ -93,13 +93,13 @@ const SearchContainer = styled.div`
     margin-bottom: 15px;
 `;
 
-const SearchForm = styled(Form)`
+const SearchForm = styled.form`
     display: flex;
     gap: 15px;
     margin-bottom: 15px;
 `;
 
-const SearchInput = styled(Field)`
+const SearchInput = styled.input`
     border-radius: 0;
     background-color: white;
     padding: 10px;

@@ -12,13 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = {"org.example.*"})
 @EntityScan(basePackages = {"org.example.*"})
 @EnableJpaRepositories(basePackages = {"org.example.*"})
-public class LaptopStoreApplication extends SpringBootServletInitializer {
+public class LaptopStoreApplication {
     public static void main(String[] args) {
         SpringApplication.run(LaptopStoreApplication.class);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(LaptopStoreApplication.class);
     }
 }

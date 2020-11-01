@@ -2,6 +2,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { getCookie } from "../../../../../../services/helper/cookie";
 import { RootState } from "../../../../../../services/redux/rootReducer";
 import CartPaymentProps from "../../../../../../values/props/CartPaymentProps";
 import { SC } from "./styles";
@@ -16,8 +17,14 @@ const CartPayment = ({ payment }: Props) => {
     const history = useHistory();
 
     const checkout = () => {
-        if (totalCount === 0) return;
-        history.push("/checkout");
+        if (totalCount === 0) {
+            return;
+        }
+        if (getCookie("access_token") === null) {
+            history.push("/auth/login");
+        } else {
+            history.push("/checkout");
+        }
     };
 
     return (

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { FaLaptop, FaTruckLoading } from "react-icons/fa";
 import laptopApi from "../../../../../../services/api/laptopApi";
 import EmptyItem from "./components/EmptyItem";
@@ -39,7 +39,6 @@ const ItemCategory = ({ category, title }: ItemListProps) => {
         []
     );
 
-    const history = useHistory();
     const location = useLocation();
     const [state, setState] = useState<ItemListState>(initialState);
     const { products, loading, fetching, page, isDone, length } = state;

@@ -1,7 +1,6 @@
-import { Form } from "formik";
 import styled from "styled-components";
 
-const RegisterForm = styled(Form)`
+const RegisterForm = styled.form`
     background-color: white;
     margin: 0 auto;
     width: fit-content;
@@ -26,7 +25,12 @@ const Submit = styled.button`
     border-radius: 5px;
     border: none;
     margin-bottom: 12px;
-    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+    cursor: pointer;
+
+    :disabled {
+        opacity: 0.5;
+        cursor: unset;
+    }
 `;
 
 const LoginRedirect = styled.div`

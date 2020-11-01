@@ -1,12 +1,5 @@
 import React, { memo, useMemo, useState } from "react";
-import {
-    FaAddressBook,
-    FaBoxes,
-    FaHeart,
-    FaInfoCircle,
-    FaLock,
-    FaTrophy,
-} from "react-icons/fa";
+import { FaAddressBook, FaBoxes, FaHeart, FaInfoCircle, FaLock, FaTrophy } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router";
 import Loader from "../../components/Loader";
@@ -17,6 +10,7 @@ import AddressDetail from "./scenes/AddressDetail";
 import AddressPage from "./scenes/AddressPage";
 import InfoPage from "./scenes/InfoPage";
 import MilestonePage from "./scenes/MilestonePage";
+import OrderDetail from "./scenes/OrderDetail";
 import OrderPage from "./scenes/OrderPage";
 import PasswordPage from "./scenes/PasswordPage";
 import WishListPage from "./scenes/WishListPage";
@@ -97,7 +91,7 @@ const User = () => {
             {
                 path: "/user/orders/:orderId",
                 title: "Chi tiết đơn hàng",
-                component: <OrderPage />,
+                component: <OrderDetail />,
             },
             {
                 path: "/user/wish-list",
@@ -122,15 +116,10 @@ const User = () => {
             <SC.RightContainer>
                 <SC.TitleContainer>{title}</SC.TitleContainer>
                 <SC.LoaderContainer>
-                    <Loader
-                        loading={loaderStatus.isLoading}
-                        loadOnce={loaderStatus.isFetching}
-                    />
+                    <Loader loading={loaderStatus.isLoading} loadOnce={loaderStatus.isFetching} />
                     <SC.ContentContainer
                         style={{
-                            display: loaderStatus.isFetching
-                                ? "none"
-                                : "inherit",
+                            display: loaderStatus.isFetching ? "none" : "inherit",
                         }}
                     >
                         <Switch>

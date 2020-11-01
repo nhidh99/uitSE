@@ -4,10 +4,8 @@ import { FaHeart, FaStar, FaTrash } from "react-icons/fa";
 import QuantityInput from "../QuantityInput";
 import cartService from "../../../../../../../../services/helper/cartService";
 import { SC } from "./styles";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { getCookie } from "../../../../../../../../services/helper/cookie";
-import store from "../../../../../../../../services/redux/store";
-import { setMessage } from "../../../../../../../../services/redux/slices/messageSlice";
 import ProductOverviewModel from "../../../../../../../../values/models/ProductOverviewModel";
 
 type CartItemProps = {
@@ -15,6 +13,8 @@ type CartItemProps = {
 };
 
 const CartItem = ({ item }: CartItemProps) => {
+    const history = useHistory();
+
     const removeItem = useCallback(() => {
         cartService.removeItem(item.id);
     }, []);
@@ -23,7 +23,7 @@ const CartItem = ({ item }: CartItemProps) => {
         if (getCookie("access_token")) {
             cartService.moveItemToWishList(item.id);
         } else {
-            store.dispatch(setMessage("Vui lòng đăng nhập để sử dụng chức năng"));
+            history.push("/auth/login");
         }
     }, []);
 

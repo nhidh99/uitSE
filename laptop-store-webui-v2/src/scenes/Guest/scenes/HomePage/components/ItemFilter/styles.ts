@@ -1,4 +1,3 @@
-import { Form } from "formik";
 import styled, { css } from "styled-components";
 
 const Container = styled.div``;
@@ -19,7 +18,7 @@ const Header = styled.header`
     margin-bottom: 10px;
 `;
 
-const FilterForm = styled(Form)`
+const FilterForm = styled.form`
     background-color: white;
     border: 1px solid #ddd;
     padding: 20px;
@@ -56,4 +55,10 @@ const InputGroup = styled.div`
     }
 `;
 
-export const SC = { Container, Header, Title, FilterForm, BrandGroup, InputGroup };
+const Form = styled.form`
+    background-color: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+`;
+
+export const SC = { Container, Header, Title, FilterForm, BrandGroup, InputGroup, Form };
