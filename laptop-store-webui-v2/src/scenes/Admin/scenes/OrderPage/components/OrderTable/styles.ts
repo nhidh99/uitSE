@@ -20,11 +20,11 @@ const Table = styled.table`
         }
 
         &.name {
-            width: 15%;
+            width: 20%;
         }
 
         &.location {
-            width: 45%;
+            width: 40%;
         }
 
         &.price {

@@ -31,4 +31,24 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "AND o.status = 'DELIVERED' " +
             "AND o.user.username = :username")
     Long getTotalDiscountOfDeliveredOrdersByUsername(@Param("username") String username);
+
+    List<Order> findByStatus(OrderStatus status, Pageable pageable);
+
+    long countByStatus(OrderStatus status);
+
+    @Query("SELECT o FROM Order o " +
+            "WHERE o.status = :status " +
+            "AND (TRIM(o.id) LIKE %:query% " +
+            "OR o.receiverName LIKE %:query% " +
+            "OR o.receiverPhone LIKE %:query%)")
+    List<Order> findByQueryAndStatus(@Param("query") String query,
+                                     @Param("status") OrderStatus status,
+                                     Pageable pageable);
+
+    @Query("SELECT COUNT(o) FROM Order o " +
+            "WHERE o.status = :status " +
+            "AND (TRIM(o.id) = :query " +
+            "OR o.receiverName LIKE %:query% " +
+            "OR o.receiverPhone LIKE %:query%)")
+    long countByQueryAndStatus(@Param("query") String query, @Param("status") OrderStatus status);
 }

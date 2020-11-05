@@ -209,12 +209,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(SearchInput search) {
+    public Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(OrderStatus status, SearchInput search) {
         Pageable pageable = PageableUtil.buildPageableFromSearch(search);
-        return txTemplate.execute((status) -> {
-            List<Order> orders = orderRepository.findAll(pageable).toList();
-            long orderCount = orderRepository.count();
-            return Pair.of(ModelMapperUtil.mapList(orders, OrderSummaryDTO.class), orderCount);
+        return txTemplate.execute((txStatus) -> {
+            if (search.getQuery().isEmpty()) {
+                List<Order> orders = orderRepository.findByStatus(status, pageable);
+                long orderCount = orderRepository.countByStatus(status);
+                return Pair.of(ModelMapperUtil.mapList(orders, OrderSummaryDTO.class), orderCount);
+            } else {
+                // Query includes finding by id / receiver_name / receiver_phone
+                String query = search.getQuery();
+                List<Order> orders = orderRepository.findByQueryAndStatus(query, status, pageable);
+                long orderCount = orderRepository.countByQueryAndStatus(query, status);
+                return Pair.of(ModelMapperUtil.mapList(orders, OrderSummaryDTO.class), orderCount);
+            }
         });
     }
 }

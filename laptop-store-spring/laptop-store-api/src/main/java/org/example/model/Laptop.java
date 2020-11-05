@@ -92,6 +92,10 @@ public class Laptop {
     @JoinColumn(name = "battery_id")
     private Battery battery;
 
+    @Column(name = "sold_quantity")
+    @Basic(fetch = FetchType.LAZY)
+    private Integer soldQuantity;
+
     @Column(name = "record_status")
     @Basic(fetch = FetchType.LAZY)
     private boolean recordStatus;

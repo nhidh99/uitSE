@@ -6,6 +6,7 @@ import org.example.dto.order.OrderOverviewDTO;
 import org.example.dto.order.OrderSummaryDTO;
 import org.example.input.SearchInput;
 import org.example.model.Order;
+import org.example.type.OrderStatus;
 import org.example.util.Pair;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface OrderService {
 
     void cancelOrderByIdAndUsername(Integer orderId, String username);
 
-    Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(SearchInput search);
+    Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(OrderStatus status, SearchInput search);
 }

@@ -1,9 +1,10 @@
-import mariadb
-import sys
-import pandas as pd
+import os
 import random
 import re
-import os
+import sys
+
+import mariadb
+import pandas as pd
 import requests
 
 
@@ -31,14 +32,14 @@ image_types = ['large_image', 'image', 'thumbnail']
 
 
 def get_data():
-    file_name = 'data.xlsx'
+    file_name = '../files/data.xlsx'
     sheet_name = 'Sheet1'
     df = pd.read_excel(file_name, sheet_name=sheet_name)
     return df.T.to_dict()
 
 
 def get_promotion_data():
-    file_name = 'data.xlsx'
+    file_name = '../files/data.xlsx'
     sheet_name = 'Sheet2'
     df = pd.read_excel(file_name, sheet_name=sheet_name)
     return df.T.to_dict()
@@ -208,7 +209,7 @@ def insert_tags(laptop):
 
 def update_discount(laptop):
     percent = random.choice([5, 10])
-    sql = 'UPDATE laptop SET discount_price = ? * (unit_price + 10000) / 100 WHERE id = ?';
+    sql = 'UPDATE laptop SET discount_price = ? * (unit_price + 10000) / 100 WHERE id = ?'
     val = (percent if int(laptop['Đơn giá']) + 10000 >= 20_000_000 else percent + 5, laptop['Mã sản phẩm'])
     cursor.execute(sql, val)
 

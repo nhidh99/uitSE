@@ -94,9 +94,9 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     public Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE);
+        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("soldQuantity").descending());
         return txTemplate.execute((status) -> {
-            List<Laptop> laptops = laptopRepository.findBestSelling(pageable);
+            List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
             return Pair.of(ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class), laptopCount);
         });

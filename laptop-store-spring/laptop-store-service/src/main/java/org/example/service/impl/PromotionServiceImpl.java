@@ -29,19 +29,18 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Pair<List<PromotionSummaryDTO>, Long> findBySearch(SearchInput search) {
-        List<Promotion> promotions;
-        long promotionCount;
         Pageable pageable = buildPageableFromSearch(search);
-        String query = search.getQuery().trim();
+        String query = search.getQuery();
 
         if (query.isEmpty()) {
-            promotions = promotionRepository.findByRecordStatusTrue(pageable);
-            promotionCount = promotionRepository.countByRecordStatusTrue();
+            List<Promotion> promotions = promotionRepository.findByRecordStatusTrue(pageable);
+            long promotionCount = promotionRepository.countByRecordStatusTrue();
+            return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
         } else {
-            promotions = promotionRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
-            promotionCount = promotionRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
+            List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
+            long promotionCount = promotionRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
+            return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
         }
-        return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
     };
 
     private Pageable buildPageableFromSearch(SearchInput search) {

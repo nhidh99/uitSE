@@ -3,7 +3,7 @@ import os
 import urllib.request
 
 def get_data():
-    file_name = 'data.xlsx'
+    file_name = '../files/data.xlsx'
     sheet_name = 'Sheet2'
     df = pd.read_excel(file_name, sheet_name=sheet_name)
     return [list(df['alt']), list(df['link'])]

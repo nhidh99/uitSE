@@ -8,7 +8,7 @@ driver = webdriver.Chrome(ChromeDriverManager().install())
 
 
 def get_data():
-    file_name = 'data.xlsx'
+    file_name = '../files/data.xlsx'
     sheet_name = 'Sheet1'
     df = pd.read_excel(file_name, sheet_name=sheet_name)
     return list(df['Tên sản phẩm'])

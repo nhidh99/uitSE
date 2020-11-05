@@ -7,6 +7,7 @@ import org.example.dto.order.OrderSummaryDTO;
 import org.example.input.SearchInput;
 import org.example.model.Order;
 import org.example.service.api.OrderService;
+import org.example.type.OrderStatus;
 import org.example.type.SearchOrderType;
 import org.example.type.SearchTargetType;
 import org.example.util.Pair;
@@ -40,9 +41,10 @@ public class OrderRestService {
             @RequestParam(value = "query", defaultValue = "") String query,
             @RequestParam(value = "target", defaultValue = "ID") SearchTargetType target,
             @RequestParam(value = "order", defaultValue = "DESC") SearchOrderType order,
+            @RequestParam(value = "status", defaultValue = "PENDING") OrderStatus status,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
         SearchInput search = SearchInput.builder().query(query).target(target).order(order).page(page).build();
-        Pair<List<OrderSummaryDTO>, Long> output = orderService.findSummaryBySearch(search);
+        Pair<List<OrderSummaryDTO>, Long> output = orderService.findSummaryBySearch(status, search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, output.getSecond().toString())
                 .body(output.getFirst());

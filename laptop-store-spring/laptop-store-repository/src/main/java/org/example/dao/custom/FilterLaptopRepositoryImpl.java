@@ -19,16 +19,6 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
 
     private static final String LAPTOP_SELECT_QUERY = "SELECT l FROM Laptop l";
     private static final String LAPTOP_COUNT_QUERY = "SELECT COUNT(l) FROM Laptop l";
-    private static final String BEST_SELLING_LAPTOP_IDS_SELECT_QUERY =
-            "SELECT l.id FROM Laptop l " +
-                    "LEFT JOIN OrderItem i ON i.productId = l.id " +
-                    "LEFT JOIN i.order as o " +
-                    "WHERE l.recordStatus = true " +
-                    "AND ((o.status = 'DELIVERED' AND i.productType = 'LAPTOP') " +
-                    "OR l.id NOT IN (SELECT DISTINCT i2.productId FROM OrderItem i2 WHERE i2.productType = 'LAPTOP')) " +
-                    "GROUP BY l.id ORDER BY SUM(i.quantity) DESC";
-
-
 
     @Override
     public List<Laptop> findByName(LaptopFilterInput filter) {
@@ -151,9 +141,7 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
         sb.append(" ORDER BY");
         switch (sort) {
             case BEST_SELLING:
-                List<Integer> bestSellingIds = findBestSellingLaptopIds();
-                sb.append(" FIELD (l.id, :bestSellingIds)");
-                params.put("bestSellingIds", bestSellingIds);
+                sb.append(" l.soldQuantity DESC");
                 break;
             case LOW_PRICE:
                 sb.append(" l.unitPrice ASC");
@@ -165,9 +153,5 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
                 sb.append(" l.id DESC");
                 break;
         }
-    }
-
-    private List<Integer> findBestSellingLaptopIds() {
-        return em.createQuery(BEST_SELLING_LAPTOP_IDS_SELECT_QUERY, Integer.class).getResultList();
     }
 }

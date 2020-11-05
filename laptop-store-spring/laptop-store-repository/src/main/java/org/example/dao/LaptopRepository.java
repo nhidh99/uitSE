@@ -26,15 +26,6 @@ public interface LaptopRepository extends JpaRepository<Laptop, Integer>, Filter
 
     List<Laptop> findByRecordStatusTrueAndIdIn(@Param("ids") Set<Integer> ids);
 
-    @Query("SELECT l FROM Laptop l " +
-            "LEFT JOIN OrderItem i ON i.productId = l.id " +
-            "LEFT JOIN i.order as o " +
-            "WHERE l.recordStatus = true " +
-            "AND ((o.status = 'DELIVERED' AND i.productType = 'LAPTOP') " +
-            "OR l.id NOT IN (SELECT DISTINCT i2.productId FROM OrderItem i2 WHERE i2.productType = 'LAPTOP')) " +
-            "GROUP BY l.id ORDER BY SUM(i.quantity) DESC")
-    List<Laptop> findBestSelling(Pageable pageable);
-
     @Query(value = "CALL laptop_suggest(:id, 5)", nativeQuery = true)
     List<Integer> findSuggestionIdsById(@Param("id") Integer id);
 

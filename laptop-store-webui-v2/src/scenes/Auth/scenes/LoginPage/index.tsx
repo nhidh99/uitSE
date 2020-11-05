@@ -45,7 +45,7 @@ const LoginPage = () => {
             <IconInput
                 icon={<FaLock />}
                 component={
-                    <input type="password" name="username" placeholder="Mật khẩu" ref={register} />
+                    <input type="password" name="password" placeholder="Mật khẩu" ref={register} />
                 }
             />
 
