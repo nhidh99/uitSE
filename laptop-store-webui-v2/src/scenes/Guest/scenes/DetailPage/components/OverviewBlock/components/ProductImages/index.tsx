@@ -6,24 +6,22 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../../../services/redux/rootReducer";
 
 const ProductImages = () => {
-    const { productId, productAlt, imageIds } = useSelector(
-        (state: RootState) => {
-            const spec = state.product?.spec;
-            const imageIds = state.product?.image_ids ?? [];
-            return {
-                productId: spec?.id,
-                productAlt: spec?.alt,
-                imageIds: imageIds,
-            };
-        }
-    );
+    const { productId, productAlt, imageIds } = useSelector((state: RootState) => {
+        const spec = state.product?.spec;
+        const imageIds = state.product?.image_ids ?? [];
+        return {
+            productId: spec?.id,
+            productAlt: spec?.alt,
+            imageIds: imageIds,
+        };
+    });
 
     const images = [
         {
             fullscreen: `/api/images/1000/laptops/${productId}/${productAlt}.jpg`,
             original: `/api/images/400/laptops/${productId}/${productAlt}.jpg`,
             thumbnail: `/api/images/150/laptops/${productId}/${productAlt}.jpg`,
-            thumbnailClass: "thumbnail",            
+            thumbnailClass: "thumbnail",
         },
     ].concat(
         imageIds.map((id) => ({

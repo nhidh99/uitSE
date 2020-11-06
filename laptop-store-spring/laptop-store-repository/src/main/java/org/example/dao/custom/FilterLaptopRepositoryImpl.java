@@ -31,16 +31,16 @@ public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
         for (String key : params.keySet()) {
             typedQuery.setParameter(key, params.get(key));
         }
-        return typedQuery.setFirstResult(PaginateConstants.LAPTOP_PER_PAGE * (filter.getPage() - 1))
-                .setMaxResults(PaginateConstants.LAPTOP_PER_PAGE).getResultList();
+        return typedQuery.setFirstResult(PaginateConstants.LAPTOP_PER_USER_PAGE * (filter.getPage() - 1))
+                .setMaxResults(PaginateConstants.LAPTOP_PER_USER_PAGE).getResultList();
     }
 
     @Override
     public List<Laptop> findByFilter(LaptopFilterInput filter) {
         TypedQuery<Laptop> typedQuery = buildFilterQuery(LAPTOP_SELECT_QUERY, filter, Laptop.class);
         return typedQuery
-                .setFirstResult(PaginateConstants.LAPTOP_PER_PAGE * (filter.getPage() - 1))
-                .setMaxResults(PaginateConstants.LAPTOP_PER_PAGE).getResultList();
+                .setFirstResult(PaginateConstants.LAPTOP_PER_USER_PAGE * (filter.getPage() - 1))
+                .setMaxResults(PaginateConstants.LAPTOP_PER_USER_PAGE).getResultList();
     }
 
     @Override

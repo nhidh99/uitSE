@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Question, Integer> {
+public interface QuestionRepository extends JpaRepository<Question, Integer> {
     List<Question> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
 
     Long countByApproveStatusTrueAndUserUsername(String username);
+
+    long countByApproveStatusTrueAndLaptopId(Integer productId);
 }

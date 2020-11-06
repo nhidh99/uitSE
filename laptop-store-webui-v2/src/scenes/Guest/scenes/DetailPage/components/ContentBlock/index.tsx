@@ -1,19 +1,18 @@
-import React, { ComponentType, createElement } from "react";
+import React, { ReactNode } from "react";
 import { SC } from "./styles";
 
 type ContentBlockProps = {
-    title: string;
-    component?: ComponentType;
-    show: boolean;
+    title: ReactNode | string;
+    component?: ReactNode;
+    hide?: boolean;
 };
 
-const ContentBlock = ({ title, component, show = true }: ContentBlockProps) => {
-    if (!component || !show) return null;
-    const block = createElement(component);
+const ContentBlock = ({ title, component, hide }: ContentBlockProps) => {
+    if (!component || hide) return null;
     return (
         <SC.Section>
             <SC.Header>{title}</SC.Header>
-            {block}
+            {component}
         </SC.Section>
     );
 };

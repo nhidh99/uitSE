@@ -1,21 +1,20 @@
 import React from "react";
 import { SC } from "./styles";
 import QuestionReply from "../QuestionReply";
-import CommentModel from "../../../../../../../../values/models/CommentModel";
+import QuestionModel from "../../../../../../../../values/models/QuestionModel";
 
 type QuestionItemProps = {
-    comment: CommentModel;
+    question: QuestionModel;
 };
 
-const QuestionItem = ({ comment }: QuestionItemProps) => (
+const QuestionItem = ({ question }: QuestionItemProps) => (
     <SC.Container>
-        <SC.CommentDetail>{comment.question}</SC.CommentDetail>
+        <SC.CommentDetail>{question.question}</SC.CommentDetail>
         <SC.CommentInfo>
-            <SC.UserFullName>{comment.user}</SC.UserFullName> đã gửi vào{" "}
-            {comment.comment_date}
+            <SC.UserFullName>{question.user}</SC.UserFullName> đã gửi vào {question.comment_date}
         </SC.CommentInfo>
 
-        <QuestionReply commentId={comment.id} />
+        <QuestionReply commentId={question.id} />
     </SC.Container>
 );
 

@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import org.example.dao.CommentRepository;
+import org.example.dao.QuestionRepository;
 import org.example.dao.MilestoneRepository;
 import org.example.dao.OrderRepository;
 import org.example.dao.RatingRepository;
@@ -27,17 +27,17 @@ public class MilestoneServiceImpl implements MilestoneService {
     private final MilestoneRepository milestoneRepository;
     private final OrderRepository orderRepository;
     private final RatingRepository ratingRepository;
-    private final CommentRepository commentRepository;
+    private final QuestionRepository questionRepository;
     private final TransactionTemplate txTemplate;
 
     @Autowired
     public MilestoneServiceImpl(MilestoneRepository milestoneRepository, OrderRepository orderRepository,
-                                RatingRepository ratingRepository, CommentRepository commentRepository,
+                                RatingRepository ratingRepository, QuestionRepository questionRepository,
                                 PlatformTransactionManager txManager) {
         this.milestoneRepository = milestoneRepository;
         this.orderRepository = orderRepository;
         this.ratingRepository = ratingRepository;
-        this.commentRepository = commentRepository;
+        this.questionRepository = questionRepository;
         this.txTemplate = new TransactionTemplate(txManager);
     }
 
@@ -87,7 +87,7 @@ public class MilestoneServiceImpl implements MilestoneService {
                 output = ratingRepository.countByApproveStatusTrueAndUserUsername(username);
                 break;
             case QUESTION:
-                output = commentRepository.countByApproveStatusTrueAndUserUsername(username);
+                output = questionRepository.countByApproveStatusTrueAndUserUsername(username);
                 break;
             default:
                 return 0L;

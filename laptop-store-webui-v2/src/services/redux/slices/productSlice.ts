@@ -10,19 +10,36 @@ export const fetchProductDetailById = createAsyncThunk(
     }
 );
 
-type ProductDetailState = ProductDetailModel | null;
+type ProductDetailState =
+    | (ProductDetailModel & {
+          show_questions?: boolean;
+          show_ratings?: boolean;
+      })
+    | null;
 
 const productSlice = createSlice({
     name: "product",
     initialState: null as ProductDetailState,
-    reducers: {},
-    extraReducers: {
-        [fetchProductDetailById.fulfilled as any]: (state, action) => {
-            return action.payload;
+    reducers: {
+        clearProductDetail() {
+            return null;
         },
-        [fetchProductDetailById.rejected as any]: (state, action) => {
+        hideQuestionList(state) {
+            return state ? { ...state, show_questions: false } : null;
+        },
+
+        hideRatingList(state) {
+            return state ? { ...state, show_ratings: false } : null;
         },
     },
+    extraReducers: {
+        [fetchProductDetailById.fulfilled as any]: (state, action) => {
+            return { ...action.payload, show_ratings: true, show_questions: true };
+        },
+        [fetchProductDetailById.rejected as any]: (state, action) => {},
+    },
 });
+
+export const { clearProductDetail, hideQuestionList, hideRatingList } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class QuestionDTO {
@@ -15,8 +16,8 @@ public class QuestionDTO {
     private String question;
 
     @JsonProperty("comment_date")
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate commentDate;
+    @JsonFormat(pattern = "HH:mm dd/MM/yyyy")
+    private LocalDateTime commentDate;
 
     @JsonProperty("user")
     private String userFullName;

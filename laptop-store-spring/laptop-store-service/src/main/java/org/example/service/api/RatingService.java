@@ -1,9 +1,10 @@
 package org.example.service.api;
 
-import org.example.model.Rating;
+import org.example.dto.rating.RatingDTO;
+import org.example.util.Pair;
 
 import java.util.List;
 
 public interface RatingService {
-    List<Rating> findByLaptopId(Integer laptopId, int page);
+    Pair<List<RatingDTO>, Long> findByLaptopId(Integer laptopId, int page);
 }

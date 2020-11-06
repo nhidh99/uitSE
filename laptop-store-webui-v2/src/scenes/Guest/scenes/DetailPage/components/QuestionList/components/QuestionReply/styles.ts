@@ -4,6 +4,7 @@ const ReplySwitch = styled.label`
     display: block;
     color: #007bff;
     cursor: pointer;
+    font-size: 13px;
 
     :hover {
         text-decoration: underline;

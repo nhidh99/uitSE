@@ -41,7 +41,7 @@ public class LaptopServiceImpl implements LaptopService {
     private final LaptopImageRepository laptopImageRepository;
     private final LaptopDetailImageRepository laptopDetailImageRepository;
     private final RatingRepository ratingRepository;
-    private final CommentRepository commentRepository;
+    private final QuestionRepository questionRepository;
     private final PromotionRepository promotionRepository;
     private final TransactionTemplate txTemplate;
 
@@ -50,14 +50,14 @@ public class LaptopServiceImpl implements LaptopService {
                              LaptopImageRepository laptopImageRepository,
                              LaptopDetailImageRepository laptopDetailImageRepository,
                              RatingRepository ratingRepository,
-                             CommentRepository commentRepository,
+                             QuestionRepository questionRepository,
                              PromotionRepository promotionRepository,
                              PlatformTransactionManager txManager) {
         this.laptopRepository = laptopRepository;
         this.laptopImageRepository = laptopImageRepository;
         this.laptopDetailImageRepository = laptopDetailImageRepository;
         this.ratingRepository = ratingRepository;
-        this.commentRepository = commentRepository;
+        this.questionRepository = questionRepository;
         this.promotionRepository = promotionRepository;
         this.txTemplate = new TransactionTemplate(txManager);
     }
@@ -120,20 +120,16 @@ public class LaptopServiceImpl implements LaptopService {
             Laptop laptop = laptopRepository.getOne(laptopId);
             List<Integer> suggestionIds = laptopRepository.findSuggestionIdsById(laptopId);
             List<Laptop> suggestionLaptops = laptopRepository.findByRecordStatusTrueAndIdIn(suggestionIds);
-            List<Rating> ratings = ratingRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
-            List<Question> questions = commentRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
             List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndLaptopsId(laptopId);
             List<Integer> imageIds = laptopDetailImageRepository.findIdsByLaptopId(laptopId);
 
             LaptopSpecDTO laptopSpecDTO = buildSpecDTOFromLaptop(laptop);
-            List<RatingDTO> ratingDTOS = ModelMapperUtil.mapList(ratings, RatingDTO.class);
-            List<QuestionDTO> questionDTOS = ModelMapperUtil.mapList(questions, QuestionDTO.class);
             List<PromotionDTO> promotionDTOS = ModelMapperUtil.mapList(promotions, PromotionDTO.class);
             List<LaptopOverviewDTO> suggestionDTOs = ModelMapperUtil.mapList(suggestionLaptops, LaptopOverviewDTO.class);
 
-            return LaptopDetailDTO.builder().spec(laptopSpecDTO).ratings(ratingDTOS)
-                    .comments(questionDTOS).promotions(promotionDTOS)
-                    .suggestions(suggestionDTOs).imageIds(imageIds).build();
+            return LaptopDetailDTO.builder().spec(laptopSpecDTO)
+                    .promotions(promotionDTOS).suggestions(suggestionDTOs)
+                    .imageIds(imageIds).build();
         });
     }
 

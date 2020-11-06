@@ -12,4 +12,6 @@ public interface RatingRepository extends JpaRepository<Rating, Integer> {
     List<Rating> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
 
     Long countByApproveStatusTrueAndUserUsername(String username);
+
+    long countByApproveStatusTrueAndLaptopId(Integer laptopId);
 }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -37,7 +38,7 @@ public class Question {
     private String question;
 
     @Column(name = "comment_date")
-    private LocalDate commentDate;
+    private LocalDateTime commentDate;
 
     @Column(name = "approve_status")
     private boolean approveStatus;

@@ -4,6 +4,7 @@ import org.example.constant.OrderConstants;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class DateUtil {
@@ -27,5 +28,9 @@ public class DateUtil {
 
     public static LocalDate getCurrentLocalDate() {
         return LocalDate.now(zoneId);
+    }
+
+    public static LocalDateTime getCurrentLocalDateTime() {
+        return LocalDateTime.now(zoneId);
     }
 }

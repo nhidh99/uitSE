@@ -10,13 +10,14 @@ type PaginateProps = {
     count: number;
     initialPage: number;
     sizePerPage: number;
+    pageChange?: (e: { selected: number }) => void;
 };
 
-const Paginate = ({ count, initialPage, sizePerPage }: PaginateProps) => {
+const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps) => {
     const history = useHistory();
     const location = useLocation();
 
-    const pageChange = (e: { selected: number }) => {
+    const defaultPageChange = (e: { selected: number }) => {
         const params = { ...queryString.parse(location.search), page: e.selected + 1 };
         history.push({ pathname: location.pathname, search: queryString.stringify(params) });
     };
@@ -30,7 +31,7 @@ const Paginate = ({ count, initialPage, sizePerPage }: PaginateProps) => {
                 initialPage={initialPage - 1}
                 previousLabel={<FaArrowLeft />}
                 nextLabel={<FaArrowRight />}
-                onPageChange={pageChange}
+                onPageChange={pageChange || defaultPageChange}
                 disableInitialCallback={true}
                 forcePage={initialPage - 1}
             />

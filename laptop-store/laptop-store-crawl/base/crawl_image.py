@@ -1,7 +1,8 @@
-import pandas as pd
-import requests
 import os
 import urllib.request
+
+import pandas as pd
+import requests
 from PIL import Image
 
 

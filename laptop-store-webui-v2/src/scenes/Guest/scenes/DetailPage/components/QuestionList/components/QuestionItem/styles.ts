@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
     overflow: auto;
-    padding: 20px;
+    padding: 10px 20px;
 
     :not(:last-of-type) {
         border-bottom: 1px dashed #ddd;
@@ -13,12 +13,12 @@ const Container = styled.div`
     }
 `;
 
-const CommentDetail = styled.label`
+const CommentDetail = styled.div`
     display: block;
     font-weight: 600;
 `;
 
-const CommentInfo = styled.label`
+const CommentInfo = styled.div`
     font-size: 12px;
     font-style: italic;
     display: block;

@@ -1,64 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router";
 import LoadingBlock from "./components/LoadingBlock";
-import OverviewBlock from "./components/OverviewBlock";
 import ContentBlock from "./components/ContentBlock";
+import RatingBlock from "./components/RatingBlock";
+import QuestionList from "./components/QuestionList";
+import OverviewBlock from "./components/OverviewBlock";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../services/redux/rootReducer";
+import {
+    clearProductDetail,
+    fetchProductDetailById,
+} from "../../../../services/redux/slices/productSlice";
 import SpecBlock from "./components/SpecBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import QuestionBlock from "./components/QuestionBlock";
-import QuestionList from "./components/QuestionList";
-import RatingBlock from "./components/RatingBlock";
-import RatingList from "./components/RatingList";
-import { fetchProductDetailById } from "../../../../services/redux/slices/productSlice";
-import { RootState } from "../../../../services/redux/rootReducer";
-import { useDispatch, useSelector } from "react-redux";
-
-type LocationState = {
-    loading: boolean;
-};
-
-type ShowState = {
-    showComments: boolean;
-    showRatings: boolean;
-};
 
 const DetailPage = () => {
     // @ts-ignore
     const { productId } = useParams();
     const history = useHistory();
     const dispatch = useDispatch();
-
-    const [loading, setLoading] = useState<boolean>(true);
-
-    // @ts-ignore
-    const { showComments, showRatings }: ShowState = useSelector((state: RootState) => ({
-        showComments: state.product && state.product.ratings.length !== 0,
-        showRatings: state.product && state.product.ratings.length !== 0,
-    }));
+    const product = useSelector((state: RootState) => state.product);
 
     useEffect(() => {
         const loadData = async () => {
-            setLoading(true);
+            dispatch(clearProductDetail());
             window.scroll(0, 0);
+
             if (isNaN(parseInt(productId))) {
                 history.push("/");
                 return;
             }
 
-            try {
-                const id = parseInt(productId);
-                await dispatch(fetchProductDetailById(id));
-                setLoading(false);
-            } catch (err) {
-                setLoading(true);
-            }
+            const id = parseInt(productId);
+            dispatch(fetchProductDetailById(id));
         };
 
         loadData();
     }, [productId]);
 
-    return loading ? (
+    return !product ? (
         <>
             {[...Array(5)].map((_) => (
                 <LoadingBlock />
@@ -66,13 +48,24 @@ const DetailPage = () => {
         </>
     ) : (
         <>
-            <ContentBlock title="Thông tin" component={OverviewBlock} show={true} />
-            <ContentBlock title="Thông tin chi tiết" component={SpecBlock} show={true} />
-            <ContentBlock title="Sản phẩm tương tự" component={SuggestBlock} show={true} />
-            <ContentBlock title="Hỏi, đáp về sản phẩm" component={QuestionBlock} show={true} />
-            <ContentBlock title="Khách hàng hỏi đáp" component={QuestionList} show={showComments} />
-            <ContentBlock title="Đánh giá sản phẩm" component={RatingBlock} show={true} />
-            <ContentBlock title="Khách hàng đánh giá" component={RatingList} show={showRatings} />
+            <ContentBlock title="Thông tin" component={<OverviewBlock />} />
+
+            <ContentBlock title="Thông tin chi tiết" component={<SpecBlock />} />
+
+            <ContentBlock title="Sản phẩm tương tự" component={<SuggestBlock />} />
+
+            <ContentBlock title="Đánh giá sản phẩm" component={<RatingBlock />} />
+
+            {/* <ContentBlock title="Khách hàng đánh giá" component={<RatingList />} /> */}
+
+            <ContentBlock title="Hỏi, đáp về sản phẩm" component={<QuestionBlock />} />
+
+            {product.show_questions ? (
+                <ContentBlock
+                    title={<span id="questions-header">Khách hàng hỏi đáp</span>}
+                    component={<QuestionList />}
+                />
+            ) : null}
         </>
     );
 };
