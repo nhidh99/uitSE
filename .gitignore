@@ -36,3 +36,4 @@ laptop-store/laptop-store-crawl/promotions/
 
 #application.yml
 *.yml
+*.yaml
