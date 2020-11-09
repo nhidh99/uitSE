@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FaAddressBook, FaBoxes, FaHeart, FaInfoCircle, FaLock, FaTrophy } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router";
@@ -19,6 +19,10 @@ import { SC } from "./styles";
 const User = () => {
     const [title, setTitle] = useState<string | null>(null);
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
+    const [asyncLoaderStatus, setAsyncLoaderStatus] = useState(loaderStatus);
+
+    const timeout = useRef<number | null>(null);
+    const { isLoading, isFetching } = asyncLoaderStatus;
 
     const items: MenuItemProps[] = useMemo(
         () => [
@@ -107,6 +111,23 @@ const User = () => {
         []
     );
 
+    useEffect(() => {
+        const asyncLoading = async () => {
+            if (timeout.current) {
+                clearTimeout(timeout.current);
+            }
+
+            if (!loaderStatus.isLoading) {
+                setAsyncLoaderStatus(loaderStatus);
+            } else {
+                timeout.current = setTimeout(() => {
+                    setAsyncLoaderStatus(loaderStatus);
+                }, 500);
+            }
+        };
+        asyncLoading();
+    }, [loaderStatus]);
+
     return (
         <SC.Container>
             <SC.LeftContainer>
@@ -116,10 +137,10 @@ const User = () => {
             <SC.RightContainer>
                 <SC.TitleContainer>{title}</SC.TitleContainer>
                 <SC.LoaderContainer>
-                    <Loader loading={loaderStatus.isLoading} loadOnce={loaderStatus.isFetching} />
+                    <Loader loading={isLoading} loadOnce={isFetching} />
                     <SC.ContentContainer
                         style={{
-                            display: loaderStatus.isFetching ? "none" : "inherit",
+                            display: isFetching ? "none" : "inherit",
                         }}
                     >
                         <Switch>

@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 import org.example.type.RAMType;
 import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity

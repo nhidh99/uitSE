@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
 const PaginateContainer = styled.div`
+    cursor: pointer;
     position: relative;
-    overflow: auto;
+    overflow-y: auto;
     ul {
-        cursor: pointer;
+        user-select: none;
         margin: 0;
         padding: 0;
         float: right;
@@ -31,6 +32,10 @@ const PaginateContainer = styled.div`
                 background-color: #ddd !important;
             }
         }
+    }
+
+    &.loading {
+        pointer-events: none;
     }
 `;
 

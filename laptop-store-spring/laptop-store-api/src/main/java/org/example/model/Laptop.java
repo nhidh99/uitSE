@@ -1,11 +1,15 @@
 package org.example.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.type.BrandType;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -118,4 +122,17 @@ public class Laptop {
             joinColumns = @JoinColumn(name = "laptop_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
     private List<Promotion> promotions;
+
+    public String getRamInfo() {
+        return ram.getSize().toString().concat("GB");
+    }
+
+    public String getHardDriveInfo() {
+        Integer size = hardDrive.getSize();
+        StringBuilder sb = new StringBuilder(hardDrive.getType().name());
+        if (size >= 1024) {
+            return sb.append(" ").append(size / 1024).append("TB").toString();
+        }
+        return sb.append(" ").append(size).append("GB").toString();
+    }
 }

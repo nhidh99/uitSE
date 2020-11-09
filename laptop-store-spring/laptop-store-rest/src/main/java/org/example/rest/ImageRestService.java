@@ -40,7 +40,6 @@ public class ImageRestService {
 
     @GetMapping(value = "/laptops/{id}/{alt}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("permitAll()")
-    @Cacheable("images")
     public ResponseEntity<?> getLaptopImage(ImageInput imageInput) {
         ImageType type = laptopResolutionMap.get(imageInput.getResolution());
         byte[] image = laptopService.findImageById(imageInput.getId(), type);
@@ -49,7 +48,6 @@ public class ImageRestService {
 
     @GetMapping(value = "/details/{id}/{alt}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("permitAll()")
-    @Cacheable("images")
     public ResponseEntity<?> getLaptopDetailImage(ImageInput imageInput) {
         ImageType type = laptopResolutionMap.get(imageInput.getResolution());
         byte[] image = laptopImageService.findImageById(imageInput.getId(), type);
@@ -58,7 +56,6 @@ public class ImageRestService {
 
     @GetMapping(value = "/promotions/{id}/{alt}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("permitAll()")
-    @Cacheable("images")
     public ResponseEntity<?> getPromotionImage(ImageInput imageInput) {
         byte[] image = imageInput.getResolution() == ResolutionConstants.PROMOTION_IMAGE_RESOLUTION
                 ? promotionService.findImageById(imageInput.getId()) : null;

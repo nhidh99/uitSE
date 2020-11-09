@@ -22,6 +22,8 @@ import org.example.type.SearchOrderType;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -73,6 +75,7 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @Cacheable(value = "laptops", key = "'discount-' + #page")
     public Pair<List<LaptopOverviewDTO>, Long> findMostDiscountByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("discountPrice").descending());
         return txTemplate.execute((status) -> {

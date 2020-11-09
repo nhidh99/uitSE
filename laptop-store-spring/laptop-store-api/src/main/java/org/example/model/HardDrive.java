@@ -10,6 +10,7 @@ import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity

@@ -11,6 +11,7 @@ import org.example.service.api.LaptopService;
 import org.example.type.*;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,10 +25,12 @@ import java.util.List;
 public class LaptopRestService {
 
     private final LaptopService laptopService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    public LaptopRestService(LaptopService laptopService) {
+    public LaptopRestService(LaptopService laptopService, RedisTemplate<String, String> redisTemplate) {
         this.laptopService = laptopService;
+        this.redisTemplate = redisTemplate;
     }
 
     @GetMapping(value = "/{id}/details", produces = MediaType.APPLICATION_JSON_VALUE)

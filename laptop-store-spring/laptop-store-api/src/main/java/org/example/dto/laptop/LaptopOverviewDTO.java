@@ -1,15 +1,14 @@
 package org.example.dto.laptop;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.model.HardDrive;
-import org.example.model.RAM;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class LaptopOverviewDTO {
+public class LaptopOverviewDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 
@@ -28,24 +27,9 @@ public class LaptopOverviewDTO {
     @JsonProperty("avg_rating")
     private Float avgRating;
 
-    @JsonIgnore
-    private RAM ram;
-
-    @JsonIgnore
-    private HardDrive hardDrive;
-
     @JsonProperty("ram")
-    public String getRamInfo() {
-        return ram.getSize().toString().concat("GB");
-    }
+    private String ramInfo;
 
     @JsonProperty("hard_drive")
-    public String getHardDriveInfo() {
-        Integer size = hardDrive.getSize();
-        StringBuilder sb = new StringBuilder(hardDrive.getType().name());
-        if (size >= 1024) {
-            return sb.append(" ").append(size / 1024).append("TB").toString();
-        }
-        return sb.append(" ").append(size).append("GB").toString();
-    }
+    private String hardDriveInfo;
 }

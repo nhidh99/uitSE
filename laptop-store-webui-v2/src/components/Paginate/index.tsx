@@ -5,6 +5,8 @@ import ReactPaginate from "react-paginate";
 import { SC } from "./styles";
 import queryString from "query-string";
 import { useHistory, useLocation } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../services/redux/rootReducer";
 
 type PaginateProps = {
     count: number;
@@ -16,6 +18,7 @@ type PaginateProps = {
 const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps) => {
     const history = useHistory();
     const location = useLocation();
+    const isLoading = useSelector((state: RootState) => state.loaderStatus.isLoading);
 
     const defaultPageChange = (e: { selected: number }) => {
         const params = { ...queryString.parse(location.search), page: e.selected + 1 };
@@ -23,7 +26,7 @@ const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps
     };
 
     return (
-        <SC.PaginateContainer>
+        <SC.PaginateContainer className={isLoading ? "loading" : ""}>
             <ReactPaginate
                 pageCount={Math.floor((count + sizePerPage - 1) / sizePerPage)}
                 pageRangeDisplayed={2}
