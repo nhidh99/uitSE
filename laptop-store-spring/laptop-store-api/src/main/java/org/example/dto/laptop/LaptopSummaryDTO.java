@@ -6,9 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.constant.ResolutionConstants;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class LaptopSummaryDTO {
+public class LaptopSummaryDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 

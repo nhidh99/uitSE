@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.example.type.OrderStatus;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class OrderOverviewDTO {
+public class OrderOverviewDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 

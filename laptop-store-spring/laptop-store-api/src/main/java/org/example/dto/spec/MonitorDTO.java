@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.example.type.ResolutionType;
 
+import java.io.Serializable;
+
 @Data
-public class MonitorDTO {
+public class MonitorDTO implements Serializable {
     @JsonProperty("size")
     private Float size;
 

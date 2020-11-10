@@ -4,8 +4,6 @@ import org.example.type.ImageType;
 
 import java.util.List;
 
-public interface LaptopImageService {
-    List<Integer> findIdsByLaptopId(Integer laptopId);
-
+public interface ImageService {
     byte[] findImageById(Integer id, ImageType type);
 }

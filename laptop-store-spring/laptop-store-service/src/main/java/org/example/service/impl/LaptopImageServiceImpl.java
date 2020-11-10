@@ -1,26 +1,21 @@
 package org.example.service.impl;
 
 import org.example.dao.LaptopDetailImageRepository;
-import org.example.service.api.LaptopImageService;
+import org.example.service.api.ImageService;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
-public class LaptopImageServiceImpl implements LaptopImageService {
+public class LaptopImageServiceImpl implements ImageService {
 
     private final LaptopDetailImageRepository laptopDetailImageRepository;
 
     @Autowired
     public LaptopImageServiceImpl(LaptopDetailImageRepository laptopDetailImageRepository) {
         this.laptopDetailImageRepository = laptopDetailImageRepository;
-    }
-
-    @Override
-    public List<Integer> findIdsByLaptopId(Integer laptopId) {
-        return laptopDetailImageRepository.findIdsByLaptopId(laptopId);
     }
 
     @Override
@@ -33,7 +28,7 @@ public class LaptopImageServiceImpl implements LaptopImageService {
             case LAPTOP_THUMBNAIL:
                 return laptopDetailImageRepository.findThumbnailById(id);
             default:
-                return null;
+                throw new NoSuchElementException();
         }
     }
 }

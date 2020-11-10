@@ -1,28 +1,28 @@
 package org.example.service.impl;
 
+import org.example.constant.CacheConstants;
 import org.example.constant.ErrorMessageConstants;
-import org.example.dao.*;
-import org.example.dto.comment.QuestionDTO;
+import org.example.constant.PaginateConstants;
+import org.example.dao.LaptopDetailImageRepository;
+import org.example.dao.LaptopImageRepository;
+import org.example.dao.LaptopRepository;
+import org.example.dao.PromotionRepository;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.laptop.LaptopSummaryDTO;
 import org.example.dto.promotion.PromotionDTO;
-import org.example.dto.rating.RatingDTO;
 import org.example.dto.spec.*;
 import org.example.input.LaptopFilterInput;
 import org.example.input.SearchInput;
-import org.example.model.Question;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
-import org.example.model.Rating;
 import org.example.service.api.LaptopService;
+import org.example.service.util.PageableUtil;
 import org.example.type.ImageType;
-import org.example.type.SearchOrderType;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,18 +32,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class LaptopServiceImpl implements LaptopService {
 
-    private static final int SIZE_PER_CLIENT_PAGE = 12;
-    private static final int SIZE_PER_ADMIN_PAGE = 10;
-
     private final LaptopRepository laptopRepository;
     private final LaptopImageRepository laptopImageRepository;
     private final LaptopDetailImageRepository laptopDetailImageRepository;
-    private final RatingRepository ratingRepository;
-    private final QuestionRepository questionRepository;
     private final PromotionRepository promotionRepository;
     private final TransactionTemplate txTemplate;
 
@@ -51,22 +47,22 @@ public class LaptopServiceImpl implements LaptopService {
     public LaptopServiceImpl(LaptopRepository laptopRepository,
                              LaptopImageRepository laptopImageRepository,
                              LaptopDetailImageRepository laptopDetailImageRepository,
-                             RatingRepository ratingRepository,
-                             QuestionRepository questionRepository,
                              PromotionRepository promotionRepository,
                              PlatformTransactionManager txManager) {
         this.laptopRepository = laptopRepository;
         this.laptopImageRepository = laptopImageRepository;
         this.laptopDetailImageRepository = laptopDetailImageRepository;
-        this.ratingRepository = ratingRepository;
-        this.questionRepository = questionRepository;
         this.promotionRepository = promotionRepository;
         this.txTemplate = new TransactionTemplate(txManager);
     }
 
     @Override
+    @Cacheable(
+            value = CacheConstants.LAPTOPS,
+            key = "'latest:page:'+ #page + ':class:' + #clazz.getSimpleName()"
+    )
     public <T> Pair<List<T>, Long> findByPage(int page, Class<T> clazz) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page - 1, PaginateConstants.LAPTOP_PER_USER_PAGE, Sort.by("id").descending());
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
@@ -75,9 +71,14 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    @Cacheable(value = "laptops", key = "'discount-' + #page")
+    @Cacheable(
+            value = CacheConstants.LAPTOPS,
+            key = "'most-discount:page:' +#page"
+    )
     public Pair<List<LaptopOverviewDTO>, Long> findMostDiscountByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("discountPrice").descending());
+        Pageable pageable = PageRequest.of(page - 1,
+                PaginateConstants.LAPTOP_PER_USER_PAGE,
+                Sort.by("discountPrice").descending());
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
@@ -86,8 +87,12 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @Cacheable(
+            value = CacheConstants.LAPTOPS,
+            key = "'cheapest:page:'+ #page"
+    )
     public Pair<List<LaptopOverviewDTO>, Long> findCheapestByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("unitPrice"));
+        Pageable pageable = PageRequest.of(page - 1, PaginateConstants.LAPTOP_PER_USER_PAGE, Sort.by("unitPrice"));
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
@@ -96,8 +101,12 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @Cacheable(
+            value = CacheConstants.LAPTOPS,
+            key = "'best-selling:page:'+ #page"
+    )
     public Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page) {
-        Pageable pageable = PageRequest.of(page - 1, SIZE_PER_CLIENT_PAGE, Sort.by("soldQuantity").descending());
+        Pageable pageable = PageRequest.of(page - 1, PaginateConstants.LAPTOP_PER_USER_PAGE, Sort.by("soldQuantity").descending());
         return txTemplate.execute((status) -> {
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
             long laptopCount = laptopRepository.countByRecordStatusTrue();
@@ -114,8 +123,8 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.LAPTOP_DETAIL, key = "#laptopId")
     public LaptopDetailDTO findDetailById(int laptopId) {
-        Pageable pageable = PageRequest.of(0, SIZE_PER_CLIENT_PAGE);
         return txTemplate.execute((status) -> {
             boolean isValidRequest = laptopRepository.existsByIdAndRecordStatusTrue(laptopId);
             if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.LAPTOP_NOT_FOUND);
@@ -137,6 +146,7 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.LAPTOP_SPEC, key = "#laptopId")
     public LaptopSpecDTO findSpecById(int laptopId) {
         return txTemplate.execute((status) -> {
             boolean isValidRequest = laptopRepository.existsByIdAndRecordStatusTrue(laptopId);
@@ -170,7 +180,7 @@ public class LaptopServiceImpl implements LaptopService {
             case LAPTOP_THUMBNAIL:
                 return laptopImageRepository.findThumbnailById(id);
             default:
-                return null;
+                throw new NoSuchElementException();
         }
     }
 
@@ -195,7 +205,7 @@ public class LaptopServiceImpl implements LaptopService {
         return txTemplate.execute((status) -> {
             List<Laptop> laptops;
             long laptopCount;
-            Pageable pageable = buildPageableFromSearch(search);
+            Pageable pageable = PageableUtil.buildPageableFromSearch(search);
             String query = search.getQuery().trim();
 
             if (query.isEmpty()) {
@@ -207,13 +217,5 @@ public class LaptopServiceImpl implements LaptopService {
             }
             return Pair.of(ModelMapperUtil.mapList(laptops, LaptopSummaryDTO.class), laptopCount);
         });
-    }
-
-    private Pageable buildPageableFromSearch(SearchInput search) {
-        Sort sort = Sort.by(search.getTarget().toString());
-        if (search.getOrder().equals(SearchOrderType.DESC)) {
-            sort = sort.descending();
-        }
-        return PageRequest.of(search.getPage() - 1, SIZE_PER_ADMIN_PAGE, sort);
     }
 }

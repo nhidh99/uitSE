@@ -7,13 +7,14 @@ import lombok.Getter;
 import org.example.constant.OrderConstants;
 import org.example.util.DateUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
 @Getter
 @Builder
-public class OrderCheckoutDTO {
+public class OrderCheckoutDTO implements Serializable {
     @JsonProperty("transport_fee")
     private final Integer transportFee;
 

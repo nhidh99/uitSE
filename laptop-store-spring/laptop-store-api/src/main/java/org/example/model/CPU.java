@@ -42,7 +42,6 @@ public class CPU {
     private String maxSpeed;
 
     @OneToOne(mappedBy = "cpu", fetch = FetchType.LAZY)
-    @LazyToOne(LazyToOneOption.NO_PROXY)
     private Laptop laptop;
 }
 

@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
-public class RatingDTO {
+public class RatingDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 

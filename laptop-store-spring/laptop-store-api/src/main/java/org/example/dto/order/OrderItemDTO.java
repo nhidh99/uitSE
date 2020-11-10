@@ -7,11 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.ProductType;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemDTO {
+public class OrderItemDTO implements Serializable {
     @JsonProperty("id")
     private Integer productId;
 

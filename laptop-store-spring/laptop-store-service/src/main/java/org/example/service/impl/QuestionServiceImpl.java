@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import org.example.constant.CacheConstants;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.PaginateConstants;
 import org.example.dao.LaptopRepository;
@@ -15,6 +16,7 @@ import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -62,6 +64,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.QUESTIONS, key="'laptop-id:' + #productId + ':page:' + #page")
     public Pair<List<QuestionDTO>, Long> findByProductId(Integer productId, Integer page) {
         Pageable pageable = PageRequest.of(page - 1,
                 PaginateConstants.QUESTION_PER_USER_PAGE,

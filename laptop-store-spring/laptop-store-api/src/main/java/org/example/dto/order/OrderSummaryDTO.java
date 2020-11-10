@@ -9,13 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.OrderStatus;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderSummaryDTO {
+public class OrderSummaryDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 

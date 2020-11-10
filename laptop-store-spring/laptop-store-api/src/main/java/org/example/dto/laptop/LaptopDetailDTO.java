@@ -7,13 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.dto.promotion.PromotionDTO;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LaptopDetailDTO {
+public class LaptopDetailDTO implements Serializable {
     @JsonProperty("spec")
     private LaptopSpecDTO spec;
 

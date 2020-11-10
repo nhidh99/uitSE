@@ -39,6 +39,5 @@ public class HardDrive {
     private String detail;
 
     @OneToOne(mappedBy = "hardDrive", fetch = FetchType.LAZY)
-    @LazyToOne(LazyToOneOption.NO_PROXY)
     private Laptop laptop;
 }

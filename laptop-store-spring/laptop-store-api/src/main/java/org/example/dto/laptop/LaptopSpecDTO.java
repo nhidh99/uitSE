@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import org.example.dto.spec.*;
 import org.example.type.BrandType;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LaptopSpecDTO {
+public class LaptopSpecDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 

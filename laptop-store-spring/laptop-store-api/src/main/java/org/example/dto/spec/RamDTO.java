@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.example.type.RAMType;
 
+import java.io.Serializable;
+
 @Data
-public class RamDTO {
+public class RamDTO implements Serializable {
     @JsonProperty("size")
     private Integer size;
 

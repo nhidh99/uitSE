@@ -46,7 +46,6 @@ public class Promotion {
     @Lob
     @Column(name = "image")
     @Basic(fetch = FetchType.LAZY)
-    @JsonIgnore
     private byte[] image;
 
     @Basic(fetch = FetchType.LAZY)

@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.type.OrderStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class OrderTrackDTO {
+public class OrderTrackDTO implements Serializable {
     private OrderStatus status;
 
     @JsonProperty("created_at")

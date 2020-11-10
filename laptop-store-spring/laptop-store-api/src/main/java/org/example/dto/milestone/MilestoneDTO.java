@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import org.example.type.MilestoneLevelType;
 import org.example.type.MilestoneType;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MilestoneDTO {
+public class MilestoneDTO implements Serializable {
     @JsonProperty("id")
     private MilestoneType id;
 

@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class PromotionDTO {
+public class PromotionDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 

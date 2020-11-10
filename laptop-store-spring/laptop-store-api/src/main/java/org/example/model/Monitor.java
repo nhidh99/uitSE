@@ -56,6 +56,5 @@ public class Monitor {
     private String graphicsCard;
 
     @OneToOne(mappedBy = "monitor", fetch = FetchType.LAZY)
-    @LazyToOne(LazyToOneOption.NO_PROXY)
     private Laptop laptop;
 }

@@ -10,12 +10,13 @@ import org.example.model.District;
 import org.example.model.Ward;
 import org.example.type.OrderStatus;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class OrderDetailDTO {
+public class OrderDetailDTO implements Serializable {
     @JsonProperty("transport_fee")
     private Integer transportFee;
 

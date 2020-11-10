@@ -3,8 +3,10 @@ package org.example.dto.address;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class AddressDetailDTO {
+public class AddressDetailDTO implements Serializable {
     @JsonProperty("receiver_name")
     private String receiverName;
 
