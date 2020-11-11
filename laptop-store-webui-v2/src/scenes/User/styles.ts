@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import LoadingContainerStyle from "../../values/styles/LoadingContainer.style";
 
 const Container = styled.div`
     display: flex;
@@ -24,6 +25,12 @@ const ContentContainer = styled.div`
     background-color: white;
     padding: 30px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+
+    &.fetching {
+        visibility: hidden;
+    }
+
+    ${LoadingContainerStyle}
 `;
 
 const LoaderContainer = styled.div`

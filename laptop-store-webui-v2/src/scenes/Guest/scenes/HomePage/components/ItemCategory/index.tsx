@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { useLocation } from "react-router";
-import { FaLaptop, FaTruckLoading } from "react-icons/fa";
+import { FaLaptop } from "react-icons/fa";
 import laptopApi from "../../../../../../services/api/laptopApi";
 import EmptyItem from "./components/EmptyItem";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
@@ -94,15 +94,11 @@ const ItemCategory = ({ category, title }: ItemListProps) => {
             </SC.Header>
 
             {loading ? (
-                ["filter", "search"].includes(category) ? (
-                    <EmptyBlock icon={<FaTruckLoading />} title="Đang tìm kiếm sản phẩm" />
-                ) : (
-                    <SC.ItemContainer>
-                        {[...Array(12)].map((_) => (
-                            <EmptyItem />
-                        ))}
-                    </SC.ItemContainer>
-                )
+                <SC.ItemContainer>
+                    {[...Array(12)].map((_) => (
+                        <EmptyItem />
+                    ))}
+                </SC.ItemContainer>
             ) : products.length === 0 ? (
                 <EmptyBlock icon={<FaLaptop />} title="Không tìm thấy sản phẩm phù hợp" />
             ) : (

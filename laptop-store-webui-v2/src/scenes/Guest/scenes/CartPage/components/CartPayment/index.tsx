@@ -17,7 +17,7 @@ const CartPayment = ({ payment }: Props) => {
     const history = useHistory();
 
     const checkout = () => {
-        if (totalCount === 0) {
+        if (loading || totalCount === 0) {
             return;
         }
         if (getCookie("access_token") === null) {
@@ -28,7 +28,7 @@ const CartPayment = ({ payment }: Props) => {
     };
 
     return (
-        <SC.OuterContainer>
+        <SC.OuterContainer className={loading ? "loading" : undefined}>
             <SC.Container>
                 <SC.InfoRow>
                     <div>
@@ -59,9 +59,7 @@ const CartPayment = ({ payment }: Props) => {
                     </div>
                 </SC.InfoRow>
 
-                <SC.PaymentButton disabled={loading || totalCount === 0} onClick={checkout}>
-                    TIẾN HÀNH ĐẶT HÀNG
-                </SC.PaymentButton>
+                <SC.PaymentButton onClick={checkout}>TIẾN HÀNH ĐẶT HÀNG</SC.PaymentButton>
             </SC.Container>
         </SC.OuterContainer>
     );

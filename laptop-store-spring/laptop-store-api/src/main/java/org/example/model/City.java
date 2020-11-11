@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "city")
-public class City {
+public class City implements Serializable {
     @Id
     @Column(name = "id")
     @JsonProperty("id")

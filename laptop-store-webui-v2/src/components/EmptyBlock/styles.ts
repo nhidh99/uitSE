@@ -4,11 +4,6 @@ const OuterContainer = styled.div`
     width: 100%;
     background-color: white;
     box-sizing: border-box;
-
-    &.border {
-        border: 1px solid #ddd;
-        padding: 30px;
-    }
 `;
 
 const InnerContainer = styled.div`

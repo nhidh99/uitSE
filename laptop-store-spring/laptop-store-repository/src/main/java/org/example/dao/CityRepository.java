@@ -1,16 +1,21 @@
 package org.example.dao;
 
+import org.example.constant.CacheConstants;
 import org.example.model.City;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Integer> {
-    boolean existsById(Integer id);
+    @Cacheable(value = CacheConstants.CITIES, key = "'all'")
+    List<City> findAll();
 
-    @Query("SELECT c.id FROM City c WHERE c.name = :name")
-    Integer findIdByName(@Param("name") String name);
+    @Cacheable(value = CacheConstants.CITY, key = "#id")
+    City getOne(Integer id);
+
+    boolean existsById(Integer id);
 }

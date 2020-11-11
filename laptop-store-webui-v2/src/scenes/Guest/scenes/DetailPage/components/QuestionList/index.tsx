@@ -10,6 +10,7 @@ import { hideQuestionList } from "../../../../../../services/redux/slices/produc
 import { useParams } from "react-router";
 
 type QuestionListState = {
+    loading: boolean;
     questions: QuestionModel[];
     count: number;
     page: number;
@@ -22,6 +23,7 @@ const QuestionList = () => {
 
     const initialState = useMemo<QuestionListState>(
         () => ({
+            loading: true,
             questions: [],
             count: 0,
             page: 1,
@@ -30,10 +32,11 @@ const QuestionList = () => {
     );
 
     const [state, setState] = useState<QuestionListState>(initialState);
-    const { questions, count, page } = state;
+    const { questions, count, page, loading } = state;
 
     useEffect(() => {
         const loadData = async () => {
+            setState((prev) => ({ ...prev, loading: true }));
             const response = await questionApi.getByProductId(productId, page);
             const count = parseInt(response.headers["x-total-count"]);
 
@@ -44,6 +47,7 @@ const QuestionList = () => {
                     ...prev,
                     questions: response.data,
                     count: parseInt(response.headers["x-total-count"]),
+                    loading: false,
                 }));
             }
         };
@@ -58,7 +62,7 @@ const QuestionList = () => {
 
     return count === 0 ? null : (
         <>
-            <SC.Container>
+            <SC.Container className={loading ? "loading" : undefined}>
                 {questions.map((question) => (
                     <QuestionItem question={question} key={question.id} />
                 ))}

@@ -1,4 +1,6 @@
 import React, { createElement } from "react";
+import { FaDoorOpen } from "react-icons/fa";
+import { removeCookie } from "../../services/helper/cookie";
 import MenuItemProps from "../../values/props/MenuItemProps";
 import { SC } from "./styles";
 
@@ -18,6 +20,21 @@ const MenuBar = ({ items }: MenuBarProps) => (
                     </SC.NavItem>
                 </li>
             ))}
+            <li>
+                <SC.NavItem
+                    to=""
+                    onClick={(e) => {
+                        e.preventDefault();
+                        if (window.confirm("Xác nhận đăng xuất?")) {
+                            removeCookie("access_token");
+                            window.location.href = "/";
+                        }
+                    }}
+                >
+                    <FaDoorOpen />
+                    Đăng xuất
+                </SC.NavItem>
+            </li>
         </ul>
     </SC.Container>
 );

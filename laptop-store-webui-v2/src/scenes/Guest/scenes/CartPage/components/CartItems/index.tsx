@@ -1,8 +1,7 @@
 import React from "react";
-import { FaShoppingBasket } from "react-icons/fa";
+import { FaShoppingBasket, FaTruckLoading } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
-import Loader from "../../../../../../components/Loader";
 import { RootState } from "../../../../../../services/redux/rootReducer";
 import ProductOverviewModel from "../../../../../../values/models/ProductOverviewModel";
 import CartItem from "./components/CartItem";
@@ -13,21 +12,20 @@ type ItemListProps = {
 };
 
 const CartItems = ({ items }: ItemListProps) => {
-    const loading = useSelector((state: RootState) => state.loaderStatus.isLoading || !items);
+    const loading = useSelector((state: RootState) => state.loaderStatus.isLoading);
 
     return (
-        <SC.OuterContainer>
-            <Loader loading={loading} loadOnce={!items} />
+        <SC.Container className={loading ? "loading" : undefined}>
             {items ? (
-                <SC.Container>
-                    {items.length > 0 ? (
-                        items.map((item) => <CartItem key={item.id} item={item} />)
-                    ) : (
-                        <EmptyBlock icon={<FaShoppingBasket />} title="Giỏ hàng trống" borderless />
-                    )}
-                </SC.Container>
-            ) : null}
-        </SC.OuterContainer>
+                items.length > 0 ? (
+                    items.map((item) => <CartItem key={item.id} item={item} />)
+                ) : (
+                    <EmptyBlock icon={<FaShoppingBasket />} title="Giỏ hàng trống" />
+                )
+            ) : (
+                <EmptyBlock icon={<FaTruckLoading />} title="Đang tải thông tin giỏ hàng" />
+            )}
+        </SC.Container>
     );
 };
 

@@ -8,9 +8,10 @@ import {
     FaPlusCircle,
     FaShoppingBag,
     FaTruck,
+    FaTruckLoading,
 } from "react-icons/fa";
 import { useHistory } from "react-router";
-import Loader from "../../../../components/Loader";
+import EmptyBlock from "../../../../components/EmptyBlock";
 import SectionHeader from "../../../../components/SectionHeader";
 import orderApi from "../../../../services/api/orderApi";
 import userApi from "../../../../services/api/userApi";
@@ -108,7 +109,7 @@ const CheckoutPage = () => {
                             </>
                         }
                     />
-                    <Loader loading={loading} loadOnce={true} />
+                    <EmptyBlock icon={<FaTruckLoading />} title="Đang tải thông tin thanh toán" />
                 </SC.LoaderContainer>
             ) : (
                 <>

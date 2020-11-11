@@ -1,8 +1,16 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
-import { FaAddressBook, FaBoxes, FaHeart, FaInfoCircle, FaLock, FaTrophy } from "react-icons/fa";
+import React, { memo, useMemo, useState } from "react";
+import {
+    FaAddressBook,
+    FaBoxes,
+    FaHeart,
+    FaInfoCircle,
+    FaLock,
+    FaTrophy,
+    FaTruckLoading,
+} from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router";
-import Loader from "../../components/Loader";
+import EmptyBlock from "../../components/EmptyBlock";
 import MenuBar from "../../components/MenuBar";
 import { RootState } from "../../services/redux/rootReducer";
 import MenuItemProps from "../../values/props/MenuItemProps";
@@ -18,11 +26,7 @@ import { SC } from "./styles";
 
 const User = () => {
     const [title, setTitle] = useState<string | null>(null);
-    const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
-    const [asyncLoaderStatus, setAsyncLoaderStatus] = useState(loaderStatus);
-
-    const timeout = useRef<number | null>(null);
-    const { isLoading, isFetching } = asyncLoaderStatus;
+    const { isLoading, isFetching } = useSelector((state: RootState) => state.loaderStatus);
 
     const items: MenuItemProps[] = useMemo(
         () => [
@@ -111,23 +115,6 @@ const User = () => {
         []
     );
 
-    useEffect(() => {
-        const asyncLoading = async () => {
-            if (timeout.current) {
-                clearTimeout(timeout.current);
-            }
-
-            if (!loaderStatus.isLoading) {
-                setAsyncLoaderStatus(loaderStatus);
-            } else {
-                timeout.current = setTimeout(() => {
-                    setAsyncLoaderStatus(loaderStatus);
-                }, 500);
-            }
-        };
-        asyncLoading();
-    }, [loaderStatus]);
-
     return (
         <SC.Container>
             <SC.LeftContainer>
@@ -136,27 +123,27 @@ const User = () => {
 
             <SC.RightContainer>
                 <SC.TitleContainer>{title}</SC.TitleContainer>
-                <SC.LoaderContainer>
-                    <Loader loading={isLoading} loadOnce={isFetching} />
-                    <SC.ContentContainer
-                        style={{
-                            display: isFetching ? "none" : "inherit",
-                        }}
-                    >
-                        <Switch>
-                            {routes.map((route) => (
-                                <Route
-                                    exact
-                                    path={route.path}
-                                    render={() => {
-                                        setTitle(route.title);
-                                        return route.component;
-                                    }}
-                                />
-                            ))}
-                        </Switch>
+                {isFetching ? (
+                    <SC.ContentContainer>
+                        <EmptyBlock icon={<FaTruckLoading />} title="Đang tải thông tin" />
                     </SC.ContentContainer>
-                </SC.LoaderContainer>
+                ) : null}
+                <SC.ContentContainer
+                    className={`${isLoading ? (isFetching ? "fetching" : "loading") : undefined}`}
+                >
+                    <Switch>
+                        {routes.map((route) => (
+                            <Route
+                                exact
+                                path={route.path}
+                                render={() => {
+                                    setTitle(route.title);
+                                    return route.component;
+                                }}
+                            />
+                        ))}
+                    </Switch>
+                </SC.ContentContainer>
             </SC.RightContainer>
         </SC.Container>
     );

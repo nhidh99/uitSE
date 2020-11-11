@@ -23,7 +23,7 @@ axiosAuthClient.interceptors.request.use(async (config) => {
 });
 
 axiosAuthClient.interceptors.response.use(
-    (response) => {
+    async (response) => {
         return response;
     },
     async (error) => {

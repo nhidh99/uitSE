@@ -7,8 +7,8 @@ type EmptyBlockProps = {
     borderless?: boolean;
 };
 
-const EmptyBlock = ({ icon, title, borderless }: EmptyBlockProps) => (
-    <SC.OuterContainer className={borderless ? "" : "border"}>
+const EmptyBlock = ({ icon, title }: EmptyBlockProps) => (
+    <SC.OuterContainer>
         <SC.InnerContainer>
             <SC.IconContainer>{icon}</SC.IconContainer>
             <div>{title}</div>

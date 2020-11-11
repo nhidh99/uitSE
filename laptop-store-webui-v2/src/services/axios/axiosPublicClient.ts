@@ -17,7 +17,7 @@ axiosPublicClient.interceptors.request.use(async (config) => {
 });
 
 axiosPublicClient.interceptors.response.use(
-    (response) => {
+    async (response) => {
         return response;
     },
     (error) => {

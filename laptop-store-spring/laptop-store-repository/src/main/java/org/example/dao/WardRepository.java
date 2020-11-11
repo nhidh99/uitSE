@@ -1,6 +1,9 @@
 package org.example.dao;
 
+import org.example.constant.CacheConstants;
+import org.example.model.District;
 import org.example.model.Ward;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,10 +13,11 @@ import java.util.List;
 
 @Repository
 public interface WardRepository extends JpaRepository<Ward, Integer> {
-    boolean existsByIdAndDistrictId(Integer id, Integer districtId);
+    @Cacheable(value = CacheConstants.WARD, key = "#id")
+    Ward getOne(Integer id);
 
-    @Query("SELECT w.id FROM Ward w WHERE w.name = :name AND w.districtId = :districtId")
-    Integer findIdByNameAndDistrictId(@Param("name") String name, @Param("districtId") Integer districtId);
-
+    @Cacheable(value = CacheConstants.WARDS, key = "'district:' + #districtId")
     List<Ward> findByDistrictId(Integer districtId);
+
+    boolean existsByIdAndDistrictId(Integer id, Integer districtId);
 }

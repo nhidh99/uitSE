@@ -1,8 +1,10 @@
 import styled from "styled-components";
+import LoadingContainerStyle from "../../../../../../values/styles/LoadingContainer.style";
 
 const OuterContainer = styled.div`
     position: relative;
     background-color: white;
+    ${LoadingContainerStyle}
 `;
 
 const Container = styled.div`
@@ -24,8 +26,7 @@ const PaymentButton = styled.button`
     padding: 12px;
     font-size: 16px;
     line-height: 1em;
-    cursor: ${(props) => (props.disabled ? "arrow" : "pointer")};
-    opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+    cursor: pointer;
 `;
 
 export const SC = {
