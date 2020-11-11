@@ -11,7 +11,7 @@ const QuestionItem = ({ question }: QuestionItemProps) => (
     <SC.Container>
         <SC.CommentDetail>{question.question}</SC.CommentDetail>
         <SC.CommentInfo>
-            <SC.UserFullName>{question.user}</SC.UserFullName> đã gửi vào {question.comment_date}
+            <SC.UserFullName>{question.author_name}</SC.UserFullName> - {question.created_at}
         </SC.CommentInfo>
 
         <QuestionReply commentId={question.id} />

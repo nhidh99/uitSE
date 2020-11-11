@@ -9,6 +9,12 @@ const questionApi = {
         return axiosPublicClient.get(url, config);
     },
 
+    getByStatus(params: object) {
+        const url = "/questions";
+        const config = { params: params };
+        return axiosAuthClient.get(url, config);
+    },
+
     postQuestion(data: QuestionFormValues) {
         const url = "/questions";
         return axiosAuthClient.post(url, data);

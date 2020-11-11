@@ -11,6 +11,7 @@ import ProductPage from "./scenes/ProductPage";
 import PromotionPage from "./scenes/PromotionPage";
 import { SC } from "./styles";
 import queryString from "query-string";
+import QuestionPage from "./scenes/QuestionPage";
 
 const Admin = () => {
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
@@ -42,7 +43,7 @@ const Admin = () => {
             },
             {
                 icon: FaQuestionCircle,
-                link: "/admin/comments",
+                link: "/admin/questions",
                 title: "Câu hỏi",
                 search: initialSearch,
             },
@@ -79,6 +80,7 @@ const Admin = () => {
                             <Route exact path="/admin/products" component={ProductPage} />
                             <Route exact path="/admin/promotions" component={PromotionPage} />
                             <Route exact path="/admin/orders" component={OrderPage} />
+                            <Route exact path="/admin/questions" component={QuestionPage} />
                         </Switch>
                     </SC.ContentContainer>
                 </SC.LoaderContainer>

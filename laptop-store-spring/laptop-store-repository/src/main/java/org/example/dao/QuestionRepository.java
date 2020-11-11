@@ -11,7 +11,11 @@ import java.util.List;
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
     List<Question> findByApproveStatusTrueAndLaptopId(Integer laptopId, Pageable pageable);
 
+    List<Question> findByApproveStatusIs(Boolean approveStatus, Pageable pageable);
+
     Long countByApproveStatusTrueAndUserUsername(String username);
+
+    long countByApproveStatusIs(Boolean approveStatus);
 
     long countByApproveStatusTrueAndLaptopId(Integer productId);
 }

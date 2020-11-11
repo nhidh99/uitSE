@@ -6,7 +6,7 @@ const AdminRoute = () => (
     <Route
         exact
         component={Admin}
-        path={["/admin/(|products|orders|promotions|ratings|comments|replies)"]}
+        path={["/admin/(|products|orders|promotions|ratings|questions|replies)"]}
     />
 );
 

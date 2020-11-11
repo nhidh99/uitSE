@@ -1,8 +1,8 @@
 type QuestionModel = {
     id: number;
-    user: string;
     question: string;
-    comment_date: string;
+    author_name: string;
+    created_at: string;
 };
 
 export default QuestionModel;

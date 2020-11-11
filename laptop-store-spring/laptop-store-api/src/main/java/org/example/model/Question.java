@@ -27,9 +27,6 @@ public class Question {
     @ToString.Exclude
     private User user;
 
-    @Formula("(SELECT u.name FROM user u WHERE u.id = user_id)")
-    private String userFullName;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "laptop_id")
     private Laptop laptop;
@@ -38,12 +35,16 @@ public class Question {
     private String question;
 
     @Column(name = "comment_date")
-    private LocalDateTime commentDate;
+    private LocalDateTime createdAt;
 
     @Column(name = "approve_status")
-    private boolean approveStatus;
+    private Boolean approveStatus;
 
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.TRUE)
     private List<QuestionReply> replies;
+
+    public String getAuthorName() {
+        return user.getName();
+    }
 }

@@ -15,10 +15,10 @@ public class QuestionDTO implements Serializable {
     @JsonProperty("question")
     private String question;
 
-    @JsonProperty("comment_date")
-    @JsonFormat(pattern = "HH:mm dd/MM/yyyy")
-    private LocalDateTime commentDate;
+    @JsonProperty("author_name")
+    private String authorName;
 
-    @JsonProperty("user")
-    private String userFullName;
+    @JsonProperty("created_at")
+    @JsonFormat(pattern = "HH:mm dd/MM/yyyy")
+    private LocalDateTime createdAt;
 }

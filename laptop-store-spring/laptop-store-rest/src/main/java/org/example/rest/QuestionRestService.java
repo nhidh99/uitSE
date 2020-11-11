@@ -5,6 +5,7 @@ import org.example.constant.SuccessMessageConstants;
 import org.example.dto.comment.QuestionDTO;
 import org.example.input.QuestionInput;
 import org.example.service.api.QuestionService;
+import org.example.type.FeedbackStatus;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,21 @@ public class QuestionRestService {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "product_id")
     public ResponseEntity<?> getQuestionByProductId(@RequestParam("product_id") Integer productId,
-                                                    @RequestParam("page") Integer page) {
+                                                    @RequestParam(value = "page", defaultValue = "1") Integer page) {
         Pair<List<QuestionDTO>, Long> questionsAndCount = questionService.findByProductId(productId, page);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HeaderConstants.TOTAL_COUNT, questionsAndCount.getSecond().toString())
+                .body(questionsAndCount.getFirst());
+    }
+
+    @PreAuthorize("hasAuthority(T(org.example.type.RoleType).ADMIN)")
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "status")
+    public ResponseEntity<?> getQuestionByStatus(
+            @RequestParam(value = "status", defaultValue = "PENDING") FeedbackStatus status,
+            @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        Pair<List<QuestionDTO>, Long> questionsAndCount = questionService.findByStatus(status, page);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, questionsAndCount.getSecond().toString())
                 .body(questionsAndCount.getFirst());

@@ -12,6 +12,7 @@ import org.example.model.Laptop;
 import org.example.model.Question;
 import org.example.model.User;
 import org.example.service.api.QuestionService;
+import org.example.type.FeedbackStatus;
 import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
@@ -57,14 +58,14 @@ public class QuestionServiceImpl implements QuestionService {
             Question question = Question.builder()
                     .laptop(laptop).user(user)
                     .question(questionInput.getQuestion())
-                    .commentDate(DateUtil.getCurrentLocalDateTime())
-                    .approveStatus(false).build();
+                    .createdAt(DateUtil.getCurrentLocalDateTime())
+                    .approveStatus(null).build();
             questionRepository.save(question);
         });
     }
 
     @Override
-    @Cacheable(value = CacheConstants.QUESTIONS, key="'laptop-id:' + #productId + ':page:' + #page")
+    @Cacheable(value = CacheConstants.QUESTIONS, key = "'laptop-id:' + #productId + ':page:' + #page")
     public Pair<List<QuestionDTO>, Long> findByProductId(Integer productId, Integer page) {
         Pageable pageable = PageRequest.of(page - 1,
                 PaginateConstants.QUESTION_PER_USER_PAGE,
@@ -72,6 +73,19 @@ public class QuestionServiceImpl implements QuestionService {
         return txTemplate.execute((status) -> {
             List<Question> questions = questionRepository.findByApproveStatusTrueAndLaptopId(productId, pageable);
             long questionCount = questionRepository.countByApproveStatusTrueAndLaptopId(productId);
+            return Pair.of(ModelMapperUtil.mapList(questions, QuestionDTO.class), questionCount);
+        });
+    }
+
+    @Override
+    public Pair<List<QuestionDTO>, Long> findByStatus(FeedbackStatus status, int page) {
+        Pageable pageable = PageRequest.of(page - 1,
+                PaginateConstants.SIZE_PER_ADMIN_PAGE,
+                Sort.by("id").descending());
+        return txTemplate.execute((txStatus) -> {
+            Boolean approveStatus = status.getApproveStatus();
+            List<Question> questions = questionRepository.findByApproveStatusIs(approveStatus, pageable);
+            long questionCount = questionRepository.countByApproveStatusIs(approveStatus);
             return Pair.of(ModelMapperUtil.mapList(questions, QuestionDTO.class), questionCount);
         });
     }
