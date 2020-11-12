@@ -62,7 +62,7 @@ const OrderPage = () => {
     return orders ? (
         <>
             {orderCount === 0 ? (
-                <EmptyBlock icon={<FaBoxes />} title="Danh sách đơn hàng trống" borderless />
+                <EmptyBlock icon={<FaBoxes />} title="Danh sách đơn hàng trống" paddingless />
             ) : (
                 <>
                     {orders.map((order) => (

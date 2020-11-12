@@ -36,7 +36,7 @@ const WishListPage = () => {
                 <EmptyBlock
                     icon={<FaBoxOpen style={{ marginBottom: "-5px" }} />}
                     title="Danh sách xem sau trống"
-                    borderless
+                    paddingless
                 />
             )}
         </SC.Container>

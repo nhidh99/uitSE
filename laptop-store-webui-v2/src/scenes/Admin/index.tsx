@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { FaBoxes, FaComment, FaGift, FaLaptop, FaQuestionCircle, FaStar } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router";
-import Loader from "../../components/Loader";
 import MenuBar from "../../components/MenuBar";
 import { RootState } from "../../services/redux/rootReducer";
 import MenuItemProps from "../../values/props/MenuItemProps";
@@ -10,18 +9,17 @@ import OrderPage from "./scenes/OrderPage";
 import ProductPage from "./scenes/ProductPage";
 import PromotionPage from "./scenes/PromotionPage";
 import { SC } from "./styles";
-import queryString from "query-string";
 import QuestionPage from "./scenes/QuestionPage";
 
 const Admin = () => {
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
 
     const items = useMemo<MenuItemProps[]>(() => {
-        const initialSearch = queryString.stringify({
+        const initialSearch = {
             page: 1,
             order: "desc",
             target: "id",
-        });
+        };
         return [
             {
                 icon: FaLaptop,
@@ -39,7 +37,7 @@ const Admin = () => {
                 icon: FaBoxes,
                 link: "/admin/orders",
                 title: "Đơn hàng",
-                search: initialSearch,
+                search: { ...initialSearch, status: "pending" },
             },
             {
                 icon: FaQuestionCircle,
@@ -70,7 +68,6 @@ const Admin = () => {
 
             <SC.RightContainer>
                 <SC.LoaderContainer>
-                    <Loader loading={loaderStatus.isLoading} loadOnce={loaderStatus.isFetching} />
                     <SC.ContentContainer
                         style={{
                             display: loaderStatus.isFetching ? "none" : "inherit",

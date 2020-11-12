@@ -49,7 +49,7 @@ const OrderTable = () => {
             </>
         ) : (
             <SSC.EmptyContainer>
-                <EmptyBlock icon={<FaBoxes />} title={"Không có đơn hàng"} borderless />
+                <EmptyBlock icon={<FaBoxes />} title={"Không có đơn hàng"} paddingless />
             </SSC.EmptyContainer>
         )
     ) : null;

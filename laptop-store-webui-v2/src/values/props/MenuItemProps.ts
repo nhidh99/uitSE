@@ -4,7 +4,7 @@ type MenuItemProps = {
     icon: IconType;
     title: string;
     link: string;
-    search?: string;
+    search?: object;
 };
 
 export default MenuItemProps;

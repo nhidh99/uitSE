@@ -41,7 +41,7 @@ const AdminTable = css`
         input[type="checkbox"] {
             cursor: pointer;
         }
-        padding: 10px;
+        padding: 15px 10px;
     }
 
     input[type="checkbox"] {
@@ -135,7 +135,6 @@ const Select = styled.select`
 const EmptyContainer = styled.div`
     background-color: white;
     padding: 30px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
 export const SS = { AdminTable };

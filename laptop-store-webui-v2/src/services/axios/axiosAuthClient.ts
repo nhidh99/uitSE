@@ -24,6 +24,7 @@ axiosAuthClient.interceptors.request.use(async (config) => {
 
 axiosAuthClient.interceptors.response.use(
     async (response) => {
+        await new Promise((r) => setTimeout(r, 300));
         return response;
     },
     async (error) => {

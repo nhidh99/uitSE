@@ -3,6 +3,7 @@ import { FaDoorOpen } from "react-icons/fa";
 import { removeCookie } from "../../services/helper/cookie";
 import MenuItemProps from "../../values/props/MenuItemProps";
 import { SC } from "./styles";
+import queryString from "query-string";
 
 type MenuBarProps = {
     items: MenuItemProps[];
@@ -14,7 +15,15 @@ const MenuBar = ({ items }: MenuBarProps) => (
         <ul>
             {items.map((item) => (
                 <li>
-                    <SC.NavItem to={{ pathname: item.link, search: item?.search ?? "" }}>
+                    <SC.NavItem
+                        to={{
+                            pathname: item.link,
+                            search: queryString.stringify(item?.search as {}, {
+                                skipNull: true,
+                                skipEmptyString: true,
+                            }),
+                        }}
+                    >
                         {createElement(item.icon)}
                         {item.title}
                     </SC.NavItem>

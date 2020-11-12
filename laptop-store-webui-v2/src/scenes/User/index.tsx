@@ -124,9 +124,9 @@ const User = () => {
             <SC.RightContainer>
                 <SC.TitleContainer>{title}</SC.TitleContainer>
                 {isFetching ? (
-                    <SC.ContentContainer>
+                    <SC.LoaderContainer>
                         <EmptyBlock icon={<FaTruckLoading />} title="Đang tải thông tin" />
-                    </SC.ContentContainer>
+                    </SC.LoaderContainer>
                 ) : null}
                 <SC.ContentContainer
                     className={`${isLoading ? (isFetching ? "fetching" : "loading") : undefined}`}

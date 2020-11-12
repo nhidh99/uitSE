@@ -25,7 +25,7 @@ const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps
         history.push({ pathname: location.pathname, search: queryString.stringify(params) });
     };
 
-    return (
+    return count === 0 ? null : (
         <SC.PaginateContainer className={isLoading ? "loading" : ""}>
             <ReactPaginate
                 pageCount={Math.floor((count + sizePerPage - 1) / sizePerPage)}

@@ -4,11 +4,11 @@ import { SC } from "./styles";
 type EmptyBlockProps = {
     icon: ReactNode;
     title: string;
-    borderless?: boolean;
+    paddingless?: boolean;
 };
 
-const EmptyBlock = ({ icon, title }: EmptyBlockProps) => (
-    <SC.OuterContainer>
+const EmptyBlock = ({ icon, title, paddingless }: EmptyBlockProps) => (
+    <SC.OuterContainer style={{ padding: paddingless ? "0" : undefined }}>
         <SC.InnerContainer>
             <SC.IconContainer>{icon}</SC.IconContainer>
             <div>{title}</div>

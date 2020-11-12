@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AxiosResponse } from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import queryString from "query-string";
 import { useDispatch } from "react-redux";
 import { fireLoading, skipLoading } from "../redux/slices/loaderStatusSlice";
@@ -20,6 +20,7 @@ type FetchApiParams = {
 
 function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosResponse<T[]>>) {
     const location = useLocation();
+    const history = useHistory();
     const dispatch = useDispatch();
 
     const initialState = useMemo<PageFetchState<T>>(
@@ -40,10 +41,25 @@ function useTableFetch<T>(fetchApi: (params: FetchApiParams) => Promise<AxiosRes
 
     const setTarget = (target: string) => {
         if (target === prevTarget.current) {
-            setParams((prev) => ({ ...prev, order: order === "desc" || !order ? "asc" : "desc" }));
+            const params = {
+                ...queryString.parse(location.search),
+                order: order === "desc" || !order ? "asc" : "desc",
+            };
+            history.push({
+                pathname: location.pathname,
+                search: queryString.stringify(params),
+            });
         } else {
             prevTarget.current = target;
-            setParams((prev) => ({ ...prev, target: target, order: "asc" }));
+            const params = {
+                ...queryString.parse(location.search),
+                target: target,
+                order: "asc",
+            };
+            history.push({
+                pathname: location.pathname,
+                search: queryString.stringify(params),
+            });
         }
     };
 

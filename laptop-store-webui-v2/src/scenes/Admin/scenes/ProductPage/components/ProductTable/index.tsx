@@ -6,7 +6,6 @@ import Paginate from "../../../../../../components/Paginate";
 import laptopApi from "../../../../../../services/api/laptopApi";
 import useTableFetch from "../../../../../../services/hooks/useTableFetch";
 import ProductSummaryModel from "../../../../../../values/models/ProductSummaryModel";
-import { SSC } from "../../../../share.styles";
 import SelectAll from "../../../components/SelectAll";
 import SelectItem from "../../../components/SelectItem";
 import { SC } from "./styles";
@@ -68,9 +67,7 @@ const ProductTable = () => {
                 <Paginate count={count} initialPage={page || 1} sizePerPage={10} />
             </>
         ) : (
-            <SSC.EmptyContainer>
-                <EmptyBlock icon={<FaLaptop />} title="Không tìm thấy sản phẩm nào" borderless />
-            </SSC.EmptyContainer>
+            <EmptyBlock icon={<FaLaptop />} title="Không tìm thấy sản phẩm nào" paddingless />
         )
     ) : (
         <Loader loading={true} loadOnce={true} />

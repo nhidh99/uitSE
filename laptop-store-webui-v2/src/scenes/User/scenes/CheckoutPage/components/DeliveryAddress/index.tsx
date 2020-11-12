@@ -14,14 +14,13 @@ const DeliveryAddress = ({ addresses }: DeliveryAddressProps) => (
             <EmptyBlock
                 icon={<FaAddressBook />}
                 title="Bạn cần tối thiểu 01 địa chỉ để tiến hành đặt hàng"
-                borderless
+                paddingless
             />
         ) : (
             <SC.Select id="address">
                 {addresses.map((address) => (
                     <option value={address.id}>
-                        {address.receiver_name} - {address.receiver_phone} -{" "}
-                        {address.location}
+                        {address.receiver_name} - {address.receiver_phone} - {address.location}
                     </option>
                 ))}
             </SC.Select>

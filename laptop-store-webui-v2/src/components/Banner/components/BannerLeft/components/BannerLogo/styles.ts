@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Label = styled.label`
     margin-bottom: 0;
-    margin-left: 10px;
+    margin-left: 8px;
     font-size: 16px;
     font-weight: bold;
     color: white;
