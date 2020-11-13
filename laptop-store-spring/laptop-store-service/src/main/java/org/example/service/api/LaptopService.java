@@ -32,4 +32,6 @@ public interface LaptopService {
     Pair<List<LaptopOverviewDTO>, Long> findByFilter(LaptopFilterInput filter);
 
     Pair<List<LaptopSummaryDTO>, Long> findBySearch(SearchInput search);
+
+    Pair<List<LaptopSpecDTO>, Long> findAllLaptopSpec();
 }

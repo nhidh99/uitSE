@@ -5,7 +5,7 @@ import OrderTable from "./components/OrderTable";
 
 const QuestionPage = () => (
     <>
-        <SSC.SectionTitle>Danh sách đơn hàng</SSC.SectionTitle>
+        <SSC.SectionTitle>Danh sách câu hỏi</SSC.SectionTitle>
         <SSC.SearchContainer>
             <OrderSearch />
         </SSC.SearchContainer>

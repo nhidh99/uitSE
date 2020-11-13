@@ -125,4 +125,13 @@ public class LaptopRestService {
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping(value = "/specs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAllLaptopSpecs() {
+        Pair<List<LaptopSpecDTO>, Long> specsAndCount = laptopService.findAllLaptopSpec();
+        return ResponseEntity.ok()
+                .header(HeaderConstants.TOTAL_COUNT, specsAndCount.getSecond().toString())
+                .body(specsAndCount.getFirst());
+    }
 }

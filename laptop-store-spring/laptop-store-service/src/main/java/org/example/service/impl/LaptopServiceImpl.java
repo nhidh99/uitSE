@@ -33,6 +33,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class LaptopServiceImpl implements LaptopService {
@@ -216,6 +217,17 @@ public class LaptopServiceImpl implements LaptopService {
                 laptopCount = laptopRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
             }
             return Pair.of(ModelMapperUtil.mapList(laptops, LaptopSummaryDTO.class), laptopCount);
+        });
+    }
+
+    @Override
+    @Cacheable(value = "laptop-specs", key = "'all'")
+    public Pair<List<LaptopSpecDTO>, Long> findAllLaptopSpec() {
+        return txTemplate.execute((status) -> {
+            List<Laptop>  laptops = laptopRepository.findAll();
+            long laptopCount = laptopRepository.countByRecordStatusTrue();
+            List<LaptopSpecDTO> specs = laptops.stream().map(this::buildSpecDTOFromLaptop).collect(Collectors.toList());
+            return Pair.of(specs, laptopCount);
         });
     }
 }

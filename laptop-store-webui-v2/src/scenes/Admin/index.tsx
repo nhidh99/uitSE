@@ -43,7 +43,7 @@ const Admin = () => {
                 icon: FaQuestionCircle,
                 link: "/admin/questions",
                 title: "Câu hỏi",
-                search: initialSearch,
+                search: { ...initialSearch, status: "pending" },
             },
             {
                 icon: FaStar,

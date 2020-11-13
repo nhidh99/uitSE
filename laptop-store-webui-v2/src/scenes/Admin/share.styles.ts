@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 const AdminTable = css`
     width: 100%;
     background-color: white;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
     border-collapse: collapse;
     margin-bottom: 15px;
 
