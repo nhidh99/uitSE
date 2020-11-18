@@ -7,6 +7,7 @@ type ProductDetailModel = {
     suggestions: ProductOverviewModel[];
     image_ids: number[];
     spec: ProductSpecModel;
+    rating_info: number[];
 };
 
 export default ProductDetailModel;

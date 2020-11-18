@@ -3,10 +3,7 @@ package org.example.service.impl;
 import org.example.constant.CacheConstants;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.PaginateConstants;
-import org.example.dao.LaptopDetailImageRepository;
-import org.example.dao.LaptopImageRepository;
-import org.example.dao.LaptopRepository;
-import org.example.dao.PromotionRepository;
+import org.example.dao.*;
 import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
@@ -42,6 +39,7 @@ public class LaptopServiceImpl implements LaptopService {
     private final LaptopImageRepository laptopImageRepository;
     private final LaptopDetailImageRepository laptopDetailImageRepository;
     private final PromotionRepository promotionRepository;
+    private final RatingRepository ratingRepository;
     private final TransactionTemplate txTemplate;
 
     @Autowired
@@ -49,11 +47,13 @@ public class LaptopServiceImpl implements LaptopService {
                              LaptopImageRepository laptopImageRepository,
                              LaptopDetailImageRepository laptopDetailImageRepository,
                              PromotionRepository promotionRepository,
+                             RatingRepository ratingRepository,
                              PlatformTransactionManager txManager) {
         this.laptopRepository = laptopRepository;
         this.laptopImageRepository = laptopImageRepository;
         this.laptopDetailImageRepository = laptopDetailImageRepository;
         this.promotionRepository = promotionRepository;
+        this.ratingRepository = ratingRepository;
         this.txTemplate = new TransactionTemplate(txManager);
     }
 
@@ -135,6 +135,7 @@ public class LaptopServiceImpl implements LaptopService {
             List<Laptop> suggestionLaptops = laptopRepository.findByRecordStatusTrueAndIdIn(suggestionIds);
             List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndLaptopsId(laptopId);
             List<Integer> imageIds = laptopDetailImageRepository.findIdsByLaptopId(laptopId);
+            int[] ratingInfo = ratingRepository.findRatingPointCountsByLaptopId(laptopId);
 
             LaptopSpecDTO laptopSpecDTO = buildSpecDTOFromLaptop(laptop);
             List<PromotionDTO> promotionDTOS = ModelMapperUtil.mapList(promotions, PromotionDTO.class);
@@ -142,7 +143,7 @@ public class LaptopServiceImpl implements LaptopService {
 
             return LaptopDetailDTO.builder().spec(laptopSpecDTO)
                     .promotions(promotionDTOS).suggestions(suggestionDTOs)
-                    .imageIds(imageIds).build();
+                    .imageIds(imageIds).ratingInfo(ratingInfo).build();
         });
     }
 

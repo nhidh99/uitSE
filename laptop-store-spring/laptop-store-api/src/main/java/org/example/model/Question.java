@@ -1,6 +1,7 @@
 package org.example.model;
 
 import lombok.*;
+import org.example.util.Pair;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "comment")
+@Table(name = "question")
 @Builder
 public class Question {
     @Id
@@ -34,7 +35,7 @@ public class Question {
     @Column(name = "question")
     private String question;
 
-    @Column(name = "comment_date")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "approve_status")
@@ -47,4 +48,6 @@ public class Question {
     public String getAuthorName() {
         return user.getName();
     }
+
+    public String getProductName() { return laptop.getName(); }
 }

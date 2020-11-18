@@ -11,7 +11,7 @@ type RatingInfoProps = {
 
 const RatingBlock = () => (
     <SC.Container>
-        <RatingInfo ratings={[]} />
+        <RatingInfo />
         <RatingBox />
     </SC.Container>
 );

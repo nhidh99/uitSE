@@ -2,7 +2,8 @@ package org.example.rest;
 
 import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
-import org.example.dto.comment.QuestionDTO;
+import org.example.dto.question.QuestionDTO;
+import org.example.dto.question.QuestionSummaryDTO;
 import org.example.input.QuestionInput;
 import org.example.service.api.QuestionService;
 import org.example.type.FeedbackStatus;
@@ -54,7 +55,7 @@ public class QuestionRestService {
     public ResponseEntity<?> getQuestionByStatus(
             @RequestParam(value = "status", defaultValue = "PENDING") FeedbackStatus status,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        Pair<List<QuestionDTO>, Long> questionsAndCount = questionService.findByStatus(status, page);
+        Pair<List<QuestionSummaryDTO>, Long> questionsAndCount = questionService.findByStatus(status, page);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, questionsAndCount.getSecond().toString())
                 .body(questionsAndCount.getFirst());

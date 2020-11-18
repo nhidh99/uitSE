@@ -1,14 +1,12 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -27,25 +25,19 @@ public class Rating {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Formula("(SELECT u.name FROM user u WHERE u.id = user_id)")
-    private String userFullName;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "laptop_id")
     @ToString.Exclude
     private Laptop laptop;
 
-    @Column(name = "rating")
-    private Integer rating;
+    @Column(name = "point")
+    private Integer point;
 
-    @Column(name = "comment_title")
-    private String commentTitle;
+    @Column(name = "detail")
+    private String detail;
 
-    @Column(name = "comment_detail")
-    private String commentDetail;
-
-    @Column(name = "rating_date")
-    private LocalDate ratingDate;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "approve_status")
     private boolean approveStatus;
@@ -53,4 +45,12 @@ public class Rating {
     @OneToMany(mappedBy = "rating", orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.TRUE)
     private List<RatingReply> replies;
+
+    public String getAuthorName() {
+        return user.getName();
+    }
+
+    public String getProductName() {
+        return laptop.getName();
+    }
 }

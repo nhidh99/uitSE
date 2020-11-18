@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
-const ReplySwitch = styled.label`
-    display: block;
+const ReplySwitch = styled.div`
+    display: inline-block;
+    user-select: none;
     color: #007bff;
     cursor: pointer;
     font-size: 13px;

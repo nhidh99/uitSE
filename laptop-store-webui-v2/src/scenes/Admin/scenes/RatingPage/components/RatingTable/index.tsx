@@ -1,25 +1,29 @@
 import React, { memo, useMemo } from "react";
-import { FaBoxes, FaCheckCircle, FaSync, FaTimes, FaTruckLoading } from "react-icons/fa";
+import { FaCheckCircle, FaQuestionCircle, FaSync, FaTimes, FaTruckLoading } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import EmptyBlock from "../../../../../../components/EmptyBlock";
 import Paginate from "../../../../../../components/Paginate";
-import questionApi from "../../../../../../services/api/questionApi";
+import ratingApi from "../../../../../../services/api/ratingApi";
 import useTableFetch from "../../../../../../services/hooks/useTableFetch";
 import { RootState } from "../../../../../../services/redux/rootReducer";
-import QuestionModel from "../../../../../../values/models/QuestionModel";
+import RatingSummaryModel from "../../../../../../values/models/RatingSummaryModel";
 import TabHeader from "../../../OrderPage/components/TabHeader";
 import { SC } from "./styles";
 
-const OrderTable = () => {
-    const { list, count, page, setTarget } = useTableFetch<QuestionModel>(questionApi.getByStatus);
+const RatingTable = () => {
+    const { list, count, page, setTarget } = useTableFetch<RatingSummaryModel>(
+        ratingApi.getByStatus
+    );
     const loading = useSelector((state: RootState) => state.loaderStatus.isLoading);
 
     const headers = useMemo(
         () => [
-            { name: "Mã CH", target: "id" },
+            { name: "Mã ĐG", target: "id" },
+            { name: "Thời gian", target: "created_at" },
             { name: "Người gửi", target: "author_name" },
+            { name: "Sản phẩm", target: "product_name" },
+            { name: "Điểm", target: "point" },
             { name: "Nội dung", target: undefined },
-            { name: "Thời gian gửi", target: "created_at" },
         ],
         []
     );
@@ -67,17 +71,21 @@ const OrderTable = () => {
                                 ))}
                             </tr>
 
-                            {list.map((question) => (
+                            {list.map((rating) => (
                                 <tr>
-                                    <td className="id">{question.id}</td>
-                                    <td className="name">{question.created_at}</td>
-                                    <td className="date">{question.author_name}</td>
-                                    <td className="phone">{question.question}</td>
+                                    <td className="id">{rating.id}</td>
+                                    <td className="date">{rating.created_at}</td>
+                                    <td className="name">{rating.author_name}</td>
+                                    <td className="product-name">{rating.product_name}</td>
+                                    <td className="point">{rating.point}</td>
+                                    <td className="rating">
+                                        <div>{rating.detail}</div>
+                                    </td>
                                 </tr>
                             ))}
                         </SC.Table>
                     ) : (
-                        <EmptyBlock icon={<FaBoxes />} title={"Không có đơn hàng"} />
+                        <EmptyBlock icon={<FaQuestionCircle />} title={"Không có đánh giá"} />
                     )
                 ) : (
                     <EmptyBlock icon={<FaTruckLoading />} title="Đang tải thông tin" />
@@ -88,4 +96,4 @@ const OrderTable = () => {
     );
 };
 
-export default memo(OrderTable);
+export default memo(RatingTable);

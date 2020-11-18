@@ -1,15 +1,13 @@
 import React, { memo } from "react";
 import { SSC } from "../../share.styles";
-import OrderSearch from "./components/OrderSearch";
-import OrderTable from "./components/OrderTable";
+import SearchForm from "../components/SearchForm";
+import QuestionTable from "./components/QuestionTable";
 
 const QuestionPage = () => (
     <>
         <SSC.SectionTitle>Danh sách câu hỏi</SSC.SectionTitle>
-        <SSC.SearchContainer>
-            <OrderSearch />
-        </SSC.SearchContainer>
-        <OrderTable />
+        <SearchForm placeholder="Tìm kiếm theo mã câu hỏi hoặc người gửi" />
+        <QuestionTable />
     </>
 );
 

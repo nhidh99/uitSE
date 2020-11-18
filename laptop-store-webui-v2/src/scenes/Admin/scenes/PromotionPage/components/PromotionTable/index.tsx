@@ -64,11 +64,7 @@ const PromotionTable = () => {
                             ))}
                         </SC.Table>
                     ) : (
-                        <EmptyBlock
-                            icon={<FaGift />}
-                            title="Không tìm thấy khuyến mãi"
-                            paddingless
-                        />
+                        <EmptyBlock icon={<FaGift />} title="Không tìm thấy khuyến mãi" />
                     )
                 ) : (
                     <EmptyBlock icon={<FaTruckLoading />} title="Đang tải thông tin" />

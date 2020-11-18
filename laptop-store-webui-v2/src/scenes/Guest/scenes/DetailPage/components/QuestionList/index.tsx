@@ -8,6 +8,8 @@ import questionApi from "../../../../../../services/api/questionApi";
 import { useDispatch } from "react-redux";
 import { hideQuestionList } from "../../../../../../services/redux/slices/productSlice";
 import { useParams } from "react-router";
+import EmptyBlock from "../../../../../../components/EmptyBlock";
+import { FaTruckLoading } from "react-icons/fa";
 
 type QuestionListState = {
     loading: boolean;
@@ -60,7 +62,9 @@ const QuestionList = () => {
         setState((prev) => ({ ...prev, page: e.selected + 1 }));
     };
 
-    return count === 0 ? null : (
+    return count === 0 ? (
+        <EmptyBlock icon={<FaTruckLoading />} title="Đang tải câu hỏi" />
+    ) : (
         <>
             <SC.Container className={loading ? "loading" : undefined}>
                 {questions.map((question) => (

@@ -5,5 +5,5 @@ public enum LaptopTagType {
     TECHNICAL,
     LIGHTWEIGHT,
     GAMING,
-    LUXURY;
+    LUXURY
 }

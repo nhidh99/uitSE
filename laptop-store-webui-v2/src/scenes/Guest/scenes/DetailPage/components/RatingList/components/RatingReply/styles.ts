@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
-const ReplySwitch = styled.label`
-    display: block;
+const ReplySwitch = styled.div`
+    display: inline-block;
     color: #007bff;
     margin-bottom: 10px;
     cursor: pointer;
+    user-select: none;
 
     :hover {
         text-decoration: underline;

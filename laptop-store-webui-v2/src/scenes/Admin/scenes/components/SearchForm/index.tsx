@@ -3,7 +3,7 @@ import React, { memo, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
 import { useHistory, useLocation } from "react-router";
-import { SSC } from "../../../../share.styles";
+import { SSC } from "../../../share.styles";
 import { SC } from "./styles";
 import queryString from "query-string";
 
@@ -11,7 +11,11 @@ type FormValue = {
     query: string;
 };
 
-const OrderSearch = () => {
+type SearchFormProps = {
+    placeholder: string;
+};
+
+const SearchForm = ({ placeholder }: SearchFormProps) => {
     const location = useLocation();
     const history = useHistory();
 
@@ -28,7 +32,6 @@ const OrderSearch = () => {
             query: query,
             page: 1,
         };
-        console.log(params);
         history.push({
             pathname: location.pathname,
             search: queryString.stringify(params, { skipEmptyString: true }),
@@ -37,7 +40,7 @@ const OrderSearch = () => {
 
     return (
         <SC.Form onSubmit={handleSubmit(submit)}>
-            <SSC.SearchInput ref={register} name="query" placeholder="Tìm kiếm theo mã hoặc tên" />
+            <SSC.SearchInput ref={register} name="query" placeholder={placeholder} />
             <SSC.SearchButton type="submit">
                 <FaSearch style={{ marginBottom: "-2px", marginRight: "5px" }} />
                 Tìm kiếm
@@ -46,4 +49,4 @@ const OrderSearch = () => {
     );
 };
 
-export default memo(OrderSearch);
+export default memo(SearchForm);

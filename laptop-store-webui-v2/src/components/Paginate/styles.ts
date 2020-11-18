@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const PaginateContainer = styled.div`
-    cursor: pointer;
     position: relative;
     overflow-y: auto;
     ul {
+        cursor: pointer;
         user-select: none;
         margin: 0;
         padding: 0;

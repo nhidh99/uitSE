@@ -7,6 +7,7 @@ import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -41,7 +42,6 @@ public class RatingReply {
     @JsonProperty("reply")
     private String reply;
 
-    @Column(name = "reply_date")
-    @JsonProperty("reply_date")
-    private LocalDate replyDate;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

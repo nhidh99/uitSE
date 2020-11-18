@@ -15,6 +15,10 @@ import { setWishList } from "./services/redux/slices/wishListSlice";
 import GlobalModal from "./components/GlobalModal";
 
 const App = () => {
+    useEffect(() => {
+        window.history.scrollRestoration = "manual";
+    }, []);
+
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {

@@ -5,14 +5,14 @@ import lombok.*;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "comment_reply")
+@Table(name = "question_reply")
 public class QuestionReply {
     @Id
     @Column(name = "id")
@@ -20,7 +20,7 @@ public class QuestionReply {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "question_id")
     @ToString.Exclude
     private Question question;
 
@@ -36,6 +36,6 @@ public class QuestionReply {
     @Column(name = "reply")
     private String reply;
 
-    @Column(name = "reply_date")
-    private LocalDate replyDate;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

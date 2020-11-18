@@ -9,7 +9,7 @@ const OuterContainer = styled.div`
 
 const LeftContainer = styled.div`
     flex: 1;
-    padding: 20px 10px;
+    padding: 15px 10px;
     border-right: 1px dashed #ddd;
 
     label {
@@ -24,7 +24,7 @@ const LeftContainer = styled.div`
 
 const RightContainer = styled.div`
     flex: 3;
-    padding: 20px;
+    padding: 15px;
 `;
 
 const UserFullName = styled.label`
@@ -34,10 +34,10 @@ const UserFullName = styled.label`
 
 const RatingStar = styled.label`
     color: darkorange;
-    font-size: 20px;
+    font-size: 18px;
     svg {
         margin-bottom: -2px;
-        margin-left: 5px;
+        margin-left: 4px;
     }
 `;
 
@@ -45,9 +45,10 @@ const RatingDate = styled.label`
     display: block;
 `;
 
-const RatingTitle = styled.label``;
-
-const RatingDetail = styled.p``;
+const RatingDetail = styled.div`
+    margin-bottom: 5px;
+    line-height: 1.5em;
+`;
 
 export const SC = {
     OuterContainer,
@@ -56,6 +57,5 @@ export const SC = {
     UserFullName,
     RatingStar,
     RatingDate,
-    RatingTitle,
     RatingDetail,
 };

@@ -21,6 +21,7 @@ const Paginate = ({ count, initialPage, sizePerPage, pageChange }: PaginateProps
     const isLoading = useSelector((state: RootState) => state.loaderStatus.isLoading);
 
     const defaultPageChange = (e: { selected: number }) => {
+        window.scroll({ top: 0, behavior: "smooth" });
         const params = { ...queryString.parse(location.search), page: e.selected + 1 };
         history.push({ pathname: location.pathname, search: queryString.stringify(params) });
     };

@@ -6,5 +6,5 @@ public enum CPUType {
     INTEL_CORE_I3,
     INTEL_CELERON,
     INTEL_PENTIUM,
-    AMD;
+    AMD
 }

@@ -13,10 +13,10 @@ const QuestionReply = ({ commentId }: QuestionReplyProps) => {
 
     return (
         <>
-            <SC.ReplySwitch onClick={openReply}>Gửi trả lời</SC.ReplySwitch>
+            <SC.ReplySwitch onClick={openReply}>Trả lời</SC.ReplySwitch>
             {isOpen ? (
                 <>
-                    <SC.ReplyBox rows={5} placeholder="Gửi câu trả lời của bạn"/>
+                    <SC.ReplyBox rows={5} placeholder="Gửi câu trả lời của bạn" />
                     <SC.ReplySubmit>
                         <FaPaperPlane />
                         Gửi trả lời

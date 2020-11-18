@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo } from "react";
+import SearchForm from "../components/SearchForm";
 import ProductHeader from "./components/ProductHeader";
-import ProductSearch from "./components/ProductSearch";
 import ProductTable from "./components/ProductTable";
 
 const ProductPage = () => (
     <>
         <ProductHeader />
-        <ProductSearch />
+        <SearchForm placeholder="Tìm kiếm theo mã hoặc tên sản phẩm" />
         <ProductTable />
     </>
 );

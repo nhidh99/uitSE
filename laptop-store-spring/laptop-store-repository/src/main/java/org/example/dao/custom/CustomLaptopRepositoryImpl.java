@@ -8,11 +8,10 @@ import org.example.type.FilterTargetType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
 
-public class FilterLaptopRepositoryImpl implements FilterLaptopRepository {
+public class CustomLaptopRepositoryImpl implements CustomLaptopRepository {
 
     @PersistenceContext
     private EntityManager em;

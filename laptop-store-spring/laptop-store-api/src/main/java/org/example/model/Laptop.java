@@ -123,7 +123,7 @@ public class Laptop {
     private List<Promotion> promotions;
 
     public String getRamInfo() {
-        return ram.getSize().toString().concat("GB");
+        return new StringBuilder(ram.getSize()).append("GB").toString();
     }
 
     public String getHardDriveInfo() {

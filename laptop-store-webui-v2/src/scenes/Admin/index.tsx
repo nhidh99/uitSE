@@ -10,6 +10,7 @@ import ProductPage from "./scenes/ProductPage";
 import PromotionPage from "./scenes/PromotionPage";
 import { SC } from "./styles";
 import QuestionPage from "./scenes/QuestionPage";
+import RatingPage from "./scenes/RatingPage";
 
 const Admin = () => {
     const loaderStatus = useSelector((state: RootState) => state.loaderStatus);
@@ -49,7 +50,7 @@ const Admin = () => {
                 icon: FaStar,
                 link: "/admin/ratings",
                 title: "Đánh giá",
-                search: initialSearch,
+                search: { ...initialSearch, status: "pending" },
             },
             {
                 icon: FaComment,
@@ -78,6 +79,7 @@ const Admin = () => {
                             <Route exact path="/admin/promotions" component={PromotionPage} />
                             <Route exact path="/admin/orders" component={OrderPage} />
                             <Route exact path="/admin/questions" component={QuestionPage} />
+                            <Route exact path="/admin/ratings" component={RatingPage} />
                         </Switch>
                     </SC.ContentContainer>
                 </SC.LoaderContainer>

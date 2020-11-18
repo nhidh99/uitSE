@@ -5,5 +5,5 @@ public enum MilestoneType {
     ORDER,
     PROMOTION,
     QUESTION,
-    RATING;
+    RATING
 }

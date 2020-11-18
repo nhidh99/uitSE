@@ -1,4 +1,4 @@
-package org.example.dto.comment;
+package org.example.dto.question;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

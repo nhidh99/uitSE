@@ -1,6 +1,7 @@
 package org.example.service.api;
 
-import org.example.dto.comment.QuestionDTO;
+import org.example.dto.question.QuestionDTO;
+import org.example.dto.question.QuestionSummaryDTO;
 import org.example.input.QuestionInput;
 import org.example.type.FeedbackStatus;
 import org.example.util.Pair;
@@ -12,5 +13,5 @@ public interface QuestionService {
 
     Pair<List<QuestionDTO>, Long> findByProductId(Integer productId, Integer page);
 
-    Pair<List<QuestionDTO>, Long> findByStatus(FeedbackStatus status, int page);
+    Pair<List<QuestionSummaryDTO>, Long> findByStatus(FeedbackStatus status, int page);
 }

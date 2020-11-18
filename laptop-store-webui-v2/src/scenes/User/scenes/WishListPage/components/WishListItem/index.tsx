@@ -1,15 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useCallback } from "react";
 import { FaStar } from "react-icons/fa";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import userApi from "../../../../../../services/api/userApi";
+import { RootState } from "../../../../../../services/redux/rootReducer";
 import { fireLoading } from "../../../../../../services/redux/slices/loaderStatusSlice";
-import { setMessage } from "../../../../../../services/redux/slices/messageSlice";
-import {
-    removeWishListItem,
-    setWishList,
-} from "../../../../../../services/redux/slices/wishListSlice";
+import { removeWishListItem } from "../../../../../../services/redux/slices/wishListSlice";
 import ProductOverviewModel from "../../../../../../values/models/ProductOverviewModel";
 import { SC } from "./styles";
 
@@ -18,23 +15,14 @@ type WishListItemProps = {
 };
 
 const WishListItem = ({ item }: WishListItemProps) => {
-    const store = useStore();
+    const wishList = useSelector((state: RootState) => state.wishList);
     const dispatch = useDispatch();
 
     const removeItem = useCallback(async () => {
-        const tempWishList = store.getState().wishList;
-        try {
-            dispatch(fireLoading());
-            dispatch(removeWishListItem(item.id));
-            const wishList = store.getState().wishList;
-            const listJSON = JSON.stringify(wishList);
-            await userApi.putCurrentUserWishList(listJSON);
-            dispatch(setWishList(wishList));
-        } catch (err) {
-            dispatch(setWishList(tempWishList));
-            const message = `Lỗi: Không thể xoá Laptop ${item.name} khỏi danh sách`;
-            dispatch(setMessage(message));
-        }
+        dispatch(fireLoading());
+        const listJSON = JSON.stringify(wishList.filter((id) => id !== item.id));
+        await userApi.putCurrentUserWishList(listJSON);
+        dispatch(removeWishListItem(item.id));
     }, []);
 
     return (

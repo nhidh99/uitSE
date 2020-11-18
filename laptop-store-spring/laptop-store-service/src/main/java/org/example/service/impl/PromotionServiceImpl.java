@@ -41,7 +41,7 @@ public class PromotionServiceImpl implements PromotionService {
             long promotionCount = promotionRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
             return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
         }
-    };
+    }
 
     private Pageable buildPageableFromSearch(SearchInput search) {
         Sort sort = Sort.by(search.getTarget().toString());

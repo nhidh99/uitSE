@@ -6,5 +6,5 @@ public enum RAMType {
     DDR3L,
     LPDDR3,
     LPDDR4,
-    LPDDR4X;
+    LPDDR4X
 }

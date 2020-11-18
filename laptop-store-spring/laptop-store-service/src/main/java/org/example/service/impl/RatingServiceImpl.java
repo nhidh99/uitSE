@@ -4,8 +4,10 @@ import org.example.constant.CacheConstants;
 import org.example.constant.PaginateConstants;
 import org.example.dao.RatingRepository;
 import org.example.dto.rating.RatingDTO;
+import org.example.dto.rating.RatingSummaryDTO;
 import org.example.model.Rating;
 import org.example.service.api.RatingService;
+import org.example.type.FeedbackStatus;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,18 @@ public class RatingServiceImpl implements RatingService {
             List<Rating> ratings = ratingRepository.findByApproveStatusTrueAndLaptopId(laptopId, pageable);
             long ratingCount = ratingRepository.countByApproveStatusTrueAndLaptopId(laptopId);
             return Pair.of(ModelMapperUtil.mapList(ratings, RatingDTO.class), ratingCount);
+        });
+    }
+
+    @Override
+    public Pair<List<RatingSummaryDTO>, Long> findByStatus(FeedbackStatus status, int page) {
+        Pageable pageable = PageRequest.of(page - 1,
+                PaginateConstants.SIZE_PER_ADMIN_PAGE,
+                Sort.by("id").descending());
+        return txTemplate.execute((txStatus) -> {
+            List<Rating> ratings = ratingRepository.findByApproveStatus(status.getApproveStatus(), pageable);
+            long ratingCount = ratingRepository.countByApproveStatus(status.getApproveStatus());
+            return Pair.of(ModelMapperUtil.mapList(ratings, RatingSummaryDTO.class), ratingCount);
         });
     }
 }

@@ -15,6 +15,7 @@ import {
 import SpecBlock from "./components/SpecBlock";
 import SuggestBlock from "./components/SuggestBlock";
 import QuestionBlock from "./components/QuestionBlock";
+import RatingList from "./components/RatingList";
 
 const DetailPage = () => {
     // @ts-ignore
@@ -25,8 +26,8 @@ const DetailPage = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            dispatch(clearProductDetail());
             window.scroll(0, 0);
+            dispatch(clearProductDetail());
 
             if (isNaN(parseInt(productId))) {
                 history.push("/");
@@ -56,7 +57,10 @@ const DetailPage = () => {
 
             <ContentBlock title="Đánh giá sản phẩm" component={<RatingBlock />} />
 
-            {/* <ContentBlock title="Khách hàng đánh giá" component={<RatingList />} /> */}
+            <ContentBlock
+                title={<span id="ratings-header">Khách hàng đánh giá</span>}
+                component={<RatingList />}
+            />
 
             <ContentBlock title="Hỏi, đáp về sản phẩm" component={<QuestionBlock />} />
 

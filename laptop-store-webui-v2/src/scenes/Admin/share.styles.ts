@@ -8,12 +8,14 @@ const AdminTable = css`
 
     td,
     th {
+        line-height: 1.5em;
         &.select {
             border-right: 1px dashed #ddd;
         }
     }
 
     th {
+        text-align: center;
         user-select: none;
         &.select,
         &.sortable {

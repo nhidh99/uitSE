@@ -6,26 +6,23 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class RatingDTO implements Serializable {
     @JsonProperty("id")
     private Integer id;
 
-    @JsonProperty("rating")
-    private Integer rating;
+    @JsonProperty("point")
+    private Integer point;
 
-    @JsonProperty("comment_title")
-    private String commentTitle;
+    @JsonProperty("detail")
+    private String detail;
 
-    @JsonProperty("comment_detail")
-    private String commentDetail;
+    @JsonProperty("created_at")
+    @JsonFormat(pattern = "HH:mm dd/MM/yyyy")
+    private LocalDateTime createdAt;
 
-    @JsonProperty("rating_date")
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate ratingDate;
-
-    @JsonProperty("user")
-    private String userFullName;
-
+    @JsonProperty("author_name")
+    private String authorName;
 }

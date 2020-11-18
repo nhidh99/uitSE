@@ -3,24 +3,24 @@ import { RootState } from "../../../../../../../../services/redux/rootReducer";
 import { useSelector } from "react-redux";
 import { SC } from "./styles";
 import { FaStar } from "react-icons/fa";
-import RatingModel from "../../../../../../../../values/models/RatingModel";
 
-type RatingInfoProps = {
-    ratings: RatingModel[];
-};
+const RatingInfo = () => {
+    const { ratingAvg, ratingInfo } = useSelector((state: RootState) => ({
+        ratingAvg: state.product?.spec.avg_rating,
+        ratingInfo: state.product?.rating_info,
+    }));
 
-const RatingInfo = ({ ratings }: RatingInfoProps) => {
-    const ratingAvg = useSelector((state: RootState) => state.product?.spec.avg_rating);
+    const ratingCount = ratingInfo?.reduce((a, b) => a + b, 0) ?? 0;
 
     return ratingAvg ? (
         <SC.Container>
             <SC.RatingTitle>Đánh giá trung bình</SC.RatingTitle>
             <SC.RatingAvg>{ratingAvg.toFixed(1)}/5.0</SC.RatingAvg>
-            <SC.RatingCount>({ratings.length} đánh giá)</SC.RatingCount>
+            <SC.RatingCount>({ratingCount} đánh giá)</SC.RatingCount>
             <SC.RatingInfo>
                 {[5, 4, 3, 2, 1].map((star) => {
-                    const count = ratings.filter((r) => r["rating"] === star).length;
-                    const percent = ratings.length === 0 ? 0 : (count / ratings.length) * 100;
+                    const count = ratingInfo?.[5 - star] ?? 0;
+                    const percent = ratingCount === 0 ? 0 : (count / ratingCount) * 100;
                     return (
                         <tr>
                             <td>

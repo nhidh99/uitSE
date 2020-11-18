@@ -42,16 +42,25 @@ const QuestionBlock = () => {
 
     return (
         <SC.Container>
-            <SC.Input
-                id="question"
-                type="text"
-                placeholder="Hãy đặt câu hỏi liên quan đến sản phẩm"
-            />
+            <SC.FormContainer>
+                <SC.Input
+                    id="question"
+                    type="text"
+                    placeholder="Hãy đặt câu hỏi liên quan đến sản phẩm"
+                />
 
-            <SC.Button onClick={postQuestion}>
-                <FaPaperPlane />
-                &nbsp;&nbsp;Gửi câu hỏi
-            </SC.Button>
+                <SC.Button onClick={postQuestion}>
+                    <FaPaperPlane />
+                    &nbsp;&nbsp;Gửi câu hỏi
+                </SC.Button>
+            </SC.FormContainer>
+
+            <b>Một số câu hỏi thường gặp về sản phẩm:</b>
+            <SC.ExampleList>
+                <li>- Chế độ bảo hành cùng cách thức vận chuyển sản phẩm này thế nào?</li>
+                <li>- Kích thước sản phẩm này?</li>
+                <li>- Sản phẩm này có dễ dùng không?</li>
+            </SC.ExampleList>
         </SC.Container>
     );
 };

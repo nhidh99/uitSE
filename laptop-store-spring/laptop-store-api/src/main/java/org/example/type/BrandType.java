@@ -7,5 +7,5 @@ public enum BrandType {
     HP,
     LENOVO,
     MACBOOK,
-    MSI;
+    MSI
 }

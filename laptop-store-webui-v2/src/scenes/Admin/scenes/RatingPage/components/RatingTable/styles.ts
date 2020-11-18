@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import EllipsisContainerStyle from "../../../../../../values/styles/EllipsisContainer.style";
 import LoadingContainerStyle from "../../../../../../values/styles/LoadingContainer.style";
 import { SS } from "../../../../share.styles";
 
@@ -11,31 +12,46 @@ const Container = styled.div`
 const Table = styled.table`
     ${SS.AdminTable}
 
+    th:nth-child(3),
+    th:nth-child(4),
+    th:nth-child(6) {
+        text-align: left;
+    }
+
     td {
+        line-height: 1.5em;
+
         &.id,
-        &.date,
-        &.name,
-        &.phone,
-        &.price {
+        &.point,
+        &.date {
             text-align: center;
         }
 
-        &.id,
-        &.date,
-        &.phone {
+        &.id {
             width: 10%;
         }
 
         &.name {
-            width: 20%;
+            width: 15%;
         }
 
-        &.location {
-            width: 40%;
+        &.date {
+            width: 15%;
         }
 
-        &.price {
-            width: 10%;
+        &.product-name {
+            width: 25%;
+        }
+
+        &.point {
+            width: 5%;
+        }
+
+        &.rating {
+            width: 30%;
+            div {
+                ${EllipsisContainerStyle}
+            }
         }
     }
 `;

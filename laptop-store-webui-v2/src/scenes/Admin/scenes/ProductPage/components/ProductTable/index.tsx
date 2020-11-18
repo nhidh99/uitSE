@@ -67,7 +67,7 @@ const ProductTable = () => {
                 <Paginate count={count} initialPage={page || 1} sizePerPage={10} />
             </>
         ) : (
-            <EmptyBlock icon={<FaLaptop />} title="Không tìm thấy sản phẩm nào" paddingless />
+            <EmptyBlock icon={<FaLaptop />} title="Không tìm thấy sản phẩm nào" />
         )
     ) : (
         <Loader loading={true} loadOnce={true} />

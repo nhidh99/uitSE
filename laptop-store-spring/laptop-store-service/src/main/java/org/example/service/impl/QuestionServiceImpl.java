@@ -3,10 +3,12 @@ package org.example.service.impl;
 import org.example.constant.CacheConstants;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.PaginateConstants;
+import org.example.constant.ResolutionConstants;
 import org.example.dao.LaptopRepository;
 import org.example.dao.QuestionRepository;
 import org.example.dao.UserRepository;
-import org.example.dto.comment.QuestionDTO;
+import org.example.dto.question.QuestionDTO;
+import org.example.dto.question.QuestionSummaryDTO;
 import org.example.input.QuestionInput;
 import org.example.model.Laptop;
 import org.example.model.Question;
@@ -26,6 +28,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -78,7 +81,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Pair<List<QuestionDTO>, Long> findByStatus(FeedbackStatus status, int page) {
+    public Pair<List<QuestionSummaryDTO>, Long> findByStatus(FeedbackStatus status, int page) {
         Pageable pageable = PageRequest.of(page - 1,
                 PaginateConstants.SIZE_PER_ADMIN_PAGE,
                 Sort.by("id").descending());
@@ -86,7 +89,7 @@ public class QuestionServiceImpl implements QuestionService {
             Boolean approveStatus = status.getApproveStatus();
             List<Question> questions = questionRepository.findByApproveStatusIs(approveStatus, pageable);
             long questionCount = questionRepository.countByApproveStatusIs(approveStatus);
-            return Pair.of(ModelMapperUtil.mapList(questions, QuestionDTO.class), questionCount);
+            return Pair.of(ModelMapperUtil.mapList(questions, QuestionSummaryDTO.class), questionCount);
         });
     }
 }
