@@ -17,12 +17,7 @@ const ProductItem = ({ product, compareLink = null }: ProductItemProps) => (
         }}
     >
         <LazyLoad height={200} offset={100} once>
-            <SC.ItemImage
-                width={200}
-                height={200}
-                src={`/api/images/400/laptops/${product["id"]}/${product["alt"]}.jpg`}
-                alt="Laptop"
-            />
+            <SC.ItemImage width={200} height={200} src={product.image_url} alt="Laptop" />
         </LazyLoad>
 
         <SC.ItemInfo>

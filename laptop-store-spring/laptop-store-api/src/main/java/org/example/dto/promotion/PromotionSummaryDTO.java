@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.constant.ResolutionConstants;
+import org.example.constant.ImageConstants;
 
 import java.io.Serializable;
 
@@ -29,7 +29,7 @@ public class PromotionSummaryDTO implements Serializable {
     @JsonProperty("image_url")
     public String getImageUrl() {
         return new StringBuilder("/api/images/")
-                .append(ResolutionConstants.PROMOTION_IMAGE_RESOLUTION)
+                .append(ImageConstants.PROMOTION_IMAGE_RESOLUTION)
                 .append("/promotions/").append(id)
                 .append("/").append(alt)
                 .append(".jpg").toString();

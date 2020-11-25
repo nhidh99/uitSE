@@ -1,4 +1,3 @@
-import { FaEdit, FaTrash } from "react-icons/fa";
 import styled from "styled-components";
 
 const BlockContainer = styled.div`
@@ -22,31 +21,8 @@ const ReceiverName = styled.label`
 
 const ButtonsContainer = styled.div`
     float: right;
-    svg {
-        font-size: 16px;
-        color: #888;
-        cursor: pointer;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        padding: 10px;
-
-        :hover {
-            background-color: #ccc;
-        }
-    }
-`;
-
-const EditButton = styled(FaEdit)`
-    margin-right: 10px;
-    :hover {
-        color: #007bff;
-    }
-`;
-
-const DeleteButton = styled(FaTrash)`
-    :hover {
-        color: #bf081f;
-    }
+    display: flex;
+    gap: 10px;
 `;
 
 const DeliveryField = styled.span`
@@ -69,7 +45,5 @@ export const SC = {
     InfoContainer,
     ReceiverName,
     DeliveryField,
-    EditButton,
-    DeleteButton,
     DefaultAddress,
 };

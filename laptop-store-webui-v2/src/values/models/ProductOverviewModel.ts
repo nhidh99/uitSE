@@ -7,6 +7,7 @@ type ProductOverviewModel = {
     avg_rating: number;
     ram: string;
     hard_drive: string;
+    image_url: string;
 };
 
 export default ProductOverviewModel;

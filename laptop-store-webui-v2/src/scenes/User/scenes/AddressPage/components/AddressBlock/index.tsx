@@ -1,8 +1,9 @@
 import React from "react";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import addressApi from "../../../../../../services/api/addressApi";
 import AddressModel from "../../../../../../values/models/AddressModel";
+import ActionButton from "../../../../components/ActionButton/style";
 import { SC } from "./styles";
 
 type AddressBlockProps = {
@@ -27,9 +28,14 @@ const AddressBlock = ({ address, isDefaultAddress }: AddressBlockProps) => {
         <SC.BlockContainer>
             <SC.ButtonsContainer>
                 <Link to={`/user/addresses/edit/${address.id}`}>
-                    <SC.EditButton />
+                    <ActionButton>
+                        <FaEdit className="edit" />
+                    </ActionButton>
                 </Link>
-                <SC.DeleteButton onClick={deleteAddress} />
+
+                <ActionButton onClick={deleteAddress}>
+                    <FaTrash className="delete" />
+                </ActionButton>
             </SC.ButtonsContainer>
 
             {isDefaultAddress ? (
@@ -38,7 +44,7 @@ const AddressBlock = ({ address, isDefaultAddress }: AddressBlockProps) => {
                     Địa chỉ mặc định
                 </SC.DefaultAddress>
             ) : null}
-            
+
             <SC.InfoContainer>
                 <SC.ReceiverName>{address.receiver_name}</SC.ReceiverName>{" "}
             </SC.InfoContainer>

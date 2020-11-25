@@ -3,7 +3,6 @@ package org.example.service.impl;
 import org.example.constant.CacheConstants;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.PaginateConstants;
-import org.example.constant.ResolutionConstants;
 import org.example.dao.LaptopRepository;
 import org.example.dao.QuestionRepository;
 import org.example.dao.UserRepository;
@@ -28,7 +27,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {

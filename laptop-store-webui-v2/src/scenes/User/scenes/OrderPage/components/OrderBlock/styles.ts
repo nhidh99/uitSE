@@ -34,30 +34,10 @@ const FieldInfo = styled.span`
     font-weight: 600;
 `;
 
-const ViewButton = styled.div`
-    float: right;
-    color: #888;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-
-    svg {
-        margin-bottom: -2px;
-    }
-
-    :hover {
-        color: green;
-        background-color: #ccc;
-    }
-`;
-
 export const SC = {
     Container,
     InfoContainer,
     FlexContainer,
     OrderNo,
     FieldInfo,
-    ViewButton,
 };

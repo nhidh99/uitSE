@@ -1,6 +1,6 @@
 package org.example.rest;
 
-import org.example.constant.ResolutionConstants;
+import org.example.constant.ImageConstants;
 import org.example.input.ImageInput;
 import org.example.service.api.ImageService;
 import org.example.service.api.LaptopService;
@@ -30,9 +30,9 @@ public class ImageRestService {
             .mustRevalidate().proxyRevalidate();
 
     private static final Map<Integer, ImageType> laptopResolutionMap = new HashMap<>() {{
-        put(ResolutionConstants.LAPTOP_LARGE_IMAGE_RESOLUTION, ImageType.LAPTOP_LARGE_IMAGE);
-        put(ResolutionConstants.LAPTOP_IMAGE_RESOLUTION, ImageType.LAPTOP_IMAGE);
-        put(ResolutionConstants.LAPTOP_THUMBNAIL_RESOLUTION, ImageType.LAPTOP_THUMBNAIL);
+        put(ImageConstants.LAPTOP_LARGE_IMAGE_RESOLUTION, ImageType.LAPTOP_LARGE_IMAGE);
+        put(ImageConstants.LAPTOP_IMAGE_RESOLUTION, ImageType.LAPTOP_IMAGE);
+        put(ImageConstants.LAPTOP_THUMBNAIL_RESOLUTION, ImageType.LAPTOP_THUMBNAIL);
     }};
 
     private final LaptopService laptopService;
@@ -66,7 +66,7 @@ public class ImageRestService {
     @GetMapping(value = "/promotions/{id}/{alt}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getPromotionImage(ImageInput imageInput) {
-        byte[] image = imageInput.getResolution() == ResolutionConstants.PROMOTION_IMAGE_RESOLUTION
+        byte[] image = imageInput.getResolution() == ImageConstants.PROMOTION_IMAGE_RESOLUTION
                 ? promotionService.findImageById(imageInput.getId()) : null;
         return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(image);
     }

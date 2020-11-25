@@ -3,6 +3,7 @@ import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import OrderStatusConstants from "../../../../../../values/constants/OrderStatusConstants";
 import OrderOverviewModel from "../../../../../../values/models/OrderOverviewModel";
+import ActionButton from "../../../../components/ActionButton/style";
 import { SC } from "./styles";
 
 type OrderBlockProps = {
@@ -10,11 +11,11 @@ type OrderBlockProps = {
 };
 
 const OrderBlock = ({ order }: OrderBlockProps) => (
-    <SC.Container>  
+    <SC.Container>
         <Link to={`/user/orders/${order.id}`}>
-            <SC.ViewButton>
-                <FaEye />
-            </SC.ViewButton>
+            <ActionButton style={{ float: "right" }}>
+                <FaEye className="view" />
+            </ActionButton>
         </Link>
 
         <SC.InfoContainer>

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useCallback } from "react";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import userApi from "../../../../../../services/api/userApi";
@@ -8,6 +8,7 @@ import { RootState } from "../../../../../../services/redux/rootReducer";
 import { fireLoading } from "../../../../../../services/redux/slices/loaderStatusSlice";
 import { removeWishListItem } from "../../../../../../services/redux/slices/wishListSlice";
 import ProductOverviewModel from "../../../../../../values/models/ProductOverviewModel";
+import ActionButton from "../../../../components/ActionButton/style";
 import { SC } from "./styles";
 
 type WishListItemProps = {
@@ -27,7 +28,9 @@ const WishListItem = ({ item }: WishListItemProps) => {
 
     return (
         <SC.Container>
-            <SC.Button onClick={removeItem} />
+            <ActionButton style={{ float: "right", marginTop: "25px" }} onClick={removeItem}>
+                <FaTrash className="delete" />
+            </ActionButton>
             <SC.InfoContainer>
                 <Link
                     to={{
