@@ -1,8 +1,10 @@
 package org.example.rest;
 
 import org.example.constant.HeaderConstants;
+import org.example.constant.SuccessMessageConstants;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.rating.RatingSummaryDTO;
+import org.example.input.RatingInput;
 import org.example.service.api.RatingService;
 import org.example.type.FeedbackStatus;
 import org.example.util.Pair;
@@ -11,10 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,5 +48,14 @@ public class RatingRestService {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, ratingsAndCount.getSecond().toString())
                 .body(ratingsAndCount.getFirst());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> postRating(@RequestBody RatingInput ratingInput,
+                                        @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        ratingService.createRating(ratingInput, username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessMessageConstants.RATING_CREATED);
     }
 }

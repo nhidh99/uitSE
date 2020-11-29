@@ -1,7 +1,6 @@
 package org.example.model;
 
 import lombok.*;
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -40,7 +39,7 @@ public class Rating {
     private LocalDateTime createdAt;
 
     @Column(name = "approve_status")
-    private boolean approveStatus;
+    private Boolean approveStatus;
 
     @OneToMany(mappedBy = "rating", orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.TRUE)

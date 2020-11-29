@@ -1,3 +1,4 @@
+import RatingFormValues from "../../values/forms/RatingFormValues";
 import axiosAuthClient from "../axios/axiosAuthClient";
 import axiosPublicClient from "../axios/axiosPublicClient";
 
@@ -12,6 +13,11 @@ const ratingApi = {
         const url = "/ratings";
         const config = { params: params };
         return axiosAuthClient.get(url, config);
+    },
+
+    postRating(data: RatingFormValues) {
+        const url = "/ratings";
+        return axiosAuthClient.post(url, data);
     },
 };
 

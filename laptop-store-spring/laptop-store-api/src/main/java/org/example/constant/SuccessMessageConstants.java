@@ -7,4 +7,5 @@ public class SuccessMessageConstants {
     public static final String PUT_USER_PASSWORD = "Đã cập nhật mật khẩu";
 
     public static final String QUESTION_CREATED = "Câu hỏi đã được gửi để duyệt";
+    public static final String RATING_CREATED = "Đánh giá đã được gửi để duyệt";
 }

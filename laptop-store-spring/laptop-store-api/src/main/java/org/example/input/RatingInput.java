@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 public class RatingInput {
-    @JsonProperty("rating")
-    private Integer rating;
-
-    @JsonProperty("title")
-    private String title;
+    @JsonProperty("point")
+    private Integer point;
 
     @JsonProperty("detail")
     private String detail;
+
+    @JsonProperty("product_id")
+    private Integer productId;
 }

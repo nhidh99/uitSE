@@ -2,12 +2,18 @@ package org.example.service.impl;
 
 import org.example.constant.CacheConstants;
 import org.example.constant.PaginateConstants;
+import org.example.dao.LaptopRepository;
 import org.example.dao.RatingRepository;
+import org.example.dao.UserRepository;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.rating.RatingSummaryDTO;
+import org.example.input.RatingInput;
+import org.example.model.Laptop;
 import org.example.model.Rating;
+import org.example.model.User;
 import org.example.service.api.RatingService;
 import org.example.type.FeedbackStatus;
+import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +30,16 @@ import java.util.List;
 @Service
 public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
+    private final UserRepository userRepository;
+    private final LaptopRepository laptopRepository;
     private final TransactionTemplate txTemplate;
 
     @Autowired
-    public RatingServiceImpl(RatingRepository ratingRepository,
-                             PlatformTransactionManager txManager) {
+    public RatingServiceImpl(RatingRepository ratingRepository, UserRepository userRepository,
+                             LaptopRepository laptopRepository, PlatformTransactionManager txManager) {
         this.ratingRepository = ratingRepository;
+        this.userRepository = userRepository;
+        this.laptopRepository = laptopRepository;
         this.txTemplate = new TransactionTemplate(txManager);
     }
 
@@ -55,6 +65,20 @@ public class RatingServiceImpl implements RatingService {
             List<Rating> ratings = ratingRepository.findByApproveStatus(status.getApproveStatus(), pageable);
             long ratingCount = ratingRepository.countByApproveStatus(status.getApproveStatus());
             return Pair.of(ModelMapperUtil.mapList(ratings, RatingSummaryDTO.class), ratingCount);
+        });
+    }
+
+    @Override
+    public void createRating(RatingInput ratingInput, String username) {
+        txTemplate.executeWithoutResult((status) -> {
+            User user = userRepository.findByUsername(username);
+            Laptop laptop = laptopRepository.getOne(ratingInput.getProductId());
+            Rating rating = Rating.builder()
+                    .user(user).laptop(laptop)
+                    .point(ratingInput.getPoint())
+                    .detail(ratingInput.getDetail())
+                    .createdAt(DateUtil.getCurrentLocalDateTime()).build();
+            ratingRepository.save(rating);
         });
     }
 }

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FaStar } from "react-icons/fa";
 
-const OuterContainer = styled.div`
+const Form = styled.form`
     flex: 3;
     padding: 20px;
 `;
@@ -37,6 +37,10 @@ const RatingDetail = styled.textarea`
     border: 1px solid #ccc;
     width: 100%;
     box-sizing: border-box;
+
+    :focus {
+        outline: none;
+    }
 `;
 
 const RatingSubmit = styled.button`
@@ -46,13 +50,21 @@ const RatingSubmit = styled.button`
     color: white;
     background-color: #0062cc;
     width: 100%;
+    cursor: pointer;
+    opacity: 1;
+
     svg {
         margin-bottom: -2px;
+    }
+
+    :disabled {
+        opacity: 0.6;
+        cursor: default;
     }
 `;
 
 export const SC = {
-    OuterContainer,
+    Form,
     InputContainer,
     Label,
     RatingStar,
