@@ -4,6 +4,7 @@ import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.dto.question.QuestionDTO;
 import org.example.dto.question.QuestionSummaryDTO;
+import org.example.dto.reply.CommonReplyDTO;
 import org.example.input.QuestionInput;
 import org.example.service.api.QuestionService;
 import org.example.type.FeedbackStatus;
@@ -59,5 +60,12 @@ public class QuestionRestService {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, questionsAndCount.getSecond().toString())
                 .body(questionsAndCount.getFirst());
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping(value = "/{id}/replies", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getQuestionReplies(@PathVariable("id") Integer questionId) {
+        List<CommonReplyDTO> replies = questionService.findMoreRepliesById(questionId);
+        return ResponseEntity.ok(replies);
     }
 }

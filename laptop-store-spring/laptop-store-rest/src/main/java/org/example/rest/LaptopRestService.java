@@ -27,12 +27,10 @@ import java.util.List;
 public class LaptopRestService {
 
     private final LaptopService laptopService;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    public LaptopRestService(LaptopService laptopService, RedisTemplate<String, String> redisTemplate) {
+    public LaptopRestService(LaptopService laptopService) {
         this.laptopService = laptopService;
-        this.redisTemplate = redisTemplate;
     }
 
     @GetMapping(value = "/{id}/details", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -125,14 +123,5 @@ public class LaptopRestService {
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
-    }
-
-    @PreAuthorize("permitAll()")
-    @GetMapping(value = "/specs", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAllLaptopSpecs() {
-        Pair<List<LaptopSpecDTO>, Long> specsAndCount = laptopService.findAllLaptopSpec();
-        return ResponseEntity.ok()
-                .header(HeaderConstants.TOTAL_COUNT, specsAndCount.getSecond().toString())
-                .body(specsAndCount.getFirst());
     }
 }

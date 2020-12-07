@@ -26,14 +26,17 @@ const DetailPage = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            window.scroll(0, 0);
-            dispatch(clearProductDetail());
+            if (product?.spec.id === productId) {
+                return;
+            }
 
             if (isNaN(parseInt(productId))) {
                 history.push("/");
                 return;
             }
 
+            window.scroll(0, 0);
+            dispatch(clearProductDetail());
             const id = parseInt(productId);
             dispatch(fetchProductDetailById(id));
         };

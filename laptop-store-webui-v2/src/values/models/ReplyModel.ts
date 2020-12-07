@@ -1,8 +1,8 @@
 type ReplyModel = {
-    id: number;
-    user: string;
-    reply: string;
-    reply_date: Date;
+    author_name: string;
+    created_at: string;
+    detail: string;
+    is_admin: boolean;
 };
 
 export default ReplyModel;

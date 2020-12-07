@@ -19,6 +19,11 @@ const questionApi = {
         const url = "/questions";
         return axiosAuthClient.post(url, data);
     },
+
+    getReplies(questionId: number) {
+        const url = `/questions/${questionId}/replies`;
+        return axiosPublicClient.get(url);
+    },
 };
 
 export default questionApi;

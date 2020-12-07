@@ -1,8 +1,10 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import org.hibernate.annotations.Formula;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.type.RoleType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "question_reply")
 public class QuestionReply {
+    private static final String LAPTOP_STORE = "Laptop Store";
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +25,23 @@ public class QuestionReply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
-    @ToString.Exclude
     private Question question;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     private User user;
 
-    @Formula("(SELECT u.name FROM user u WHERE u.id = user_id)")
-    @JsonProperty("user")
-    private String userFullName;
-
-    @Column(name = "reply")
-    private String reply;
+    @Column(name = "detail")
+    private String detail;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public String getAuthorName() {
+        return RoleType.ADMIN.equals(user.getRole()) ? LAPTOP_STORE : user.getName();
+    }
+
+    public boolean isAdminReply() {
+        return RoleType.ADMIN.equals(user.getRole());
+    }
 }

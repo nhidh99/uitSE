@@ -29,9 +29,18 @@ const UserFullName = styled.span`
     color: #bf081f;
 `;
 
+const ReplyContainer = styled.div`
+    border-left: 1px solid #d9d9d9;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
 export const SC = {
     Container,
     CommentDetail,
     CommentInfo,
     UserFullName,
+    ReplyContainer,
 };

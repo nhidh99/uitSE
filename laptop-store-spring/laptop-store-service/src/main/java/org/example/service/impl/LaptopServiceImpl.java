@@ -220,15 +220,4 @@ public class LaptopServiceImpl implements LaptopService {
             return Pair.of(ModelMapperUtil.mapList(laptops, LaptopSummaryDTO.class), laptopCount);
         });
     }
-
-    @Override
-    @Cacheable(value = "laptop-specs", key = "'all'")
-    public Pair<List<LaptopSpecDTO>, Long> findAllLaptopSpec() {
-        return txTemplate.execute((status) -> {
-            List<Laptop>  laptops = laptopRepository.findAll();
-            long laptopCount = laptopRepository.countByRecordStatusTrue();
-            List<LaptopSpecDTO> specs = laptops.stream().map(this::buildSpecDTOFromLaptop).collect(Collectors.toList());
-            return Pair.of(specs, laptopCount);
-        });
-    }
 }

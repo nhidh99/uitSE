@@ -41,6 +41,9 @@ public class Question {
     @Column(name = "approve_status")
     private Boolean approveStatus;
 
+    @Column(name = "answer_id")
+    private Integer answerId;
+
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.TRUE)
     private List<QuestionReply> replies;
