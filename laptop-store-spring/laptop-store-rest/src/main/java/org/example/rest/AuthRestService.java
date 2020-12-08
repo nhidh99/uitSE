@@ -24,12 +24,6 @@ public class AuthRestService {
     @Autowired
     private AuthService authService;
 
-    @GetMapping(value = "/demo")
-    @PreAuthorize("permitAll()")
-    public ResponseEntity<?> demo() {
-        return ResponseEntity.ok("Hello world!");
-    }
-
     @PostMapping(value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)

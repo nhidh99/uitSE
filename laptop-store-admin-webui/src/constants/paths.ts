@@ -1,4 +1,9 @@
-export const PATH = {
+export const PATHS = {
     LOGIN: "/login",
-    PRODUCT: "/products"
+    PRODUCTS: "/products",
+    PROMOTIONS: "/promotions",
+    ORDERS: "/orders",
+    RATINGS: "/ratings",
+    QUESTIONS: "/questions",
+    ANSWERS: "/answers"
 };

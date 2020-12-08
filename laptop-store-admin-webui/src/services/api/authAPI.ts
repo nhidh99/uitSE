@@ -1,4 +1,4 @@
-import LoginFormData from "@/@types/form/LoginFormData";
+import LoginFormData from "@/types/form/LoginFormData";
 import axios from "axios";
 import axiosClient from "../axios/axiosClient";
 

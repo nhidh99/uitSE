@@ -1,8 +1,8 @@
-import LoginFormData from "@/@types/form/LoginFormData";
 import { createCookie } from "@/services/helper/cookie";
 import React, { memo, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { authAPI } from "@/services/api/authAPI";
+import LoginFormData from "@/types/form/LoginFormData";
 
 function Login() {
     const [status, setStatus] = useState<string | null>(null);
@@ -28,9 +28,8 @@ function Login() {
         <form
             className="flex flex-col gap-3
                 border-gray-800 bg-gray-300 shadow-md
-                text-center
-                mx-auto mt-20
-                px-8 py-5
+                text-center h-full
+                mx-auto mt-32 px-8 py-5
                 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
             onSubmit={handleSubmit(submit)}
         >
