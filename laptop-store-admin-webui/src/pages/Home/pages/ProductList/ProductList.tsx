@@ -1,8 +1,14 @@
 import React from "react";
-import SearchBar from "../../components/SearchBar";
+import ProductTable from "./components/ProductTable";
+import ProductToolbar from "./components/ProductToolbar";
 
 function ProductList() {
-    return <SearchBar placeholder="Tim kiem" />;
+    return (
+        <>
+            <ProductToolbar />
+            <ProductTable />
+        </>
+    );
 }
 
 export default ProductList;

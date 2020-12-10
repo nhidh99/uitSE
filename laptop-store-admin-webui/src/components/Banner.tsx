@@ -4,26 +4,16 @@ import { setMenuStatus } from "@/services/redux/slices/menuSlice";
 import React, { memo, useEffect } from "react";
 import { FaDoorOpen, FaList } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import useScreenWidth from "@/services/hooks/useScreenWidth";
 
 function Banner() {
     const dispatch = useDispatch();
     const menuStatus = useSelector((state: RootState) => state.menuStatus);
-    const screenWidth = useScreenWidth();
-
-    useEffect(() => {
-        if (menuStatus === "close" && screenWidth >= 768) {
-            dispatch(setMenuStatus("minimize"));
-        } else if (menuStatus === "minimize" && screenWidth < 768) {
-            dispatch(setMenuStatus("close"));
-        }
-    }, [screenWidth]);
 
     function changeMenuStatus() {
         if (menuStatus !== "open") {
             dispatch(setMenuStatus("open"));
         } else {
-            dispatch(setMenuStatus(screenWidth >= 768 ? "minimize" : "close"));
+            dispatch(setMenuStatus("close"));
         }
     }
 
