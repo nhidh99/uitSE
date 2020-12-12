@@ -13,10 +13,10 @@ function ActionButton(props: Props) {
             onClick={onClick}
             className="flex items-center gap-1 hover:bg-gray-200 
             px-4 py-2 rounded-md border border-gray-300 shadow
-            text-xs sm:text-sm md:text-base focus:outline-none"
+            text-xs sm:text-sm md:text-base focus:outline-none select-none"
         >
             {icon}
-            <span className="hidden sm:inline">{title}</span>
+            <span className="hidden md:inline">{title}</span>
         </button>
     );
 }

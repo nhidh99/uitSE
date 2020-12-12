@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { RootState } from "@/services/redux/rootReducer";
 import { setMenuStatus } from "@/services/redux/slices/menuSlice";
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import { FaDoorOpen, FaList } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,10 +18,11 @@ function Banner() {
     }
 
     return (
-        <div
+        <header
             className="w-full bg-gray-900 text-white
             text-sm md:text-base lg:text-lg
-            flex justify-between"
+            flex justify-between select-none 
+            fixed z-30 md:z-0 md:relative"
         >
             <div className="flex items-center gap-2.5 pl-5 py-3">
                 <button
@@ -42,7 +43,7 @@ function Banner() {
                 <FaDoorOpen />
                 <span className="hidden sm:inline">Đăng xuất</span>
             </button>
-        </div>
+        </header>
     );
 }
 

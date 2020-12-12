@@ -20,9 +20,9 @@ function HomeRoutes() {
                 component={() => (
                     <>
                         <Banner />
-                        <main className="flex flex-auto">
+                        <main className="flex flex-auto mt-10 md:mt-0">
                             <SideBar />
-                            <div className="flex flex-auto flex-col gap-3 p-5 min-w-0">
+                            <div className="flex flex-auto flex-col gap-5 p-5 min-w-0">
                                 <ProductRoutes />
                             </div>
                         </main>

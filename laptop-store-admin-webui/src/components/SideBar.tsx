@@ -57,29 +57,28 @@ function SideBar() {
     return (
         <>
             <div
-                className={`sm:hidden 
+                className={`md:hidden 
                 ${
                     menuStatus === "close"
                         ? "hidden"
-                        : "fixed z-10 bg-black opacity-5 w-full h-full"
+                        : "fixed z-20 top-0 bg-black opacity-5 w-full h-full"
                 }`}
                 onClick={closeSideBar}
             />
             <div
-                id="side-bar"
                 className={`
                     bg-gray-200
                     overflow-x-hidden
                     shadow-none sm:shadow-xl
-                    h-full sm:h-auto
-                    fixed sm:relative sm:flex-shrink-0
-                    z-20 sm:z-0
-                    ${menuStatus === "close" ? "hidden sm:w-16 sm:block" : "w-2/3 sm:w-48"}`}
+                    h-full md:h-auto
+                    fixed top-11 md:top-0 md:relative md:flex-shrink-0
+                    z-10 md:z-0
+                    ${menuStatus === "close" ? "hidden md:w-16 md:block" : "w-2/3 md:w-48"}`}
             >
                 {items.map((item) => (
                     <Link
                         className={`
-                            text-sm md:text-base 
+                            text-xs sm:text-sm md:text-base 
                             px-5 ${menuStatus === "open" ? "py-2.5" : "py-3.5"}
                             hover:bg-gray-300 select-none
                             cursor-pointer flex gap-2 items-center

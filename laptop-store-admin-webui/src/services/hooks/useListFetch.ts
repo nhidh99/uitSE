@@ -9,18 +9,19 @@ type State<T> = {
     list: T[];
     count: number;
     loading: boolean;
+    firstLoad: boolean;
 };
 
 function useListFetch<T>(fetchAPI: (params: ListFetchParams) => Promise<AxiosResponse<T[]>>) {
     const location = useLocation();
     const history = useHistory();
-    const firstLoad = useRef<boolean>(true);
 
     const initialState = useMemo<State<T>>(
         () => ({
             list: [],
             count: 0,
             loading: true,
+            firstLoad: true
         }),
         []
     );
@@ -29,7 +30,7 @@ function useListFetch<T>(fetchAPI: (params: ListFetchParams) => Promise<AxiosRes
     const [params, setParams] = useState<ListFetchParams>(initialParams);
     const [state, setState] = useState<State<T>>(initialState);
 
-    const { list, count, loading } = state;
+    const { list, count, loading, firstLoad } = state;
     const { query, order, page, target } = params;
     const prevTarget = useRef<string>(target || "id");
 
@@ -62,7 +63,8 @@ function useListFetch<T>(fetchAPI: (params: ListFetchParams) => Promise<AxiosRes
             setState({
                 list: response.data,
                 count: parseInt(response.headers["x-total-count"]),
-                loading: false
+                loading: false,
+                firstLoad: false
             });
         };
 
@@ -70,14 +72,12 @@ function useListFetch<T>(fetchAPI: (params: ListFetchParams) => Promise<AxiosRes
     }, [params]);
 
     useEffect(() => {
-        if (firstLoad.current) {
-            firstLoad.current = false;
-        } else {
+        if (!firstLoad) {
             setParams(queryString.parse(location.search, { parseNumbers: true }));
         }
     }, [location.search]);
 
-    return { list, count, page, query, loading, setTarget };
+    return { list, count, page, query, loading, firstLoad, setTarget};
 }
 
 export default useListFetch;

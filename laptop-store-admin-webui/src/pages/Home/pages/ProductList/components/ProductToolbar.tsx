@@ -8,7 +8,9 @@ function ProductToolbar() {
         <div className="flex justify-between gap-3">
             <SearchBar placeholder="Tim kiem" />
             <div className="flex gap-3">
-                <ActionButton icon={<FaTrash />} title="Xóa" onClick={() => {}} />
+                <span className="hidden md:inline">
+                    <ActionButton icon={<FaTrash />} title="Xóa" onClick={() => {}} />
+                </span>
                 <ActionButton icon={<FaFileExport />} title="Xuất" onClick={() => {}} />
             </div>
         </div>

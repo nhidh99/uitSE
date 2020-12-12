@@ -21,6 +21,7 @@ axiosClient.interceptors.request.use(async (config) => {
 
 axiosClient.interceptors.response.use(
     async (response) => {
+        await new Promise((r) => setTimeout(r, 500))
         return response;
     },
     async (error) => {
