@@ -4,6 +4,7 @@ import { PATHS } from "@/constants/paths";
 import React, { memo, useMemo } from "react";
 import { Switch } from "react-router-dom";
 import AuthenticatedGuard from "./AuthenticatedGuard";
+import OrderRoutes from "./sub-routes/OrderRoutes";
 import ProductRoutes from "./sub-routes/ProductRoutes";
 import PromotionRoutes from "./sub-routes/PromotionRoutes";
 
@@ -26,6 +27,7 @@ function HomeRoutes() {
                             <div className="flex flex-auto flex-col gap-5 p-5 min-w-0">
                                 <ProductRoutes />
                                 <PromotionRoutes />
+                                <OrderRoutes />
                             </div>
                         </main>
                     </>

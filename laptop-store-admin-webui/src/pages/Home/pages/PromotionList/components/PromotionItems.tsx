@@ -9,7 +9,7 @@ function PromotionItems({ list }: Props) {
     return (
         <div className="flex flex-col gap-5 text-xs">
             {list?.map((item) => (
-                <div className="border rounded shadow p-2 flex gap-4 items-center">
+                <div className="border rounded shadow p-3 flex gap-4 items-center">
                     <div className="flex flex-col">
                         <img src={item.image_url} width={40} height={40} />
                     </div>

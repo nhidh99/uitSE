@@ -61,7 +61,7 @@ function SideBar() {
                 ${
                     menuStatus === "close"
                         ? "hidden"
-                        : "fixed z-20 top-0 bg-black opacity-5 w-full h-full"
+                        : "fixed z-10 top-0 bg-black opacity-5 w-full h-full"
                 }`}
                 onClick={closeSideBar}
             />
@@ -72,7 +72,7 @@ function SideBar() {
                     shadow-none sm:shadow-xl
                     h-full md:h-auto
                     fixed top-11 md:top-0 md:relative md:flex-shrink-0
-                    z-10 md:z-0
+                    z-20 md:z-0
                     ${menuStatus === "close" ? "hidden md:w-16 md:block" : "w-2/3 md:w-48"}`}
             >
                 {items.map((item) => (

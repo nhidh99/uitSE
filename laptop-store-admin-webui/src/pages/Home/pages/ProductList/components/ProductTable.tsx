@@ -7,7 +7,7 @@ type Props = {
 
 function ProductTable({ list }: Props) {
     return (
-        <div className={`border rounded shadow`}>
+        <div className="border rounded shadow">
             <table className="text-xs md:text-sm w-full">
                 <tr>
                     <th className="p-2 w-1/12">Mã SP</th>

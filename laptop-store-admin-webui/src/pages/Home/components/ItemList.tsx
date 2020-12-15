@@ -23,15 +23,15 @@ function ItemList(props: Props) {
     ) : (
         <>
             {toolbar}
-            {isMobile
-                ? cloneElement(mobileVersion, { list: list })
-                : cloneElement(desktopVersion, { list: list })}
-            <Paginate
-                initialPage={page || 1}
-                sizePerPage={10}
-                totalCount={count}
-                disabled={loading}
-            />
+            {cloneElement(isMobile ? mobileVersion : desktopVersion, { list: list })}
+            {count === 0 ? null : (
+                <Paginate
+                    initialPage={page || 1}
+                    sizePerPage={10}
+                    totalCount={count}
+                    disabled={loading}
+                />
+            )}
         </>
     );
 }

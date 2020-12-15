@@ -3,6 +3,7 @@ type ListFetchParams = {
     target?: string;
     order?: string;
     page?: number;
+    status?: string;
 };
 
 export default ListFetchParams;
