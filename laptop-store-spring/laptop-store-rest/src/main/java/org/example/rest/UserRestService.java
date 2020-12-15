@@ -75,7 +75,7 @@ public class UserRestService {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserAddresses(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        List<AddressOverviewDTO> addresses = addressService.findOverviewsByUsername(username);
+        List<AddressOverviewDTO> addresses = addressService.findUserAddressOverviews(username);
         return ResponseEntity.ok(addresses);
     }
 

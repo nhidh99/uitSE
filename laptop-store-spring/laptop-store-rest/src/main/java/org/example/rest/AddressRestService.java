@@ -28,7 +28,7 @@ public class AddressRestService {
     public ResponseEntity<?> getAddressById(@AuthenticationPrincipal UserDetails userDetails,
                                             @PathVariable("id") Integer id) {
         String username = userDetails.getUsername();
-        AddressDetailDTO output = addressService.findDetailByIdAndUsername(id, username);
+        AddressDetailDTO output = addressService.findUserAddressDetail(id, username);
         return ResponseEntity.ok(output);
     }
 
@@ -36,13 +36,10 @@ public class AddressRestService {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> postAddress(@AuthenticationPrincipal UserDetails userDetails,
                                          @RequestBody AddressInput addressInput) {
-        try {
-            String username = userDetails.getUsername();
-            Integer addressId = addressService.createAddress(addressInput, username);
-            return ResponseEntity.ok(addressId.toString());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String username = userDetails.getUsername();
+        addressInput.setUsername(username);
+        Integer addressId = addressService.createAddress(addressInput);
+        return ResponseEntity.ok(addressId.toString());
     }
 
     @DeleteMapping("/{id}")
@@ -64,13 +61,11 @@ public class AddressRestService {
     public ResponseEntity<?> putAddress(@AuthenticationPrincipal UserDetails userDetails,
                                         @PathVariable("id") Integer addressId,
                                         @RequestBody AddressInput addressInput) {
-        try {
-            String username = userDetails.getUsername();
-            addressService.updateAddress(addressId, addressInput, username);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String username = userDetails.getUsername();
+        addressInput.setAddressId(addressId);
+        addressInput.setUsername(username);
+        addressService.updateAddress(addressInput);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}/default", consumes = MediaType.APPLICATION_JSON_VALUE)

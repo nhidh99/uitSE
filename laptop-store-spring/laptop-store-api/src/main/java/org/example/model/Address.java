@@ -74,4 +74,16 @@ public class Address {
     public String getWardName() {
         return ward.getName();
     }
+
+    public String getLocation() {
+        return addressNum.concat(" ")
+                .concat(String.join(", ",
+                        street, ward.getName(),
+                        district.getName(),
+                        city.getName()));
+    }
+
+    public boolean isUserDefaultAddress(User user) {
+        return this.id.equals(user.getDefaultAddressId());
+    }
 }

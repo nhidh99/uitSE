@@ -1,10 +1,14 @@
 package org.example.input;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class AddressInput {
+    @JsonProperty("id")
+    private Integer addressId;
+
     @JsonProperty("receiver_name")
     private String receiverName;
 
@@ -25,4 +29,7 @@ public class AddressInput {
 
     @JsonProperty("address_num")
     private String addressNum;
+
+    @JsonIgnore()
+    private String username;
 }

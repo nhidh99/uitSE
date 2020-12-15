@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface AddressService {
 
-    List<AddressOverviewDTO> findOverviewsByUsername(String username);
+    List<AddressOverviewDTO> findUserAddressOverviews(String username);
 
-    AddressDetailDTO findDetailByIdAndUsername(Integer addressId, String username);
+    AddressDetailDTO findUserAddressDetail(Integer addressId, String username);
 
-    Integer createAddress(AddressInput addressInput, String username);
+    Integer createAddress(AddressInput addressInput);
 
     void deleteAddress(Integer addressId, String username);
 
-    void updateAddress(Integer addressId, AddressInput addressInput, String username);
+    void updateAddress(AddressInput addressInput);
 }

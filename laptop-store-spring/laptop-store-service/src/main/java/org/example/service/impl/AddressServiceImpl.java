@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,91 +47,108 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<AddressOverviewDTO> findOverviewsByUsername(String username) {
+    public List<AddressOverviewDTO> findUserAddressOverviews(String username) {
         return txTemplate.execute((status) -> {
-            User user = userRepository.findByUsername(username);
-            List<Address> addresses = addressRepository.findByUserUsernameAndRecordStatusTrueOrderByIdDesc(username);
-            Integer defaultAddressId = user.getDefaultAddressId();
-            if (defaultAddressId != null) {
-                Address defaultAddress = addresses.stream()
-                        .filter(address -> address.getId().equals(defaultAddressId))
-                        .findFirst().orElseThrow(IllegalArgumentException::new);
-                addresses.remove(defaultAddress);
-                addresses.add(0, defaultAddress);
-            }
-
-            return addresses.stream().map((address) -> {
-                AddressOverviewDTO addressOverviewDTO = ModelMapperUtil.map(address, AddressOverviewDTO.class);
-                String location = address.getAddressNum().concat(" ").concat(
-                        String.join(", ",
-                                address.getStreet(),
-                                address.getWardName(),
-                                address.getDistrictName(),
-                                address.getCityName()
-                        ));
-                addressOverviewDTO.setLocation(location);
-                return addressOverviewDTO;
-            }).collect(Collectors.toList());
+            List<Address> addresses = findUserAddressesStartWithDefaultIfOneExisted(username);
+            return ModelMapperUtil.mapList(addresses, AddressOverviewDTO.class);
         });
     }
 
+    private List<Address> findUserAddressesStartWithDefaultIfOneExisted(String username) {
+        User user = userRepository.findByUsername(username);
+        List<Address> addresses = addressRepository.findByUserUsernameAndRecordStatusTrueOrderByIdDesc(username);
+        Address defaultAddressInList = findUserDefaultAddressInList(user, addresses);
+        return defaultAddressInList == null ? addresses : buildUserAddressesStartWithDefault(addresses, defaultAddressInList);
+    }
+
+    private Address findUserDefaultAddressInList(User user, List<Address> addresses) {
+        Integer userDefaultAddressId = user.getDefaultAddressId();
+        if (userDefaultAddressId == null || addresses.isEmpty()) return null;
+        return addresses.stream().filter(address -> address.getId().equals(userDefaultAddressId)).findFirst().orElse(null);
+    }
+
+    private List<Address> buildUserAddressesStartWithDefault(List<Address> source, Address defaultAddress) {
+        source.remove(defaultAddress);
+        source.add(0, defaultAddress);
+        return source;
+    }
+
     @Override
-    public AddressDetailDTO findDetailByIdAndUsername(Integer addressId, String username) {
+    public AddressDetailDTO findUserAddressDetail(Integer addressId, String username) {
         return txTemplate.execute((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
-            if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+            checkRequestAuthority(username, addressId);
             Address address = addressRepository.getOne(addressId);
             return ModelMapperUtil.map(address, AddressDetailDTO.class);
         });
     }
 
     @Override
-    public Integer createAddress(AddressInput addressInput, String username) {
+    public Integer createAddress(AddressInput addressInput) {
         return txTemplate.execute((status) -> {
-            boolean isValidInput = locationService.validateLocation(addressInput);
-            if (!isValidInput) throw new IllegalArgumentException(ErrorMessageConstants.INVALID_LOCATION_IDS);
-            City city = cityRepository.getOne(addressInput.getCityId());
-            District district = districtRepository.getOne(addressInput.getDistrictId());
-            Ward ward = wardRepository.getOne(addressInput.getWardId());
-            User user = userRepository.findByUsername(username);
-            Address address = Address.builder()
-                    .receiverName(addressInput.getReceiverName())
-                    .receiverPhone(addressInput.getReceiverPhone())
-                    .city(city).district(district).ward(ward)
-                    .street(addressInput.getStreet())
-                    .addressNum(addressInput.getAddressNum())
-                    .user(user).recordStatus(true).build();
-            return addressRepository.saveAndFlush(address).getId();
+            checkAddressInputLocation(addressInput);
+            return buildUserAddress(addressInput);
         });
+    }
+
+    private Integer buildUserAddress(AddressInput addressInput) {
+        City city = cityRepository.getOne(addressInput.getCityId());
+        District district = districtRepository.getOne(addressInput.getDistrictId());
+        Ward ward = wardRepository.getOne(addressInput.getWardId());
+        User user = userRepository.findByUsername(addressInput.getUsername());
+        Address address = Address.builder()
+                .receiverName(addressInput.getReceiverName())
+                .receiverPhone(addressInput.getReceiverPhone())
+                .city(city).district(district).ward(ward)
+                .street(addressInput.getStreet())
+                .addressNum(addressInput.getAddressNum())
+                .user(user).recordStatus(true).build();
+        return addressRepository.saveAndFlush(address).getId();
     }
 
     @Override
     public void deleteAddress(Integer addressId, String username) {
         txTemplate.executeWithoutResult((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
-            if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+            checkRequestAuthority(username, addressId);
             Address address = addressRepository.getOne(addressId);
             address.setRecordStatus(false);
-
-            // If the deleted address is user default address
-            User user = userRepository.findByUsername(username);
-            if (addressId.equals(user.getDefaultAddressId())) {
-                user.setDefaultAddressId(null);
-            }
+            deleteUserDefaultAddressIfMatched(username, address);
         });
     }
 
+    private void deleteUserDefaultAddressIfMatched(String username, Address deletedAddress) {
+        User user = userRepository.findByUsername(username);
+        if (deletedAddress.isUserDefaultAddress(user)) {
+            user.setDefaultAddressId(null);
+        }
+    }
+
     @Override
-    public void updateAddress(Integer addressId, AddressInput addressInput, String username) {
+    public void updateAddress(AddressInput addressInput) {
         txTemplate.executeWithoutResult((status) -> {
-            boolean isValidRequest = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
-            if (!isValidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
-
-            boolean isValidInput = locationService.validateLocation(addressInput);
-            if (!isValidInput) throw new IllegalArgumentException(ErrorMessageConstants.INVALID_LOCATION_IDS);
-
+            checkRequestAuthority(addressInput);
+            checkAddressInputLocation(addressInput);
+            Integer addressId = addressInput.getAddressId();
             Address address = addressRepository.getOne(addressId);
             ModelMapperUtil.map(addressInput, address);
         });
+    }
+
+    private void checkRequestAuthority(AddressInput addressInput) {
+        Integer addressId = addressInput.getAddressId();
+        String username = addressInput.getUsername();
+        checkRequestAuthority(username, addressId);
+    }
+
+    private void checkRequestAuthority(String username, Integer addressId) {
+        boolean isValidRecord = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
+        if (!isValidRecord) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+    }
+
+    private void checkAddressInputLocation(AddressInput addressInput) {
+        Integer cityId = addressInput.getCityId();
+        Integer districtId = addressInput.getDistrictId();
+        Integer wardId = addressInput.getWardId();
+        boolean isValidInput = locationService.validateLocation(cityId, districtId, wardId);
+        if (!isValidInput) throw new IllegalArgumentException(ErrorMessageConstants.INVALID_LOCATION_IDS);
     }
 }

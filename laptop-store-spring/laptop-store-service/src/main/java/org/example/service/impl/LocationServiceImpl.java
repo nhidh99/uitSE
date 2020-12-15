@@ -40,10 +40,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean validateLocation(AddressInput addressInput) {
-        Integer cityId = addressInput.getCityId();
-        Integer districtId = addressInput.getDistrictId();
-        Integer wardId = addressInput.getWardId();
+    public boolean validateLocation(Integer cityId, Integer districtId, Integer wardId) {
         boolean isValidCity = cityRepository.existsById(cityId);
         boolean isValidDistrict = districtRepository.existsByIdAndCityId(districtId, cityId);
         boolean isValidWard = wardRepository.existsByIdAndDistrictId(wardId, districtId);
