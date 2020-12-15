@@ -5,6 +5,7 @@ import React, { memo, useMemo } from "react";
 import { Switch } from "react-router-dom";
 import AuthenticatedGuard from "./AuthenticatedGuard";
 import ProductRoutes from "./sub-routes/ProductRoutes";
+import PromotionRoutes from "./sub-routes/PromotionRoutes";
 
 function HomeRoutes() {
     const authenticatedPaths = useMemo(
@@ -24,6 +25,7 @@ function HomeRoutes() {
                             <SideBar />
                             <div className="flex flex-auto flex-col gap-5 p-5 min-w-0">
                                 <ProductRoutes />
+                                <PromotionRoutes />
                             </div>
                         </main>
                     </>

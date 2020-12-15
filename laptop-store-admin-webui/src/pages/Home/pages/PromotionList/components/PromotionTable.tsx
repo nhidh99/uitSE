@@ -1,11 +1,11 @@
 import React, { memo } from "react";
-import ProductItemModel from "@/types/model/ProductItemModel";
+import PromotionItemModel from "@/types/model/PromotionItemModel";
 
 type Props = {
-    list?: ProductItemModel[];
+    list?: PromotionItemModel[];
 };
 
-function ProductTable({ list }: Props) {
+function PromotionTable({ list }: Props) {
     return (
         <div className={`border rounded shadow`}>
             <table className="text-xs md:text-sm w-full">
@@ -15,7 +15,6 @@ function ProductTable({ list }: Props) {
                     <th className="p-2 w-1/12">Hình ảnh</th>
                     <th className="p-2 w-1/12">Số lượng</th>
                     <th className="p-2 w-2/12">Đơn giá</th>
-                    <th className="p-2 w-1/12">Đánh giá</th>
                 </tr>
                 {list?.map((item) => (
                     <tr className="border-t">
@@ -26,10 +25,9 @@ function ProductTable({ list }: Props) {
                         </td>
                         <td className="p-2 text-center">{item.quantity}</td>
                         <td className="p-2 text-center">
-                            {item.unit_price.toLocaleString()}
+                            {item.price.toLocaleString()}
                             <sup>đ</sup>
                         </td>
-                        <td className="p-2 text-center">{item.avg_rating.toFixed(1)}</td>
                     </tr>
                 ))}
             </table>
@@ -37,4 +35,4 @@ function ProductTable({ list }: Props) {
     );
 }
 
-export default memo(ProductTable);
+export default memo(PromotionTable);
