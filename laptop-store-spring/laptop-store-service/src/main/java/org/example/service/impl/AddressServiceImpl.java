@@ -30,12 +30,9 @@ public class AddressServiceImpl implements AddressService {
     private final TransactionTemplate txTemplate;
 
     @Autowired
-    public AddressServiceImpl(AddressRepository addressRepository,
-                              UserRepository userRepository,
-                              LocationService locationService,
-                              CityRepository cityRepository,
-                              DistrictRepository districtRepository,
-                              WardRepository wardRepository,
+    public AddressServiceImpl(AddressRepository addressRepository, UserRepository userRepository,
+                              LocationService locationService, CityRepository cityRepository,
+                              DistrictRepository districtRepository, WardRepository wardRepository,
                               PlatformTransactionManager txManager) {
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
@@ -58,7 +55,7 @@ public class AddressServiceImpl implements AddressService {
         User user = userRepository.findByUsername(username);
         List<Address> addresses = addressRepository.findByUserUsernameAndRecordStatusTrueOrderByIdDesc(username);
         Address defaultAddressInList = findUserDefaultAddressInList(user, addresses);
-        return defaultAddressInList == null ? addresses : buildUserAddressesStartWithDefault(addresses, defaultAddressInList);
+        return defaultAddressInList == null ? addresses : createUserAddressesStartWithDefault(addresses, defaultAddressInList);
     }
 
     private Address findUserDefaultAddressInList(User user, List<Address> addresses) {
@@ -67,7 +64,7 @@ public class AddressServiceImpl implements AddressService {
         return addresses.stream().filter(address -> address.getId().equals(userDefaultAddressId)).findFirst().orElse(null);
     }
 
-    private List<Address> buildUserAddressesStartWithDefault(List<Address> source, Address defaultAddress) {
+    private List<Address> createUserAddressesStartWithDefault(List<Address> source, Address defaultAddress) {
         source.remove(defaultAddress);
         source.add(0, defaultAddress);
         return source;
@@ -83,30 +80,30 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Integer createAddress(AddressInput addressInput) {
+    public Integer insertUserAddress(AddressInput addressInput) {
         return txTemplate.execute((status) -> {
             checkAddressInputLocation(addressInput);
-            return buildUserAddress(addressInput);
+            Address address = createUserAddress(addressInput);
+            return addressRepository.saveAndFlush(address).getId();
         });
     }
 
-    private Integer buildUserAddress(AddressInput addressInput) {
+    private Address createUserAddress(AddressInput addressInput) {
         City city = cityRepository.getOne(addressInput.getCityId());
         District district = districtRepository.getOne(addressInput.getDistrictId());
         Ward ward = wardRepository.getOne(addressInput.getWardId());
         User user = userRepository.findByUsername(addressInput.getUsername());
-        Address address = Address.builder()
+        return Address.builder()
                 .receiverName(addressInput.getReceiverName())
                 .receiverPhone(addressInput.getReceiverPhone())
                 .city(city).district(district).ward(ward)
                 .street(addressInput.getStreet())
                 .addressNum(addressInput.getAddressNum())
                 .user(user).recordStatus(true).build();
-        return addressRepository.saveAndFlush(address).getId();
     }
 
     @Override
-    public void deleteAddress(Integer addressId, String username) {
+    public void deleteUserAddress(Integer addressId, String username) {
         txTemplate.executeWithoutResult((status) -> {
             checkRequestAuthority(username, addressId);
             Address address = addressRepository.getOne(addressId);
@@ -123,7 +120,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public void updateAddress(AddressInput addressInput) {
+    public void updateUserAddress(AddressInput addressInput) {
         txTemplate.executeWithoutResult((status) -> {
             checkRequestAuthority(addressInput);
             checkAddressInputLocation(addressInput);
@@ -148,7 +145,6 @@ public class AddressServiceImpl implements AddressService {
         Integer cityId = addressInput.getCityId();
         Integer districtId = addressInput.getDistrictId();
         Integer wardId = addressInput.getWardId();
-        boolean isValidInput = locationService.validateLocation(cityId, districtId, wardId);
-        if (!isValidInput) throw new IllegalArgumentException(ErrorMessageConstants.INVALID_LOCATION_IDS);
+        locationService.checkLocation(cityId, districtId, wardId);
     }
 }

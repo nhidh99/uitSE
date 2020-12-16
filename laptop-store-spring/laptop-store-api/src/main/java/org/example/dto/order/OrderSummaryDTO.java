@@ -26,9 +26,6 @@ public class OrderSummaryDTO implements Serializable {
     @JsonProperty("receiver_phone")
     private String receiverPhone;
 
-    @JsonIgnore
-    private OrderStatus status;
-
     @JsonProperty("order_date")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate orderDate;
@@ -38,9 +35,4 @@ public class OrderSummaryDTO implements Serializable {
 
     @JsonProperty("order_location")
     private String orderLocation;
-
-    @JsonProperty("order_status")
-    private String getStatus() {
-        return status.toString();
-    }
 }

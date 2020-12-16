@@ -12,9 +12,9 @@ public interface AddressService {
 
     AddressDetailDTO findUserAddressDetail(Integer addressId, String username);
 
-    Integer createAddress(AddressInput addressInput);
+    Integer insertUserAddress(AddressInput addressInput);
 
-    void deleteAddress(Integer addressId, String username);
+    void deleteUserAddress(Integer addressId, String username);
 
-    void updateAddress(AddressInput addressInput);
+    void updateUserAddress(AddressInput addressInput);
 }

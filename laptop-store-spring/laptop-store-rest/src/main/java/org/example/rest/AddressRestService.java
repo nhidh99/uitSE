@@ -38,17 +38,17 @@ public class AddressRestService {
                                          @RequestBody AddressInput addressInput) {
         String username = userDetails.getUsername();
         addressInput.setUsername(username);
-        Integer addressId = addressService.createAddress(addressInput);
+        Integer addressId = addressService.insertUserAddress(addressInput);
         return ResponseEntity.ok(addressId.toString());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteAddress(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<?> deleteUserAddress(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable("id") Integer addressId) {
         try {
             String username = userDetails.getUsername();
-            addressService.deleteAddress(addressId, username);
+            addressService.deleteUserAddress(addressId, username);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +64,7 @@ public class AddressRestService {
         String username = userDetails.getUsername();
         addressInput.setAddressId(addressId);
         addressInput.setUsername(username);
-        addressService.updateAddress(addressInput);
+        addressService.updateUserAddress(addressInput);
         return ResponseEntity.noContent().build();
     }
 

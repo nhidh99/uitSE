@@ -65,7 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
         Authentication auth = jwtProvider.getAuthentication(refreshToken);
         boolean isValidRequest = username.equalsIgnoreCase(((UserDetails) auth.getPrincipal()).getUsername());
         if (isValidRequest) {
-            Pair<String, String> tokens = jwtProvider.createAccessAndRefreshTokens(username);
+            Pair<String, String> tokens = jwtProvider.buildAccessAndRefreshTokens(username);
             httpServletResponse.setHeader(HeaderConstants.ACCESS_TOKEN, tokens.getFirst());
             httpServletResponse.setHeader(HeaderConstants.REFRESH_TOKEN, tokens.getSecond());
             httpServletResponse.setStatus(HttpStatus.CREATED.value());

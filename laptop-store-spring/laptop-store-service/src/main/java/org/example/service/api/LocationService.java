@@ -16,5 +16,5 @@ public interface LocationService {
 
     List<Ward> findByWardsByDistrictId(Integer districtId);
 
-    boolean validateLocation(Integer cityId, Integer districtId, Integer wardId);
+    void checkLocation(Integer cityId, Integer districtId, Integer wardId);
 }

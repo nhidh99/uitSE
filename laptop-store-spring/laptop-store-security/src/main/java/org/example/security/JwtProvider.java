@@ -76,7 +76,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Pair<String, String> createAccessAndRefreshTokens(String username) {
+    public Pair<String, String> buildAccessAndRefreshTokens(String username) {
         String accessToken = createAccessToken(username);
         String refreshToken = createRefreshToken(username);
         return Pair.of(accessToken, refreshToken);

@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import org.example.constant.ErrorMessageConstants;
 import org.example.dao.CityRepository;
 import org.example.dao.DistrictRepository;
 import org.example.dao.WardRepository;
@@ -40,10 +41,13 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean validateLocation(Integer cityId, Integer districtId, Integer wardId) {
+    public void checkLocation(Integer cityId, Integer districtId, Integer wardId) {
         boolean isValidCity = cityRepository.existsById(cityId);
         boolean isValidDistrict = districtRepository.existsByIdAndCityId(districtId, cityId);
         boolean isValidWard = wardRepository.existsByIdAndDistrictId(wardId, districtId);
-        return isValidCity && isValidDistrict && isValidWard;
+        boolean isValidLocation = isValidCity && isValidDistrict && isValidWard;
+        if (!isValidLocation) {
+            throw new IllegalArgumentException(ErrorMessageConstants.INVALID_LOCATION_IDS);
+        }
     }
 }
