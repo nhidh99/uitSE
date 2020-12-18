@@ -19,11 +19,18 @@ public class ModelMapperUtil {
         return modelMapper.map(entity, outClass);
     }
 
-    public static <T, D> void map(T src, D des) {
+    public static <T, D> D map(T src, D des) {
         modelMapper.map(src, des);
+        return des;
     }
 
     public static <D, T> List<D> mapList(List<T> list, Class<D> outClass) {
         return list.stream().map(e -> modelMapper.map(e, outClass)).collect(Collectors.toList());
+    }
+
+    public static <D, T> Pair<List<D>, Long> mapPairOfListAndCount(Pair<List<T>, Long> pair, Class<D> outClass) {
+        List<D> list = mapList(pair.getFirst(), outClass);
+        long count = pair.getSecond();
+        return Pair.of(list, count);
     }
 }

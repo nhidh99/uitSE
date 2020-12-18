@@ -2,9 +2,10 @@ package org.example.rest;
 
 import org.example.constant.ImageConstants;
 import org.example.input.ImageInput;
-import org.example.service.api.ImageService;
+import org.example.service.api.LaptopImageService;
 import org.example.service.api.LaptopService;
 import org.example.service.api.PromotionService;
+import org.example.type.ImageResolutionType;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -29,18 +30,18 @@ public class ImageRestService {
             CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic()
             .mustRevalidate().proxyRevalidate();
 
-    private static final Map<Integer, ImageType> laptopResolutionMap = new HashMap<>() {{
-        put(ImageConstants.LAPTOP_LARGE_IMAGE_RESOLUTION, ImageType.LAPTOP_LARGE_IMAGE);
-        put(ImageConstants.LAPTOP_IMAGE_RESOLUTION, ImageType.LAPTOP_IMAGE);
-        put(ImageConstants.LAPTOP_THUMBNAIL_RESOLUTION, ImageType.LAPTOP_THUMBNAIL);
+    private static final Map<Integer, ImageResolutionType> laptopResolutionMap = new HashMap<>() {{
+        put(ImageConstants.LAPTOP_LARGE_IMAGE_RESOLUTION, ImageResolutionType.LAPTOP_LARGE_IMAGE);
+        put(ImageConstants.LAPTOP_IMAGE_RESOLUTION, ImageResolutionType.LAPTOP_IMAGE);
+        put(ImageConstants.LAPTOP_THUMBNAIL_RESOLUTION, ImageResolutionType.LAPTOP_THUMBNAIL);
     }};
 
     private final LaptopService laptopService;
-    private final ImageService laptopImageService;
+    private final LaptopImageService laptopImageService;
     private final PromotionService promotionService;
 
     @Autowired
-    public ImageRestService(LaptopService laptopService, ImageService laptopImageService,
+    public ImageRestService(LaptopService laptopService, LaptopImageService laptopImageService,
                             PromotionService promotionService) {
         this.laptopService = laptopService;
         this.laptopImageService = laptopImageService;
@@ -49,17 +50,19 @@ public class ImageRestService {
 
     @GetMapping(value = "/laptops/{id}/{alt}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> getLaptopImage(ImageInput imageInput) {
-        ImageType type = laptopResolutionMap.get(imageInput.getResolution());
-        byte[] image = laptopService.findImageById(imageInput.getId(), type);
+    public ResponseEntity<?> getLaptopMainImage(ImageInput imageInput) {
+        ImageType imageType = ImageType.LAPTOP_MAIN_IMAGE;
+        ImageResolutionType resolutionType = laptopResolutionMap.get(imageInput.getResolution());
+        byte[] image = laptopImageService.findImageById(imageInput.getId(), resolutionType, imageType);
         return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(image);
     }
 
     @GetMapping(value = "/details/{id}/{alt}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getLaptopDetailImage(ImageInput imageInput) {
-        ImageType type = laptopResolutionMap.get(imageInput.getResolution());
-        byte[] image = laptopImageService.findImageById(imageInput.getId(), type);
+        ImageType imageType = ImageType.LAPTOP_DETAIL_IMAGE;
+        ImageResolutionType type = laptopResolutionMap.get(imageInput.getResolution());
+        byte[] image = laptopImageService.findImageById(imageInput.getId(), type, imageType);
         return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(image);
     }
 

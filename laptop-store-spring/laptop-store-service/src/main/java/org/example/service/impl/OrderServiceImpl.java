@@ -210,7 +210,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(OrderStatus status, SearchInput search) {
-        Pageable pageable = PageableUtil.buildPageableFromSearch(search);
+        Pageable pageable = PageableUtil.createPageableFromSearch(search);
         return txTemplate.execute((txStatus) -> {
             if (search.getQuery().isEmpty()) {
                 List<Order> orders = orderRepository.findByStatus(status, pageable);

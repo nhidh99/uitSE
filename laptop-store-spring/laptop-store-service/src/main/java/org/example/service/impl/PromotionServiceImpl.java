@@ -28,8 +28,8 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public Pair<List<PromotionSummaryDTO>, Long> findBySearch(SearchInput search) {
-        Pageable pageable = buildPageableFromSearch(search);
+    public Pair<List<PromotionSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(SearchInput search) {
+        Pageable pageable = createPageableFromSearch(search);
         String query = search.getQuery();
 
         if (query.isEmpty()) {
@@ -43,7 +43,7 @@ public class PromotionServiceImpl implements PromotionService {
         }
     }
 
-    private Pageable buildPageableFromSearch(SearchInput search) {
+    private Pageable createPageableFromSearch(SearchInput search) {
         Sort sort = Sort.by(search.getTarget().toString());
         if (search.getOrder().equals(SearchOrderType.DESC)) {
             sort = sort.descending();

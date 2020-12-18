@@ -6,30 +6,27 @@ import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.laptop.LaptopSummaryDTO;
 import org.example.input.LaptopFilterInput;
 import org.example.input.SearchInput;
-import org.example.type.ImageType;
 import org.example.util.Pair;
 
 import java.util.List;
 
 public interface LaptopService {
 
-    <T> Pair<List<T>, Long> findByPage(int page, Class<T> clazz);
+    <T> Pair<List<T>, Long> findAndCountLatestLaptopsByPage(int page, Class<T> clazz);
 
-    Pair<List<LaptopOverviewDTO>, Long> findMostDiscountByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findAndCountMostDiscountedLaptopOverviewsByPage(int page);
 
-    Pair<List<LaptopOverviewDTO>, Long> findCheapestByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findAndCountCheapestLaptopOverviewsByPage(int page);
 
-    Pair<List<LaptopOverviewDTO>, Long> findBestSellingByPage(int page);
+    Pair<List<LaptopOverviewDTO>, Long> findAndCountBestSellingLaptopOverviewsByPage(int page);
 
-    List<LaptopOverviewDTO> findByIds(List<Integer> ids);
+    List<LaptopOverviewDTO> findLaptopOverviewsByIds(List<Integer> ids);
 
-    LaptopDetailDTO findDetailById(int id);
+    LaptopDetailDTO findLaptopDetailById(Integer id);
 
-    LaptopSpecDTO findSpecById(int id);
+    LaptopSpecDTO findLaptopSpecById(Integer id);
 
-    byte[] findImageById(Integer id, ImageType type);
+    Pair<List<LaptopOverviewDTO>, Long> findAndCountLaptopOverviewsByFilter(LaptopFilterInput filter);
 
-    Pair<List<LaptopOverviewDTO>, Long> findByFilter(LaptopFilterInput filter);
-
-    Pair<List<LaptopSummaryDTO>, Long> findBySearch(SearchInput search);
+    Pair<List<LaptopSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(SearchInput search);
 }

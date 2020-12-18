@@ -36,28 +36,28 @@ public class LaptopRestService {
     @GetMapping(value = "/{id}/details", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getDetailsById(@PathVariable("id") int id) {
-        LaptopDetailDTO output = laptopService.findDetailById(id);
+        LaptopDetailDTO output = laptopService.findLaptopDetailById(id);
         return ResponseEntity.ok(output);
     }
 
     @GetMapping(value = "/{id}/spec", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getSpecById(@PathVariable("id") int id) {
-        LaptopSpecDTO output = laptopService.findSpecById(id);
+        LaptopSpecDTO output = laptopService.findLaptopSpecById(id);
         return ResponseEntity.ok(output);
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "ids")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getByIds(@RequestParam(value = "ids") List<Integer> ids) {
-        List<LaptopOverviewDTO> laptops = laptopService.findByIds(ids);
+        List<LaptopOverviewDTO> laptops = laptopService.findLaptopOverviewsByIds(ids);
         return ResponseEntity.ok(laptops);
     }
 
     @GetMapping(value = "/latest", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getByPage(@RequestParam(defaultValue = "1") int page) {
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByPage(page, LaptopOverviewDTO.class);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountLatestLaptopsByPage(page, LaptopOverviewDTO.class);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
@@ -66,7 +66,7 @@ public class LaptopRestService {
     @GetMapping(value = "/discount", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getMostDiscountByPage(@RequestParam(defaultValue = "1") int page) {
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findMostDiscountByPage(page);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountMostDiscountedLaptopOverviewsByPage(page);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
@@ -75,7 +75,7 @@ public class LaptopRestService {
     @GetMapping(value = "/cheap", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getCheapestByPage(@RequestParam(defaultValue = "1") int page) {
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findCheapestByPage(page);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountCheapestLaptopOverviewsByPage(page);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
@@ -84,7 +84,7 @@ public class LaptopRestService {
     @GetMapping(value = "/best-selling", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getBestSellingByPage(@RequestParam(defaultValue = "1") int page) {
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findBestSellingByPage(page);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountBestSellingLaptopOverviewsByPage(page);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
@@ -104,7 +104,7 @@ public class LaptopRestService {
 
         LaptopFilterInput filter = LaptopFilterInput.builder().name(name).brands(brands)
                 .target(target).cpus(cpus).rams(rams).page(page).price(price).tags(tags).build();
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findByFilter(filter);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopOverviewsByFilter(filter);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
@@ -119,7 +119,7 @@ public class LaptopRestService {
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
         SearchInput search = SearchInput.builder().query(query).target(target).order(order).page(page).build();
-        Pair<List<LaptopSummaryDTO>, Long> laptopsAndCount = laptopService.findBySearch(search);
+        Pair<List<LaptopSummaryDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopSummariesBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());

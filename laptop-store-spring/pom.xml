@@ -76,5 +76,6 @@
 		<module>laptop-store-service</module>
 		<module>laptop-store-rest</module>
 		<module>laptop-store-security</module>
+		<module>laptop-store-application</module>
     </modules>
 </project>

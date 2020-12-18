@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.constant.DataStorageUnitConstants;
 import org.example.type.BrandType;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -123,15 +124,31 @@ public class Laptop {
     private List<Promotion> promotions;
 
     public String getRamInfo() {
-        return new StringBuilder(ram.getSize()).append("GB").toString();
+        return new StringBuilder(ram.getSize())
+                .append(DataStorageUnitConstants.GIGABYTE).toString();
     }
 
     public String getHardDriveInfo() {
-        Integer size = hardDrive.getSize();
-        StringBuilder sb = new StringBuilder(hardDrive.getType().name());
-        if (size >= 1024) {
-            return sb.append(" ").append(size / 1024).append("TB").toString();
-        }
-        return sb.append(" ").append(size).append("GB").toString();
+        return isTerabyteHardDrive()
+                ? createTerabyteHardDriveInfo()
+                : createGigabyteHardDriveInfo();
     }
+
+    private boolean isTerabyteHardDrive() {
+        return hardDrive.getSize() >= 1024;
+    }
+
+    private String createTerabyteHardDriveInfo() {
+        return new StringBuilder(hardDrive.getType().name())
+                .append(hardDrive.getSize() / 1024)
+                .append(DataStorageUnitConstants.TERABYTE).toString();
+    }
+
+    private String createGigabyteHardDriveInfo() {
+        return new StringBuilder(hardDrive.getType().name())
+                .append(hardDrive.getSize())
+                .append(DataStorageUnitConstants.GIGABYTE).toString();
+    }
+
+
 }

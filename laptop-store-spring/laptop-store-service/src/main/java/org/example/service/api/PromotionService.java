@@ -11,5 +11,5 @@ public interface PromotionService {
 
     byte[] findImageById(Integer id);
 
-    Pair<List<PromotionSummaryDTO>, Long> findBySearch(SearchInput search);
+    Pair<List<PromotionSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(SearchInput search);
 }

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public class PageableUtil {
-    public static Pageable buildPageableFromSearch(SearchInput search) {
+    public static Pageable createPageableFromSearch(SearchInput search) {
         Sort sort = Sort.by(search.getTarget().toString());
         if (search.getOrder().equals(SearchOrderType.DESC)) {
             sort = sort.descending();

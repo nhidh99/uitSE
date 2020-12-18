@@ -28,6 +28,6 @@ public class LaptopDetailDTO implements Serializable {
     private List<LaptopOverviewDTO> suggestions;
 
     @JsonProperty("rating_info")
-    private int[] ratingInfo;
+    private int[] ratingCounts;
 
 }
