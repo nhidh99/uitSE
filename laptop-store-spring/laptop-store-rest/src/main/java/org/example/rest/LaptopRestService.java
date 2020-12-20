@@ -5,15 +5,12 @@ import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.laptop.LaptopSummaryDTO;
-import org.example.input.LaptopFilterInput;
-import org.example.input.SearchInput;
+import org.example.input.query.LaptopFilterInput;
+import org.example.input.query.ProductSearchInput;
 import org.example.service.api.LaptopService;
 import org.example.type.*;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -118,7 +115,7 @@ public class LaptopRestService {
             @RequestParam(value = "order", defaultValue = "DESC") SearchOrderType order,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
-        SearchInput search = SearchInput.builder().query(query).target(target).order(order).page(page).build();
+        ProductSearchInput search = ProductSearchInput.builder().query(query).target(target).order(order).page(page).build();
         Pair<List<LaptopSummaryDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopSummariesBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())

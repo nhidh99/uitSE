@@ -10,8 +10,8 @@ import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.laptop.LaptopSummaryDTO;
 import org.example.dto.promotion.PromotionDTO;
 import org.example.dto.spec.*;
-import org.example.input.LaptopFilterInput;
-import org.example.input.SearchInput;
+import org.example.input.query.LaptopFilterInput;
+import org.example.input.query.ProductSearchInput;
 import org.example.model.Laptop;
 import org.example.model.Promotion;
 import org.example.service.api.LaptopService;
@@ -177,7 +177,7 @@ public class LaptopServiceImpl implements LaptopService {
             Pair<List<Laptop>, Long> laptopsAndCount = filter.getName() != null
                     ? findAndCountLaptopByFilterWithNameParam(filter)
                     : findAndCountLaptopByFilterWithoutNameParam(filter);
-            return ModelMapperUtil.mapPairOfListAndCount(laptopsAndCount, LaptopOverviewDTO.class);
+            return ModelMapperUtil.mapFirstOfPair(laptopsAndCount, LaptopOverviewDTO.class);
         });
     }
 
@@ -194,14 +194,14 @@ public class LaptopServiceImpl implements LaptopService {
     }
 
     @Override
-    public Pair<List<LaptopSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(SearchInput search) {
+    public Pair<List<LaptopSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(ProductSearchInput search) {
         return txTemplate.execute((status) -> {
             Pageable pageable = PageableUtil.createPageableFromSearch(search);
             boolean isBlankQuery = search.getQuery().isBlank();
             Pair<List<Laptop>, Long> laptopsAndCount = isBlankQuery
                     ? findAndCountLaptopBySearchWithoutQueryParam(pageable)
                     : findAndCountLaptopBySearchWithQueryParam(search, pageable);
-            return ModelMapperUtil.mapPairOfListAndCount(laptopsAndCount, LaptopSummaryDTO.class);
+            return ModelMapperUtil.mapFirstOfPair(laptopsAndCount, LaptopSummaryDTO.class);
         });
     }
 
@@ -211,7 +211,7 @@ public class LaptopServiceImpl implements LaptopService {
         return Pair.of(laptops, count);
     }
 
-    private Pair<List<Laptop>, Long> findAndCountLaptopBySearchWithQueryParam(SearchInput search, Pageable pageable) {
+    private Pair<List<Laptop>, Long> findAndCountLaptopBySearchWithQueryParam(ProductSearchInput search, Pageable pageable) {
         String query = search.getQuery().trim();
         List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
         long count = laptopRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);

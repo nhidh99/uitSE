@@ -1,4 +1,4 @@
-package org.example.input;
+package org.example.input.query;
 
 import lombok.Data;
 

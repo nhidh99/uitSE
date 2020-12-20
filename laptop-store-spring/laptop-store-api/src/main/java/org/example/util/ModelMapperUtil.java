@@ -28,7 +28,7 @@ public class ModelMapperUtil {
         return list.stream().map(e -> modelMapper.map(e, outClass)).collect(Collectors.toList());
     }
 
-    public static <D, T> Pair<List<D>, Long> mapPairOfListAndCount(Pair<List<T>, Long> pair, Class<D> outClass) {
+    public static <D, T> Pair<List<D>, Long> mapFirstOfPair(Pair<List<T>, Long> pair, Class<D> outClass) {
         List<D> list = mapList(pair.getFirst(), outClass);
         long count = pair.getSecond();
         return Pair.of(list, count);

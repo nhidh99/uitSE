@@ -2,8 +2,8 @@ package org.example.service.impl;
 
 import org.example.constant.ErrorMessageConstants;
 import org.example.dao.UserRepository;
-import org.example.input.LoginInput;
-import org.example.input.RegisterInput;
+import org.example.input.form.LoginInput;
+import org.example.input.form.RegisterInput;
 import org.example.model.User;
 import org.example.security.JwtProvider;
 import org.example.service.api.AuthService;

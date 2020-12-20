@@ -7,7 +7,7 @@ import org.example.dao.RatingRepository;
 import org.example.dao.UserRepository;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.rating.RatingSummaryDTO;
-import org.example.input.RatingInput;
+import org.example.input.form.RatingInput;
 import org.example.model.Laptop;
 import org.example.model.Rating;
 import org.example.model.User;

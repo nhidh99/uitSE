@@ -4,7 +4,6 @@ import org.example.constant.ErrorMessageConstants;
 import org.example.dao.CityRepository;
 import org.example.dao.DistrictRepository;
 import org.example.dao.WardRepository;
-import org.example.input.AddressInput;
 import org.example.model.City;
 import org.example.model.District;
 import org.example.model.Ward;
@@ -16,14 +15,18 @@ import java.util.List;
 
 @Service
 public class LocationServiceImpl implements LocationService {
-    @Autowired
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
+    private final DistrictRepository districtRepository;
+    private final WardRepository wardRepository;
 
     @Autowired
-    private DistrictRepository districtRepository;
-
-    @Autowired
-    private WardRepository wardRepository;
+    public LocationServiceImpl(CityRepository cityRepository,
+                               DistrictRepository districtRepository,
+                               WardRepository wardRepository) {
+        this.cityRepository = cityRepository;
+        this.districtRepository = districtRepository;
+        this.wardRepository = wardRepository;
+    }
 
     @Override
     public List<City> findCities() {

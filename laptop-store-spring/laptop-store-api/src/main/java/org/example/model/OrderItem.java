@@ -58,4 +58,30 @@ public class OrderItem {
     public boolean isPromotionItem() {
         return productType == ProductType.PROMOTION;
     }
+
+    public static OrderItem fromLaptop(Laptop laptop, int quantity) {
+        return new OrderItem() {{
+            long unitPrice = laptop.getUnitPrice();
+            long totalPrice = unitPrice * quantity;
+            setProductId(laptop.getId());
+            setProductName(laptop.getName());
+            setProductType(ProductType.LAPTOP);
+            setUnitPrice(unitPrice);
+            setTotalPrice(totalPrice);
+            setQuantity(quantity);
+        }};
+    }
+
+    public static OrderItem fromPromotion(Promotion promotion, int quantity) {
+        return new OrderItem() {{
+            long unitPrice = promotion.getPrice();
+            long totalPrice = unitPrice * quantity;
+            setProductId(promotion.getId());
+            setProductName(promotion.getName());
+            setProductType(ProductType.PROMOTION);
+            setUnitPrice(unitPrice);
+            setTotalPrice(totalPrice);
+            setQuantity(quantity);
+        }};
+    }
 }

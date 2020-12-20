@@ -2,7 +2,7 @@ package org.example.service.api;
 
 import org.example.dto.address.AddressDetailDTO;
 import org.example.dto.address.AddressOverviewDTO;
-import org.example.input.AddressInput;
+import org.example.input.form.AddressInput;
 
 import java.util.List;
 

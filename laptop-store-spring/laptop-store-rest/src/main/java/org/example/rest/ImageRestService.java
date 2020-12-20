@@ -1,7 +1,7 @@
 package org.example.rest;
 
 import org.example.constant.ImageConstants;
-import org.example.input.ImageInput;
+import org.example.input.query.ImageInput;
 import org.example.service.api.LaptopImageService;
 import org.example.service.api.LaptopService;
 import org.example.service.api.PromotionService;

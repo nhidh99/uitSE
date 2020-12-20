@@ -8,12 +8,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
     @Query("SELECT new Promotion(p.id, p.name, p.price, p.quantity, p.alt) " +
             "FROM Promotion p JOIN p.laptops l WHERE p.recordStatus = true AND l.id = :laptopId")
     List<Promotion> findByRecordStatusTrueAndLaptopsId(@Param("laptopId") Integer laptopId);
+
+    @Query("SELECT new Promotion(p.id, p.name, p.price, p.quantity, p.alt) " +
+            "FROM Promotion p WHERE p.id IN :promotionIds")
+    List<Promotion> findByRecordStatusTrueAndIdIn(@Param("promotionIds") Set<Integer> promotionIds);
 
     @Query("SELECT new Promotion(p.id, p.name, p.price, p.quantity, p.alt) " +
             "FROM Promotion p WHERE p.recordStatus = true " +

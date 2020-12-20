@@ -6,13 +6,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.constant.ErrorMessageConstants;
 import org.example.constant.OrderConstants;
 import org.example.dao.*;
-import org.example.dto.order.*;
-import org.example.input.SearchInput;
+import org.example.dao.custom.LaptopPromotionRepository;
+import org.example.dto.order.OrderDetailDTO;
+import org.example.dto.order.OrderOverviewDTO;
+import org.example.dto.order.OrderSummaryDTO;
+import org.example.input.query.OrderSearchInput;
 import org.example.model.*;
 import org.example.service.api.OrderService;
 import org.example.service.util.PageableUtil;
 import org.example.type.OrderStatus;
-import org.example.type.ProductType;
 import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
@@ -25,10 +27,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -41,22 +42,25 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final LaptopRepository laptopRepository;
     private final PromotionRepository promotionRepository;
+    private final LaptopPromotionRepository laptopPromotionRepository;
     private final TransactionTemplate txTemplate;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, AddressRepository addressRepository,
                             UserRepository userRepository, LaptopRepository laptopRepository,
-                            PromotionRepository promotionRepository, PlatformTransactionManager txManager) {
+                            PromotionRepository promotionRepository, LaptopPromotionRepository laptopPromotionRepository,
+                            PlatformTransactionManager txManager) {
         this.orderRepository = orderRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.laptopRepository = laptopRepository;
         this.promotionRepository = promotionRepository;
+        this.laptopPromotionRepository = laptopPromotionRepository;
         this.txTemplate = new TransactionTemplate(txManager);
     }
 
     @Override
-    public Pair<List<OrderOverviewDTO>, Long> findOverviewByUsernameAndPage(String username, int page) {
+    public Pair<List<OrderOverviewDTO>, Long> findUserOrderOverviewsByPage(String username, int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
         return txTemplate.execute((status) -> {
             List<Order> orders = orderRepository.findByUserUsername(username, pageable);
@@ -66,134 +70,163 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDetailDTO findOrderDTOByOrderIdAndUsername(Integer orderId, String username) {
+    public OrderDetailDTO findUserOrderDetailByOrderId(String username, Integer orderId) {
         return txTemplate.execute((status) -> {
-            boolean isInvalidRequest = !orderRepository.existsByIdAndUserUsername(orderId, username);
-            if (isInvalidRequest) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
-
+            checkRequestAuthority(username, orderId);
             Order order = orderRepository.getOne(orderId);
-            List<OrderItemDTO> items = ModelMapperUtil.mapList(order.getItems(), OrderItemDTO.class);
-            List<OrderTrackDTO> tracks = ModelMapperUtil.mapList(order.getTracks(), OrderTrackDTO.class);
-            OrderDetailDTO orderDetailDTO = ModelMapperUtil.map(order, OrderDetailDTO.class);
-            orderDetailDTO.setItems(items);
-            orderDetailDTO.setTracks(tracks);
-            return orderDetailDTO;
+            return ModelMapperUtil.map(order, OrderDetailDTO.class);
         });
     }
 
+    private void checkRequestAuthority(String username, Integer orderId) {
+        boolean isValidRequest = orderRepository.existsByIdAndUserUsername(orderId, username);
+        if (!isValidRequest) {
+            throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
+        }
+    }
+
     @Override
-    public Order createOrder(Integer addressId, String username) throws JsonProcessingException {
+    public Integer insertUserOrder(Integer addressId, String username) throws JsonProcessingException {
+        return txTemplate.execute((status) -> {
+            checkDeliveryAddressId(addressId, username);
+            Order order = createUserOrder(addressId, username);
+            return orderRepository.saveAndFlush(order).getId();
+        });
+    }
+
+    private void checkDeliveryAddressId(Integer addressId, String username) {
         boolean isValidAddress = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
         if (!isValidAddress) {
             throw new IllegalArgumentException(ErrorMessageConstants.INVALID_DELIVERY_ADDRESS);
         }
-
-        ObjectMapper om = new ObjectMapper();
-        User user = userRepository.findByUsername(username);
-        Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {
-        });
-
-        if (cartMap.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessageConstants.EMPTY_CART);
-        }
-
-        // Sync with Database
-        Set<Integer> laptopIdsInCart = cartMap.keySet();
-        List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(cartMap.keySet());
-        if (laptopIdsInCart.size() != laptops.size()) {
-            List<Integer> laptopIdsAvailable = laptops.stream().map(Laptop::getId).collect(Collectors.toList());
-            laptopIdsInCart.stream().filter(id -> !laptopIdsAvailable.contains(id)).forEach(cartMap::remove);
-        }
-
-        return txTemplate.execute((status) -> {
-            // Build order info
-            LocalDate orderDate = LocalDate.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE));
-            LocalDate deliveryDate = DateUtil.addWorkingDays(orderDate, OrderConstants.DELIVERY_DAYS);
-            Address address = addressRepository.getOne(addressId);
-            List<OrderItem> items = buildOrderItemDetails(laptops, cartMap);
-            long itemsPrice = items.stream().filter(OrderItem::isLaptopItem).mapToLong(OrderItem::getTotalPrice).sum();
-
-            // Build order
-            Order order = Order.builder()
-                    .orderDate(orderDate)
-                    .deliveryDate(deliveryDate)
-                    .transportFee(OrderConstants.TRANSPORT_FEE)
-                    .totalPrice(itemsPrice + OrderConstants.TRANSPORT_FEE)
-                    .status(OrderStatus.PENDING).build();
-
-            // Map delivery address -> order delivery info & prevent addressId = new orderId
-            ModelMapperUtil.map(address, order);
-            order.setId(null);
-
-            // Build order items
-            items.forEach(item -> item.setOrder(order));
-            order.setItems(items);
-
-            // Set order pending status
-            OrderTrack track = OrderTrack.builder()
-                    .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE)))
-                    .status(OrderStatus.PENDING).order(order).build();
-            order.setTracks(Collections.singletonList(track));
-
-            // Clear user cart
-            user.setCart(EMPTY_CART);
-
-            // Save order
-            return orderRepository.saveAndFlush(order);
-        });
     }
 
-    private List<OrderItem> buildOrderItemDetails(List<Laptop> laptops, Map<Integer, Integer> cartMap) {
-        // Get Laptop Items from Cart
-        List<OrderItem> items = laptops.stream().map(laptop -> {
-            Integer quantity = cartMap.get(laptop.getId());
-            Long unitPrice = laptop.getUnitPrice();
-            Long totalPrice = unitPrice * quantity;
-            return OrderItem.builder()
-                    .productId(laptop.getId())
-                    .productType(ProductType.LAPTOP)
-                    .productName(laptop.getName())
-                    .unitPrice(unitPrice)
-                    .quantity(quantity)
-                    .totalPrice(totalPrice).build();
-        }).collect(Collectors.toList());
+    private Order createUserOrder(Integer addressId, String username) {
+        List<OrderItem> items = createUserOrderItems(username);
+        return createUserOrder(addressId, items);
+    }
 
-        // Get Promotions Items from Cart - find and calculate total quantities per promotion
-        Map<Integer, OrderItem> promotionItemMap = new HashMap<>();
-        items.forEach(laptop -> {
-            List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndLaptopsId(laptop.getProductId());
-            for (Promotion promotion : promotions) {
-                Integer quantity = laptop.getQuantity();
-                Integer promotionId = promotion.getId();
-                OrderItem item;
-                if (promotionItemMap.containsKey(promotionId)) {
-                    item = promotionItemMap.get(promotionId);
-                    item.setQuantity(item.getQuantity() + quantity);
-                } else {
-                    item = OrderItem.builder()
-                            .productType(ProductType.PROMOTION)
-                            .productId(promotion.getId())
-                            .productName(promotion.getName())
-                            .unitPrice(promotion.getPrice())
-                            .quantity(quantity).build();
-                }
-                promotionItemMap.put(promotionId, item);
+    private Order createUserOrder(Integer addressId, List<OrderItem> items) {
+        Order order = new Order();
+        initOrderDeliveryDate(order);
+        initOrderDeliveryAddress(order, addressId);
+        initOrderItems(order, items);
+        initOrderStatus(order);
+        return order;
+    }
+
+    private void initOrderDeliveryDate(Order order) {
+        LocalDate orderDate = DateUtil.getCurrentLocalDate();
+        LocalDate deliveryDate = DateUtil.addWorkingDays(orderDate, OrderConstants.DELIVERY_DAYS);
+        order.setOrderDate(orderDate);
+        order.setDeliveryDate(deliveryDate);
+    }
+
+    private void initOrderDeliveryAddress(Order order, Integer addressId) {
+        Address address = addressRepository.getOne(addressId);
+        ModelMapperUtil.map(address, order);
+        order.setTransportFee(OrderConstants.TRANSPORT_FEE);
+        order.setId(null);
+    }
+
+    private void initOrderItems(Order order, List<OrderItem> items) {
+        long totalLaptopPrice = items.stream().filter(OrderItem::isLaptopItem).mapToLong(OrderItem::getTotalPrice).sum();
+        items.forEach(item -> item.setOrder(order));
+        order.setTotalPrice(totalLaptopPrice + OrderConstants.TRANSPORT_FEE);
+        order.setItems(items);
+    }
+
+    private void initOrderStatus(Order order) {
+        OrderTrack track = OrderTrack.builder()
+                .createdAt(DateUtil.getCurrentLocalDateTime())
+                .status(OrderStatus.PENDING).order(order).build();
+        order.setTracks(Collections.singletonList(track));
+        order.setStatus(OrderStatus.PENDING);
+    }
+
+    private List<OrderItem> createUserOrderItems(String username) {
+        Map<Integer, Integer> userCart = createUserCart(username);
+        Stream<OrderItem> laptopItems = createLaptopItemsFromUserCart(userCart);
+        Stream<OrderItem> promotionItems = createPromotionItemsFromUserCart(userCart);
+        return Stream.concat(laptopItems, promotionItems).collect(Collectors.toList());
+    }
+
+    private Map<Integer, Integer> createUserCart(String username) {
+        User user = userRepository.findByUsername(username);
+        String cartJSON = user.getCart();
+        user.clearCart();
+        return createCartFromJSON(cartJSON);
+    }
+
+    private Map<Integer, Integer> createCartFromJSON(String cartJSON) {
+        checkUserEmptyCart(cartJSON);
+        try {
+            return new ObjectMapper().readValue(cartJSON, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(ErrorMessageConstants.SERVER_ERROR);
+        }
+    }
+
+    private void checkUserEmptyCart(String cartJSON) {
+        boolean isEmptyCart = cartJSON == null || EMPTY_CART.equals(cartJSON);
+        if (isEmptyCart) {
+            throw new IllegalArgumentException(ErrorMessageConstants.EMPTY_CART);
+        }
+    }
+
+    private Stream<OrderItem> createLaptopItemsFromUserCart(Map<Integer, Integer> userCart) {
+        Set<Integer> laptopIds = userCart.keySet();
+        List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(laptopIds);
+        syncUserCartWithDatabase(userCart, laptops);
+        return laptops.stream().map(laptop -> OrderItem.fromLaptop(laptop, userCart.get(laptop.getId())));
+    }
+
+    private void syncUserCartWithDatabase(Map<Integer, Integer> userCart, List<Laptop> laptops) {
+        Set<Integer> laptopIdsInCart = userCart.keySet();
+        if (laptopIdsInCart.size() != laptops.size()) {
+            List<Integer> laptopIdsAvailable = laptops.stream().map(Laptop::getId).collect(Collectors.toList());
+            laptopIdsInCart.stream().filter(id -> !laptopIdsAvailable.contains(id)).forEach(userCart::remove);
+        }
+    }
+
+    private Stream<OrderItem> createPromotionItemsFromUserCart(Map<Integer, Integer> userCart) {
+        Map<Integer, Integer> counts = createPromotionCountsFromCart(userCart);
+        Set<Integer> promotionIds = counts.keySet();
+        List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndIdIn(promotionIds);
+        return promotions.stream().map(promotion -> OrderItem.fromPromotion(promotion, counts.get(promotion.getId())));
+    }
+
+    private Map<Integer, Integer> createPromotionCountsFromCart(Map<Integer, Integer> userCart) {
+        Set<Integer> laptopIds = userCart.keySet();
+        List<Pair<Integer, Integer>> keys = laptopPromotionRepository.findKeysByLaptopIdsOrderByPromotionId(laptopIds);
+        return createPromotionCountsFromCart(userCart, keys);
+    }
+
+    private Map<Integer, Integer> createPromotionCountsFromCart(Map<Integer, Integer> userCart,
+                                                                List<Pair<Integer, Integer>> compositeKeys) {
+        int arrIndex = 0, promotionQty = 0;
+        Integer[] promotionIds = compositeKeys.stream().map(Pair::getSecond).distinct().toArray(Integer[]::new);
+        Map<Integer, Integer> output = new LinkedHashMap<>();
+
+        for (Pair<Integer, Integer> key : compositeKeys) {
+            int promotionId = key.getSecond();
+            if (promotionIds[arrIndex] != promotionId) {
+                output.put(promotionIds[arrIndex], promotionQty);
+                arrIndex++;
+                promotionQty = 0;
             }
-        });
-
-        Collection<OrderItem> promotionItems = promotionItemMap.values();
-        for (OrderItem promotionItem : promotionItems) {
-            Long unitPrice = promotionItem.getUnitPrice();
-            Long totalPrice = unitPrice * promotionItem.getQuantity();
-            promotionItem.setTotalPrice(totalPrice);
+            int laptopId = key.getFirst();
+            int promotionQtyFromLaptop = userCart.get(laptopId);
+            promotionQty += promotionQtyFromLaptop;
         }
 
-        items.addAll(promotionItems);
-        return items;
+        output.put(promotionIds[arrIndex], promotionQty);
+        return output;
     }
 
     @Override
-    public void cancelOrderByIdAndUsername(Integer orderId, String username) {
+    public void cancelOrderByIdAndUsername(String username, Integer orderId) {
         txTemplate.executeWithoutResult((status) -> {
             boolean isValidRequest = orderRepository.existsByIdAndUserUsername(orderId, username);
             if (!isValidRequest) {
@@ -203,14 +236,15 @@ public class OrderServiceImpl implements OrderService {
             Order order = orderRepository.getOne(orderId);
             order.setStatus(OrderStatus.CANCELED);
             OrderTrack track = OrderTrack.builder().order(order).status(OrderStatus.CANCELED)
-                    .createdAt(LocalDateTime.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE))).build();
+                    .createdAt(DateUtil.getCurrentLocalDateTime()).build();
             order.addTrack(track);
         });
     }
 
     @Override
-    public Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(OrderStatus status, SearchInput search) {
+    public Pair<List<OrderSummaryDTO>, Long> findOrderSummariesBySearch(OrderSearchInput search) {
         Pageable pageable = PageableUtil.createPageableFromSearch(search);
+        OrderStatus status = search.getStatus();
         return txTemplate.execute((txStatus) -> {
             if (search.getQuery().isEmpty()) {
                 List<Order> orders = orderRepository.findByStatus(status, pageable);

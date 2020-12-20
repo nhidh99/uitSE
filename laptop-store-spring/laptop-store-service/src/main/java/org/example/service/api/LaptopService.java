@@ -4,8 +4,8 @@ import org.example.dto.laptop.LaptopDetailDTO;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.laptop.LaptopSummaryDTO;
-import org.example.input.LaptopFilterInput;
-import org.example.input.SearchInput;
+import org.example.input.query.LaptopFilterInput;
+import org.example.input.query.ProductSearchInput;
 import org.example.util.Pair;
 
 import java.util.List;
@@ -28,5 +28,5 @@ public interface LaptopService {
 
     Pair<List<LaptopOverviewDTO>, Long> findAndCountLaptopOverviewsByFilter(LaptopFilterInput filter);
 
-    Pair<List<LaptopSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(SearchInput search);
+    Pair<List<LaptopSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(ProductSearchInput search);
 }

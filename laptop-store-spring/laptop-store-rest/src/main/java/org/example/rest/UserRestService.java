@@ -7,8 +7,8 @@ import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.milestone.MilestoneDTO;
 import org.example.dto.order.OrderOverviewDTO;
 import org.example.dto.order.OrderCheckoutDTO;
-import org.example.input.PasswordInput;
-import org.example.input.UserInfoInput;
+import org.example.input.form.PasswordInput;
+import org.example.input.form.UserInfoInput;
 import org.example.model.User;
 import org.example.service.api.AddressService;
 import org.example.service.api.MilestoneService;
@@ -84,7 +84,7 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserOrderOverviews(@AuthenticationPrincipal UserDetails userDetails,
                                                           @RequestParam(value = "page", defaultValue = "1") int page) {
         String username = userDetails.getUsername();
-        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findOverviewByUsernameAndPage(username, page);
+        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findUserOrderOverviewsByPage(username, page);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, ordersPair.getSecond().toString())
                 .body(ordersPair.getFirst());
@@ -155,7 +155,7 @@ public class UserRestService {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserMilestones(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        List<MilestoneDTO> milestones = milestoneService.findByUsername(username);
+        List<MilestoneDTO> milestones = milestoneService.findUserMilestones(username);
         return ResponseEntity.ok(milestones);
     }
 }

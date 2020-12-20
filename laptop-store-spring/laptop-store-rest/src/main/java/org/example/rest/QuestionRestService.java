@@ -5,7 +5,7 @@ import org.example.constant.SuccessMessageConstants;
 import org.example.dto.question.QuestionDTO;
 import org.example.dto.question.QuestionSummaryDTO;
 import org.example.dto.reply.CommonReplyDTO;
-import org.example.input.QuestionInput;
+import org.example.input.form.QuestionInput;
 import org.example.service.api.QuestionService;
 import org.example.type.FeedbackStatus;
 import org.example.util.Pair;

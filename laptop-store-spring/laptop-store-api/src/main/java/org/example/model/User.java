@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class User {
+    private static final String EMPTY_CART_JSON = "{}";
+
     @Id
     @Column(name = "id")
     @JsonIgnore
@@ -72,4 +74,8 @@ public class User {
     @Column(name = "wish_list")
     @JsonProperty("wish_list")
     private String wishList;
+
+    public void clearCart() {
+        this.cart = EMPTY_CART_JSON;
+    }
 }

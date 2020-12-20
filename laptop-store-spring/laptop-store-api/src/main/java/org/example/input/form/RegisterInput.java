@@ -1,11 +1,20 @@
-package org.example.input;
+package org.example.input.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.example.type.GenderType;
 
 @Data
-public class UserInfoInput {
+public class RegisterInput {
+    @JsonProperty("username")
+    private String username;
+
+    @JsonProperty("password")
+    private String password;
+
+    @JsonProperty("confirm")
+    private String confirm;
+
     @JsonProperty("name")
     private String name;
 

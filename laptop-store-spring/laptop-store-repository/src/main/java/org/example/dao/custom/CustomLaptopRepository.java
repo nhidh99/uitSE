@@ -1,6 +1,6 @@
 package org.example.dao.custom;
 
-import org.example.input.LaptopFilterInput;
+import org.example.input.query.LaptopFilterInput;
 import org.example.model.Laptop;
 
 import java.util.List;

@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.example.constant.HeaderConstants;
 import org.example.dto.order.OrderDetailDTO;
 import org.example.dto.order.OrderSummaryDTO;
-import org.example.input.SearchInput;
+import org.example.input.query.OrderSearchInput;
+import org.example.input.query.ProductSearchInput;
 import org.example.model.Order;
 import org.example.service.api.OrderService;
 import org.example.type.OrderStatus;
@@ -43,8 +44,9 @@ public class OrderRestService {
             @RequestParam(value = "order", defaultValue = "DESC") SearchOrderType order,
             @RequestParam(value = "status", defaultValue = "PENDING") OrderStatus status,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        SearchInput search = SearchInput.builder().query(query).target(target).order(order).page(page).build();
-        Pair<List<OrderSummaryDTO>, Long> output = orderService.findSummaryBySearch(status, search);
+        OrderSearchInput search = OrderSearchInput.builder().query(query).target(target)
+                .status(status).order(order).page(page).build();
+        Pair<List<OrderSummaryDTO>, Long> output = orderService.findOrderSummariesBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, output.getSecond().toString())
                 .body(output.getFirst());
@@ -55,7 +57,7 @@ public class OrderRestService {
     public ResponseEntity<?> getOrderById(@AuthenticationPrincipal UserDetails userDetails,
                                           @PathVariable("id") Integer orderId) {
         String username = userDetails.getUsername();
-        OrderDetailDTO order = orderService.findOrderDTOByOrderIdAndUsername(orderId, username);
+        OrderDetailDTO order = orderService.findUserOrderDetailByOrderId(username, orderId);
         return ResponseEntity.ok(order);
     }
 
@@ -64,7 +66,7 @@ public class OrderRestService {
     public ResponseEntity<?> postCancelOrderById(@AuthenticationPrincipal UserDetails userDetails,
                                                  @PathVariable("id") Integer orderId) {
         String username = userDetails.getUsername();
-        orderService.cancelOrderByIdAndUsername(orderId, username);
+        orderService.cancelOrderByIdAndUsername(username, orderId);
         return ResponseEntity.noContent().build();
     }
 
@@ -74,7 +76,7 @@ public class OrderRestService {
                                        @RequestBody Map<String, Integer> requestBody) throws JsonProcessingException {
         Integer addressId = requestBody.get("addressId");
         String username = userDetails.getUsername();
-        Order order = orderService.createOrder(addressId, username);
-        return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
+        Integer orderId = orderService.insertUserOrder(addressId, username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
     }
 }

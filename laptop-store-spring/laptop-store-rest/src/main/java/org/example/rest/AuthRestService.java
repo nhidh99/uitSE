@@ -2,8 +2,8 @@ package org.example.rest;
 
 import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
-import org.example.input.LoginInput;
-import org.example.input.RegisterInput;
+import org.example.input.form.LoginInput;
+import org.example.input.form.RegisterInput;
 import org.example.service.api.AuthService;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;

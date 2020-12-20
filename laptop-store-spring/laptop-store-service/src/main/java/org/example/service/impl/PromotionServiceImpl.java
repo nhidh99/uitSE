@@ -3,7 +3,7 @@ package org.example.service.impl;
 import org.example.constant.PaginateConstants;
 import org.example.dao.PromotionRepository;
 import org.example.dto.promotion.PromotionSummaryDTO;
-import org.example.input.SearchInput;
+import org.example.input.query.ProductSearchInput;
 import org.example.model.Promotion;
 import org.example.service.api.PromotionService;
 import org.example.type.SearchOrderType;
@@ -28,7 +28,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public Pair<List<PromotionSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(SearchInput search) {
+    public Pair<List<PromotionSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(ProductSearchInput search) {
         Pageable pageable = createPageableFromSearch(search);
         String query = search.getQuery();
 
@@ -43,7 +43,7 @@ public class PromotionServiceImpl implements PromotionService {
         }
     }
 
-    private Pageable createPageableFromSearch(SearchInput search) {
+    private Pageable createPageableFromSearch(ProductSearchInput search) {
         Sort sort = Sort.by(search.getTarget().toString());
         if (search.getOrder().equals(SearchOrderType.DESC)) {
             sort = sort.descending();

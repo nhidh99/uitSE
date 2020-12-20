@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.example.dto.order.OrderDetailDTO;
 import org.example.dto.order.OrderOverviewDTO;
 import org.example.dto.order.OrderSummaryDTO;
-import org.example.input.SearchInput;
+import org.example.input.query.OrderSearchInput;
+import org.example.input.query.ProductSearchInput;
 import org.example.model.Order;
 import org.example.type.OrderStatus;
 import org.example.util.Pair;
@@ -12,13 +13,13 @@ import org.example.util.Pair;
 import java.util.List;
 
 public interface OrderService {
-    Pair<List<OrderOverviewDTO>, Long> findOverviewByUsernameAndPage(String username, int page);
+    Pair<List<OrderOverviewDTO>, Long> findUserOrderOverviewsByPage(String username, int page);
 
-    OrderDetailDTO findOrderDTOByOrderIdAndUsername(Integer orderId, String username);
+    OrderDetailDTO findUserOrderDetailByOrderId(String username, Integer orderId);
 
-    Order createOrder(Integer addressId, String username) throws JsonProcessingException;
+    Integer insertUserOrder(Integer addressId, String username) throws JsonProcessingException;
 
-    void cancelOrderByIdAndUsername(Integer orderId, String username);
+    void cancelOrderByIdAndUsername(String username, Integer orderId);
 
-    Pair<List<OrderSummaryDTO>, Long> findSummaryBySearch(OrderStatus status, SearchInput search);
+    Pair<List<OrderSummaryDTO>, Long> findOrderSummariesBySearch(OrderSearchInput search);
 }

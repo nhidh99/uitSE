@@ -1,7 +1,7 @@
 package org.example.service.api;
 
-import org.example.input.LoginInput;
-import org.example.input.RegisterInput;
+import org.example.input.form.LoginInput;
+import org.example.input.form.RegisterInput;
 import org.example.util.Pair;
 
 import javax.naming.AuthenticationException;

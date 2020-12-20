@@ -5,5 +5,5 @@ import org.example.dto.milestone.MilestoneDTO;
 import java.util.List;
 
 public interface MilestoneService {
-    List<MilestoneDTO> findByUsername(String username);
+    List<MilestoneDTO> findUserMilestones(String username);
 }

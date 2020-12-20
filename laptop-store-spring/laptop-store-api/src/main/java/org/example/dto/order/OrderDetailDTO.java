@@ -47,10 +47,10 @@ public class OrderDetailDTO implements Serializable {
     private String street;
 
     @JsonProperty("items")
-    private List<OrderItemDTO> items;
+    private List<OrderItemDTO> itemDTOs;
 
     @JsonProperty("tracks")
-    private List<OrderTrackDTO> tracks;
+    private List<OrderTrackDTO> trackDTOs;
 
     @JsonProperty("order_location")
     private String orderLocation;

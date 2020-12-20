@@ -1,8 +1,12 @@
 package org.example.model;
 
 import lombok.*;
+import org.example.dto.order.OrderItemDTO;
+import org.example.dto.order.OrderTrackDTO;
 import org.example.type.OrderStatus;
+import org.example.util.ModelMapperUtil;
 import org.hibernate.annotations.Formula;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -104,5 +108,13 @@ public class Order {
 
     public void addTrack(OrderTrack track) {
         tracks.add(track);
+    }
+
+    public List<OrderItemDTO> getItemDTOs() {
+        return ModelMapperUtil.mapList(items, OrderItemDTO.class);
+    }
+
+    public List<OrderTrackDTO> getTrackDTOs() {
+        return ModelMapperUtil.mapList(tracks, OrderTrackDTO.class);
     }
 }

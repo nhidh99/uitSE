@@ -1,7 +1,7 @@
 package org.example.service.util;
 
 import org.example.constant.PaginateConstants;
-import org.example.input.SearchInput;
+import org.example.input.query.SearchInput;
 import org.example.type.SearchOrderType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

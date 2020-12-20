@@ -1,4 +1,4 @@
-package org.example.input;
+package org.example.input.form;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

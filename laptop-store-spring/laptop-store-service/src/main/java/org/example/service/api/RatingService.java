@@ -2,7 +2,7 @@ package org.example.service.api;
 
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.rating.RatingSummaryDTO;
-import org.example.input.RatingInput;
+import org.example.input.form.RatingInput;
 import org.example.type.FeedbackStatus;
 import org.example.util.Pair;
 

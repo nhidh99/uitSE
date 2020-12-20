@@ -1,7 +1,7 @@
 package org.example.rest;
 
 import org.example.dto.address.AddressDetailDTO;
-import org.example.input.AddressInput;
+import org.example.input.form.AddressInput;
 import org.example.service.api.AddressService;
 import org.example.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package org.example.dao.custom;
 
 import org.example.constant.PaginateConstants;
-import org.example.input.LaptopFilterInput;
+import org.example.input.query.LaptopFilterInput;
 import org.example.model.Laptop;
 import org.example.type.FilterTargetType;
 
