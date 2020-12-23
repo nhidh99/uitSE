@@ -16,6 +16,7 @@ const MessageBox = () => {
             clearTimeout(timeout.current);
         }
 
+        // @ts-ignore
         timeout.current = setTimeout(() => {
             store.dispatch(clearMessage());
         }, 3000);
