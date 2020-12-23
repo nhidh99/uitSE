@@ -8,9 +8,11 @@ import org.example.dao.*;
 import org.example.dto.laptop.LaptopOverviewDTO;
 import org.example.dto.order.OrderItemDTO;
 import org.example.dto.order.OrderCheckoutDTO;
+import org.example.helper.api.OrderHelper;
 import org.example.input.form.PasswordInput;
 import org.example.input.form.UserInfoInput;
 import org.example.model.Laptop;
+import org.example.model.Order;
 import org.example.model.Promotion;
 import org.example.model.User;
 import org.example.service.api.UserService;
@@ -32,21 +34,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final LaptopRepository laptopRepository;
-    private final PromotionRepository promotionRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrderHelper orderHelper;
     private final TransactionTemplate txTemplate;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, LaptopRepository laptopRepository,
-                           PromotionRepository promotionRepository, AddressRepository addressRepository,
-                           PasswordEncoder passwordEncoder, MilestoneRepository milestoneRepository,
-                           PlatformTransactionManager txManager) {
+                           AddressRepository addressRepository, PasswordEncoder passwordEncoder,
+                           OrderHelper orderHelper, PlatformTransactionManager txManager) {
         this.userRepository = userRepository;
         this.laptopRepository = laptopRepository;
-        this.promotionRepository = promotionRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
+        this.orderHelper = orderHelper;
         this.txTemplate = new TransactionTemplate(txManager);
     }
 
@@ -65,83 +66,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInfoByUsername(String username, UserInfoInput userInfoInput) {
+    public void updateUserInfoByUsername(String username, UserInfoInput userInfo) {
         User user = userRepository.findByUsername(username);
-        user.setName(userInfoInput.getName());
-        user.setPhone(userInfoInput.getPhone());
-        user.setEmail(userInfoInput.getEmail());
-        user.setGender(userInfoInput.getGender());
+        ModelMapperUtil.map(userInfo, user);
         userRepository.save(user);
     }
 
     @Override
     public OrderCheckoutDTO findCheckoutByUsername(String username) {
         return txTemplate.execute((status) -> {
-            try {
-                // Parse Cart-JSON to Cart-Map
-                ObjectMapper om = new ObjectMapper();
-                User user = userRepository.findByUsername(username);
-                Map<Integer, Integer> cartMap = om.readValue(user.getCart(), new TypeReference<>() {
-                });
-                if (cartMap.isEmpty()) {
-                    return OrderCheckoutDTO.fromItems(Collections.EMPTY_LIST);
-                }
-
-                // Sync with Database
-                Set<Integer> laptopIdsInCart = cartMap.keySet();
-                List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(cartMap.keySet());
-                if (laptopIdsInCart.size() != laptops.size()) {
-                    List<Integer> laptopIdsAvailable = laptops.stream().map(Laptop::getId).collect(Collectors.toList());
-                    laptopIdsInCart.stream().filter(id -> !laptopIdsAvailable.contains(id)).forEach(cartMap::remove);
-                    String cartJSON = om.writeValueAsString(cartMap);
-                    user.setCart(cartJSON);
-                }
-
-                // Buid order items -> order payment
-                List<OrderItemDTO> items = buildOrderItems(laptops, cartMap);
-                return OrderCheckoutDTO.fromItems(items);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException(ErrorMessageConstants.SERVER_ERROR);
-            }
+            Order order = orderHelper.createUserOrderWithoutAddress(username);
+            return ModelMapperUtil.map(order, OrderCheckoutDTO.class);
         });
-    }
-
-    private List<OrderItemDTO> buildOrderItems(List<Laptop> laptops, Map<Integer, Integer> cartMap) {
-        // Get Laptop Items from Cart
-        List<OrderItemDTO> items = laptops.stream().map(laptop -> {
-            Integer quantity = cartMap.get(laptop.getId());
-            return OrderItemDTO.builder()
-                    .productId(laptop.getId())
-                    .productType(ProductType.LAPTOP)
-                    .productName(laptop.getName())
-                    .unitPrice(laptop.getUnitPrice())
-                    .quantity(quantity).build();
-        }).collect(Collectors.toList());
-
-        // Get Promotions Items from Cart - find and calculate total quantities per promotion
-        Map<Integer, OrderItemDTO> promotionItemMap = new HashMap<>();
-        items.forEach(laptop -> {
-            List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndLaptopsId(laptop.getProductId());
-            for (Promotion promotion : promotions) {
-                Integer quantity = laptop.getQuantity();
-                Integer promotionId = promotion.getId();
-                OrderItemDTO item;
-                if (promotionItemMap.containsKey(promotionId)) {
-                    item = promotionItemMap.get(promotionId);
-                    item.setQuantity(item.getQuantity() + quantity);
-                } else {
-                    item = OrderItemDTO.builder()
-                            .productId(promotion.getId())
-                            .productType(ProductType.PROMOTION)
-                            .productName(promotion.getName())
-                            .unitPrice(promotion.getPrice())
-                            .quantity(quantity).build();
-                }
-                promotionItemMap.put(promotionId, item);
-            }
-        });
-        items.addAll(promotionItemMap.values());
-        return items;
     }
 
     @Override

@@ -2,8 +2,7 @@ package org.example.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.example.constant.OrderConstants;
 import org.example.util.DateUtil;
 
@@ -12,45 +11,48 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-@Getter
-@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderCheckoutDTO implements Serializable {
     @JsonProperty("transport_fee")
-    private final Integer transportFee;
+    private Integer transportFee;
 
     @JsonProperty("laptop_count")
-    private final Integer laptopCount;
+    private Integer laptopCount;
 
     @JsonProperty("promotion_count")
-    private final Integer promotionCount;
+    private Integer promotionCount;
 
     @JsonProperty("total_price")
-    private final Long totalPrice;
+    private Long totalPrice;
 
     @JsonProperty("laptop_price")
-    private final Long totalLaptopPrice;
+    private Long totalLaptopPrice;
 
     @JsonProperty("promotion_price")
-    private final Long totalPromotionPrice;
+    private Long totalPromotionPrice;
 
     @JsonProperty("order_date")
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private final LocalDate orderDate;
+    private LocalDate orderDate;
 
     @JsonProperty("delivery_date")
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private final LocalDate deliveryDate;
+    private LocalDate deliveryDate;
 
     @JsonProperty("items")
-    private final List<OrderItemDTO> items;
+    private List<OrderItemDTO> itemDTOs;
 
-    public static OrderCheckoutDTO fromItems(List<OrderItemDTO> items) {
-        LocalDate orderDate = LocalDate.now(ZoneId.of(OrderConstants.DELIVERY_TIME_ZONE));
-        LocalDate deliveryDate = DateUtil.addWorkingDays(orderDate, OrderConstants.DELIVERY_DAYS);
+    public void setItemDTOs(List<OrderItemDTO> itemDTOs) {
+        this.itemDTOs = itemDTOs;
+        setItemCountsAndTotalPrices();
+    }
+
+    private void setItemCountsAndTotalPrices() {
         int laptopCount = 0, promotionCount = 0;
         long totalLaptopPrice = 0, totalPromotionPrice = 0;
-
-        for (OrderItemDTO item : items) {
+        for (OrderItemDTO item : itemDTOs) {
             switch (item.getProductType()) {
                 case LAPTOP:
                     laptopCount += item.getQuantity();
@@ -64,12 +66,9 @@ public class OrderCheckoutDTO implements Serializable {
             }
         }
 
-        return OrderCheckoutDTO.builder()
-                .transportFee(items.isEmpty() ? 0 : OrderConstants.TRANSPORT_FEE)
-                .totalPrice(items.isEmpty() ? 0 : totalLaptopPrice + OrderConstants.TRANSPORT_FEE)
-                .orderDate(orderDate).deliveryDate(deliveryDate)
-                .laptopCount(laptopCount).promotionCount(promotionCount)
-                .items(items).totalLaptopPrice(totalLaptopPrice)
-                .totalPromotionPrice(totalPromotionPrice).build();
+        setLaptopCount(laptopCount);
+        setTotalLaptopPrice(totalLaptopPrice);
+        setPromotionCount(promotionCount);
+        setTotalPromotionPrice(totalPromotionPrice);
     }
 }

@@ -1,19 +1,18 @@
 package org.example.service.impl;
 
-import org.example.constant.PaginateConstants;
 import org.example.dao.PromotionRepository;
 import org.example.dto.promotion.PromotionSummaryDTO;
-import org.example.input.query.ProductSearchInput;
+import org.example.input.query.SearchInput;
 import org.example.model.Promotion;
 import org.example.service.api.PromotionService;
-import org.example.type.SearchOrderType;
+import org.example.service.util.PageableUtil;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -21,38 +20,41 @@ import java.util.List;
 public class PromotionServiceImpl implements PromotionService {
 
     private final PromotionRepository promotionRepository;
+    private final TransactionTemplate txTemplate;
 
     @Autowired
-    public PromotionServiceImpl(PromotionRepository promotionRepository) {
+    public PromotionServiceImpl(PromotionRepository promotionRepository,
+                                PlatformTransactionManager txManager) {
         this.promotionRepository = promotionRepository;
+        this.txTemplate = new TransactionTemplate(txManager);
     }
 
     @Override
-    public Pair<List<PromotionSummaryDTO>, Long> findAndCountLaptopSummariesBySearch(ProductSearchInput search) {
-        Pageable pageable = createPageableFromSearch(search);
+    public Pair<List<PromotionSummaryDTO>, Long> findAndCountPromotionSummariesBySearch(SearchInput search) {
+        Pageable pageable = PageableUtil.createPageableFromSearch(search);
+        return txTemplate.execute((status) -> {
+            Pair<List<Promotion>, Long> promotionsAndCount = search.isEmptyQuery()
+                    ? findAndCountPromotionsBySearchWithoutQueryParam(pageable)
+                    : findAndCountPromotionsBySearchWithQueryParam(search, pageable);
+            return ModelMapperUtil.mapFirstOfPair(promotionsAndCount, PromotionSummaryDTO.class);
+        });
+    }
+
+    private Pair<List<Promotion>, Long> findAndCountPromotionsBySearchWithQueryParam(SearchInput search, Pageable pageable) {
         String query = search.getQuery();
-
-        if (query.isEmpty()) {
-            List<Promotion> promotions = promotionRepository.findByRecordStatusTrue(pageable);
-            long promotionCount = promotionRepository.countByRecordStatusTrue();
-            return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
-        } else {
-            List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
-            long promotionCount = promotionRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
-            return Pair.of(ModelMapperUtil.mapList(promotions, PromotionSummaryDTO.class), promotionCount);
-        }
+        List<Promotion> promotions = promotionRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
+        long count = promotionRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
+        return Pair.of(promotions, count);
     }
 
-    private Pageable createPageableFromSearch(ProductSearchInput search) {
-        Sort sort = Sort.by(search.getTarget().toString());
-        if (search.getOrder().equals(SearchOrderType.DESC)) {
-            sort = sort.descending();
-        }
-        return PageRequest.of(search.getPage() - 1, PaginateConstants.SIZE_PER_ADMIN_PAGE, sort);
+    private Pair<List<Promotion>, Long> findAndCountPromotionsBySearchWithoutQueryParam(Pageable pageable) {
+        List<Promotion> promotions = promotionRepository.findByRecordStatusTrue(pageable);
+        long count = promotionRepository.countByRecordStatusTrue();
+        return Pair.of(promotions, count);
     }
 
     @Override
-    public byte[] findImageById(Integer id) {
+    public byte[] findPromotionImageById(Integer id) {
         return promotionRepository.findImageById(id);
     }
 }

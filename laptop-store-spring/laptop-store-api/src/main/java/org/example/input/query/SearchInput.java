@@ -15,4 +15,8 @@ public abstract class SearchInput {
     protected SearchOrderType order;
     protected SearchTargetType target;
     protected Integer page;
+
+    public boolean isEmptyQuery() {
+        return query.isBlank();
+    }
 }

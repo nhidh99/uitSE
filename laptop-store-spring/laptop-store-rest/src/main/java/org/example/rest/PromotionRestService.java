@@ -39,7 +39,7 @@ public class PromotionRestService {
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
         ProductSearchInput search = ProductSearchInput.builder().query(query).target(target).order(order).page(page).build();
-        Pair<List<PromotionSummaryDTO>, Long> laptopsAndCount = promotionService.findAndCountLaptopSummariesBySearch(search);
+        Pair<List<PromotionSummaryDTO>, Long> laptopsAndCount = promotionService.findAndCountPromotionSummariesBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());

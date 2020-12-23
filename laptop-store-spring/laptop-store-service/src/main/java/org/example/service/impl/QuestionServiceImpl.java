@@ -41,8 +41,6 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionReplyRepository questionReplyRepository;
     private final TransactionTemplate txTemplate;
 
-    private static final String LAPTOP_STORE = "Laptop Store";
-
     @Autowired
     public QuestionServiceImpl(UserRepository userRepository, LaptopRepository laptopRepository,
                                QuestionRepository questionRepository, QuestionReplyRepository questionReplyRepository,

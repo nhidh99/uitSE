@@ -3,7 +3,6 @@ package org.example.rest;
 import org.example.constant.ImageConstants;
 import org.example.input.query.ImageInput;
 import org.example.service.api.LaptopImageService;
-import org.example.service.api.LaptopService;
 import org.example.service.api.PromotionService;
 import org.example.type.ImageResolutionType;
 import org.example.type.ImageType;
@@ -36,14 +35,12 @@ public class ImageRestService {
         put(ImageConstants.LAPTOP_THUMBNAIL_RESOLUTION, ImageResolutionType.LAPTOP_THUMBNAIL);
     }};
 
-    private final LaptopService laptopService;
     private final LaptopImageService laptopImageService;
     private final PromotionService promotionService;
 
     @Autowired
-    public ImageRestService(LaptopService laptopService, LaptopImageService laptopImageService,
+    public ImageRestService(LaptopImageService laptopImageService,
                             PromotionService promotionService) {
-        this.laptopService = laptopService;
         this.laptopImageService = laptopImageService;
         this.promotionService = promotionService;
     }
@@ -70,7 +67,7 @@ public class ImageRestService {
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getPromotionImage(ImageInput imageInput) {
         byte[] image = imageInput.getResolution() == ImageConstants.PROMOTION_IMAGE_RESOLUTION
-                ? promotionService.findImageById(imageInput.getId()) : null;
+                ? promotionService.findPromotionImageById(imageInput.getId()) : null;
         return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(image);
     }
 }

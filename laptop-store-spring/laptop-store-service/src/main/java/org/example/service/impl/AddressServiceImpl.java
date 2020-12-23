@@ -71,7 +71,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressDetailDTO findUserAddressDetail(Integer addressId, String username) {
         return txTemplate.execute((status) -> {
-            checkRequestAuthority(username, addressId);
+            checkModifyAddressAuthority(username, addressId);
             Address address = addressRepository.getOne(addressId);
             return ModelMapperUtil.map(address, AddressDetailDTO.class);
         });
@@ -103,7 +103,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void deleteUserAddress(Integer addressId, String username) {
         txTemplate.executeWithoutResult((status) -> {
-            checkRequestAuthority(username, addressId);
+            checkModifyAddressAuthority(username, addressId);
             Address address = addressRepository.getOne(addressId);
             address.setRecordStatus(false);
             deleteUserDefaultAddressIfMatched(username, address);
@@ -120,7 +120,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void updateUserAddress(AddressInput addressInput) {
         txTemplate.executeWithoutResult((status) -> {
-            checkRequestAuthority(addressInput);
+            checkModifyAddressAuthority(addressInput);
             checkAddressInputLocation(addressInput);
             Integer addressId = addressInput.getAddressId();
             Address address = addressRepository.getOne(addressId);
@@ -128,13 +128,13 @@ public class AddressServiceImpl implements AddressService {
         });
     }
 
-    private void checkRequestAuthority(AddressInput addressInput) {
+    private void checkModifyAddressAuthority(AddressInput addressInput) {
         Integer addressId = addressInput.getAddressId();
         String username = addressInput.getUsername();
-        checkRequestAuthority(username, addressId);
+        checkModifyAddressAuthority(username, addressId);
     }
 
-    private void checkRequestAuthority(String username, Integer addressId) {
+    private void checkModifyAddressAuthority(String username, Integer addressId) {
         boolean isValidRecord = addressRepository.existsByIdAndUserUsernameAndRecordStatusTrue(addressId, username);
         if (!isValidRecord) throw new IllegalArgumentException(ErrorMessageConstants.FORBIDDEN);
     }

@@ -4,12 +4,14 @@ import lombok.*;
 import org.example.dto.order.OrderItemDTO;
 import org.example.dto.order.OrderTrackDTO;
 import org.example.type.OrderStatus;
+import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
 import org.hibernate.annotations.Formula;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -107,6 +109,16 @@ public class Order {
     }
 
     public void addTrack(OrderTrack track) {
+        tracks.add(track);
+    }
+
+    public void addTrack(OrderStatus status) {
+        if (tracks == null) {
+            tracks = new LinkedList<>();
+        }
+        LocalDateTime now = DateUtil.getCurrentLocalDateTime();
+        OrderTrack track = OrderTrack.builder().order(this)
+                .status(status).createdAt(now).build();
         tracks.add(track);
     }
 

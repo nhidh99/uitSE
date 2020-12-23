@@ -199,19 +199,19 @@ public class LaptopServiceImpl implements LaptopService {
             Pageable pageable = PageableUtil.createPageableFromSearch(search);
             boolean isBlankQuery = search.getQuery().isBlank();
             Pair<List<Laptop>, Long> laptopsAndCount = isBlankQuery
-                    ? findAndCountLaptopBySearchWithoutQueryParam(pageable)
-                    : findAndCountLaptopBySearchWithQueryParam(search, pageable);
+                    ? findAndCountLaptopsBySearchWithoutQueryParam(pageable)
+                    : findAndCountLaptopsBySearchWithQueryParam(search, pageable);
             return ModelMapperUtil.mapFirstOfPair(laptopsAndCount, LaptopSummaryDTO.class);
         });
     }
 
-    private Pair<List<Laptop>, Long> findAndCountLaptopBySearchWithoutQueryParam(Pageable pageable) {
+    private Pair<List<Laptop>, Long> findAndCountLaptopsBySearchWithoutQueryParam(Pageable pageable) {
         List<Laptop> laptops = laptopRepository.findByRecordStatusTrue(pageable);
         long count = laptopRepository.countByRecordStatusTrue();
         return Pair.of(laptops, count);
     }
 
-    private Pair<List<Laptop>, Long> findAndCountLaptopBySearchWithQueryParam(ProductSearchInput search, Pageable pageable) {
+    private Pair<List<Laptop>, Long> findAndCountLaptopsBySearchWithQueryParam(ProductSearchInput search, Pageable pageable) {
         String query = search.getQuery().trim();
         List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndNameContainingOrIdEquals(query, pageable);
         long count = laptopRepository.countByRecordStatusTrueAndNameContainingOrIdEquals(query);
