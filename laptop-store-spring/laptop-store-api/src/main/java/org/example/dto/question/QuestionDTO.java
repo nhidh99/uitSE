@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.dto.reply.CommonReplyDTO;
+import org.example.model.Question;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

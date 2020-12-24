@@ -1,5 +1,6 @@
 package org.example.input.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.example.constant.ErrorMessageConstants;
@@ -16,6 +17,9 @@ public class QuestionInput {
     @NotBlank(message = ErrorMessageConstants.EMPTY_QUESTION)
     @JsonProperty("question")
     private String question;
+
+    @JsonIgnore
+    private String username;
 
     public void setQuestion(String question) {
         this.question = question.trim();

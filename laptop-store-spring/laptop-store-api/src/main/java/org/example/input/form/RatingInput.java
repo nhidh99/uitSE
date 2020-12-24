@@ -1,5 +1,6 @@
 package org.example.input.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -13,4 +14,7 @@ public class RatingInput {
 
     @JsonProperty("product_id")
     private Integer productId;
+
+    @JsonIgnore
+    private String username;
 }

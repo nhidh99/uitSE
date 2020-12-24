@@ -3,7 +3,7 @@ package org.example.rest;
 import org.example.model.City;
 import org.example.model.District;
 import org.example.model.Ward;
-import org.example.service.api.LocationService;
+import org.example.service.api.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

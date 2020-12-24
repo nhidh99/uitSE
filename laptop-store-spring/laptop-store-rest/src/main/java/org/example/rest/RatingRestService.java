@@ -5,7 +5,7 @@ import org.example.constant.SuccessMessageConstants;
 import org.example.dto.rating.RatingDTO;
 import org.example.dto.rating.RatingSummaryDTO;
 import org.example.input.form.RatingInput;
-import org.example.service.api.RatingService;
+import org.example.service.api.service.RatingService;
 import org.example.type.FeedbackStatus;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class RatingRestService {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "status")
     public ResponseEntity<?> getRatingByProductId(@RequestParam("status") FeedbackStatus status,
                                                   @RequestParam("page") Integer page) {
-        Pair<List<RatingSummaryDTO>, Long> ratingsAndCount = ratingService.findByStatus(status, page);
+        Pair<List<RatingSummaryDTO>, Long> ratingsAndCount = ratingService.findAndCountRatingSummariesByStatus(status, page);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, ratingsAndCount.getSecond().toString())
                 .body(ratingsAndCount.getFirst());
@@ -54,8 +54,8 @@ public class RatingRestService {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> postRating(@RequestBody RatingInput ratingInput,
                                         @AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        ratingService.createRating(ratingInput, username);
+        ratingInput.setUsername(userDetails.getUsername());
+        ratingService.insertRating(ratingInput);
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessMessageConstants.RATING_CREATED);
     }
 }

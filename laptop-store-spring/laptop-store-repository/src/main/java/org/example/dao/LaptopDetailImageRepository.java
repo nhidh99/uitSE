@@ -1,7 +1,7 @@
 package org.example.dao;
 
 import org.example.constant.RepositoryNameConstants;
-import org.example.dao.custom.CustomLaptopImageRepostiory;
+import org.example.dao.custom.CustomLaptopImageRepository;
 import org.example.model.LaptopDetailImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository(RepositoryNameConstants.LAPTOP_DETAIL_IMAGE)
-public interface LaptopDetailImageRepository extends JpaRepository<LaptopDetailImage, Integer>, CustomLaptopImageRepostiory {
+public interface LaptopDetailImageRepository extends JpaRepository<LaptopDetailImage, Integer>, CustomLaptopImageRepository {
     @Query("SELECT i.id FROM LaptopDetailImage i WHERE i.laptop.id = :laptopId")
     List<Integer> findIdsByLaptopId(@Param("laptopId") Integer laptopId);
 

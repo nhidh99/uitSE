@@ -6,7 +6,7 @@ import org.example.dto.question.QuestionDTO;
 import org.example.dto.question.QuestionSummaryDTO;
 import org.example.dto.reply.CommonReplyDTO;
 import org.example.input.form.QuestionInput;
-import org.example.service.api.QuestionService;
+import org.example.service.api.service.QuestionService;
 import org.example.type.FeedbackStatus;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,8 @@ public class QuestionRestService {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> postQuestion(@AuthenticationPrincipal UserDetails userDetails,
                                           @Valid @RequestBody QuestionInput questionInput) {
-        questionService.createQuestion(questionInput, userDetails.getUsername());
+        questionInput.setUsername(userDetails.getUsername());
+        questionService.insertQuestion(questionInput);
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessMessageConstants.QUESTION_CREATED);
     }
 
@@ -45,7 +46,7 @@ public class QuestionRestService {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "product_id")
     public ResponseEntity<?> getQuestionByProductId(@RequestParam("product_id") Integer productId,
                                                     @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        Pair<List<QuestionDTO>, Long> questionsAndCount = questionService.findByProductId(productId, page);
+        Pair<List<QuestionDTO>, Long> questionsAndCount = questionService.findAndCountQuestionsByProductId(productId, page);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, questionsAndCount.getSecond().toString())
                 .body(questionsAndCount.getFirst());
@@ -56,7 +57,7 @@ public class QuestionRestService {
     public ResponseEntity<?> getQuestionByStatus(
             @RequestParam(value = "status", defaultValue = "PENDING") FeedbackStatus status,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        Pair<List<QuestionSummaryDTO>, Long> questionsAndCount = questionService.findByStatus(status, page);
+        Pair<List<QuestionSummaryDTO>, Long> questionsAndCount = questionService.findQuestionsByStatus(status, page);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, questionsAndCount.getSecond().toString())
                 .body(questionsAndCount.getFirst());

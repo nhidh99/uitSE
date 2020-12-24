@@ -10,10 +10,10 @@ import org.example.dto.order.OrderCheckoutDTO;
 import org.example.input.form.PasswordInput;
 import org.example.input.form.UserInfoInput;
 import org.example.model.User;
-import org.example.service.api.AddressService;
-import org.example.service.api.MilestoneService;
-import org.example.service.api.OrderService;
-import org.example.service.api.UserService;
+import org.example.service.api.service.AddressService;
+import org.example.service.api.service.MilestoneService;
+import org.example.service.api.service.OrderService;
+import org.example.service.api.service.UserService;
 import org.example.type.SocialMediaType;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +75,7 @@ public class UserRestService {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUserAddresses(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        List<AddressOverviewDTO> addresses = addressService.findUserAddressOverviews(username);
+        List<AddressOverviewDTO> addresses = addressService.findUserAddresses(username);
         return ResponseEntity.ok(addresses);
     }
 
@@ -84,7 +84,7 @@ public class UserRestService {
     public ResponseEntity<?> getCurrentUserOrderOverviews(@AuthenticationPrincipal UserDetails userDetails,
                                                           @RequestParam(value = "page", defaultValue = "1") int page) {
         String username = userDetails.getUsername();
-        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findUserOrderOverviewsByPage(username, page);
+        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findUserOrdersByPage(username, page);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, ordersPair.getSecond().toString())
                 .body(ordersPair.getFirst());
@@ -132,7 +132,7 @@ public class UserRestService {
         return ResponseEntity.ok(output);
     }
 
-    @PostMapping(value = "/me/default-address", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/me/default-address", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> putCurrentUserDefaultAddressId(@RequestBody Map<String, Integer> requestBody,
                                                             @AuthenticationPrincipal UserDetails userDetails) {
@@ -147,7 +147,8 @@ public class UserRestService {
     public ResponseEntity<?> putCurrentUserPassword(@RequestBody PasswordInput passwordInput,
                                                     @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        userService.updateUserPassword(passwordInput, username);
+        passwordInput.setUsername(username);
+        userService.updateUserPassword(passwordInput);
         return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_PASSWORD);
     }
 

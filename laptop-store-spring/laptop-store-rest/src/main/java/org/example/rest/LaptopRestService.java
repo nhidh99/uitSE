@@ -7,7 +7,7 @@ import org.example.dto.laptop.LaptopSpecDTO;
 import org.example.dto.laptop.LaptopSummaryDTO;
 import org.example.input.query.LaptopFilterInput;
 import org.example.input.query.ProductSearchInput;
-import org.example.service.api.LaptopService;
+import org.example.service.api.service.LaptopService;
 import org.example.type.*;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class LaptopRestService {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "ids")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getByIds(@RequestParam(value = "ids") List<Integer> ids) {
-        List<LaptopOverviewDTO> laptops = laptopService.findLaptopOverviewsByIds(ids);
+        List<LaptopOverviewDTO> laptops = laptopService.findLaptopsByIds(ids);
         return ResponseEntity.ok(laptops);
     }
 
@@ -101,7 +101,7 @@ public class LaptopRestService {
 
         LaptopFilterInput filter = LaptopFilterInput.builder().name(name).brands(brands)
                 .target(target).cpus(cpus).rams(rams).page(page).price(price).tags(tags).build();
-        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopOverviewsByFilter(filter);
+        Pair<List<LaptopOverviewDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopsByFilter(filter);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());
@@ -116,7 +116,7 @@ public class LaptopRestService {
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
         ProductSearchInput search = ProductSearchInput.builder().query(query).target(target).order(order).page(page).build();
-        Pair<List<LaptopSummaryDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopSummariesBySearch(search);
+        Pair<List<LaptopSummaryDTO>, Long> laptopsAndCount = laptopService.findAndCountLaptopsBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());

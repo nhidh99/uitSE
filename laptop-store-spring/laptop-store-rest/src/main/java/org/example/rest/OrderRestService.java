@@ -5,9 +5,7 @@ import org.example.constant.HeaderConstants;
 import org.example.dto.order.OrderDetailDTO;
 import org.example.dto.order.OrderSummaryDTO;
 import org.example.input.query.OrderSearchInput;
-import org.example.input.query.ProductSearchInput;
-import org.example.model.Order;
-import org.example.service.api.OrderService;
+import org.example.service.api.service.OrderService;
 import org.example.type.OrderStatus;
 import org.example.type.SearchOrderType;
 import org.example.type.SearchTargetType;
@@ -46,7 +44,7 @@ public class OrderRestService {
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
         OrderSearchInput search = OrderSearchInput.builder().query(query).target(target)
                 .status(status).order(order).page(page).build();
-        Pair<List<OrderSummaryDTO>, Long> output = orderService.findOrderSummariesBySearch(search);
+        Pair<List<OrderSummaryDTO>, Long> output = orderService.findOrdersBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, output.getSecond().toString())
                 .body(output.getFirst());

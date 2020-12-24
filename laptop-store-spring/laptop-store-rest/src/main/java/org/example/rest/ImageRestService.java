@@ -2,8 +2,8 @@ package org.example.rest;
 
 import org.example.constant.ImageConstants;
 import org.example.input.query.ImageInput;
-import org.example.service.api.LaptopImageService;
-import org.example.service.api.PromotionService;
+import org.example.service.api.service.LaptopImageService;
+import org.example.service.api.service.PromotionService;
 import org.example.type.ImageResolutionType;
 import org.example.type.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class ImageRestService {
     public ResponseEntity<?> getLaptopMainImage(ImageInput imageInput) {
         ImageType imageType = ImageType.LAPTOP_MAIN_IMAGE;
         ImageResolutionType resolutionType = laptopResolutionMap.get(imageInput.getResolution());
-        byte[] image = laptopImageService.findImageById(imageInput.getId(), resolutionType, imageType);
+        byte[] image = laptopImageService.findLaptopImageById(imageInput.getId(), resolutionType, imageType);
         return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(image);
     }
 
@@ -59,7 +59,7 @@ public class ImageRestService {
     public ResponseEntity<?> getLaptopDetailImage(ImageInput imageInput) {
         ImageType imageType = ImageType.LAPTOP_DETAIL_IMAGE;
         ImageResolutionType type = laptopResolutionMap.get(imageInput.getResolution());
-        byte[] image = laptopImageService.findImageById(imageInput.getId(), type, imageType);
+        byte[] image = laptopImageService.findLaptopImageById(imageInput.getId(), type, imageType);
         return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(image);
     }
 

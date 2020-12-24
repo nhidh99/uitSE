@@ -35,7 +35,7 @@ public class CustomLaptopRepositoryImpl implements CustomLaptopRepository {
     }
 
     @Override
-    public List<Laptop> findAndCountLaptopOverviewsByFilter(LaptopFilterInput filter) {
+    public List<Laptop> findAndCountLaptopsByFilter(LaptopFilterInput filter) {
         TypedQuery<Laptop> typedQuery = buildFilterQuery(LAPTOP_SELECT_QUERY, filter, Laptop.class);
         return typedQuery
                 .setFirstResult(PaginateConstants.LAPTOP_PER_USER_PAGE * (filter.getPage() - 1))

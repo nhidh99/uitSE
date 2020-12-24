@@ -3,7 +3,7 @@ package org.example.rest;
 import org.example.constant.HeaderConstants;
 import org.example.dto.promotion.PromotionSummaryDTO;
 import org.example.input.query.ProductSearchInput;
-import org.example.service.api.PromotionService;
+import org.example.service.api.service.PromotionService;
 import org.example.type.SearchOrderType;
 import org.example.type.SearchTargetType;
 import org.example.util.Pair;
@@ -39,7 +39,7 @@ public class PromotionRestService {
             @RequestParam(value = "page", defaultValue = "1") Integer page) {
 
         ProductSearchInput search = ProductSearchInput.builder().query(query).target(target).order(order).page(page).build();
-        Pair<List<PromotionSummaryDTO>, Long> laptopsAndCount = promotionService.findAndCountPromotionSummariesBySearch(search);
+        Pair<List<PromotionSummaryDTO>, Long> laptopsAndCount = promotionService.findAndCountPromotionsBySearch(search);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, laptopsAndCount.getSecond().toString())
                 .body(laptopsAndCount.getFirst());

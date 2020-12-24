@@ -4,7 +4,7 @@ import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.input.form.LoginInput;
 import org.example.input.form.RegisterInput;
-import org.example.service.api.AuthService;
+import org.example.service.api.service.AuthService;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

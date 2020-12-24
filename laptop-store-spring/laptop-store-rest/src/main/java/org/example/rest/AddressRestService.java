@@ -2,8 +2,8 @@ package org.example.rest;
 
 import org.example.dto.address.AddressDetailDTO;
 import org.example.input.form.AddressInput;
-import org.example.service.api.AddressService;
-import org.example.service.api.UserService;
+import org.example.service.api.service.AddressService;
+import org.example.service.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,18 +66,5 @@ public class AddressRestService {
         addressInput.setUsername(username);
         addressService.updateUserAddress(addressInput);
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping(value = "/{id}/default", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putDefaultAddress(@AuthenticationPrincipal UserDetails userDetails,
-                                               @PathVariable("id") Integer addressId) {
-        try {
-            String username = userDetails.getUsername();
-            userService.setDefaultAddress(username, addressId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 }
