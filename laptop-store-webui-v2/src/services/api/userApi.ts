@@ -47,7 +47,7 @@ const userApi = {
     putDefaultAddress: (addressId: number) => {
         const url = "/users/me/default-address";
         const data = { address_id: addressId };
-        return axiosAuthClient.post(url, data);
+        return axiosAuthClient.put(url, data);
     },
 
     putCurrentUserPassword: (data: PasswordFormValues) => {
