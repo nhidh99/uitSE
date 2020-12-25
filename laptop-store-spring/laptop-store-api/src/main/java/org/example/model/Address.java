@@ -1,9 +1,6 @@
 package org.example.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -27,14 +24,17 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "ward_id")
+    @ToString.Exclude
     private Ward ward;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
+    @ToString.Exclude
     private District district;
 
     @ManyToOne
     @JoinColumn(name = "city_id")
+    @ToString.Exclude
     private City city;
 
     @Column(name = "receiver_name")
@@ -45,6 +45,7 @@ public class Address {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
     @Column(name = "record_status")

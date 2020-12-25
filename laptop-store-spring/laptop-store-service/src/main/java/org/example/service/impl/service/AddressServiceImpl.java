@@ -93,8 +93,9 @@ public class AddressServiceImpl implements AddressService {
         txTemplate.executeWithoutResult((status) -> {
             addressChecker.checkAddressInput(addressInput);
             Integer addressId = addressInput.getAddressId();
-            Address address = addressRepository.getOne(addressId);
-            ModelMapperUtil.map(addressInput, address);
+            Address newAddress = addressCreator.createUserAddress(addressInput);
+            Address curAddress = addressRepository.getOne(addressId);
+            ModelMapperUtil.map(newAddress, curAddress);
         });
     }
 }

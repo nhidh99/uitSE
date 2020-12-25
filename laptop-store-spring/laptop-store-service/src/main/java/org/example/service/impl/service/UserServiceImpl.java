@@ -129,10 +129,8 @@ public class UserServiceImpl implements UserService {
     public List<LaptopOverviewDTO> findUserWishList(String username) {
         return txTemplate.execute((status) -> {
             User user = userRepository.findByUsername(username);
-            if (user.getWishList() == null) {
-                return Collections.EMPTY_LIST;
-            }
-            List<Integer> laptopIds = JsonUtil.parse(user.getWishList());
+            if (user.getWishList() == null) { return Collections.EMPTY_LIST; }
+            Set<Integer> laptopIds = JsonUtil.parseWishList(user.getWishList());
             List<Laptop> laptops = laptopRepository.findByRecordStatusTrueAndIdIn(laptopIds);
             return ModelMapperUtil.mapList(laptops, LaptopOverviewDTO.class);
         });
@@ -144,8 +142,8 @@ public class UserServiceImpl implements UserService {
             laptopChecker.checkExistedLaptop(laptopId);
             User user = userRepository.findByUsername(username);
 
-            Set<Integer> wishList = JsonUtil.parse(user.getWishList());
-            Map<Integer, Integer> cartMap = JsonUtil.parse(user.getCart());
+            Set<Integer> wishList = JsonUtil.parseWishList(user.getWishList());
+            Map<Integer, Integer> cartMap = JsonUtil.parseCart(user.getCart());
             if (!cartMap.containsKey(laptopId)) {
                 throw new IllegalArgumentException(ErrorMessageConstants.ITEM_NOT_FOUND_IN_CART);
             }

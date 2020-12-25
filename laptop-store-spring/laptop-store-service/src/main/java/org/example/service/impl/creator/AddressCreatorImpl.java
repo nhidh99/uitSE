@@ -53,7 +53,7 @@ public class AddressCreatorImpl implements AddressCreator {
         District district = districtRepository.getOne(addressInput.getDistrictId());
         Ward ward = wardRepository.getOne(addressInput.getWardId());
         User user = userRepository.findByUsername(addressInput.getUsername());
-        return Address.builder()
+        return Address.builder().id(addressInput.getAddressId())
                 .receiverName(addressInput.getReceiverName())
                 .receiverPhone(addressInput.getReceiverPhone())
                 .city(city).district(district).ward(ward)
