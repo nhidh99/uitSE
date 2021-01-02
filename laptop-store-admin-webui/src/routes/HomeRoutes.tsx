@@ -7,6 +7,7 @@ import AuthenticatedGuard from "./AuthenticatedGuard";
 import OrderRoutes from "./sub-routes/OrderRoutes";
 import ProductRoutes from "./sub-routes/ProductRoutes";
 import PromotionRoutes from "./sub-routes/PromotionRoutes";
+import QuestionRoutes from "./sub-routes/QuestionRoutes";
 
 function HomeRoutes() {
     const authenticatedPaths = useMemo(
@@ -28,6 +29,7 @@ function HomeRoutes() {
                                 <ProductRoutes />
                                 <PromotionRoutes />
                                 <OrderRoutes />
+                                <QuestionRoutes />
                             </div>
                         </main>
                     </>

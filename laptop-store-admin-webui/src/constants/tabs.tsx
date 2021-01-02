@@ -1,5 +1,13 @@
 import React from "react";
-import { FaBox, FaCheckCircle, FaClipboardCheck, FaSync, FaTimes, FaTruck } from "react-icons/fa";
+import {
+    FaBox,
+    FaCheckCircle,
+    FaClipboardCheck,
+    FaSync,
+    FaTimes,
+    FaTimesCircle,
+    FaTruck
+} from "react-icons/fa";
 
 export const TABS = {
     ORDER: [
@@ -32,6 +40,24 @@ export const TABS = {
             icon: <FaTimes />,
             title: "Đã hủy",
             value: "canceled"
+        }
+    ],
+
+    QUESTION: [
+        {
+            icon: <FaSync />,
+            title: "Chờ duyệt",
+            value: "pending"
+        },
+        {
+            icon: <FaCheckCircle />,
+            title: "Đã duyệt",
+            value: "approved"
+        },
+        {
+            icon: <FaTimesCircle />,
+            title: "Từ chối",
+            value: "rejected"
         }
     ]
 };

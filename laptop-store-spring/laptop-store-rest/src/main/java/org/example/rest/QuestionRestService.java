@@ -53,7 +53,7 @@ public class QuestionRestService {
     }
 
     @PreAuthorize("hasAuthority(T(org.example.type.RoleType).ADMIN)")
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "status")
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getQuestionByStatus(
             @RequestParam(value = "status", defaultValue = "PENDING") FeedbackStatus status,
             @RequestParam(value = "page", defaultValue = "1") Integer page) {

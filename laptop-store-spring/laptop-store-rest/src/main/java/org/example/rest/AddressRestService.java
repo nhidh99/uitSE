@@ -20,9 +20,6 @@ public class AddressRestService {
     @Autowired
     private AddressService addressService;
 
-    @Autowired
-    private UserService userService;
-
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAddressById(@AuthenticationPrincipal UserDetails userDetails,

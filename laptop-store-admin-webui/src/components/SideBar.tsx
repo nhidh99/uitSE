@@ -78,7 +78,7 @@ function SideBar() {
                 {items.map((item) => (
                     <Link
                         className={`
-                            text-xs sm:text-sm md:text-base 
+                            text-xs sm:text-sm lg:text-base 
                             px-5 ${menuStatus === "open" ? "py-2.5" : "py-3.5"}
                             hover:bg-gray-300 select-none
                             cursor-pointer flex gap-2 items-center

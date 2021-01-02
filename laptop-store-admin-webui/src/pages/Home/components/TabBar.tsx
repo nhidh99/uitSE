@@ -65,7 +65,7 @@ function TabBar(props: Props) {
                     border-r md:border-r-0    
                     flex flex-1 flex-col gap-1 lg:flex-row lg:gap-2 
                     items-center justify-center focus:outline-none 
-                    py-3 lg:py-2 text-xs lg:text-sm rounded-none`}
+                    py-3 lg:py-2 text-xs md:text-sm rounded-none`}
                     value={item.value}
                 >
                     {item.icon}
