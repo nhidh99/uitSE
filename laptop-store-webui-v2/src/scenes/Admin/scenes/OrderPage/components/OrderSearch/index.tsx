@@ -28,7 +28,6 @@ const OrderSearch = () => {
             query: query,
             page: 1,
         };
-        console.log(params);
         history.push({
             pathname: location.pathname,
             search: queryString.stringify(params, { skipEmptyString: true }),

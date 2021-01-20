@@ -37,10 +37,23 @@ const ReplyContainer = styled.div`
     gap: 10px;
 `;
 
+const MoreReplies = styled.span`
+    margin-left: 10px;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 13px;
+
+    :hover {
+        text-decoration: underline;
+    }
+`;
+
+
 export const SC = {
     Container,
     CommentDetail,
     CommentInfo,
     UserFullName,
     ReplyContainer,
+    MoreReplies
 };

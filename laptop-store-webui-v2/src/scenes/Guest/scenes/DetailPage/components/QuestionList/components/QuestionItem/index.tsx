@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState } from "react";
-import { SC } from "./styles";
-import QuestionReply from "../QuestionReply";
+import questionApi from "../../../../../../../../services/api/questionApi";
 import QuestionModel from "../../../../../../../../values/models/QuestionModel";
 import ReplyItem from "../../../ReplyItem";
-import questionApi from "../../../../../../../../services/api/questionApi";
+import QuestionReply from "../QuestionReply";
+import { SC } from "./styles";
 
 type QuestionItemProps = {
     question: QuestionModel;
@@ -35,8 +35,8 @@ const QuestionItem = ({ question }: QuestionItemProps) => {
             ) : null}
 
             <QuestionReply commentId={question.id} />
-            {question.reply_count === 1 ? null : (
-                <span onClick={loadMoreReplies}>Xem thêm {question.reply_count - 1} bình luận</span>
+            {(question.reply_count === 1 || replies.length > 0) ? null : (
+                <SC.MoreReplies onClick={loadMoreReplies}>Xem thêm {question.reply_count - 1} bình luận</SC.MoreReplies>
             )}
         </SC.Container>
     );
