@@ -35,9 +35,8 @@ public class QuestionRestService {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postQuestion(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<?> postQuestion(
                                           @Valid @RequestBody QuestionInput questionInput) {
-        questionInput.setUsername(userDetails.getUsername());
         questionService.insertQuestion(questionInput);
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessMessageConstants.QUESTION_CREATED);
     }

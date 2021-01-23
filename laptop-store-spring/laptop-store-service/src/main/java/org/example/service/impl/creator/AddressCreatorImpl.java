@@ -5,6 +5,7 @@ import org.example.input.form.AddressInput;
 import org.example.model.*;
 import org.example.service.api.creator.AddressCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +53,8 @@ public class AddressCreatorImpl implements AddressCreator {
         City city = cityRepository.getOne(addressInput.getCityId());
         District district = districtRepository.getOne(addressInput.getDistrictId());
         Ward ward = wardRepository.getOne(addressInput.getWardId());
-        User user = userRepository.findByUsername(addressInput.getUsername());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
         return Address.builder().id(addressInput.getAddressId())
                 .receiverName(addressInput.getReceiverName())
                 .receiverPhone(addressInput.getReceiverPhone())

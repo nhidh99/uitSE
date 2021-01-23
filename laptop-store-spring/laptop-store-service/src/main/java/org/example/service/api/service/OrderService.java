@@ -13,13 +13,13 @@ import org.example.util.Pair;
 import java.util.List;
 
 public interface OrderService {
-    Pair<List<OrderOverviewDTO>, Long> findUserOrdersByPage(String username, int page);
+    Pair<List<OrderOverviewDTO>, Long> findUserOrdersByPage(int page);
 
-    OrderDetailDTO findUserOrderDetailByOrderId(String username, Integer orderId);
+    OrderDetailDTO findUserOrderDetailByOrderId(Integer orderId);
 
-    Integer insertUserOrder(Integer addressId, String username) throws JsonProcessingException;
+    Integer insertUserOrder(Integer addressId) throws JsonProcessingException;
 
-    void cancelOrderByIdAndUsername(String username, Integer orderId);
+    void cancelOrderByIdAndUsername(Integer orderId);
 
     Pair<List<OrderSummaryDTO>, Long> findOrdersBySearch(OrderSearchInput search);
 }

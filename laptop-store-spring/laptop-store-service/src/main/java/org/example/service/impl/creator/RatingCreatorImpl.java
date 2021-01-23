@@ -9,6 +9,7 @@ import org.example.model.User;
 import org.example.service.api.creator.RatingCreator;
 import org.example.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +25,7 @@ public class RatingCreatorImpl implements RatingCreator {
 
     @Override
     public Rating createRating(RatingInput ratingInput) {
-        String username = ratingInput.getUsername();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer laptopId = ratingInput.getProductId();
         Integer point = ratingInput.getPoint();
         String detail = ratingInput.getDetail();

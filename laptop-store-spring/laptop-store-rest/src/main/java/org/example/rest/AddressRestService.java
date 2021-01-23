@@ -22,30 +22,23 @@ public class AddressRestService {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getAddressById(@AuthenticationPrincipal UserDetails userDetails,
-                                            @PathVariable("id") Integer id) {
-        String username = userDetails.getUsername();
-        AddressDetailDTO output = addressService.findUserAddressDetail(id, username);
+    public ResponseEntity<?> getAddressById(@PathVariable("id") Integer id) {
+        AddressDetailDTO output = addressService.findUserAddressDetail(id);
         return ResponseEntity.ok(output);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> postAddress(@AuthenticationPrincipal UserDetails userDetails,
-                                         @RequestBody AddressInput addressInput) {
-        String username = userDetails.getUsername();
-        addressInput.setUsername(username);
+    public ResponseEntity<?> postAddress(@RequestBody AddressInput addressInput) {
         Integer addressId = addressService.insertUserAddress(addressInput);
         return ResponseEntity.ok(addressId.toString());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteUserAddress(@AuthenticationPrincipal UserDetails userDetails,
-                                           @PathVariable("id") Integer addressId) {
+    public ResponseEntity<?> deleteUserAddress(@PathVariable("id") Integer addressId) {
         try {
-            String username = userDetails.getUsername();
-            addressService.deleteUserAddress(addressId, username);
+            addressService.deleteUserAddress(addressId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,12 +48,9 @@ public class AddressRestService {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putAddress(@AuthenticationPrincipal UserDetails userDetails,
-                                        @PathVariable("id") Integer addressId,
+    public ResponseEntity<?> putAddress(@PathVariable("id") Integer addressId,
                                         @RequestBody AddressInput addressInput) {
-        String username = userDetails.getUsername();
         addressInput.setAddressId(addressId);
-        addressInput.setUsername(username);
         addressService.updateUserAddress(addressInput);
         return ResponseEntity.noContent().build();
     }

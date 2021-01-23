@@ -12,6 +12,7 @@ import org.example.service.api.creator.AddressCreator;
 import org.example.service.api.service.AddressService;
 import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -38,15 +39,17 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<AddressOverviewDTO> findUserAddresses(String username) {
+    public List<AddressOverviewDTO> findUserAddresses() {
         return txTemplate.execute((status) -> {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
             List<Address> addresses = addressCreator.createUserAddressesStartWithDefault(username);
             return ModelMapperUtil.mapList(addresses, AddressOverviewDTO.class);
         });
     }
 
     @Override
-    public AddressDetailDTO findUserAddressDetail(Integer addressId, String username) {
+    public AddressDetailDTO findUserAddressDetail(Integer addressId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute((status) -> {
             addressChecker.checkExistedUserAddress(username, addressId);
             Address address = addressRepository.getOne(addressId);
@@ -67,7 +70,8 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public void deleteUserAddress(Integer addressId, String username) {
+    public void deleteUserAddress(Integer addressId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             addressChecker.checkExistedUserAddress(username, addressId);
             deleteAddress(addressId);

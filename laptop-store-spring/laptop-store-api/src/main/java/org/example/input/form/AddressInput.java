@@ -29,7 +29,4 @@ public class AddressInput {
 
     @JsonProperty("address_num")
     private String addressNum;
-
-    @JsonIgnore()
-    private String username;
 }

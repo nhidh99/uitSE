@@ -8,6 +8,7 @@ import org.example.dao.WardRepository;
 import org.example.input.form.AddressInput;
 import org.example.service.api.checker.AddressChecker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,7 +38,7 @@ public class AddressCheckerImpl implements AddressChecker {
 
     @Override
     public void checkAddressInput(AddressInput addressInput) {
-        String username = addressInput.getUsername();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Integer addressId = addressInput.getAddressId();
         Integer cityId = addressInput.getCityId();
         Integer districtId = addressInput.getDistrictId();

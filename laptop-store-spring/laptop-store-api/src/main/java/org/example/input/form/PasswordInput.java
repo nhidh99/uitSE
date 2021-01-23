@@ -14,7 +14,4 @@ public class PasswordInput {
 
     @JsonProperty("confirm_password")
     private String confirmPassword;
-
-    @JsonIgnore
-    private String username;
 }

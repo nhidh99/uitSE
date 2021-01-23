@@ -52,29 +52,23 @@ public class OrderRestService {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getOrderById(@AuthenticationPrincipal UserDetails userDetails,
-                                          @PathVariable("id") Integer orderId) {
-        String username = userDetails.getUsername();
-        OrderDetailDTO order = orderService.findUserOrderDetailByOrderId(username, orderId);
+    public ResponseEntity<?> getOrderById(@PathVariable("id") Integer orderId) {
+        OrderDetailDTO order = orderService.findUserOrderDetailByOrderId(orderId);
         return ResponseEntity.ok(order);
     }
 
     @PostMapping(value = "/{id}/cancel", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> postCancelOrderById(@AuthenticationPrincipal UserDetails userDetails,
-                                                 @PathVariable("id") Integer orderId) {
-        String username = userDetails.getUsername();
-        orderService.cancelOrderByIdAndUsername(username, orderId);
+    public ResponseEntity<?> postCancelOrderById(@PathVariable("id") Integer orderId) {
+        orderService.cancelOrderByIdAndUsername(orderId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> postOrder(@AuthenticationPrincipal UserDetails userDetails,
-                                       @RequestBody Map<String, Integer> requestBody) throws JsonProcessingException {
+    public ResponseEntity<?> postOrder(@RequestBody Map<String, Integer> requestBody) throws JsonProcessingException {
         Integer addressId = requestBody.get("addressId");
-        String username = userDetails.getUsername();
-        Integer orderId = orderService.insertUserOrder(addressId, username);
+        Integer orderId = orderService.insertUserOrder(addressId);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
     }
 }

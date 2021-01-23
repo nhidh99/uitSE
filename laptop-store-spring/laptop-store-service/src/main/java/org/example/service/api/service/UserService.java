@@ -11,23 +11,23 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    User findByUsername(String username);
+    User findCurrentUser();
 
-    Map<SocialMediaType, Boolean> findSocialMediaAuthByUsername(String username);
+    Map<SocialMediaType, Boolean> findSocialMediaAuth();
 
-    OrderCheckoutDTO findCheckoutByUsername(String username);
+    OrderCheckoutDTO findCurrentUserCheckout();
 
-    void updateUserInfoByUsername(String username, UserInfoInput userInfoInput);
+    void updateCurrentUserInfo(UserInfoInput userInfoInput);
 
-    void updateUserDefaultAddressId(String username, Integer addressId);
+    void updateUserDefaultAddressId(Integer addressId);
 
     void updateUserPassword(PasswordInput passwordInput);
 
-    void updateUserCart(String username, String cartJSON);
+    void updateUserCart(String cartJSON);
 
-    void updateUserWishList(String username, String listJSON);
+    void updateUserWishList(String listJSON);
 
-    List<LaptopOverviewDTO> findUserWishList(String username);
+    List<LaptopOverviewDTO> findUserWishList();
 
-    void moveCartItemToWishList(String username, Integer laptopId);
+    void moveCartItemToWishList(Integer laptopId);
 }

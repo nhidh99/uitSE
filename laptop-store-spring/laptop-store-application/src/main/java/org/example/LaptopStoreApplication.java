@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = {"org.example.*"})
 @EntityScan(basePackages = {"org.example.*"})
 @EnableJpaRepositories(basePackages = {"org.example.*"})
-@EnableCaching
+//@EnableCaching
 public class LaptopStoreApplication {
     public static void main(String[] args) {
         SpringApplication.run(LaptopStoreApplication.class);

@@ -52,9 +52,7 @@ public class RatingRestService {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postRating(@RequestBody RatingInput ratingInput,
-                                        @AuthenticationPrincipal UserDetails userDetails) {
-        ratingInput.setUsername(userDetails.getUsername());
+    public ResponseEntity<?> postRating(@RequestBody RatingInput ratingInput) {
         ratingService.insertRating(ratingInput);
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessMessageConstants.RATING_CREATED);
     }

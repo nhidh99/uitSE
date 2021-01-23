@@ -4,6 +4,7 @@ import org.example.dto.milestone.MilestoneDTO;
 import org.example.service.api.creator.MilestoneCreator;
 import org.example.service.api.service.MilestoneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -22,7 +23,8 @@ public class MilestoneServiceImpl implements MilestoneService {
     }
 
     @Override
-    public List<MilestoneDTO> findUserMilestones(String username) {
+    public List<MilestoneDTO> findUserMilestones() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute(status -> milestoneCreator.createUserMilestones(username));
     }
 }

@@ -18,9 +18,6 @@ public class QuestionInput {
     @JsonProperty("question")
     private String question;
 
-    @JsonIgnore
-    private String username;
-
     public void setQuestion(String question) {
         this.question = question.trim();
     }

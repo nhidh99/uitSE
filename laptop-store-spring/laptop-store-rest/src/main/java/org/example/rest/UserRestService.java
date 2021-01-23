@@ -48,43 +48,36 @@ public class UserRestService {
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        User user = userService.findByUsername(username);
+    public ResponseEntity<?> getCurrentUser() {
+        User user = userService.findCurrentUser();
         return ResponseEntity.ok(user);
     }
 
     @PutMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
-                                            @RequestBody UserInfoInput userInfoInput) {
-        String username = userDetails.getUsername();
-        userService.updateUserInfoByUsername(username, userInfoInput);
+    public ResponseEntity<?> putCurrentUser(@RequestBody UserInfoInput userInfoInput) {
+        userService.updateCurrentUserInfo(userInfoInput);
         return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_INFO);
     }
 
     @GetMapping(value = "/me/social-auth", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserSocialMediaAuth(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        Map<SocialMediaType, Boolean> userAuth = userService.findSocialMediaAuthByUsername(username);
+    public ResponseEntity<?> getCurrentUserSocialMediaAuth() {
+        Map<SocialMediaType, Boolean> userAuth = userService.findSocialMediaAuth();
         return ResponseEntity.ok(userAuth);
     }
 
     @GetMapping(value = "/me/addresses", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserAddresses(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        List<AddressOverviewDTO> addresses = addressService.findUserAddresses(username);
+    public ResponseEntity<?> getCurrentUserAddresses() {
+        List<AddressOverviewDTO> addresses = addressService.findUserAddresses();
         return ResponseEntity.ok(addresses);
     }
 
     @GetMapping(value = "/me/orders", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserOrderOverviews(@AuthenticationPrincipal UserDetails userDetails,
-                                                          @RequestParam(value = "page", defaultValue = "1") int page) {
-        String username = userDetails.getUsername();
-        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findUserOrdersByPage(username, page);
+    public ResponseEntity<?> getCurrentUserOrderOverviews(@RequestParam(value = "page", defaultValue = "1") int page) {
+        Pair<List<OrderOverviewDTO>, Long> ordersPair = orderService.findUserOrdersByPage(page);
         return ResponseEntity.ok()
                 .header(HeaderConstants.TOTAL_COUNT, ordersPair.getSecond().toString())
                 .body(ordersPair.getFirst());
@@ -92,71 +85,60 @@ public class UserRestService {
 
     @GetMapping(value = "/me/wish-list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserWishList(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        List<LaptopOverviewDTO> laptops = userService.findUserWishList(username);
+    public ResponseEntity<?> getCurrentUserWishList() {
+        List<LaptopOverviewDTO> laptops = userService.findUserWishList();
         return ResponseEntity.ok(laptops);
     }
 
     @PutMapping(value = "/me/cart", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
-                                                @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> putCurrentUserCart(@RequestBody Map<String, String> requestBody) {
         String cartJSON = requestBody.get("cartJSON");
-        userService.updateUserCart(userDetails.getUsername(), cartJSON);
+        userService.updateUserCart(cartJSON);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/me/cart/laptops/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putCurrentUserCart(@AuthenticationPrincipal UserDetails userDetails,
-                                                @PathVariable("id") Integer laptopId) {
-        userService.moveCartItemToWishList(userDetails.getUsername(), laptopId);
+    public ResponseEntity<?> putCurrentUserCart(@PathVariable("id") Integer laptopId) {
+        userService.moveCartItemToWishList(laptopId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping(value = "/me/wish-list", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putCurrentUserWishList(@AuthenticationPrincipal UserDetails userDetails,
-                                                    @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> putCurrentUserWishList(@RequestBody Map<String, String> requestBody) {
         String listJSON = requestBody.get("listJSON");
-        userService.updateUserWishList(userDetails.getUsername(), listJSON);
+        userService.updateUserWishList(listJSON);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/me/checkout", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserCheckout(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        OrderCheckoutDTO output = userService.findCheckoutByUsername(username);
+    public ResponseEntity<?> getCurrentUserCheckout() {
+        OrderCheckoutDTO output = userService.findCurrentUserCheckout();
         return ResponseEntity.ok(output);
     }
 
     @PutMapping(value = "/me/default-address", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putCurrentUserDefaultAddressId(@RequestBody Map<String, Integer> requestBody,
-                                                            @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> putCurrentUserDefaultAddressId(@RequestBody Map<String, Integer> requestBody) {
         Integer addressId = requestBody.get("address_id");
-        String username = userDetails.getUsername();
-        userService.updateUserDefaultAddressId(username, addressId);
+        userService.updateUserDefaultAddressId(addressId);
         return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_DEFAULT_ADDRESS);
     }
 
     @PutMapping(value = "/me/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> putCurrentUserPassword(@RequestBody PasswordInput passwordInput,
-                                                    @AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        passwordInput.setUsername(username);
+    public ResponseEntity<?> putCurrentUserPassword(@RequestBody PasswordInput passwordInput) {
         userService.updateUserPassword(passwordInput);
         return ResponseEntity.ok(SuccessMessageConstants.PUT_USER_PASSWORD);
     }
 
     @GetMapping(value = "/me/milestones", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUserMilestones(@AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        List<MilestoneDTO> milestones = milestoneService.findUserMilestones(username);
+    public ResponseEntity<?> getCurrentUserMilestones() {
+        List<MilestoneDTO> milestones = milestoneService.findUserMilestones();
         return ResponseEntity.ok(milestones);
     }
 }

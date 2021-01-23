@@ -22,6 +22,7 @@ import org.example.service.util.JsonUtil;
 import org.example.type.SocialMediaType;
 import org.example.util.ModelMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -55,13 +56,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User findCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public Map<SocialMediaType, Boolean> findSocialMediaAuthByUsername(String username) {
+    public Map<SocialMediaType, Boolean> findSocialMediaAuth() {
         return txTemplate.execute((status) -> {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userRepository.findByUsername(username);
             Map<SocialMediaType, Boolean> output = new HashMap<>();
             output.put(SocialMediaType.FACEBOOK, user.getFacebookId() != null);
@@ -71,7 +74,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInfoByUsername(String username, UserInfoInput userInfo) {
+    public void updateCurrentUserInfo(UserInfoInput userInfo) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             User user = userRepository.findByUsername(username);
             ModelMapperUtil.map(userInfo, user);
@@ -80,7 +84,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public OrderCheckoutDTO findCheckoutByUsername(String username) {
+    public OrderCheckoutDTO findCurrentUserCheckout() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute((status) -> {
             Order order = orderCreator.createUserOrderWithoutAddress(username);
             return ModelMapperUtil.map(order, OrderCheckoutDTO.class);
@@ -88,7 +93,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserDefaultAddressId(String username, Integer addressId) {
+    public void updateUserDefaultAddressId(Integer addressId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             addressChecker.checkExistedUserAddress(username, addressId);
             User user = userRepository.findByUsername(username);
@@ -99,7 +105,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserPassword(PasswordInput passwordInput) {
         txTemplate.executeWithoutResult((status) -> {
-            String username = passwordInput.getUsername();
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userRepository.findByUsername(username);
             String oldHashedPassword = user.getPassword();
             passwordChecker.checkPasswordInput(passwordInput, oldHashedPassword);
@@ -110,7 +116,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserCart(String username, String cartJSON) {
+    public void updateUserCart(String cartJSON) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             User user = userRepository.findByUsername(username);
             user.setCart(cartJSON);
@@ -118,7 +125,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserWishList(String username, String listJSON) {
+    public void updateUserWishList(String listJSON) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             User user = userRepository.findByUsername(username);
             user.setWishList(listJSON);
@@ -126,7 +134,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<LaptopOverviewDTO> findUserWishList(String username) {
+    public List<LaptopOverviewDTO> findUserWishList() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute((status) -> {
             User user = userRepository.findByUsername(username);
             if (user.getWishList() == null) { return Collections.EMPTY_LIST; }
@@ -137,7 +146,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void moveCartItemToWishList(String username, Integer laptopId) {
+    public void moveCartItemToWishList(Integer laptopId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             laptopChecker.checkExistedLaptop(laptopId);
             User user = userRepository.findByUsername(username);

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -44,8 +45,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Pair<List<OrderOverviewDTO>, Long> findUserOrdersByPage(String username, int page) {
+    public Pair<List<OrderOverviewDTO>, Long> findUserOrdersByPage(int page) {
         Pageable pageable = PageRequest.of(page - 1, SIZE_PER_PAGE, Sort.by("id").descending());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute((status) -> {
             List<Order> orders = orderRepository.findByUserUsername(username, pageable);
             long orderCount = orderRepository.countByUserUsername(username);
@@ -54,7 +56,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDetailDTO findUserOrderDetailByOrderId(String username, Integer orderId) {
+    public OrderDetailDTO findUserOrderDetailByOrderId(Integer orderId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute((status) -> {
             orderChecker.checkExistedUserOrder(username, orderId);
             Order order = orderRepository.getOne(orderId);
@@ -63,7 +66,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Integer insertUserOrder(Integer addressId, String username) {
+    public Integer insertUserOrder(Integer addressId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return txTemplate.execute((status) -> {
             addressChecker.checkExistedUserAddress(username, addressId);
             Order order = orderCreator.createUserOrderWithAddress(username, addressId);
@@ -72,7 +76,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cancelOrderByIdAndUsername(String username, Integer orderId) {
+    public void cancelOrderByIdAndUsername(Integer orderId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         txTemplate.executeWithoutResult((status) -> {
             orderChecker.checkExistedUserOrder(username, orderId);
             Order order = orderRepository.getOne(orderId);

@@ -14,7 +14,4 @@ public class RatingInput {
 
     @JsonProperty("product_id")
     private Integer productId;
-
-    @JsonIgnore
-    private String username;
 }
