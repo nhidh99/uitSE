@@ -30,7 +30,7 @@ public class RatingRestService {
         this.ratingService = ratingService;
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "product_id")
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getRatingByProductId(@RequestParam("product_id") Integer productId,
                                                   @RequestParam("page") Integer page) {
@@ -41,9 +41,10 @@ public class RatingRestService {
     }
 
     @PreAuthorize("hasAuthority(T(org.example.type.RoleType).ADMIN)")
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, params = "status")
-    public ResponseEntity<?> getRatingByProductId(@RequestParam("status") FeedbackStatus status,
-                                                  @RequestParam("page") Integer page) {
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getRatingsByStatus(
+            @RequestParam(value = "status", defaultValue = "PENDING") FeedbackStatus status,
+            @RequestParam(value = "page", defaultValue = "1") Integer page) {
         Pair<List<RatingSummaryDTO>, Long> ratingsAndCount = ratingService.findAndCountRatingSummariesByStatus(status, page);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HeaderConstants.TOTAL_COUNT, ratingsAndCount.getSecond().toString())

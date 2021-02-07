@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.type.ReplyType;
 import org.example.type.RoleType;
 
 import javax.persistence.*;
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "question_reply")
-public class QuestionReply {
+@Table(name = "reply")
+public class Reply {
     private static final String LAPTOP_STORE = "Laptop Store";
 
     @Id
@@ -23,9 +24,8 @@ public class QuestionReply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @Column(name = "parent_id")
+    private Integer parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -36,6 +36,13 @@ public class QuestionReply {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "reply_type")
+    @Enumerated(EnumType.STRING)
+    private ReplyType replyType;
+
+    @Column(name = "approve_status")
+    private Boolean approveStatus;
 
     public String getAuthorName() {
         return RoleType.ADMIN.equals(user.getRole()) ? LAPTOP_STORE : user.getName();

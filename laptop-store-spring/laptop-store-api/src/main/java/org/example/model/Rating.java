@@ -41,10 +41,6 @@ public class Rating {
     @Column(name = "approve_status")
     private Boolean approveStatus;
 
-    @OneToMany(mappedBy = "rating", orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.TRUE)
-    private List<RatingReply> replies;
-
     public String getAuthorName() {
         return user.getName();
     }

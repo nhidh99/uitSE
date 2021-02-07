@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.dto.reply.CommonReplyDTO;
-import org.example.model.Question;
+import org.example.dto.reply.ReplyDTO;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -32,7 +31,7 @@ public class QuestionDTO implements Serializable {
     private LocalDateTime createdAt;
 
     @JsonProperty("answer")
-    private CommonReplyDTO answerDTO;
+    private ReplyDTO answerDTO;
 
     @JsonProperty("reply_count")
     private Long replyCount;

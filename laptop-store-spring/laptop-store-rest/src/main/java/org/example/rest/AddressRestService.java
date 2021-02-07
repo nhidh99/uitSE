@@ -42,15 +42,10 @@ public class AddressRestService {
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> deleteUserAddress(@AuthenticationPrincipal UserDetails userDetails,
-                                           @PathVariable("id") Integer addressId) {
-        try {
-            String username = userDetails.getUsername();
-            addressService.deleteUserAddress(addressId, username);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+                                               @PathVariable("id") Integer addressId) {
+        String username = userDetails.getUsername();
+        addressService.deleteUserAddress(addressId, username);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

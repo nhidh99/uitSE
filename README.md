@@ -1,1 +1,7 @@
-# uitSE
+# uitSE - Laptop Store School Project
+/ Simple Laptop E-commerce website inspired by some famous Vietnamese ones like Tiki, - thegioididong...
+/ Team size: 4
+/ Technologies used:
+- Frontend & Backend: ReactJS, Spring Framework, Web API.
+- Database: MariaDB, Redis (for caching data).
+- Others: JWT, Image Optimizing, Heroku Service, Azure Cloud Service.

@@ -10,7 +10,7 @@ type Props = {
 function QuestionTable({ list }: Props) {
     return (
         <div className="border rounded shadow">
-            <TabBar tabs={TABS.QUESTION} targetParam="status" />
+            <TabBar tabs={TABS.FEEDBACK} targetParam="status" />
             <table className="text-xs md:text-sm w-full">
                 <tr>
                     <th className="p-2 w-1/12">Mã CH</th>

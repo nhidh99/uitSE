@@ -1,13 +1,10 @@
 package org.example.model;
 
 import lombok.*;
-import org.example.util.Pair;
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,10 +40,6 @@ public class Question {
 
     @Column(name = "answer_id")
     private Integer answerId;
-
-    @OneToMany(mappedBy = "question", orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.TRUE)
-    private List<QuestionReply> replies;
 
     public String getAuthorName() {
         return user.getName();

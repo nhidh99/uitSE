@@ -2,23 +2,18 @@ package org.example.service.impl.service;
 
 import org.example.constant.CacheConstants;
 import org.example.constant.PaginateConstants;
-import org.example.dao.LaptopRepository;
-import org.example.dao.QuestionReplyRepository;
 import org.example.dao.QuestionRepository;
-import org.example.dao.UserRepository;
+import org.example.dao.ReplyRepository;
 import org.example.dto.question.QuestionDTO;
 import org.example.dto.question.QuestionSummaryDTO;
-import org.example.dto.reply.CommonReplyDTO;
-import org.example.service.api.checker.LaptopChecker;
+import org.example.dto.reply.ReplyDTO;
 import org.example.input.form.QuestionInput;
-import org.example.model.Laptop;
 import org.example.model.Question;
-import org.example.model.QuestionReply;
-import org.example.model.User;
+import org.example.model.Reply;
+import org.example.service.api.checker.LaptopChecker;
 import org.example.service.api.creator.QuestionCreator;
 import org.example.service.api.service.QuestionService;
 import org.example.type.FeedbackStatus;
-import org.example.util.DateUtil;
 import org.example.util.ModelMapperUtil;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,28 +21,28 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
-    private final QuestionReplyRepository questionReplyRepository;
+    private final ReplyRepository replyRepository;
     private final QuestionCreator questionCreator;
     private final LaptopChecker laptopChecker;
     private final TransactionTemplate txTemplate;
 
     @Autowired
-    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionReplyRepository questionReplyRepository,
+    public QuestionServiceImpl(QuestionRepository questionRepository, ReplyRepository replyRepository,
                                QuestionCreator questionCreator, LaptopChecker laptopChecker,
                                PlatformTransactionManager txManager) {
         this.questionRepository = questionRepository;
-        this.questionReplyRepository = questionReplyRepository;
+        this.replyRepository = replyRepository;
         this.questionCreator = questionCreator;
         this.laptopChecker = laptopChecker;
         this.txTemplate = new TransactionTemplate(txManager);
@@ -89,11 +84,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<CommonReplyDTO> findMoreRepliesById(Integer questionId) {
+    public List<ReplyDTO> findMoreRepliesById(Integer questionId) {
         return txTemplate.execute((status) -> {
             Question question = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
-            List<QuestionReply> moreReplies = questionReplyRepository.findByQuestionIdAndIdNot(questionId, question.getAnswerId());
-            return ModelMapperUtil.mapList(moreReplies, CommonReplyDTO.class);
+            List<Reply> moreReplies = replyRepository
+                    .findApprovedQuestionRepliesExceptAnswer(questionId, question.getAnswerId());
+            return ModelMapperUtil.mapList(moreReplies, ReplyDTO.class);
         });
     }
 }

@@ -4,10 +4,14 @@ import org.example.constant.HeaderConstants;
 import org.example.constant.SuccessMessageConstants;
 import org.example.dto.question.QuestionDTO;
 import org.example.dto.question.QuestionSummaryDTO;
-import org.example.dto.reply.CommonReplyDTO;
+import org.example.dto.reply.ReplyDTO;
 import org.example.input.form.QuestionInput;
+import org.example.input.query.ReplySearchInput;
 import org.example.service.api.service.QuestionService;
 import org.example.type.FeedbackStatus;
+import org.example.type.ReplyType;
+import org.example.type.SearchOrderType;
+import org.example.type.SearchTargetType;
 import org.example.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,7 +70,23 @@ public class QuestionRestService {
     @PreAuthorize("permitAll()")
     @GetMapping(value = "/{id}/replies", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getQuestionReplies(@PathVariable("id") Integer questionId) {
-        List<CommonReplyDTO> replies = questionService.findMoreRepliesById(questionId);
+        List<ReplyDTO> replies = questionService.findMoreRepliesById(questionId);
         return ResponseEntity.ok(replies);
     }
+
+//    @PreAuthorize("permitAll()")
+//    @GetMapping(value = "/-/replies", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> getQuestionRepliesByPage(
+//            @RequestParam(value = "query", defaultValue = "") String query,
+//            @RequestParam(value = "target", defaultValue = "ID") SearchTargetType target,
+//            @RequestParam(value = "order", defaultValue = "DESC") SearchOrderType order,
+//            @RequestParam(value = "status", defaultValue = "PENDING") FeedbackStatus status,
+//            @RequestParam(value = "page", defaultValue = "1") Integer page) {
+//        ReplySearchInput search = ReplySearchInput.builder().query(query).target(target)
+//                .status(status).order(order).page(page).type(ReplyType.QUESTION).build();
+//        Pair<List<ReplyDTO>, Long> output = questionService.findQuestionRepliesBySearch(search);
+//        return ResponseEntity.ok()
+//                .header(HeaderConstants.TOTAL_COUNT, output.getSecond().toString())
+//                .body(output.getFirst());
+//    }
 }

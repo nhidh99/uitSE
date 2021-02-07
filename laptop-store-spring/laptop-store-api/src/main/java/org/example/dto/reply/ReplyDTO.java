@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommonReplyDTO implements Serializable {
+public class ReplyDTO implements Serializable {
 
     private static final long serialVersionUID = 8480786262120162534L;
 

@@ -77,7 +77,7 @@ function useListFetch<T>(fetchAPI: (params: ListFetchParams) => Promise<AxiosRes
         }
     }, [location.search]);
 
-    return { list, count, page, query, loading, firstLoad, setTarget};
+    return { list, count, page, query, loading, firstLoad, setTarget };
 }
 
 export default useListFetch;

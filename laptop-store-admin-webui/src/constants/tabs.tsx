@@ -43,7 +43,7 @@ export const TABS = {
         }
     ],
 
-    QUESTION: [
+    FEEDBACK: [
         {
             icon: <FaSync />,
             title: "Chờ duyệt",

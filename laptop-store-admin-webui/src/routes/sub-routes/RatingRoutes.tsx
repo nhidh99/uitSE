@@ -1,15 +1,15 @@
 import { PATHS } from "@/constants/paths";
-import QuestionList from "@/pages/Home/pages/QuestionList/QuestionList";
+import RatingList from "@/pages/Home/pages/RatingList/RatingList";
 import React, { memo } from "react";
 import { Switch } from "react-router-dom";
 import AuthenticatedGuard from "../AuthenticatedGuard";
 
-function QuestionRoutes() {
+function RatingRoutes() {
     return (
         <Switch>
-            <AuthenticatedGuard exact path={PATHS.QUESTIONS} component={QuestionList} />
+            <AuthenticatedGuard exact path={PATHS.RATINGS} component={RatingList} />
         </Switch>
     );
 }
 
-export default memo(QuestionRoutes);
+export default memo(RatingRoutes);
